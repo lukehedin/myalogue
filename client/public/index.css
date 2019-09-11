@@ -2,6 +2,17 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif; }
+  body .app-header {
+    background-color: #222;
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: row; }
+    body .app-header .app-logo {
+      animation: App-logo-spin infinite 20s linear;
+      height: 80px; }
+    body .app-header .app-title {
+      font-size: 1.5em; }
   body ul {
     padding: 0;
     list-style: none;
@@ -11,19 +22,11 @@ body {
     font-size: 1.2rem;
     line-height: 2rem;
     border-bottom: 1px dotted #777; }
+  body .form-wrapper {
+    position: relative; }
   body .app {
     text-align: center; }
-  body .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-    height: 80px; }
-  body .App-header {
-    background-color: #222;
-    height: 150px;
-    padding: 20px;
-    color: white; }
-  body .App-title {
-    font-size: 1.5em; }
-  body .App-intro {
+  body .app-intro {
     font-size: large; }
 
 @keyframes App-logo-spin {
@@ -31,3 +34,30 @@ body {
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+
+@keyframes loader-spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+  body .loader {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 10; }
+    body .loader:before {
+      content: '';
+      position: absolute;
+      border: 4px solid transparent;
+      border-top: 4px solid #48AD92;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      margin-top: -16px;
+      margin-left: -16px;
+      left: 50%;
+      top: 50%;
+      animation: loader-spin 0.3s linear infinite; }
+  body a {
+    cursor: pointer;
+    text-decoration: underline; }

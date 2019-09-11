@@ -1,1 +1,6 @@
+@import "./AppHeader/_AppHeader.scss";
 @import "./Customers/_Customers.scss";
+
+.form-wrapper {
+	position: relative;
+}

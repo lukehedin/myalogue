@@ -4,7 +4,15 @@ const Sequelize = require('sequelize');
 const pg = require('pg');
 pg.defaults.ssl = true;
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, { dialect: 'postgres', ssl: true });
+// I think some of these configs might be excessive, but trying to be safe
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+	ssl: true,
+    dialect: 'postgres',
+	protocol: 'postgres',
+    dialectOptions: {
+        ssl: true
+	}
+});
 
 const defineTable = (name, attributes, options = {}) => {
 	return sequelize.define(name, {
@@ -27,7 +35,8 @@ let db = {
 
 	sync: () => {
 		sequelize.sync({
-			force: true
+			//force: true
+			alter: true
 		})
 		.then(() => {
 			console.log('Database sync completed')
@@ -50,7 +59,16 @@ let db = {
 
 	User: defineTable('User', {
 		Email: Sequelize.STRING,
-		UserName: Sequelize.STRING,
+		Username: Sequelize.STRING,
+		Password: Sequelize.STRING,
+		VerificationToken: Sequelize.STRING,
+		PasswordResetToken: Sequelize.STRING,
+		PasswordResetAt: Sequelize.DATE,
+		IsAdmin: {
+			type: Sequelize.BOOLEAN,
+			allowNull: false,
+			defaultValue: false
+		}
 	}),
 
 	Template: defineTable('Template', {
@@ -84,7 +102,7 @@ let createOneToOne = (belongsToTableName, hasOneTableName) => {
 	db[hasOneTableName].belongsTo(db[belongsToTableName], {as: belongsToTableName, foreignKey : fk});
 };
 
-createOneToOne('Comic', 'User');
-createOneToOne('ComicDialogue', 'TemplateDialogue');
+createOneToOne('User', 'Comic');
+createOneToOne('TemplateDialogue', 'ComicDialogue');
 
 module.exports = db;
