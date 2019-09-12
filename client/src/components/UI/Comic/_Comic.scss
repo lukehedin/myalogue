@@ -1,8 +1,4 @@
 .comic {
-	.comic-overlay {
-		@include absoluteCover;
-	}
-
 	.comic-inner {
 		position: relative;
 
@@ -62,6 +58,11 @@
 			justify-content: center;
 		}
 
+		.share-overlay {
+			@include absoluteCover;
+			background-color: $colour-transparent-grey;
+		}
+
 		// Scaling code
 		$comic-width: 1080px;
 		$comic-height: 1080px;
@@ -108,5 +109,16 @@
 	.actions {
 		display: flex;
 		flex-direction: row;
+	}
+
+	.comic-vote {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		.vote-thumb {
+			cursor: pointer;
+			font-size: 32px;
+		}
 	}
 }

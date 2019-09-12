@@ -155,19 +155,38 @@ const routes = {
 		},
 
 		getComics: (req, res, db) => {
+			let userId = req.userId; //Might be null
 			let templateId = req.body.templateId;
+
+			let comicInclude = [{
+				model: db.ComicDialogue,
+				as: 'ComicDialogues'
+			}];
+
+			if(userId) {
+				comicInclude.push({
+					model: db.ComicVote,
+					as: 'ComicVotes',
+					where: {
+						UserId: userId
+					}
+				});
+			}
 
 			db.Comic.findAll({
 				where: {
 					TemplateId: templateId
 				},
-				include: [{
-					model: db.ComicDialogue,
-					as: 'ComicDialogues'
-				}]
+				include: comicInclude
 			})
 			.then(dbComics => {
-				res.json(dbComics.map(mapper.fromDbComic));
+				res.json(dbComics.map(dbComic => {
+					let comic = mapper.fromDbComic(dbComic);
+					if(dbComic.ComicVotes && dbComic.ComicVotes.length === 1) {
+						comic.voteValue = dbComic.ComicVotes[0].Value;
+					}
+					return comic;
+				}));
 			})
 			.catch(catchError);
 		},
@@ -265,9 +284,74 @@ const routes = {
 
 		//Comics
 		voteComic: (req, res, db) => {
+			let userId = req.userId;
 			let comicId = req.body.comicId;
+			let value = req.body.value;
+
+			if(value > 1 || value < -1) {
+				res.json({
+					success: false,
+					error: 'Invalid vote value supplied'
+				})
+			} else {
+				db.ComicVotes.findOne({
+					where: {
+						UserId: userId,
+						ComicId: comicId
+					}
+				})
+				.then(dbComicVote => {
+					if(dbComicVote) {
+						dbComicVote.Value = value;
+						dbComicVote.save();
+					} else {
+						db.ComicVote.create({
+							UserId: userId,
+							ComicId: comicId,
+							Value: value
+						});
+					}
+
+					res.json({
+						success: true
+					});
+				})
+				.catch(catchError)
+			}
 		},
 	
+		commentComic: (req, res, db) => {
+			let userId = req.userId;
+			let comicId = req.body.comicId;
+			let value = req.body.value;
+
+			db.ComicComment.create({
+				UserId: userId,
+				ComicId: comicId,
+				Value: value
+			});
+
+			res.json({
+				success: true
+			});
+		},
+
+		deleteComment: (req, res, db) => {
+			let userId = req.userId;
+			let comicCommentId = req.body.comicCommentId;
+
+			db.ComicComment.destroy({
+				where: {
+					UserId: userId, //This ensures only the creator can delete
+					ComicCommentId: comicCommentId
+				}
+			});
+
+			res.json({
+				success: true
+			});
+		},
+
 		//Miscellaneous
 		customers: (req, res, db) => {
 			db.User.findAll()

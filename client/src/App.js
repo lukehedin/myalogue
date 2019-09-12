@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { closeModal } from './redux/actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Util from './Util';
+import Div100vh from 'react-div-100vh';
 
 import Customers from './components/UI/Customers/Customers';
 import AppHeader from './components/UI/AppHeader/AppHeader';
 import AppFooter from './components/UI/AppFooter/AppFooter';
+import Modal from './components/UI/Modal/Modal';
 
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
@@ -34,7 +38,7 @@ class App extends Component {
 	render() {
 		if(this.state.isLoading) return <div className="loader"></div>;
 
-		return <div className="app">
+		return <Div100vh className="app">
 			<Router>
 				<AppHeader />
 				<Switch>
@@ -45,10 +49,23 @@ class App extends Component {
 					<Route path="/user/:user" render={({ match }) => <div>user {match.params.user}</div>} />
 					<Route render={({ match }) => <div>404</div>} />
 				</Switch>
-				<AppFooter />
+				{/* <AppFooter /> */}
+				{Util.array.any(this.props.modals)
+					? <div className="modal-overlay" onClick={(e) => {
+						e.stopPropagation();
+						if(e.target.classList.contains('modal-overlay')) this.props.closeModal(null);
+					}}>
+						{this.props.modals.map(modal => <Modal key={modal.modalId} modal={modal} />)}
+					</div>
+					: null
+				}
 			</Router>
-		</div>;
+		</Div100vh>;
 	}
 }
 
-export default App;
+const mapStateToProps = state => ({
+	modals: state.modalReducer.modals
+});
+
+export default connect(mapStateToProps, { closeModal })(App);

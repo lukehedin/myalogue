@@ -55,7 +55,11 @@ let db = {
 	}),
 
 	ComicVote: defineTable('ComicVote', {
+		Value: Sequelize.INTEGER
+	}),
 
+	ComicComment: defineTable('ComicComment', {
+		Value: Sequelize.TEXT
 	}),
 
 	User: defineTable('User', {
@@ -101,18 +105,16 @@ let createOneToMany = (belongsToTableName, hasManyTableName, hasManyAlias) => {
 };
 
 createOneToMany('Comic', 'ComicDialogue');
+createOneToMany('Comic', 'ComicVote');
+createOneToMany('Comic', 'ComicComment');
+
 createOneToMany('Template', 'TemplateDialogue');
+createOneToMany('Template', 'Comic');
 
+createOneToMany('TemplateDialogue', 'ComicDialogue');
 
-let createOneToOne = (belongsToTableName, hasOneTableName) => {
-	let fk = `${belongsToTableName}Id`;
-
-	db[belongsToTableName].hasOne(db[hasOneTableName], {as: hasOneTableName, foreignKey : fk });
-	db[hasOneTableName].belongsTo(db[belongsToTableName], {as: belongsToTableName, foreignKey : fk});
-};
-
-createOneToOne('User', 'Comic');
-createOneToOne('Template', 'Comic');
-createOneToOne('TemplateDialogue', 'ComicDialogue');
+createOneToMany('User', 'Comic');
+createOneToMany('User', 'ComicVote');
+createOneToMany('User', 'ComicComment');
 
 module.exports = db;

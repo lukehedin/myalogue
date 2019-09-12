@@ -1,5 +1,11 @@
 .page-template {
-	.comic {
-		margin: 0 auto;
+	.template-feed {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.comic {
+			margin-bottom: $spacing-md;
+		}
 	}
 }

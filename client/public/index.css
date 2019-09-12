@@ -2,180 +2,207 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif; }
-  body .app-header {
-    background-color: #48AD92;
-    padding: 8px 0;
-    color: white; }
-    body .app-header .app-header-inner {
+  body .app {
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column; }
+    body .app .app-header {
+      background-color: #48AD92;
+      padding: 8px 0;
+      color: white; }
+      body .app .app-header .app-header-inner {
+        display: flex;
+        flex-direction: row;
+        align-items: center; }
+        body .app .app-header .app-header-inner .app-logo {
+          height: 32px; }
+        body .app .app-header .app-header-inner .app-title {
+          font-size: 1.5em;
+          margin: 0; }
+    body .app ul {
+      padding: 0;
+      list-style: none;
+      width: 30%;
+      margin: auto; }
+    body .app li {
+      font-size: 1.2rem;
+      line-height: 2rem;
+      border-bottom: 1px dotted #777; }
+    body .app .comic .comic-inner {
+      position: relative;
+      width: calc(1080px * 0.3);
+      height: calc(1080px * 0.3); }
+      body .app .comic .comic-inner img {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0; }
+      body .app .comic .comic-inner .dialogue {
+        position: absolute;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; }
+        body .app .comic .comic-inner .dialogue.edit-empty {
+          cursor: text;
+          border: 1px solid #48AD92; }
+        body .app .comic .comic-inner .dialogue.edit-invalid {
+          border: 1px solid #FF4858; }
+        body .app .comic .comic-inner .dialogue > * {
+          max-height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          border: none;
+          font-family: Arial, Helvetica, sans-serif;
+          overflow: hidden;
+          text-align: center;
+          background-color: transparent; }
+        body .app .comic .comic-inner .dialogue textarea {
+          resize: none;
+          outline: none;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none; }
+      body .app .comic .comic-inner .comic-footer {
+        position: absolute;
+        bottom: 0;
+        color: #969696; }
+      body .app .comic .comic-inner .begin-edit-overlay {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center; }
+      body .app .comic .comic-inner .share-overlay {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+        background-color: #0000008a; }
+      body .app .comic .comic-inner .dialogue > * {
+        font-size: calc(40px * 0.3); }
+      body .app .comic .comic-inner .comic-footer {
+        font-size: calc(28px * 0.3);
+        margin: 0 calc(8px * 0.3); }
+      @media (min-width: 576px) {
+        body .app .comic .comic-inner {
+          width: calc(1080px * 0.4);
+          height: calc(1080px * 0.4); }
+          body .app .comic .comic-inner .dialogue > * {
+            font-size: calc(40px * 0.4); }
+          body .app .comic .comic-inner .comic-footer {
+            font-size: calc(28px * 0.4);
+            margin: 0 calc(8px * 0.4); } }
+      @media (min-width: 768px) {
+        body .app .comic .comic-inner {
+          width: calc(1080px * 0.45);
+          height: calc(1080px * 0.45); }
+          body .app .comic .comic-inner .dialogue > * {
+            font-size: calc(40px * 0.45); }
+          body .app .comic .comic-inner .comic-footer {
+            font-size: calc(28px * 0.45);
+            margin: 0 calc(8px * 0.45); } }
+      @media (min-width: 992px) {
+        body .app .comic .comic-inner {
+          width: calc(1080px * 0.5);
+          height: calc(1080px * 0.5); }
+          body .app .comic .comic-inner .dialogue > * {
+            font-size: calc(40px * 0.5); }
+          body .app .comic .comic-inner .comic-footer {
+            font-size: calc(28px * 0.5);
+            margin: 0 calc(8px * 0.5); } }
+    body .app .comic .actions {
       display: flex;
       flex-direction: row; }
-      body .app-header .app-header-inner .app-logo {
-        height: 32px; }
-      body .app-header .app-header-inner .app-title {
-        font-size: 1.5em;
-        margin: 0; }
-  body ul {
-    padding: 0;
-    list-style: none;
-    width: 30%;
-    margin: auto; }
-  body li {
-    font-size: 1.2rem;
-    line-height: 2rem;
-    border-bottom: 1px dotted #777; }
-  body .comic .comic-overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0; }
-  body .comic .comic-inner {
-    position: relative;
-    width: calc(1080px * 0.3);
-    height: calc(1080px * 0.3); }
-    body .comic .comic-inner img {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      left: 0;
-      top: 0; }
-    body .comic .comic-inner .dialogue {
-      position: absolute;
-      background-color: transparent;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end; }
-      body .comic .comic-inner .dialogue.edit-empty {
-        cursor: text;
-        border: 1px solid #48AD92; }
-      body .comic .comic-inner .dialogue.edit-invalid {
-        border: 1px solid #FF4858; }
-      body .comic .comic-inner .dialogue > * {
-        max-height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        border: none;
-        font-family: Arial, Helvetica, sans-serif;
-        overflow: hidden;
-        text-align: center;
-        background-color: transparent; }
-      body .comic .comic-inner .dialogue textarea {
-        resize: none;
-        outline: none;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none; }
-    body .comic .comic-inner .comic-footer {
-      position: absolute;
-      bottom: 0;
-      color: #969696; }
-    body .comic .comic-inner .begin-edit-overlay {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      left: 0;
-      top: 0;
+    body .app .comic .comic-vote {
       display: flex;
       flex-direction: row;
-      align-items: center;
-      justify-content: center; }
-    body .comic .comic-inner .dialogue > * {
-      font-size: calc(40px * 0.3); }
-    body .comic .comic-inner .comic-footer {
-      font-size: calc(28px * 0.3);
-      margin: 0 calc(8px * 0.3); }
-    @media (min-width: 576px) {
-      body .comic .comic-inner {
-        width: calc(1080px * 0.4);
-        height: calc(1080px * 0.4); }
-        body .comic .comic-inner .dialogue > * {
-          font-size: calc(40px * 0.4); }
-        body .comic .comic-inner .comic-footer {
-          font-size: calc(28px * 0.4);
-          margin: 0 calc(8px * 0.4); } }
-    @media (min-width: 768px) {
-      body .comic .comic-inner {
-        width: calc(1080px * 0.45);
-        height: calc(1080px * 0.45); }
-        body .comic .comic-inner .dialogue > * {
-          font-size: calc(40px * 0.45); }
-        body .comic .comic-inner .comic-footer {
-          font-size: calc(28px * 0.45);
-          margin: 0 calc(8px * 0.45); } }
-    @media (min-width: 992px) {
-      body .comic .comic-inner {
-        width: calc(1080px * 0.5);
-        height: calc(1080px * 0.5); }
-        body .comic .comic-inner .dialogue > * {
-          font-size: calc(40px * 0.5); }
-        body .comic .comic-inner .comic-footer {
-          font-size: calc(28px * 0.5);
-          margin: 0 calc(8px * 0.5); } }
-  body .comic .actions {
-    display: flex;
-    flex-direction: row; }
-  body .button {
-    background: #48AD92;
-    color: #fff;
-    cursor: pointer; }
-    body .button.md {
-      padding: 8px 16px; }
-    body .button.lg {
-      padding: 16px 32px;
-      font-size: 20px; }
-  body .form-wrapper {
-    position: relative; }
-  body .page-template .comic {
-    margin: 0 auto; }
-  body .app {
-    text-align: center; }
-  body .app-intro {
-    font-size: large; }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg); }
-  to {
-    transform: rotate(360deg); } }
+      align-items: center; }
+      body .app .comic .comic-vote .vote-thumb {
+        cursor: pointer;
+        font-size: 32px; }
+    body .app .button {
+      background: #48AD92;
+      color: #fff;
+      cursor: pointer; }
+      body .app .button.md {
+        padding: 8px 16px; }
+      body .app .button.lg {
+        padding: 16px 32px;
+        font-size: 20px; }
+    body .app .modal {
+      background-color: #fff;
+      max-width: 300px;
+      padding: 16px; }
+    body .app .form-wrapper {
+      position: relative; }
+    body .app .page-template .template-feed {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
+      body .app .page-template .template-feed .comic {
+        margin-bottom: 32px; }
+    body .app [class^="page-"] {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      flex: 1; }
 
 @keyframes loader-spin {
   0% {
     transform: rotate(0deg); }
   100% {
     transform: rotate(360deg); } }
-  body .loader {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: 10; }
-    body .loader:before {
-      content: '';
+    body .app .loader {
       position: absolute;
-      border: 4px solid transparent;
-      border-top: 4px solid #3E8377;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      margin-top: -16px;
-      margin-left: -16px;
-      left: 50%;
-      top: 50%;
-      animation: loader-spin 0.3s linear infinite; }
-  body .hidden {
-    display: none; }
-  body .invisible {
-    opacity: 0; }
-  body .container {
-    margin: 0 auto;
-    max-width: 1000px; }
-  body .row {
-    padding: 0 8px; }
-    @media (min-width: 576px) {
-      body .row {
-        padding: 0 16px; } }
-  body .flex-spacer {
-    flex: 1; }
-  body a {
-    cursor: pointer;
-    text-decoration: underline; }
+      height: 100%;
+      width: 100%;
+      z-index: 10; }
+      body .app .loader:before {
+        content: '';
+        position: absolute;
+        border: 4px solid transparent;
+        border-top: 4px solid #3E8377;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-top: -16px;
+        margin-left: -16px;
+        left: 50%;
+        top: 50%;
+        animation: loader-spin 0.3s linear infinite; }
+    body .app .hidden {
+      display: none; }
+    body .app .invisible {
+      opacity: 0; }
+    body .app .container {
+      margin: 0 auto;
+      max-width: 1000px; }
+    body .app .row {
+      padding: 0 8px; }
+      @media (min-width: 576px) {
+        body .app .row {
+          padding: 0 16px; } }
+    body .app .flex-spacer {
+      flex: 1; }
+    body .app .modal-overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      background-color: #0000008a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; }
+    body .app a {
+      cursor: pointer;
+      text-decoration: underline; }

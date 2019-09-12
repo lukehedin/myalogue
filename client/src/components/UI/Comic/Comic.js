@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openModal } from '../../../redux/actions';
 import Textarea from 'react-textarea-autosize';
 import htmlToImage from 'html-to-image';
 
@@ -8,13 +10,13 @@ import Button from '../Button/Button';
 import Util from '../../../Util';
 
 //this.props.template + this.props.comic (optional)
-export default class Comic extends Component {
+class Comic extends Component {
 	constructor(props){
 		super(props);
 
 		this.state = {
 			isEditing: false,
-			isOverlayVisible: false,
+			isShareOverlayVisible: false,
 			
 			comic: this.props.comic || {
 				name: this.props.template.name,
@@ -34,7 +36,7 @@ export default class Comic extends Component {
 
 		this.toImage = this.toImage.bind(this);
 		this.onDialogueBoxClick = this.onDialogueBoxClick.bind(this);
-		this.setIsOverlayVisible = this.setIsOverlayVisible.bind(this);
+		this.setIsShareOverlayVisible = this.setIsShareOverlayVisible.bind(this);
 		this.setIsEditing = this.setIsEditing.bind(this);
 		this.setComicDialogueValue = this.setComicDialogueValue.bind(this);
 		this.submitComic = this.submitComic.bind(this);
@@ -61,9 +63,9 @@ export default class Comic extends Component {
 			isEditing
 		});
 	}
-	setIsOverlayVisible(isOverlayVisible){
+	setIsShareOverlayVisible(isShareOverlayVisible){
 		this.setState({
-			isOverlayVisible
+			isShareOverlayVisible
 		});
 	}
 	onDialogueBoxClick(e) {
@@ -96,17 +98,34 @@ export default class Comic extends Component {
 				invalidTemplateDialogueIds
 			});
 		} else {
-			//TODO confirm modal if not logged in
-			Util.api.post('/api/submitComic', {
-				comic: this.state.comic
-			})
-			.then(result => {
+			let submitComicAction = () => {
+				Util.api.post('/api/submitComic', {
+					comic: this.state.comic
+				})
+				.then(result => {
 
-			})
+				});
+			}
+
+			//TODO confirm modal if not logged in
+			if(!Util.auth.getUserId()){
+				this.props.openModal({
+					type: Util.enum.ModalType.Confirm,
+					yesLabel: 'Yes, I will submit my comic anonymously.',
+					yesFn: submitComicAction,
+					noLabel: 'No, I want to sign up first!',
+					content: <div>
+						<p>You aren't currently logged in. If you submit this comic, it will be submitted anonymously and you will never be able to claim ownership of it.</p>
+						<p>Are you sure you want to submit this comic anonymously?</p>
+					</div>
+				});
+			} else {
+				submitComicAction();
+			}
 		}
 	}
 	render(){
-		let isViewingExisting = this.state.comic.comicId;
+		let isComicViewOnly = this.state.comic.comicId;
 
 		return <div className="comic" ref={this.comicRef}>
 			<div className="comic-inner">
@@ -146,25 +165,39 @@ export default class Comic extends Component {
 					<div className="flex-spacer"></div>
 					<div></div>
 				</div>
-				{!this.state.isEditing && !isViewingExisting
+				{!this.state.isEditing && !isComicViewOnly
 					? <div className="begin-edit-overlay" >
 						<Button size="lg" label="Speak 4 Yourself" onClick={() => this.setIsEditing(true)} />
 					</div>
 					: null
 				}
-			</div>
-			<div className="actions">
-				{this.state.isEditing
-					? <Button label="I'm done!" onClick={this.submitComic} />
-					: <div>vote up/down</div>
+				{isComicViewOnly
+					? <div className={`share-overlay ${this.state.isShareOverlayVisible ? '' : 'invisible'}`} 
+						onTouchStart={() => this.setIsShareOverlayVisible(true)}
+						onMouseDown={() => this.setIsShareOverlayVisible(true)}
+						>
+						<Button label="Share" onClick={this.toImage} />
+					</div>
+					: null
 				}
 			</div>
-			{isViewingExisting
-				? <div className={`comic-overlay ${this.state.isOverlayVisible ? '' : 'invisible'}`} onClick={() => this.setIsOverlayVisible(!this.state.isOverlayVisible)}>
-					<Button label="Share" onClick={this.toImage} />
-				</div>
-				: null
-			}
+			<div className="row">
+				{this.state.isEditing
+					? <Button label="I'm done!" onClick={this.submitComic} />
+					: null
+				}
+				{isComicViewOnly
+					? <div className="comic-vote">
+						<p>Did you like this comic?</p>
+						<div className="flex-spacer"></div>
+						<div className="vote-thumb">👍</div>
+						<div className="vote-thumb">👎</div>
+					</div>
+					: null
+				}
+			</div>
 		</div>
 	}
 }
+
+export default connect(null, { openModal })(Comic);

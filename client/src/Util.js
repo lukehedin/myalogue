@@ -54,6 +54,11 @@ const Util = {
 			Textarea: 2,
 			Checkbox: 3,
 			Dropdown: 4
+		},
+		
+		ModalType: {
+			Alert: 1,
+			Confirm: 2
 		}
 	},
 
