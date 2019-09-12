@@ -9,6 +9,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	ssl: true,
     dialect: 'postgres',
 	protocol: 'postgres',
+    timezone: '+10:00',
     dialectOptions: {
         ssl: true
 	}
@@ -49,7 +50,7 @@ let db = {
 	}),
 	
 	ComicDialogue: defineTable('ComicDialogue', {
-		Dialogue: Sequelize.STRING,
+		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
 	}),
 
@@ -73,11 +74,19 @@ let db = {
 
 	Template: defineTable('Template', {
 		Name: Sequelize.STRING,
-		UnlockedAt: Sequelize.DATE
+		UnlockedAt: Sequelize.DATE,
+		ImageUrl: Sequelize.STRING,
+		// Ordinal: Sequelize.INTEGER
 	}),
 
 	TemplateDialogue: defineTable('TemplateDialogue', {
-		Ordinal: Sequelize.INTEGER // Might have 2 dialogue on a panel = 2 rows with same ordinal
+		Placeholder: Sequelize.STRING,
+		Ordinal: Sequelize.INTEGER,
+		PositionX: Sequelize.INTEGER,
+		PositionY: Sequelize.INTEGER,
+		SizeX: Sequelize.INTEGER,
+		SizeY: Sequelize.INTEGER,
+		Max: Sequelize.INTEGER
 	})
 };
 

@@ -7,6 +7,6 @@ export default class Button extends Component {
 
 		return this.props.to
 			? <Link className={className} to={this.props.to}>{this.props.label}</Link>
-			: <button className={className} type={this.props.type || "button"}>{this.props.label}</button>
+			: <button className={className} type={this.props.type || "button"} onClick={this.props.onClick}>{this.props.label}</button>
 	}
 }

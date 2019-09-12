@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const mailer = require('./mailer');
+const mapper = require('./mapper');
 
 const catchError = (err) => {
 	//TODO db log
@@ -23,16 +24,13 @@ const routes = {
 				//Refresh the token after a successful authenticate
 				auth.getJwtToken(userId, username, (token) => {
 					res.json({
-						success: true,
 						username: username,
 						userId: userId,
 						token
 					});
 				})
 			} else {
-				res.json({
-					success: false
-				});
+				res.json({});
 			}
 		},
 	
@@ -50,7 +48,6 @@ const routes = {
 					if(!!dbUser.VerificationToken) {
 						//TODO, if a large period of time has passed, send the verification email again
 						res.json({
-							success: false,
 							error: 'Please verify your email address.'
 						});
 					} else {
@@ -58,13 +55,11 @@ const routes = {
 							if(isMatch) {
 								auth.getJwtToken(dbUser.UserId, dbUser.Username, token => {
 									res.json({
-										success: true,
 										token
 									});
 								});
 							} else {
 								res.json({
-									success: false,
 									error: 'Invalid email or password.'
 								});
 							}
@@ -72,7 +67,6 @@ const routes = {
 					}
 				} else {
 					res.json({
-						success: false,
 						error: 'Invalid email or password.'
 					});
 				}
@@ -118,7 +112,6 @@ const routes = {
 						});
 					} else {
 						res.json({
-							success: false,
 							error: dbExistingUser.Email === email
 								? 'Email is already in use. Please log in with your existing account or reset your password.'
 								: 'Username is already in use. Please choose another username.'
@@ -128,11 +121,38 @@ const routes = {
 				.catch(catchError)
 			} else {
 				res.json({
-					success: false,
 					error: 'Something went wrong. Please refresh and try again.'
 				});
 			}
-		}
+		}, 
+	
+		getTemplate: (req, res, db) => {
+			let templateId = req.body.templateId;
+
+			db.Template.findOne({
+				where: templateId
+					? {
+						TemplateId: templateId
+					}
+					: {
+						//TODO no id? get latest
+					},
+				include: [{
+					model: db.TemplateDialogue,
+					as: 'TemplateDialogues'
+				}]
+			})
+			.then(dbTemplate => {
+				if(dbTemplate) {
+					res.json(mapper.fromDbTemplate(dbTemplate))
+				} else {
+					res.json({
+						error: 'Template not found'
+					});
+				}
+			})
+			.catch(catchError);
+		},
 	},
 
 	private: {
@@ -163,7 +183,6 @@ const routes = {
 				});
 			} else {
 				res.json({
-					success: false,
 					error: 'Something went wrong. Please refresh and try again.'
 				});
 			}
@@ -190,16 +209,15 @@ const routes = {
 				}
 
 				//Always say the same thing, even if it didn't work
-				res.json({
-					success: success
-				});
-			});
+				res.json({ success: true });
+			})
+			.catch(catchError);
 		},
 
 		changePassword: (req, res, db) => {
 	
 		},
-	
+
 		//Comics
 		voteComic: (req, res, db) => {
 			let comicId = req.body.comicId;
@@ -209,11 +227,7 @@ const routes = {
 		customers: (req, res, db) => {
 			db.User.findAll()
 				.then(dbUsers => {
-					res.json(dbUsers.map(dbUser => {
-						return {
-							username: dbUser.Username
-						}
-					}));
+					res.json(dbUsers.map(dbUser => mapper.fromDbUser(dbUser)));
 				})
 				.catch(catchError);
 		}

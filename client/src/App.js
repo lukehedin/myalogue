@@ -8,6 +8,7 @@ import AppFooter from './components/UI/AppFooter/AppFooter';
 
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
+import TemplatePage from './components/pages/TemplatePage/TemplatePage';
 
 class App extends Component {
 	constructor(props){
@@ -20,11 +21,11 @@ class App extends Component {
 	componentDidMount() {
 		Util.api.post('/api/authenticate')
 			.then(result => {
-				if(result.success) {
+				if(!result.error) {
 					Util.auth.setToken(result.token);
 					Util.auth.setUserDetails(result.userId, result.username);
 				}
-				
+
 				this.setState({
 					isLoading: false
 				});
@@ -37,7 +38,7 @@ class App extends Component {
 			<Router>
 				<AppHeader />
 				<Switch>
-					<Route exact path="/" render={({ match }) => <Customers />} />
+					<Route exact path="/" render={({ match }) => <TemplatePage />} />
 					<Route exact path="/register" render={({ match }) => <RegisterPage />} />
 					<Route exact path="/login" render={({ match }) => <LoginPage />} />
 					<Route path="/about" render={({ match }) => <div>about</div>}/>

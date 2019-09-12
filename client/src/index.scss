@@ -1,6 +1,8 @@
 body {
 	@import './_variables.scss';
+	@import './_mixins.scss';
 	@import './components/UI/_UI.scss';
+	@import './components/Pages/_pages.scss';
 
 	margin: 0;
 	padding: 0;
@@ -43,6 +45,26 @@ body {
 			left: 50%;
 			top: 50%;
 			animation: loader-spin 0.3s linear infinite;
+		}
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	.invisible {
+		opacity: 0;
+	}
+
+	.container {
+		margin: 0 auto;
+		max-width: 1000px;
+	}
+
+	.row {
+		padding: 0 $spacing-xs;
+		@include oversm {
+			padding: 0 $spacing-sm;
 		}
 	}
 	

@@ -18,12 +18,12 @@ export default class LoginPage extends Component {
 					password: formData.password
 				})
 				.then((result) => {
-					if(result.error) {
-						form.setLoading(false);
-						form.setOverallError(result.error);
-					} else {
+					if(!result.error) {
 						Util.auth.setToken(result.token);
 						window.location.href = Util.route.home();
+					} else {
+						form.setLoading(false);
+						form.setOverallError(result.error);
 					}
 				});
 			}} />

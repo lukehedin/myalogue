@@ -3,3 +3,15 @@ $colour-light-green: #48AD92;
 $colour-sand: #F6E4C4;
 $colour-light-red: #FF4858;
 $colour-dark-red: #AE2233;
+
+$spacing-xxs: 4px;
+$spacing-xs: 8px;
+$spacing-sm: 16px;
+$spacing-md: 32px;
+$spacing-lg: 64px;
+$spacing-xl: 128px;
+
+$screen-sm-min: 576px; // Small tablets and large smartphones (landscape view)
+$screen-md-min: 768px; // Small tablets (portrait view)
+$screen-lg-min: 992px; // Tablets and small desktops
+$screen-xl-min: 1200px; // Large tablets and desktops

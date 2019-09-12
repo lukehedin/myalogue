@@ -30,10 +30,12 @@ export default class RegisterPage extends Component {
 					})
 					.then((result) => {
 						form.setLoading(false);
-						if(result.error) {
-							form.setOverallError(result.error);
+						if(!result.error) {
+							this.setState({
+								isSubmitted: true
+							});
 						} else {
-							console.log(result);
+							form.setOverallError(result.error);
 						}
 					});
 				}} />
