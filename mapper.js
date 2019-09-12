@@ -12,9 +12,29 @@ const mapper = {
 		return user;
 	},
 
+	fromDbComic: (dbComic) => {
+		return {
+			comicId: dbComic.ComicId,
+			templateId: dbComic.TemplateId,
+			userId: dbComic.UserId,
+			comicDialogues: (dbComic.ComicDialogues || [])
+				.map(mapper.fromDbComicDialogue)
+		}
+	},
+
+	fromDbComicDialogue: (dbComicDialogue) => {
+		return {
+			// comicDialogueId: dbComicDialogue.ComicDialogueId,
+			templateDialogueId: dbComicDialogue.TemplateDialogueId,
+			value: dbComicDialogue.Value
+		}
+	},
+
 	fromDbTemplate: (dbTemplate) => {
 		return {
+			templateId: dbTemplate.TemplateId,
 			name: dbTemplate.Name,
+			ordinal: dbTemplate.Ordinal,
 			imageUrl: dbTemplate.ImageUrl,
 			templateDialogues: (dbTemplate.TemplateDialogues || [])
 				.map(mapper.fromDbTemplateDialogue)

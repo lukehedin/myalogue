@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default class Button extends Component {
 	render() {
-		let className = `button ${this.props.className || ''}`;
+		let className = `button ${this.props.className || ''} ${this.props.size || 'md'}`;
 
 		return this.props.to
 			? <Link className={className} to={this.props.to}>{this.props.label}</Link>

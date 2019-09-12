@@ -1,0 +1,14 @@
+.button {
+	background: $colour-green-b;
+	color: $colour-white;
+	cursor: pointer;
+
+	&.md {
+		padding: $spacing-xs $spacing-sm;
+	}
+
+	&.lg {
+		padding: $spacing-sm $spacing-md;
+		font-size: 20px;
+	}
+}

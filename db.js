@@ -112,6 +112,7 @@ let createOneToOne = (belongsToTableName, hasOneTableName) => {
 };
 
 createOneToOne('User', 'Comic');
+createOneToOne('Template', 'Comic');
 createOneToOne('TemplateDialogue', 'ComicDialogue');
 
 module.exports = db;

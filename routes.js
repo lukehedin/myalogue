@@ -153,6 +153,51 @@ const routes = {
 			})
 			.catch(catchError);
 		},
+
+		getComics: (req, res, db) => {
+			let templateId = req.body.templateId;
+
+			db.Comic.findAll({
+				where: {
+					TemplateId: templateId
+				},
+				include: [{
+					model: db.ComicDialogue,
+					as: 'ComicDialogues'
+				}]
+			})
+			.then(dbComics => {
+				res.json(dbComics.map(mapper.fromDbComic));
+			})
+			.catch(catchError);
+		},
+
+		submitComic: (req, res, db) => {
+			let comic = req.body.comic;
+
+			db.Comic.create({
+				TemplateId: comic.templateId,
+				ComicDialogues: comic.comicDialogues.map(cd => {
+					return {
+						TemplateDialogueId: cd.templateDialogueId,
+						Value: cd.value
+					};
+				})
+			}, {
+				include: [{
+					model: db.ComicDialogue,
+					as: 'ComicDialogues'
+				}]
+			})
+			.then(dbCreatedComic => {
+				console.log(dbCreatedComic);
+
+				res.json({
+					success: true
+				})
+			})
+			.catch(catchError);
+		}
 	},
 
 	private: {

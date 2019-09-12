@@ -1,16 +1,19 @@
 .app-header {
-	background-color: #222;
-	padding: 20px;
+	background-color: $colour-green-b;
+	padding: $spacing-xs 0;
 	color: white;
-	display: flex;
-	flex-direction: row;
 
-	.app-logo {
-		animation: App-logo-spin infinite 20s linear;
-		height: 80px;
-	}
+	.app-header-inner {
+		display: flex;
+		flex-direction: row;
 
-	.app-title {
-		font-size: 1.5em;
+		.app-logo {
+			height: 32px;
+		}
+	
+		.app-title {
+			font-size: 1.5em;
+			margin: 0;
+		}
 	}
 }

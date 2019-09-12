@@ -1,14 +1,10 @@
 .comic {
-	position: relative;
-
 	.comic-overlay {
 		@include absoluteCover;
 	}
 
 	.comic-inner {
 		position: relative;
-		height: 100%;
-		width: 100%;
 
 		img {
 			@include absoluteCover;
@@ -21,8 +17,13 @@
 			flex-direction: column;
 			justify-content: flex-end;
 
-			&.empty {
-				background-color: #0000001c;
+			&.edit-empty {
+				cursor: text;
+				border: 1px solid $colour-green-b;
+			}
+
+			&.edit-invalid {
+				border: 1px solid $colour-red-b;
 			}
 
 			> * {				
@@ -46,40 +47,66 @@
 				box-shadow: none;
 			}
 		}
-	}
 
-	// Highest quality
-	$comic-width: 1080px;
-	$comic-height: 1080px;
-	$comic-dialogue-font-size: 40px;
+		.comic-footer {
+			position: absolute;
+			bottom: 0;
+			color: $colour-grey-b;
+		}
 
-	$comic-scale-xs: 0.3;
-	$comic-scale-sm: 0.4;
-	$comic-scale-md: 0.5;
-	$comic-scale-lg: 0.6;
+		.begin-edit-overlay {
+			@include absoluteCover;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+		}
 
-	@mixin scaleComic ($comic-scale) {
-		width: calc(#{$comic-width} * #{$comic-scale});
-		height: calc(#{$comic-width} * #{$comic-scale});
-		.dialogue {
-			> * {
-				font-size: calc(#{$comic-dialogue-font-size} * #{$comic-scale});
+		// Scaling code
+		$comic-width: 1080px;
+		$comic-height: 1080px;
+		$comic-dialogue-font-size: 40px;
+	
+		$comic-footer-font-size: 28px;
+		$comic-footer-margin: 8px;
+	
+		$comic-scale-xs: 0.3;
+		$comic-scale-sm: 0.4;
+		$comic-scale-md: 0.45;
+		$comic-scale-lg: 0.5;
+	
+		@mixin scaleComic ($comic-scale) {
+			width: calc(#{$comic-width} * #{$comic-scale});
+			height: calc(#{$comic-width} * #{$comic-scale});
+			.dialogue {
+				> * {
+					font-size: calc(#{$comic-dialogue-font-size} * #{$comic-scale});
+				}
 			}
+			
+			.comic-footer {
+				font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
+				margin: 0 calc(#{$comic-footer-margin} * #{$comic-scale})
+			}
+		}
+	
+		@include scaleComic($comic-scale-xs);
+	
+		@include oversm {
+			@include scaleComic($comic-scale-sm);
+		}
+	
+		@include overmd {
+			@include scaleComic($comic-scale-md);
+		}
+	
+		@include overlg {
+			@include scaleComic($comic-scale-lg);
 		}
 	}
 
-	// Smallest quality - *
-	@include scaleComic($comic-scale-xs);
-
-	@include oversm {
-		@include scaleComic($comic-scale-sm);
-	}
-
-	@include overmd {
-		@include scaleComic($comic-scale-md);
-	}
-
-	@include overlg {
-		@include scaleComic($comic-scale-lg);
+	.actions {
+		display: flex;
+		flex-direction: row;
 	}
 }

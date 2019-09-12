@@ -3,16 +3,17 @@ body {
   padding: 0;
   font-family: sans-serif; }
   body .app-header {
-    background-color: #222;
-    padding: 20px;
-    color: white;
-    display: flex;
-    flex-direction: row; }
-    body .app-header .app-logo {
-      animation: App-logo-spin infinite 20s linear;
-      height: 80px; }
-    body .app-header .app-title {
-      font-size: 1.5em; }
+    background-color: #48AD92;
+    padding: 8px 0;
+    color: white; }
+    body .app-header .app-header-inner {
+      display: flex;
+      flex-direction: row; }
+      body .app-header .app-header-inner .app-logo {
+        height: 32px; }
+      body .app-header .app-header-inner .app-title {
+        font-size: 1.5em;
+        margin: 0; }
   body ul {
     padding: 0;
     list-style: none;
@@ -22,72 +23,111 @@ body {
     font-size: 1.2rem;
     line-height: 2rem;
     border-bottom: 1px dotted #777; }
-  body .comic {
+  body .comic .comic-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0; }
+  body .comic .comic-inner {
     position: relative;
     width: calc(1080px * 0.3);
     height: calc(1080px * 0.3); }
-    body .comic .comic-overlay {
+    body .comic .comic-inner img {
       position: absolute;
       height: 100%;
       width: 100%;
       left: 0;
       top: 0; }
-    body .comic .comic-inner {
-      position: relative;
-      height: 100%;
-      width: 100%; }
-      body .comic .comic-inner img {
-        position: absolute;
-        height: 100%;
+    body .comic .comic-inner .dialogue {
+      position: absolute;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; }
+      body .comic .comic-inner .dialogue.edit-empty {
+        cursor: text;
+        border: 1px solid #48AD92; }
+      body .comic .comic-inner .dialogue.edit-invalid {
+        border: 1px solid #FF4858; }
+      body .comic .comic-inner .dialogue > * {
+        max-height: 100%;
         width: 100%;
-        left: 0;
-        top: 0; }
-      body .comic .comic-inner .dialogue {
-        position: absolute;
-        background-color: transparent;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end; }
-        body .comic .comic-inner .dialogue.empty {
-          background-color: #0000001c; }
-        body .comic .comic-inner .dialogue > * {
-          max-height: 100%;
-          width: 100%;
-          margin: 0;
-          padding: 0;
-          border: none;
-          font-family: Arial, Helvetica, sans-serif;
-          overflow: hidden;
-          text-align: center;
-          background-color: transparent; }
-        body .comic .comic-inner .dialogue textarea {
-          resize: none;
-          outline: none;
-          -webkit-box-shadow: none;
-          -moz-box-shadow: none;
-          box-shadow: none; }
-    body .comic .dialogue > * {
+        margin: 0;
+        padding: 0;
+        border: none;
+        font-family: Arial, Helvetica, sans-serif;
+        overflow: hidden;
+        text-align: center;
+        background-color: transparent; }
+      body .comic .comic-inner .dialogue textarea {
+        resize: none;
+        outline: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none; }
+    body .comic .comic-inner .comic-footer {
+      position: absolute;
+      bottom: 0;
+      color: #969696; }
+    body .comic .comic-inner .begin-edit-overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center; }
+    body .comic .comic-inner .dialogue > * {
       font-size: calc(40px * 0.3); }
+    body .comic .comic-inner .comic-footer {
+      font-size: calc(28px * 0.3);
+      margin: 0 calc(8px * 0.3); }
     @media (min-width: 576px) {
-      body .comic {
+      body .comic .comic-inner {
         width: calc(1080px * 0.4);
         height: calc(1080px * 0.4); }
-        body .comic .dialogue > * {
-          font-size: calc(40px * 0.4); } }
+        body .comic .comic-inner .dialogue > * {
+          font-size: calc(40px * 0.4); }
+        body .comic .comic-inner .comic-footer {
+          font-size: calc(28px * 0.4);
+          margin: 0 calc(8px * 0.4); } }
     @media (min-width: 768px) {
-      body .comic {
+      body .comic .comic-inner {
+        width: calc(1080px * 0.45);
+        height: calc(1080px * 0.45); }
+        body .comic .comic-inner .dialogue > * {
+          font-size: calc(40px * 0.45); }
+        body .comic .comic-inner .comic-footer {
+          font-size: calc(28px * 0.45);
+          margin: 0 calc(8px * 0.45); } }
+    @media (min-width: 992px) {
+      body .comic .comic-inner {
         width: calc(1080px * 0.5);
         height: calc(1080px * 0.5); }
-        body .comic .dialogue > * {
-          font-size: calc(40px * 0.5); } }
-    @media (min-width: 992px) {
-      body .comic {
-        width: calc(1080px * 0.6);
-        height: calc(1080px * 0.6); }
-        body .comic .dialogue > * {
-          font-size: calc(40px * 0.6); } }
+        body .comic .comic-inner .dialogue > * {
+          font-size: calc(40px * 0.5); }
+        body .comic .comic-inner .comic-footer {
+          font-size: calc(28px * 0.5);
+          margin: 0 calc(8px * 0.5); } }
+  body .comic .actions {
+    display: flex;
+    flex-direction: row; }
+  body .button {
+    background: #48AD92;
+    color: #fff;
+    cursor: pointer; }
+    body .button.md {
+      padding: 8px 16px; }
+    body .button.lg {
+      padding: 16px 32px;
+      font-size: 20px; }
   body .form-wrapper {
     position: relative; }
+  body .page-template .comic {
+    margin: 0 auto; }
   body .app {
     text-align: center; }
   body .app-intro {
@@ -113,7 +153,7 @@ body {
       content: '';
       position: absolute;
       border: 4px solid transparent;
-      border-top: 4px solid #48AD92;
+      border-top: 4px solid #3E8377;
       border-radius: 50%;
       width: 32px;
       height: 32px;
@@ -134,6 +174,8 @@ body {
     @media (min-width: 576px) {
       body .row {
         padding: 0 16px; } }
+  body .flex-spacer {
+    flex: 1; }
   body a {
     cursor: pointer;
     text-decoration: underline; }

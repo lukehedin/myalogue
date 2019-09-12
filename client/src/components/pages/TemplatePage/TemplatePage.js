@@ -11,7 +11,8 @@ export default class TemplatePage extends Component {
 
 		this.state = {
 			isLoading: true,
-			template: null
+			template: null,
+			comics: []
 		};
 	}
 	componentDidMount() {
@@ -21,14 +22,22 @@ export default class TemplatePage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					template: result
+					template: result,
+					isLoading: false
 				});
+				
+				Util.api.post('/api/getComics', {
+					templateId: result.templateId
+				})
+				.then(result => {
+					if(!result.error) {
+						this.setState({
+							comics: result
+						});
+					}
+				})
 			}
-			
-			this.setState({
-				isLoading: false
-			});
-		});
+		})
 	}
 	render() {
 		if(this.state.isLoading) return <div className="loader"></div>;
@@ -36,9 +45,12 @@ export default class TemplatePage extends Component {
 
 		return <div className="page-template">
 			<div className="container">
-				<div className="row">
-					<h2>{this.state.template.name}</h2>
-					<Comic template={this.state.template} />
+				<Comic template={this.state.template} />
+				<div className="template-feed">
+					<h2>Comics created with this template:</h2>
+					{this.state.comics.map(comic => {
+						return <Comic template={this.state.template} comic={comic} />
+					})}
 				</div>
 			</div>
 		</div>;
