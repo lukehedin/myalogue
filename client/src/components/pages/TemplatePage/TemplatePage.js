@@ -5,6 +5,7 @@ import Util from '../../../Util';
 import Comic from '../../UI/Comic/Comic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
+import ComicList from '../../UI/ComicList/ComicList';
 
 export default class TemplatePage extends Component {
 	constructor(props) {
@@ -13,8 +14,11 @@ export default class TemplatePage extends Component {
 		this.state = {
 			isLoading: true,
 			template: null,
+
 			comics: [],
-			comicOrderBy: 1
+			comicOrderBy: 1,
+			comicLimit: 3,
+			comicSkip: 0
 		};
 	}
 	componentDidMount() {
@@ -27,17 +31,6 @@ export default class TemplatePage extends Component {
 					template: result,
 					isLoading: false
 				});
-				
-				Util.api.post('/api/getComics', {
-					templateId: result.templateId
-				})
-				.then(result => {
-					if(!result.error) {
-						this.setState({
-							comics: result
-						});
-					}
-				})
 			}
 		})
 	}
@@ -50,30 +43,13 @@ export default class TemplatePage extends Component {
 				<div className="template-header">
 					{/* <Button label="Previous template" /> */}
 					<h5>Current template</h5>
-					<h2>{this.state.template.name}</h2>
+					<h3>#{this.state.template.ordinal} - {this.state.template.name}</h3>
 					{/* <Button label="Next template" /> */}
 				</div>
 				<div className="template-feed">
 					<Comic template={this.state.template} />
-					<h2>Comics created with this template:</h2>
-					<div className="field-container">
-						<label>Order by</label>
-						<Dropdown displayProp='label' valueProp='type' options={[
-						{
-							type: 1,
-							label: 'Top Rated'
-						}, {
-							type: 2,
-							label: 'Newest'
-						}, {
-							type: 3,
-							label: 'Random'
-						}
-						]} />
-					</div>
-					{this.state.comics.map(comic => {
-						return <Comic key={comic.comicId} template={this.state.template} comic={comic} />
-					})}
+					<h5>Comics created with this template:</h5>
+					<ComicList template={this.state.template} />
 				</div>
 			</div>
 		</div>;

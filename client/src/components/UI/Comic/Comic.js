@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
 import Textarea from 'react-textarea-autosize';
 import htmlToImage from 'html-to-image';
+import Util from '../../../Util';
 
 import frame from './frame.png';
 
 import Button from '../Button/Button';
-import Util from '../../../Util';
+import ComicVote from '../ComicVote/ComicVote';
+import ReactSVG from 'react-svg';
 
 //this.props.template + this.props.comic (optional)
 class Comic extends Component {
@@ -15,19 +17,11 @@ class Comic extends Component {
 		super(props);
 
 		this.state = {
+			isLoading: false,
 			isEditing: false,
 			isShareOverlayVisible: false,
 			
-			comic: this.props.comic || {
-				name: this.props.template.name,
-				templateId: this.props.templateId,
-				comicDialogues: this.props.template.templateDialogues.map(td => {
-					return {
-						templateDialogueId: td.templateDialogueId,
-						value: ''
-					};
-				})
-			},
+			comic: this.props.comic || this.getBlankComicObject(),
 
 			invalidTemplateDialogueIds: []
 		}
@@ -40,6 +34,19 @@ class Comic extends Component {
 		this.setIsEditing = this.setIsEditing.bind(this);
 		this.setComicDialogueValue = this.setComicDialogueValue.bind(this);
 		this.submitComic = this.submitComic.bind(this);
+		this.getBlankComicObject = this.getBlankComicObject.bind(this);
+	}
+	getBlankComicObject() {
+		return {
+			name: this.props.template.name,
+			templateId: this.props.template.templateId,
+			comicDialogues: this.props.template.templateDialogues.map(td => {
+				return {
+					templateDialogueId: td.templateDialogueId,
+					value: ''
+				};
+			})
+		};
 	}
 	setComicDialogueValue(templateDialogueId, value) {
 		this.setState({
@@ -99,11 +106,28 @@ class Comic extends Component {
 			});
 		} else {
 			let submitComicAction = () => {
+				this.setState({
+					isLoading: true
+				});
+
 				Util.api.post('/api/submitComic', {
 					comic: this.state.comic
 				})
 				.then(result => {
+					if(!result.error) {
+						this.props.openModal({
+							type: Util.enum.ModalType.Alert,
+							content: <div>
+								<p>Your comic (#{this.props.template.ordinal}-{result.comic.comicId}) was submitted successfully.</p>
+							</div>
+						});
 
+						this.setState({
+							isLoading: false,
+							isEditing: false,
+							comic: this.getBlankComicObject()
+						})
+					}
 				});
 			}
 
@@ -111,12 +135,12 @@ class Comic extends Component {
 			if(!Util.auth.getUserId()){
 				this.props.openModal({
 					type: Util.enum.ModalType.Confirm,
-					yesLabel: 'Yes, I will submit my comic anonymously.',
+					yesLabel: 'Yes. Submit my comic anonymously.',
 					yesFn: submitComicAction,
-					noLabel: 'No, I want to sign up first!',
+					noLabel: 'No. I will log in or register first.',
 					content: <div>
 						<p>You aren't currently logged in. If you submit this comic, it will be submitted anonymously and you will never be able to claim ownership of it.</p>
-						<p>Are you sure you want to submit this comic anonymously?</p>
+						<p>Do you want to submit this comic anonymously?</p>
 					</div>
 				});
 			} else {
@@ -127,8 +151,9 @@ class Comic extends Component {
 	render(){
 		let isComicViewOnly = this.state.comic.comicId;
 
-		return <div className="comic" ref={this.comicRef}>
-			<div className="comic-inner">
+		return <div className="comic">
+			{this.state.isLoading ? <div className="loader"></div> : null}
+			<div className="comic-inner" ref={this.comicRef}>
 				<img className="comic-template" src={this.props.template.imageUrl} />
 				<img className="comic-frame" src={frame} />
 				{this.props.template.templateDialogues.map(templateDialogue => {
@@ -161,13 +186,19 @@ class Comic extends Component {
 					</div>
 				})}
 				<div className="comic-footer">
-					<div>{this.props.template.ordinal} {this.props.template.name}</div>
-					<div className="flex-spacer"></div>
-					<div></div>
+					<div className="comic-footer-inner">
+						<div>s4ycomic.com</div>
+						<div className="flex-spacer"></div>
+						<div>
+							<span>#{this.props.template.ordinal}</span>
+							<span>-{this.state.comic.comicId ? `${this.state.comic.comicId}` : '_'}</span>
+							<span> by {isComicViewOnly ? this.state.comic.username || 'anonymous' : Util.auth.getUsername() || 'anonymous'}</span>
+						</div>
+					</div>
 				</div>
 				{!this.state.isEditing && !isComicViewOnly
 					? <div className="begin-edit-overlay" >
-						<Button size="lg" label="Speak 4 Yourself" onClick={() => this.setIsEditing(true)} />
+						<Button size="lg" colour="pink" label="Speak 4 Yourself" onClick={() => this.setIsEditing(true)} />
 					</div>
 					: null
 				}
@@ -181,18 +212,15 @@ class Comic extends Component {
 					: null
 				}
 			</div>
-			<div className="row">
+			<div className="comic-lower">
 				{this.state.isEditing
-					? <Button label="I'm done!" onClick={this.submitComic} />
+					? <div className="edit-toolbar">
+						<Button colour="pink" label="I'm done!" onClick={this.submitComic} />
+					</div>
 					: null
 				}
 				{isComicViewOnly
-					? <div className="comic-vote">
-						<p>Did you like this comic?</p>
-						<div className="flex-spacer"></div>
-						<div className="vote-thumb">👍</div>
-						<div className="vote-thumb">👎</div>
-					</div>
+					? <ComicVote comicId={this.state.comic.comicId} defaultValue={this.state.comic.voteValue} />
 					: null
 				}
 			</div>

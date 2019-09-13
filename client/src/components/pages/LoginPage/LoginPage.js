@@ -19,7 +19,7 @@ export default class LoginPage extends Component {
 				})
 				.then((result) => {
 					if(!result.error) {
-						Util.auth.setToken(result.token);
+						Util.auth.set(result);
 						window.location.href = Util.route.home();
 					} else {
 						form.setLoading(false);

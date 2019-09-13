@@ -14,7 +14,7 @@ export default class RegisterPage extends Component {
 	}
 	render() {
 		return <div className="page-register">
-			<h2>Login</h2>
+			<h2>Register</h2>
 			{this.state.isSubmitted
 				? <div>
 					<h3>Please verify your email address</h3>

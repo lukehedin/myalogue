@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
-import Button from '../Button/Button';
 import { connect } from 'react-redux';
 import { closeModal } from '../../../redux/actions';
+
+import Button from '../Button/Button';
 
 class Modal extends Component {
 	constructor(props) {
@@ -19,18 +20,28 @@ class Modal extends Component {
 
 		switch(modal.type){
 			case Util.enum.ModalType.Alert:
+				modalContent = <div>
+					{modalContent}
+					<div className="button-container">
+						<Button size="sm" label={modal.okLabel || 'OK'} onClick={() => {
+							this.close();
+						}} />
+					</div>
+				</div>
 				break;
 			case Util.enum.ModalType.Confirm:
 				modalContent = <div>
 					{modalContent}
-					<Button label={modal.yesLabel || 'Yes'} onClick={() => {
-						this.close();
-						if(modal.yesFn) modal.yesFn();
-					}} />
-					<Button label={modal.noLabel || 'No'} onClick={() => {
-						this.close();
-						if(modal.noFn) modal.noFn();
-					}} />
+					<div className="button-container">
+						<Button size="sm" isHollow={true} label={modal.noLabel || 'No'} onClick={() => {
+							this.close();
+							if(modal.noFn) modal.noFn();
+						}} />
+						<Button size="sm" label={modal.yesLabel || 'Yes'} onClick={() => {
+							this.close();
+							if(modal.yesFn) modal.yesFn();
+						}} />
+					</div>
 				</div>
 				break;
 			default:

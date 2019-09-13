@@ -1,0 +1,16 @@
+.app-footer {
+	background: $colour-black;
+	padding: $spacing-xxs 0;
+	color: $colour-white;
+	@include boxShadow(0px, -4px, 4px, #00000022);
+	
+	.app-footer-inner {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		.app-logo {
+			height: 24px;
+		}
+	}
+}

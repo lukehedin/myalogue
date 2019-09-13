@@ -1,11 +1,14 @@
+@import './_variables.scss';
+@import './_mixins.scss';
+
 body {
 	margin: 0;
 	padding: 0;
 	font-family: sans-serif;
+	background-color: $colour-grey-a;
+	color: $colour-black;
 
 	.app {
-		@import './_variables.scss';
-		@import './_mixins.scss';
 		@import './components/UI/_UI.scss';
 		@import './components/Pages/_pages.scss';
 
@@ -13,37 +16,61 @@ body {
 		position: relative;
 		display: flex;
 		flex-direction: column;
+		overflow-y: scroll;
+		overflow-x: hidden;
 
 		[class^="page-"] {
-			overflow-y: scroll;
-			overflow-x: hidden;
-			flex: 1;
+			position: relative;
+			margin: $spacing-md 0;
 		}
 
 		@keyframes loader-spin {
 			0% { transform: rotate(0deg); }
 			100% { transform: rotate(360deg); }
 		}
-	
+
+		.silly-loader {
+			background-position: center;
+			background-size: contain;
+			animation: loader-spin 0.3s linear infinite;
+
+		}
+
 		.loader {
 			position: absolute;
 			height: 100%;
 			width: 100%;
 			z-index: 10;
+			background-color: $colour-transparent-grey;
 	
-			&:before {
-				content: '';
-				position: absolute;
-				border: 4px solid transparent;
-				border-top: 4px solid $colour-green-a;
-				border-radius: 50%;
-				width: 32px;
-				height: 32px;
-				margin-top: -16px;
-				margin-left: -16px;
-				left: 50%;
-				top: 50%;
-				animation: loader-spin 0.3s linear infinite;
+			&.image-loader {
+				> img {
+					position: absolute;
+					animation: loader-spin 2s linear infinite;
+					left: 50%;
+					top: 50%;
+					width: 64px;
+					height: 64px;
+					margin-top: -32px;
+					margin-left: -32px;
+				}
+			}
+
+			&:not(.image-loader) {
+				&:before {
+					content: '';
+					position: absolute;
+					border: 4px solid transparent;
+					border-top: 4px solid $colour-pink-a;
+					border-radius: 50%;
+					width: 32px;
+					height: 32px;
+					margin-top: -16px;
+					margin-left: -16px;
+					left: 50%;
+					top: 50%;
+					animation: loader-spin 0.3s linear infinite;
+				}
 			}
 		}
 	
@@ -70,6 +97,17 @@ body {
 		.flex-spacer {
 			flex: 1;
 		}
+
+		.button-container {
+			display: flex;
+			flex-direction: row;
+
+			> * {
+				&:not(:first-child) {
+					margin-left: $spacing-xs;
+				}
+			}
+		}
 	
 		.modal-overlay {
 			@include absoluteCover;
@@ -80,9 +118,17 @@ body {
 			justify-content: center;
 		}
 		
+		@include allHeadings {
+			margin: 0;
+		}
+
 		a {
 			cursor: pointer;
 			text-decoration: underline;
+		}
+
+		h5 {
+			text-transform: uppercase;
 		}
 	}
 }

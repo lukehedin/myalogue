@@ -80,7 +80,7 @@ let db = {
 		Name: Sequelize.STRING,
 		UnlockedAt: Sequelize.DATE,
 		ImageUrl: Sequelize.STRING,
-		// Ordinal: Sequelize.INTEGER
+		Ordinal: Sequelize.INTEGER
 	}),
 
 	TemplateDialogue: defineTable('TemplateDialogue', {

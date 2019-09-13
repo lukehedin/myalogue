@@ -1,4 +1,10 @@
 .comic {
+	position: relative;
+	border: 1px solid $colour-grey-c;
+	background-color: $colour-white;
+	@include boxShadow(4px, 4px, 2px, #00000022);
+	@include borderRadius(2px);
+
 	.comic-inner {
 		position: relative;
 
@@ -15,11 +21,11 @@
 
 			&.edit-empty {
 				cursor: text;
-				border: 1px solid $colour-green-b;
+				border: 1px solid $colour-grey-c;
 			}
 
 			&.edit-invalid {
-				border: 1px solid $colour-red-b;
+				border: 1px solid $colour-red-a;
 			}
 
 			> * {				
@@ -47,7 +53,16 @@
 		.comic-footer {
 			position: absolute;
 			bottom: 0;
-			color: $colour-grey-b;
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+
+			.comic-footer-inner {
+				flex: 1;
+				display: flex;
+				flex-direction: row;
+				color: $colour-grey-b;
+			}
 		}
 
 		.begin-edit-overlay {
@@ -71,9 +86,9 @@
 		$comic-footer-font-size: 28px;
 		$comic-footer-margin: 8px;
 	
-		$comic-scale-xs: 0.3;
+		$comic-scale-xs: 0.28;
 		$comic-scale-sm: 0.4;
-		$comic-scale-md: 0.45;
+		$comic-scale-md: 0.46;
 		$comic-scale-lg: 0.5;
 	
 		@mixin scaleComic ($comic-scale) {
@@ -85,9 +100,9 @@
 				}
 			}
 			
-			.comic-footer {
+			.comic-footer-inner {
 				font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
-				margin: 0 calc(#{$comic-footer-margin} * #{$comic-scale})
+				padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
 			}
 		}
 	
@@ -106,19 +121,20 @@
 		}
 	}
 
-	.actions {
-		display: flex;
-		flex-direction: row;
-	}
-
-	.comic-vote {
+	.comic-lower {
+		padding: $spacing-xs;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		justify-content: flex-end;
 
-		.vote-thumb {
-			cursor: pointer;
-			font-size: 32px;
+		.edit-toolbar {
+			display: flex;
+			flex-direction: row;
+		}
+
+		&:empty {
+			display: none;
 		}
 	}
 }

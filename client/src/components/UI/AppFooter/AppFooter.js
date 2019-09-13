@@ -9,9 +9,15 @@ export default class AppFooter extends Component {
 	}
 	render() {
 		return <footer className="app-footer">
-			<img src={logo} className="app-logo" alt="logo" />
-			<h1 className="app-title">Speak 4 Yourself</h1>
-			<div>Created by <a href="https://www.instagram.com/imdoodlir/">imdoodlir</a></div>
+			<div className="container">
+				<div className="row"> 
+					<div className="app-footer-inner">
+						<img src={logo} className="app-logo" alt="logo" />
+						<div className="flex-spacer"></div>
+						<h4>Created by <a target="_blank" href="https://www.instagram.com/imdoodlir/">imdoodlir</a></h4>
+					</div>
+				</div>
+			</div>
 		</footer>
 	}
 }

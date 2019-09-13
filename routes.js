@@ -11,6 +11,17 @@ const catchError = (err) => {
 	console.log(err);
 };
 
+//The object sent to a successfully authenticated user
+const getAuthResult = (userId, username, callback) => {
+	auth.getJwtToken(userId, username, (token) => {
+		callback({
+			username: username,
+			userId: userId,
+			token
+		});
+	})
+};
+
 const routes = {
 
 	//Authentication
@@ -22,13 +33,9 @@ const routes = {
 	
 			if(userId) {
 				//Refresh the token after a successful authenticate
-				auth.getJwtToken(userId, username, (token) => {
-					res.json({
-						username: username,
-						userId: userId,
-						token
-					});
-				})
+				getAuthResult(userId, username, authResult => {
+					res.json(authResult);
+				});
 			} else {
 				res.json({});
 			}
@@ -53,10 +60,8 @@ const routes = {
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
-								auth.getJwtToken(dbUser.UserId, dbUser.Username, token => {
-									res.json({
-										token
-									});
+								getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+									res.json(authResult);
 								});
 							} else {
 								res.json({
@@ -124,7 +129,31 @@ const routes = {
 					error: 'Something went wrong. Please refresh and try again.'
 				});
 			}
-		}, 
+		},
+
+		verifyAccount: (req, res, db) => {
+			let token = req.body.token;
+
+			db.User.findOne({
+				where: {
+					VerificationToken: token
+				}
+			})
+			.then((dbUser) => {
+				if(dbUser) {
+					dbUser.VerificationToken = null;
+					dbUser.save();
+
+					getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+						res.json(authResult);
+					});
+				} else {
+					res.json({
+						error: 'Account verification failed.'
+					});
+				}
+			});
+		},
 	
 		getTemplate: (req, res, db) => {
 			let templateId = req.body.templateId;
@@ -167,6 +196,7 @@ const routes = {
 				comicInclude.push({
 					model: db.ComicVote,
 					as: 'ComicVotes',
+					required: false,
 					where: {
 						UserId: userId
 					}
@@ -212,7 +242,8 @@ const routes = {
 				console.log(dbCreatedComic);
 
 				res.json({
-					success: true
+					success: true,
+					comic: mapper.fromDbComic(dbCreatedComic)
 				})
 			})
 			.catch(catchError);
@@ -294,7 +325,7 @@ const routes = {
 					error: 'Invalid vote value supplied'
 				})
 			} else {
-				db.ComicVotes.findOne({
+				db.ComicVote.findOne({
 					where: {
 						UserId: userId,
 						ComicId: comicId

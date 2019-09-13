@@ -1,14 +1,119 @@
 .button {
-	background: $colour-green-b;
-	color: $colour-white;
+	background: none;
 	cursor: pointer;
+	@include borderRadius(4px);
+	text-decoration: none;
+	border: 1px solid;
 
-	&.md {
-		padding: $spacing-xs $spacing-sm;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	&:focus {
+		outline:0;
 	}
 
-	&.lg {
-		padding: $spacing-sm $spacing-md;
-		font-size: 20px;
+	> * {
+		&:not(:first-child) {
+			margin-left: $spacing-xs;
+		}
+	}
+
+	@mixin colourizeButton($colour) {
+
+		&.button-hollow {
+			color: $colour;
+			border-color: $colour;
+			background-color: transparent;
+
+			.button-icon {
+				@include svgColourStroke($colour)	
+			}
+
+			&:hover {
+				border-color: darken($colour, 10);
+				color: darken($colour, 10);
+
+				.button-icon {
+					@include svgColourStroke(darken($colour, 10));	
+				}
+			}
+		}
+
+		&.button-solid {
+			color: $colour-white;
+			border-color: $colour;
+			background: $colour;
+
+			.button-icon {
+				@include svgColourStroke($colour-white)	
+			}
+
+			&:hover {
+				border-color: lighten($colour, 6);
+				background: lighten($colour, 6);
+			}
+		}
+	};
+
+	//colours
+
+	&.button-black {
+		@include colourizeButton($colour-black);
+	}
+
+	&.button-white {
+		@include colourizeButton($colour-white);
+	}
+
+	&.button-green {
+		@include colourizeButton($colour-green-b);
+	}
+
+	&.button-red {
+		@include colourizeButton($colour-red-a);
+	}
+
+	&.button-pink {
+		@include colourizeButton($colour-pink-a);
+	}
+	
+	//sizes
+
+	@mixin scaleButton($size) {
+		font-size: $size;
+		.button-icon {
+			height: $size;
+			width: $size;
+		}
+	}
+
+	&.button-sm {
+		padding: $spacing-xxs $spacing-xs;
+		@include scaleButton(12px);
+
+		@include oversm {
+			@include scaleButton(14px);
+		}
+	}
+
+	&.button-md {
+		padding: $spacing-xxs $spacing-xs;
+		@include scaleButton(14px);
+
+		@include oversm {
+			padding: $spacing-xs $spacing-sm;
+			@include scaleButton(16px);
+		}
+	}
+
+	&.button-lg {
+		padding: $spacing-xs $spacing-sm;
+		@include scaleButton(18px);
+
+		@include oversm {
+			padding: $spacing-sm $spacing-md;
+			@include scaleButton(20px);
+		}
 	}
 }

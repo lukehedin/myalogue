@@ -1,7 +1,8 @@
 .app-header {
-	background-color: $colour-green-b;
-	padding: $spacing-xs 0;
-	color: white;
+	background: $colour-black;
+	padding: $spacing-xxs 0;
+	color: $colour-white;
+	@include boxShadow(0px, 4px, 4px, #00000022);
 
 	.app-header-inner {
 		display: flex;
@@ -9,7 +10,7 @@
 		align-items: center;
 
 		.app-logo {
-			height: 32px;
+			height: 24px;
 		}
 	
 		.app-title {

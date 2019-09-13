@@ -13,7 +13,7 @@ export default class AppHeader extends Component {
 		this.onLogout = this.onLogout.bind(this);
 	}
 	onLogout() {
-		Util.auth.logout();
+		Util.auth.clear();
 	}
 	render() {
 		return <header className="app-header">
@@ -24,9 +24,9 @@ export default class AppHeader extends Component {
 						<div className="flex-spacer"></div>
 						{Util.auth.getUserId()
 							? <div>{Util.auth.getUsername()} (<a onClick={this.onLogout}>Log out</a>)</div>
-							: <div className="auth-buttons">
-								<Button to={Util.route.login()} label="Log in" />
-								<Button to={Util.route.register()} label="Register" />
+							: <div className="button-container">
+								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />
+								<Button size="sm" colour="pink" to={Util.route.register()} label="Register" />
 							</div>
 						}
 					</div>

@@ -5,14 +5,16 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Util from './Util';
 import Div100vh from 'react-div-100vh';
 
+import loaderImage from './images/loader.png';
+
 import Customers from './components/UI/Customers/Customers';
 import AppHeader from './components/UI/AppHeader/AppHeader';
 import AppFooter from './components/UI/AppFooter/AppFooter';
 import Modal from './components/UI/Modal/Modal';
-
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import TemplatePage from './components/pages/TemplatePage/TemplatePage';
+import VerifyPage from './components/pages/VerifyPage/VerifyPage';
 
 class App extends Component {
 	constructor(props){
@@ -25,10 +27,7 @@ class App extends Component {
 	componentDidMount() {
 		Util.api.post('/api/authenticate')
 			.then(result => {
-				if(!result.error) {
-					Util.auth.setToken(result.token);
-					Util.auth.setUserDetails(result.userId, result.username);
-				}
+				if(!result.error) Util.auth.set(result);
 
 				this.setState({
 					isLoading: false
@@ -36,10 +35,11 @@ class App extends Component {
 			});
 	}
 	render() {
-		if(this.state.isLoading) return <div className="loader"></div>;
-
-		return <Div100vh className="app">
-			<Router>
+		let content = this.state.isLoading
+			? <div className="loader image-loader">
+				<img src={loaderImage} />
+			</div>
+			: <Router>
 				<AppHeader />
 				<Switch>
 					<Route exact path="/" render={({ match }) => <TemplatePage />} />
@@ -47,9 +47,11 @@ class App extends Component {
 					<Route exact path="/login" render={({ match }) => <LoginPage />} />
 					<Route path="/about" render={({ match }) => <div>about</div>}/>
 					<Route path="/user/:user" render={({ match }) => <div>user {match.params.user}</div>} />
+					<Route path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
 					<Route render={({ match }) => <div>404</div>} />
 				</Switch>
-				{/* <AppFooter /> */}
+				<div className="flex-spacer"></div>
+				<AppFooter />
 				{Util.array.any(this.props.modals)
 					? <div className="modal-overlay" onClick={(e) => {
 						e.stopPropagation();
@@ -59,7 +61,10 @@ class App extends Component {
 					</div>
 					: null
 				}
-			</Router>
+			</Router>;
+
+		return <Div100vh className="app">
+			{content}
 		</Div100vh>;
 	}
 }

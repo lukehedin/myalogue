@@ -1,0 +1,13 @@
+.comic-list {
+	position: relative;
+
+	.filters {
+		margin: $spacing-sm 0;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.comic-list-inner {
+		min-height: 100px;
+	}
+}

@@ -1,4 +1,10 @@
 .page-template {
+	.template-header {
+		margin-bottom: $spacing-sm;
+		h5 {
+			color: $colour-pink-a;
+		}
+	}
 	.template-feed {
 		display: flex;
 		flex-direction: column;
