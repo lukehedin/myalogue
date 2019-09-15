@@ -204,7 +204,7 @@ class Comic extends Component {
 				})}
 				<div className="comic-footer">
 					<div className="comic-footer-inner">
-						<div>www.s4ycomic.com</div>
+						<div>s4ycomic.com</div>
 						<div className="flex-spacer"></div>
 						<div>
 							<span>#{this.props.template.ordinal}</span>

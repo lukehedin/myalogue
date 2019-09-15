@@ -40,7 +40,7 @@ export default class RegisterPage extends Component {
 					});
 				}} />
 			}
-			<h4>Already have an acount? <Link to={Util.route.login()}>Login</Link></h4>
+			<h4>Already have an account? <Link to={Util.route.login()}>Log in</Link></h4>
 		</div>;
 	}
 }

@@ -27,8 +27,8 @@ export default class LoginPage extends Component {
 					}
 				});
 			}} />
-			<h4><Link to={Util.route.register()}>Don't have an acount? Register</Link></h4>
-			<h4><Link to={Util.route.forgotPassword()}>Forgot your password?</Link></h4>
+			<h4>Forgot your password? <Link to={Util.route.forgotPassword()}>Reset password</Link></h4>
+			<h4>Don't have an acount? <Link to={Util.route.register()}>Register</Link></h4>
 		</div>;
 	}
 }

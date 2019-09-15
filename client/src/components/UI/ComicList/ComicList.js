@@ -35,14 +35,18 @@ export default class ComicList extends Component {
 			isLoading: true
 		});
 
+		let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
+
 		Util.api.post('/api/getComics', {
+			createdAtBefore: this.state.createdAtBefore,
 			templateId: this.props.template.templateId,
 			sortBy: this.state.sortBy,
 			limit: this.state.limit,
-			offset: this.state.offset,
 			includeAnonymous: this.state.includeAnonymous,
-			createdAtBefore: this.state.createdAtBefore,
-			idNotIn: isReset ? [] : this.state.comics.map(comic => comic.comicId)
+			offset: isRandomSort ? 0 : this.state.offset,
+			idNotIn: isRandomSort
+				? this.state.comics.map(comic => comic.comicId)
+				: []
 		})
 		.then(result => {
 			if(!result.error) {
@@ -64,6 +68,7 @@ export default class ComicList extends Component {
 	}
 	setSortBy(sortBy) {
 		this.setState({
+			comics: [], //Otherwise random will use these to filter out
 			sortBy: sortBy
 		}, this.resetFetch);
 	}
@@ -115,7 +120,7 @@ export default class ComicList extends Component {
 								: <p className="empty-text">Phew! That's all the comics that have been made with this template.</p>
 							}
 						</div>
-						: <Button label="Load more comics" colour="pink" onClick={this.fetchData} />
+						: <Button label="Load more comics" colour="pink" onClick={() => this.fetchData()} />
 				}
 			</div>
 		</div>;

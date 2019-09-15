@@ -178,9 +178,9 @@ const routes = {
 			let userId = req.userId; //Might be null
 			let templateId = req.body.templateId;
 
+			let idNotIn = req.body.idNotIn || [];
 			let includeAnonymous = req.body.includeAnonymous;
 			let createdAtBefore = req.body.createdAtBefore || new Date();
-			let idNotIn = req.body.idNotIn;
 			let sortBy = req.body.sortBy || 1;
 			let offset = req.body.offset || 0;
 			let limit = req.body.limit || 5;
@@ -189,13 +189,13 @@ const routes = {
 
 			switch(sortBy) {
 				case 3: //random
-					comicOrder = [db.fn( 'RAND' )];
+					comicOrder.push(db.fn('RANDOM'));
 					break;
 				case 2: //newest
 					//Thenby will do this for us
 					break;
 				default: //top rated (1)
-					comicOrder = [[ 'Rating', 'DESC' ]];
+					comicOrder.push([ 'Rating', 'DESC' ]);
 					break;
 			};
 			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
