@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import Comic from '../../UI/Comic/Comic';
-import Dropdown from '../../UI/Dropdown/Dropdown'
-import Button from '../../UI/Button/Button';
+import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import ComicList from '../../UI/ComicList/ComicList';
 
 export default class TemplatePage extends Component {
@@ -13,6 +11,7 @@ export default class TemplatePage extends Component {
 
 		this.state = {
 			isLoading: true,
+			ordinal: null,
 			template: null,
 
 			comics: [],
@@ -22,34 +21,53 @@ export default class TemplatePage extends Component {
 		};
 	}
 	componentDidMount() {
+		this.setTemplate(this.props.ordinal);
+	}
+	componentWillReceiveProps(props) {
+		if(props.ordinal !== this.props.ordinal) {
+			this.setTemplate(props.ordinal)
+		}
+	}
+	setTemplate(ordinal) {
+		this.setState({
+			ordinal: ordinal ? parseInt(ordinal) : null,
+			isLoading: true
+		});
+		
 		Util.api.post('/api/getTemplate', {
-			templateId: this.props.templateId
+			ordinal: ordinal
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
+					ordinal: result.ordinal,
 					template: result,
-					isLoading: false
 				});
 			}
-		})
+			
+			this.setState({
+				isLoading: false
+			});
+		});
 	}
 	render() {
-		if(this.state.isLoading) return <div className="loader"></div>;
-		if(!this.state.template) return <div className="page-error">Template not found.</div>;
-
 		return <div className="page-template">
 			<div className="container">
-				<div className="template-header">
-					{/* <Button label="Previous template" /> */}
-					<h5>Current template</h5>
-					<h3>#{this.state.template.ordinal} - {this.state.template.name}</h3>
-					{/* <Button label="Next template" /> */}
-				</div>
-				<div className="template-feed">
-					<Comic template={this.state.template} />
-					<h5>Comics created with this template:</h5>
-					<ComicList template={this.state.template} />
+				<div className="row">
+					{this.state.ordinal ? <TemplateNavigation ordinal={this.state.ordinal} /> : null }
+					<div className="template-feed">
+						{this.state.isLoading
+							? <div className="loader"></div>
+							: this.state.template
+								? <div className="template-feed-inner">
+									<Comic template={this.state.template} />
+									<h5>Comics created with this template</h5>
+									<ComicList template={this.state.template} />
+								</div>
+								: <p className="empty-text">Template not found.</p>
+						}
+					</div>
+					{this.state.ordinal && !this.state.isLoading ? <TemplateNavigation ordinal={this.state.ordinal} /> : null }
 				</div>
 			</div>
 		</div>;

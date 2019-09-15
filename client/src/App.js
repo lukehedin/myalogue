@@ -43,6 +43,7 @@ class App extends Component {
 				<AppHeader />
 				<Switch>
 					<Route exact path="/" render={({ match }) => <TemplatePage />} />
+					<Route exact path="/template/:ordinal" render={({ match }) => <TemplatePage ordinal={match.params.ordinal} />} />
 					<Route exact path="/register" render={({ match }) => <RegisterPage />} />
 					<Route exact path="/login" render={({ match }) => <LoginPage />} />
 					<Route path="/about" render={({ match }) => <div>about</div>}/>

@@ -17,7 +17,10 @@ const mapper = {
 			comicId: dbComic.ComicId,
 			templateId: dbComic.TemplateId,
 			userId: dbComic.UserId,
+			rating: dbComic.Rating || 0,
+			username: dbComic.User ? dbComic.User.Username : 'anonymous',
 			comicDialogues: (dbComic.ComicDialogues || [])
+				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)
 				.map(mapper.fromDbComicDialogue)
 		}
 	},
@@ -37,6 +40,7 @@ const mapper = {
 			ordinal: dbTemplate.Ordinal,
 			imageUrl: dbTemplate.ImageUrl,
 			templateDialogues: (dbTemplate.TemplateDialogues || [])
+				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)
 				.map(mapper.fromDbTemplateDialogue)
 		}
 	},

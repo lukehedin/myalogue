@@ -27,6 +27,7 @@ class Comic extends Component {
 		}
 
 		this.comicRef = React.createRef();
+		this.textareaRefs = {};
 
 		this.toImage = this.toImage.bind(this);
 		this.onDialogueBoxClick = this.onDialogueBoxClick.bind(this);
@@ -39,6 +40,8 @@ class Comic extends Component {
 	getBlankComicObject() {
 		return {
 			name: this.props.template.name,
+			userId: Util.auth.getUserId(),
+			username: Util.auth.getUsername(),
 			templateId: this.props.template.templateId,
 			comicDialogues: this.props.template.templateDialogues.map(td => {
 				return {
@@ -69,6 +72,14 @@ class Comic extends Component {
 		this.setState({
 			isEditing
 		});
+
+		if(isEditing) {
+			setTimeout(() => {
+				if(this.textareaRefs && this.textareaRefs[0]) {
+					this.textareaRefs[0].focus();
+				}
+			}, 200);
+		}
 	}
 	setIsShareOverlayVisible(isShareOverlayVisible){
 		this.setState({
@@ -132,7 +143,7 @@ class Comic extends Component {
 			}
 
 			//TODO confirm modal if not logged in
-			if(!Util.auth.getUserId()){
+			if(!Util.auth.isAuthenticated()){
 				this.props.openModal({
 					type: Util.enum.ModalType.Confirm,
 					yesLabel: 'Yes. Submit my comic anonymously.',
@@ -156,7 +167,7 @@ class Comic extends Component {
 			<div className="comic-inner" ref={this.comicRef}>
 				<img className="comic-template" src={this.props.template.imageUrl} />
 				<img className="comic-frame" src={frame} />
-				{this.props.template.templateDialogues.map(templateDialogue => {
+				{this.props.template.templateDialogues.map((templateDialogue, idx) => {
 					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === templateDialogue.templateDialogueId);
 					let comicDialogueValue = comicDialogue ? comicDialogue.value : '';
 
@@ -180,19 +191,25 @@ class Comic extends Component {
 							height: `${percentSizeY}%`
 						}} >
 						{this.state.isEditing
-							? <Textarea maxLength={255} tabIndex={templateDialogue.ordinal} value={comicDialogueValue} onChange={(e) => this.setComicDialogueValue(templateDialogue.templateDialogueId, e.target.value)} />
+							? <Textarea 
+								inputRef={ref => this.textareaRefs[idx] = ref}
+								maxLength={255} 
+								tabIndex={templateDialogue.ordinal} 
+								value={comicDialogueValue} 
+								onChange={(e) => this.setComicDialogueValue(templateDialogue.templateDialogueId, e.target.value)}
+							/>
 							: <div>{comicDialogueValue}</div>
 						}
 					</div>
 				})}
 				<div className="comic-footer">
 					<div className="comic-footer-inner">
-						<div>s4ycomic.com</div>
+						<div>www.s4ycomic.com</div>
 						<div className="flex-spacer"></div>
 						<div>
 							<span>#{this.props.template.ordinal}</span>
 							<span>-{this.state.comic.comicId ? `${this.state.comic.comicId}` : '_'}</span>
-							<span> by {isComicViewOnly ? this.state.comic.username || 'anonymous' : Util.auth.getUsername() || 'anonymous'}</span>
+							<span> by {this.state.comic.username}</span>
 						</div>
 					</div>
 				</div>
@@ -220,7 +237,9 @@ class Comic extends Component {
 					: null
 				}
 				{isComicViewOnly
-					? <ComicVote comicId={this.state.comic.comicId} defaultValue={this.state.comic.voteValue} />
+					? <div className="">
+						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
+					</div>
 					: null
 				}
 			</div>

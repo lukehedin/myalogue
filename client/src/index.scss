@@ -1,4 +1,5 @@
 @import './_variables.scss';
+@import './_animations.scss';
 @import './_mixins.scss';
 
 body {
@@ -21,7 +22,7 @@ body {
 
 		[class^="page-"] {
 			position: relative;
-			margin: $spacing-md 0;
+			margin: $spacing-sm 0;
 		}
 
 		@keyframes loader-spin {
@@ -40,9 +41,14 @@ body {
 			position: absolute;
 			height: 100%;
 			width: 100%;
+			top: 0;
+			left: 0;
 			z-index: 10;
-			background-color: $colour-transparent-grey;
-	
+			pointer-events: none;
+			&.masked {
+				background-color: $colour-transparent-grey;				
+			}
+
 			&.image-loader {
 				> img {
 					position: absolute;
@@ -77,17 +83,34 @@ body {
 		.hidden {
 			display: none;
 		}
+
+		.disabled {
+			opacity: 0.2;
+			pointer-events: none;
+		}
 	
 		.invisible {
 			opacity: 0;
 		}
 	
 		.container {
+			position: relative;
 			margin: 0 auto;
-			max-width: 1000px;
+			
+			max-width: 320px;
+			@include oversm {
+				max-width: 420px;
+			}
+			@include overmd {
+				max-width: 508px;
+			}
+			@include overlg {
+				max-width: 572px;
+			}
 		}
 	
 		.row {
+			position: relative;
 			padding: 0 $spacing-xs;
 			@include oversm {
 				padding: 0 $spacing-sm;
@@ -101,6 +124,7 @@ body {
 		.button-container {
 			display: flex;
 			flex-direction: row;
+			align-items: center;
 
 			> * {
 				&:not(:first-child) {
@@ -122,12 +146,23 @@ body {
 			margin: 0;
 		}
 
+		.empty-text {
+			font-size: 14px;
+			color: $colour-grey-c;
+		}
+
 		a {
 			cursor: pointer;
-			text-decoration: underline;
+			text-decoration: none;
+			color: $colour-pink-a;
+
+			&:hover {
+				text-decoration: underline;
+			}
 		}
 
 		h5 {
+			color: $colour-pink-a;
 			text-transform: uppercase;
 		}
 	}

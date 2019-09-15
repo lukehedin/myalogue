@@ -7,7 +7,9 @@ import iconChat from './icons/chat.svg';
 import iconCopy from './icons/copy.svg';
 import iconDislike from './icons/dislike.svg';
 import iconEnvelope from './icons/envelope.svg';
+import iconFirst from './icons/first.svg';
 import iconGarbage from './icons/garbage.svg';
+import iconLast from './icons/last.svg';
 import iconLike from './icons/like.svg';
 import iconNext from './icons/next.svg';
 import iconShare from './icons/share.svg';
@@ -16,33 +18,36 @@ import iconStar from './icons/star.svg';
 const Util = {
 	auth: {
 		_tokenKey: 'auth-token',
+		_getToken: () => localStorage.getItem(Util.auth._tokenKey),
 
 		_userId: null,
 		_username: null,
 
 		set: (authResult) => {
-			localStorage.setItem(Util.auth._tokenKey, authResult.token);
+			authResult.token
+				? localStorage.setItem(Util.auth._tokenKey, authResult.token)
+				: localStorage.removeItem(Util.auth._tokenKey);
 
 			Util.auth._userId = authResult.userId;
 			Util.auth._username = authResult.username;
 		},
 
 		clear: () => {
-			localStorage.setItem(Util.auth._tokenKey, null);
+			localStorage.removeItem(Util.auth._tokenKey);
 
 			Util.auth._userId = null;
 			Util.auth._username = null;
 			window.location.href = "/";
 		},
 
-		getToken: () => localStorage.getItem(Util.auth._tokenKey),
+		isAuthenticated: () => !!Util.auth._getToken(),
 		getUserId: () => Util.auth._userId,
 		getUsername: () => Util.auth._username
 	},
 
 	api: {
 		post: (endpoint, params = null) => {
-			let token = Util.auth.getToken();
+			let token = Util.auth._getToken();
 
 			return new Promise((resolve, reject) => {
 				axios.post(endpoint, params, {
@@ -75,6 +80,12 @@ const Util = {
 		ModalType: {
 			Alert: 1,
 			Confirm: 2
+		},
+
+		ComicSortBy: {
+			TopRated: 1,
+			Newest: 2,
+			Random: 3
 		}
 	},
 
@@ -86,7 +97,9 @@ const Util = {
 		copy: iconCopy,
 		dislike: iconDislike,
 		envelope: iconEnvelope,
+		first: iconFirst,
 		garbage: iconGarbage,
+		last: iconLast,
 		like: iconLike,
 		next: iconNext,
 		share: iconShare,
@@ -95,10 +108,10 @@ const Util = {
 
 	route: {
 		home: () => `/`,
+		template: (ordinal) => ordinal ? `/template/${ordinal}` : Util.route.home(),
 		login: () => `/login`,
 		profile: (userId) => `/profile/${userId}`,
 		comic: (comicId) => `/comic/${comicId}`,
-		template: (templateId) => `/template/${templateId}`,
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,
 		resetPassword: (token) => `/reset-password/${token}`,

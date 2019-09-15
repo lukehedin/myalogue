@@ -22,8 +22,11 @@ export default class AppHeader extends Component {
 					<div className="app-header-inner">
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
-						{Util.auth.getUserId()
-							? <div>{Util.auth.getUsername()} (<a onClick={this.onLogout}>Log out</a>)</div>
+						{Util.auth.isAuthenticated()
+							? <div className="button-container">
+								<span>{Util.auth.getUsername()}</span>
+								<Button size="sm" onClick={this.onLogout} colour="white" isHollow={true} label="Log out" />
+							</div>
 							: <div className="button-container">
 								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />
 								<Button size="sm" colour="pink" to={Util.route.register()} label="Register" />

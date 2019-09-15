@@ -32,6 +32,7 @@ const defineTable = (name, attributes, options = {}) => {
 
 let db = {
 	
+	fn: Sequelize.fn,
 	op: Sequelize.Op,
 
 	sync: () => {
@@ -46,7 +47,12 @@ let db = {
 	
 	//Tables
 	Comic: defineTable('Comic', {
-		Name: Sequelize.STRING
+		Name: Sequelize.STRING,
+		Rating: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
+            allowNull: false
+		}
 	}),
 	
 	ComicDialogue: defineTable('ComicDialogue', {

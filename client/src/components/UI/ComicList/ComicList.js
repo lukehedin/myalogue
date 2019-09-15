@@ -14,67 +14,109 @@ export default class ComicList extends Component {
 		this.state = {
 			isLoading: true,
 			
-			includeAnonymous: false,
+			includeAnonymous: true,
+			sortBy: Util.enum.ComicSortBy.TopRated,
+			limit: 5,
+			offset: 0,
+			createdAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!
+			
 			comics: [],
-			orderBy: 1,
-			limit: 3,
-			skip: 0
+			isNoMore: false
 		};
 
 		this.setIncludeAnonymous = this.setIncludeAnonymous.bind(this);
+		this.fetchData = this.fetchData.bind(this);
 	}
 	componentDidMount() {
+		this.fetchData();
+	}
+	fetchData(isReset = false) {
 		this.setState({
 			isLoading: true
 		});
 
 		Util.api.post('/api/getComics', {
 			templateId: this.props.template.templateId,
+			sortBy: this.state.sortBy,
 			limit: this.state.limit,
-			skip: this.state.skip
+			offset: this.state.offset,
+			includeAnonymous: this.state.includeAnonymous,
+			createdAtBefore: this.state.createdAtBefore,
+			idNotIn: isReset ? [] : this.state.comics.map(comic => comic.comicId)
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					comics: result,
-					isLoading: false
+					comics: isReset ? result : [...this.state.comics, ...result],
+					isLoading: false,
+					offset: this.state.offset + this.state.limit,
+					isNoMore: result.length < this.state.limit
 				});
 			}
 		});
 	}
+	resetFetch() {
+		this.setState({
+			createdAtBefore: new Date(),
+			offset: 0,
+			isNoMore: false
+		}, () => this.fetchData(true));
+	}
+	setSortBy(sortBy) {
+		this.setState({
+			sortBy: sortBy
+		}, this.resetFetch);
+	}
 	setIncludeAnonymous(includeAnonymous) {
 		this.setState({
 			includeAnonymous: includeAnonymous
-		});
+		}, this.resetFetch);
 	}
 	render() {
 		return <div className="comic-list">
-			<div className="container">
-				<div className="row">
-					<div className="filters">
-						<Dropdown displayProp='label' valueProp='type' options={[
+				<div className="filters">
+					<Dropdown 
+						value={this.state.sortBy}
+						onChange={value => this.setSortBy(value)}
+						displayProp='label' 
+						valueProp='type' 
+						options={[
 							{
-								type: 1,
+								type: Util.enum.ComicSortBy.TopRated,
 								label: 'Top Rated'
 							}, {
-								type: 2,
+								type: Util.enum.ComicSortBy.Newest,
 								label: 'Newest'
 							}, {
-								type: 3,
+								type: Util.enum.ComicSortBy.Random,
 								label: 'Random'
 							}
-						]} />
-						<div className="flex-spacer"></div>
-						<Button size="sm" label={`Include anonymous (${this.state.includeAnonymous ? 'ON' : 'OFF'})`} icon={Util.icon.avatar} isHollow={!this.state.includeAnonymous} onClick={() => this.setIncludeAnonymous(!this.state.includeAnonymous)} />
-					</div>
+						]} 
+					/>
+					<div className="flex-spacer"></div>
+					<Button
+						size="sm" 
+						label={`Anonymous authors ${this.state.includeAnonymous ? 'ON' : 'OFF'}`} 
+						leftIcon={Util.icon.avatar} 
+						isHollow={!this.state.includeAnonymous} 
+						onClick={() => this.setIncludeAnonymous(!this.state.includeAnonymous)}
+					/>
 				</div>
-				<div className="comic-list-inner">
-					{this.state.comics.map(comic => {
-						return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
-					})}
-					{!this.state.isLoading && Util.array.none(this.state.comics) ? <p>No comics using this template have been made yet!</p> : null}
-					{this.state.isLoading ? <div className="loader"></div> : null}
-				</div>
+			<div className="comic-list-inner">
+				{this.state.comics.map(comic => {
+					return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
+				})}
+				{this.state.isLoading 
+					? <div className="loader masked"></div> 
+					: this.state.isNoMore
+						? <div>
+							{Util.array.none(this.state.comics) 
+								? <p className="empty-text">No comics have been made using this template. You could make the first one! Think of the possibilities!</p> 
+								: <p className="empty-text">Phew! That's all the comics that have been made with this template.</p>
+							}
+						</div>
+						: <Button label="Load more comics" colour="pink" onClick={this.fetchData} />
+				}
 			</div>
 		</div>;
 	}

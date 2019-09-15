@@ -8,27 +8,29 @@ export default class ComicVote extends Component {
 		super(props);
 
 		this.state = {
-			value: this.props.defaultValue || 0
+			value: this.props.defaultValue || 0,
+			rating: this.props.defaultRating || 0
 		};
 
 		this.setValue = this.setValue.bind(this);
 	}
 	setValue(value) {
 		this.setState({
-			value: value
+			value: value,
+			rating: this.state.rating + (value - this.state.rating)
 		});
 
 		Util.api.post('/api/voteComic', {
 			comicId: this.props.comicId,
 			value: value
-		})
+		});
 	}
 	render() {
 		let isLoggedIn = !!Util.auth.getUserId();
 
 		let getVoteButton = (value) => {
 			return <Button 
-				icon={value > 0 ? Util.icon.like : Util.icon.dislike} 
+				leftIcon={value > 0 ? Util.icon.like : Util.icon.dislike} 
 				isHollow={this.state.value !== value} 
 				colour={this.state.value !== value ? 'black' : (value > 0 ? 'green' : 'red')} 
 				to={isLoggedIn
@@ -42,8 +44,9 @@ export default class ComicVote extends Component {
 		}
 		
 		return <div className="comic-vote button-container">
-			{getVoteButton(1)}
 			{getVoteButton(-1)}
+			<h4>{this.state.rating}</h4>
+			{getVoteButton(1)}
 		</div>
 	}
 }

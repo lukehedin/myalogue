@@ -7,9 +7,6 @@
 @mixin overlg { // Large devices
 	@media (min-width: #{$screen-lg-min}) { @content; }
 }
-@mixin overxl { // Extra large devices
-	@media (min-width: #{$screen-xl-min}) { @content; }
-}
 
 @mixin absoluteCover {
 	position: absolute;	

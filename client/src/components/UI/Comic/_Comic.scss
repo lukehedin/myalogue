@@ -18,10 +18,11 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-end;
+			@include borderRadius(4px);
 
 			&.edit-empty {
 				cursor: text;
-				border: 1px solid $colour-grey-c;
+				border: 1px solid $colour-grey-b;
 			}
 
 			&.edit-invalid {
@@ -81,14 +82,15 @@
 		// Scaling code
 		$comic-width: 1080px;
 		$comic-height: 1080px;
-		$comic-dialogue-font-size: 40px;
+		$comic-dialogue-line-height: 40px;
+		$comic-dialogue-font-size: 38px;
 	
 		$comic-footer-font-size: 28px;
 		$comic-footer-margin: 8px;
 	
 		$comic-scale-xs: 0.28;
-		$comic-scale-sm: 0.4;
-		$comic-scale-md: 0.46;
+		$comic-scale-sm: 0.36;
+		$comic-scale-md: 0.44;
 		$comic-scale-lg: 0.5;
 	
 		@mixin scaleComic ($comic-scale) {
@@ -96,6 +98,7 @@
 			height: calc(#{$comic-width} * #{$comic-scale});
 			.dialogue {
 				> * {
+					line-height: calc(#{$comic-dialogue-line-height} * #{$comic-scale});
 					font-size: calc(#{$comic-dialogue-font-size} * #{$comic-scale});
 				}
 			}

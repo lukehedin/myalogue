@@ -3,4 +3,8 @@
 	max-width: 90vw;
 	padding: $spacing-sm;
 	margin: $spacing-sm;
+
+	.button-container {
+		justify-content: flex-end;
+	}
 }

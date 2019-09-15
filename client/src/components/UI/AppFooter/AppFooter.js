@@ -14,7 +14,10 @@ export default class AppFooter extends Component {
 					<div className="app-footer-inner">
 						<img src={logo} className="app-logo" alt="logo" />
 						<div className="flex-spacer"></div>
-						<h4>Created by <a target="_blank" href="https://www.instagram.com/imdoodlir/">imdoodlir</a></h4>
+						<div>
+						<h6>Created by <a target="_blank" href="https://www.instagram.com/imdoodlir/">imdoodlir</a></h6>
+						<h6>© 2019 Speak 4 Yourself</h6>
+						</div>
 					</div>
 				</div>
 			</div>

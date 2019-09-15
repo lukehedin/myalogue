@@ -6,7 +6,7 @@ import LoginForm from '../../UI/Forms/LoginForm/LoginForm';
 
 export default class LoginPage extends Component {
 	render() {
-		if(Util.auth.getUserId()) return <Redirect to={Util.route.home()} />
+		if(Util.auth.isAuthenticated()) return <Redirect to={Util.route.home()} />
 
 		return <div className="page-login">
 			<h2>Login</h2>

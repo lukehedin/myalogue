@@ -6,9 +6,10 @@ const validator = require('validator');
 const mailer = require('./mailer');
 const mapper = require('./mapper');
 
-const catchError = (err) => {
+const catchError = (res, error) => {
 	//TODO db log
-	console.log(err);
+	console.log(error);
+	res.json({ error: error });
 };
 
 //The object sent to a successfully authenticated user
@@ -53,10 +54,8 @@ const routes = {
 			.then(dbUser => {
 				if(dbUser) {
 					if(!!dbUser.VerificationToken) {
+						catchError(res, 'Please verify your email address.');
 						//TODO, if a large period of time has passed, send the verification email again
-						res.json({
-							error: 'Please verify your email address.'
-						});
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
@@ -64,16 +63,14 @@ const routes = {
 									res.json(authResult);
 								});
 							} else {
-								res.json({
-									error: 'Invalid email or password.'
-								});
+								//Invalid password
+								catchError(res, 'Invalid email or password.');
 							}
 						});
 					}
 				} else {
-					res.json({
-						error: 'Invalid email or password.'
-					});
+					//Invalid email
+					catchError(res, 'Invalid email or password.');
 				}
 			})
 		},
@@ -113,21 +110,17 @@ const routes = {
 								mailer.sendVerificationEmail(email, username, verificationToken);
 								res.json({ success: true });
 							})
-							.catch(catchError);
+							.catch(error => catchError(res, error));
 						});
 					} else {
-						res.json({
-							error: dbExistingUser.Email === email
-								? 'Email is already in use. Please log in with your existing account or reset your password.'
-								: 'Username is already in use. Please choose another username.'
-						});
+						catchError(res, dbExistingUser.Email === email
+							? 'Email is already in use. Please log in with your existing account or reset your password.'
+							: 'Username is already in use. Please choose another username.');
 					}
 				})
-				.catch(catchError)
+				.catch(error => catchError(res, error));
 			} else {
-				res.json({
-					error: 'Something went wrong. Please refresh and try again.'
-				});
+				catchError(res, 'Something went wrong. Please refresh and try again.');
 			}
 		},
 
@@ -148,20 +141,18 @@ const routes = {
 						res.json(authResult);
 					});
 				} else {
-					res.json({
-						error: 'Account verification failed.'
-					});
+					catchError(res, 'Account verification failed.');
 				}
 			});
 		},
 	
 		getTemplate: (req, res, db) => {
-			let templateId = req.body.templateId;
+			let ordinal = req.body.ordinal;
 
-			db.Template.findOne({
-				where: templateId
+			db.Template.findAll({
+				where: ordinal
 					? {
-						TemplateId: templateId
+						Ordinal: ordinal
 					}
 					: {
 						//TODO no id? get latest
@@ -169,30 +160,56 @@ const routes = {
 				include: [{
 					model: db.TemplateDialogue,
 					as: 'TemplateDialogues'
-				}]
+				}],
+				limit: 1,
+				order: [[ 'Ordinal', 'DESC' ]]
 			})
-			.then(dbTemplate => {
-				if(dbTemplate) {
-					res.json(mapper.fromDbTemplate(dbTemplate))
+			.then(dbTemplates => {
+				if(dbTemplates && dbTemplates[0]) {
+					res.json(mapper.fromDbTemplate(dbTemplates[0]))
 				} else {
-					res.json({
-						error: 'Template not found'
-					});
+					catchError(res, 'Template not found.');
 				}
 			})
-			.catch(catchError);
+			.catch(error => catchError(res, error));
 		},
 
 		getComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
 			let templateId = req.body.templateId;
 
+			let includeAnonymous = req.body.includeAnonymous;
+			let createdAtBefore = req.body.createdAtBefore || new Date();
+			let idNotIn = req.body.idNotIn;
+			let sortBy = req.body.sortBy || 1;
+			let offset = req.body.offset || 0;
+			let limit = req.body.limit || 5;
+
+			let comicOrder = [];
+
+			switch(sortBy) {
+				case 3: //random
+					comicOrder = [db.fn( 'RAND' )];
+					break;
+				case 2: //newest
+					//Thenby will do this for us
+					break;
+				default: //top rated (1)
+					comicOrder = [[ 'Rating', 'DESC' ]];
+					break;
+			};
+			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
+
 			let comicInclude = [{
 				model: db.ComicDialogue,
 				as: 'ComicDialogues'
+			}, {
+				model: db.User,
+				as: 'User'
 			}];
 
 			if(userId) {
+				//Include the user's current vote on the comic
 				comicInclude.push({
 					model: db.ComicVote,
 					as: 'ComicVotes',
@@ -203,10 +220,27 @@ const routes = {
 				});
 			}
 
-			db.Comic.findAll({
-				where: {
-					TemplateId: templateId
+			let comicWhere = {
+				TemplateId: templateId,
+				CreatedAt: {
+					[db.op.lte]: createdAtBefore
 				},
+				ComicId: {
+					[db.op.notIn]: idNotIn
+				}
+			};
+
+			if(!includeAnonymous) {
+				comicWhere.UserId = {
+					[db.op.ne]: null
+				};
+			}
+
+			db.Comic.findAll({
+				where: comicWhere,
+				order: comicOrder,
+				offset: offset,
+				limit: limit,
 				include: comicInclude
 			})
 			.then(dbComics => {
@@ -218,35 +252,39 @@ const routes = {
 					return comic;
 				}));
 			})
-			.catch(catchError);
+			.catch(error => catchError(res, error));
 		},
 
 		submitComic: (req, res, db) => {
+			let userId = req.userId; // May be null
 			let comic = req.body.comic;
 
-			db.Comic.create({
-				TemplateId: comic.templateId,
-				ComicDialogues: comic.comicDialogues.map(cd => {
-					return {
-						TemplateDialogueId: cd.templateDialogueId,
-						Value: cd.value
-					};
+			let invalidDialogue = !!comic.comicDialogues.find(cd => !cd.value || cd.value.length > 255);
+			if(!invalidDialogue) {
+				db.Comic.create({
+					TemplateId: comic.templateId,
+					UserId: userId,
+					ComicDialogues: comic.comicDialogues.map(cd => {
+						return {
+							TemplateDialogueId: cd.templateDialogueId,
+							Value: cd.value
+						};
+					})
+				}, {
+					include: [{
+						model: db.ComicDialogue,
+						as: 'ComicDialogues'
+					}]
 				})
-			}, {
-				include: [{
-					model: db.ComicDialogue,
-					as: 'ComicDialogues'
-				}]
-			})
-			.then(dbCreatedComic => {
-				console.log(dbCreatedComic);
-
-				res.json({
-					success: true,
-					comic: mapper.fromDbComic(dbCreatedComic)
+				.then(dbCreatedComic => {
+					res.json({
+						comic: mapper.fromDbComic(dbCreatedComic)
+					})
 				})
-			})
-			.catch(catchError);
+				.catch(error => catchError(res, error));
+			} else {
+				catchError(res, 'Invalid comic data supplied.');
+			}
 		}
 	},
 
@@ -277,9 +315,7 @@ const routes = {
 					}
 				});
 			} else {
-				res.json({
-					error: 'Something went wrong. Please refresh and try again.'
-				});
+				catchError(res, 'Something went wrong. Please refresh and try again.');
 			}
 		},
 	
@@ -306,7 +342,7 @@ const routes = {
 				//Always say the same thing, even if it didn't work
 				res.json({ success: true });
 			})
-			.catch(catchError);
+			.catch(error => catchError(res, error));
 		},
 
 		changePassword: (req, res, db) => {
@@ -319,35 +355,68 @@ const routes = {
 			let comicId = req.body.comicId;
 			let value = req.body.value;
 
+			//Value can only be 1, 0, -1
 			if(value > 1 || value < -1) {
-				res.json({
-					success: false,
-					error: 'Invalid vote value supplied'
-				})
+				catchError(res, 'Invalid vote value supplied.');
 			} else {
-				db.ComicVote.findOne({
+				db.Comic.findOne({
 					where: {
-						UserId: userId,
 						ComicId: comicId
-					}
+					},
+					include: [{
+						//Include the user's current vote on the comic
+						model: db.ComicVote,
+						as: 'ComicVotes',
+						required: false,
+						where: {
+							UserId: userId
+						}
+					}]
 				})
-				.then(dbComicVote => {
-					if(dbComicVote) {
-						dbComicVote.Value = value;
-						dbComicVote.save();
-					} else {
-						db.ComicVote.create({
-							UserId: userId,
-							ComicId: comicId,
-							Value: value
-						});
-					}
+				.then(dbComic => {
+					if(dbComic) {
+						let comicRatingAdjustment = 0;
 
-					res.json({
-						success: true
-					});
+						let existingDbComicVote = dbComic.ComicVotes && dbComic.ComicVotes[0]
+							? dbComic.ComicVotes[0]
+							: null;
+
+						if(existingDbComicVote) {
+							//No need to do anything if the value is the same for some reason
+							if(existingDbComicVote.Value !== value) {
+								//Incoming value subtract the existing value (maths!)
+								comicRatingAdjustment = value - existingDbComicVote.Value;
+
+								db.ComicVote.update({
+									Value: value
+								}, {
+									where: {
+										ComicVoteId: existingDbComicVote.ComicVoteId
+									}
+								});
+							}
+						} else {
+							comicRatingAdjustment = value;
+		
+							db.ComicVote.create({
+								UserId: userId,
+								ComicId: comicId,
+								Value: value
+							});
+						}
+		
+						if(comicRatingAdjustment !== 0) {
+							dbComic.Rating = (dbComic.Rating || 0) + comicRatingAdjustment;
+							dbComic.save();
+						}
+		
+						res.json({ success: true });
+
+					} else {
+						catchError(res, 'Invalid comic ID.');
+					}
 				})
-				.catch(catchError)
+				.catch(error => catchError(res, error));
 			}
 		},
 	
@@ -362,9 +431,8 @@ const routes = {
 				Value: value
 			});
 
-			res.json({
-				success: true
-			});
+			res.json({ success: true });
+
 		},
 
 		deleteComment: (req, res, db) => {
@@ -378,9 +446,8 @@ const routes = {
 				}
 			});
 
-			res.json({
-				success: true
-			});
+			res.json({ success: true });
+
 		},
 
 		//Miscellaneous
@@ -389,7 +456,7 @@ const routes = {
 				.then(dbUsers => {
 					res.json(dbUsers.map(dbUser => mapper.fromDbUser(dbUser)));
 				})
-				.catch(catchError);
+				.catch(error => catchError(res, error));
 		}
 	}
 };

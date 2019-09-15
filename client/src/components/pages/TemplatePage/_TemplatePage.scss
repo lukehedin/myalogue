@@ -1,17 +1,24 @@
 .page-template {
-	.template-header {
-		margin-bottom: $spacing-sm;
-		h5 {
-			color: $colour-pink-a;
-		}
+	.template-navigation { 
+		margin: $spacing-sm 0;
 	}
-	.template-feed {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
 
-		.comic {
-			margin-bottom: $spacing-md;
+	.template-feed {
+		min-height: 100px;
+		position: relative;
+
+		.template-feed-inner {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			>.comic {
+				margin-bottom: $spacing-md;
+			}
+
+			.comic-list {
+				align-self: stretch;
+			}
 		}
 	}
 }
