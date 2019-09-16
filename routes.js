@@ -57,14 +57,39 @@ const routes = {
 			let userId = req.userId;
 			let username = req.username;
 	
-			if(userId) {
-				//Refresh the token after a successful authenticate
-				getAuthResult(userId, username, authResult => {
-					res.json(authResult);
-				});
-			} else {
-				res.json({});
-			}
+			let referenceDataPromises = [
+				db.Template.findOne({
+					where: {
+						UnlockedAt: {
+							[db.op.ne]: null,
+							[db.op.lte]: new Date()
+						}
+					},
+					order: [[ 'TemplateId', 'DESC' ]]
+				})
+			];
+
+			Promise.all(referenceDataPromises)
+				.then(([dbLatestTemplate]) => {
+					let referenceData = {
+						latestTemplateId: dbLatestTemplate ? dbLatestTemplate.TemplateId : null
+					};
+
+					if(userId) {
+						//Refresh the token after a successful authenticate
+						getAuthResult(userId, username, authResult => {
+							res.json({
+								...authResult,
+								referenceData
+							});
+						});
+					} else {
+						res.json({
+							referenceData
+						});
+					}
+				})
+				.catch(error => catchError(res, error));
 		},
 	
 		login: (req, res, db) => {
@@ -174,14 +199,16 @@ const routes = {
 		getTemplate: (req, res, db) => {
 			let templateId = req.body.templateId;
 
+			let templateWhere = {
+				UnlockedAt: {
+					[db.op.ne]: null,
+					[db.op.lte]: new Date()
+				}
+			}
+			if(templateId) templateWhere.TemplateId = templateId;
+
 			db.Template.findAll({
-				where: templateId
-					? {
-						TemplateId: templateId
-					}
-					: {
-						//TODO no id? get latest
-					},
+				where: templateWhere,
 				include: [{
 					model: db.TemplateDialogue,
 					as: 'TemplateDialogues'

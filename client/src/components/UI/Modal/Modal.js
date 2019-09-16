@@ -63,7 +63,7 @@ class Modal extends Component {
 							this.close();
 						}}
 					/>
-					{!Util.auth.isAuthenticated()
+					{!Util.context.isAuthenticated()
 						?<div>
 							<h6>Your comic will be submitted anonymously and you won't be able to claim ownership of it.</h6>
 							<h6>If you <Link to={Util.route.register()}>register</Link>, you can be recorded as the author.</h6>

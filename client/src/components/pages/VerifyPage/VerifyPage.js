@@ -19,7 +19,7 @@ export default class VerifyPage extends Component {
 		})
 		.then((result) => {
 			if(!result.error) {
-				Util.auth.set(result);
+				Util.context.set(result);
 				window.location.href = Util.route.home();
 			} else {
 				this.setState({

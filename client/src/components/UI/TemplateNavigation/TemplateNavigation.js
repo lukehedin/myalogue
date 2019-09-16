@@ -5,6 +5,8 @@ import Button from '../../UI/Button/Button';
 
 export default class TemplateNavigation extends Component {
 	render() {
+		let latestTemplateId = Util.context.getLatestTemplateId();
+		
 		return <div className="template-navigation">
 			<div className="button-container">
 				<Button 
@@ -29,11 +31,13 @@ export default class TemplateNavigation extends Component {
 			<div className="button-container">
 				<Button 
 					to={Util.route.template(this.props.templateId + 1)} 
+					className={this.props.templateId !== latestTemplateId ? '' : 'disabled invisible'}
 					label="Next"
 					rightIcon={Util.icon.next}
 				/>
 				<Button 
 					to={Util.route.template()} 
+					className={this.props.templateId !== latestTemplateId ? '' : 'disabled invisible'}
 					label="Latest" 
 					rightIcon={Util.icon.last}
 				/>

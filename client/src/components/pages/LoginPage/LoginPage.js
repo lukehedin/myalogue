@@ -6,7 +6,7 @@ import LoginForm from '../../UI/Forms/LoginForm/LoginForm';
 
 export default class LoginPage extends Component {
 	render() {
-		if(Util.auth.isAuthenticated()) return <Redirect to={Util.route.home()} />
+		if(Util.context.isAuthenticated()) return <Redirect to={Util.route.home()} />
 
 		return <div className="page-login">
 			<div className="container">
@@ -21,7 +21,7 @@ export default class LoginPage extends Component {
 						})
 						.then((result) => {
 							if(!result.error) {
-								Util.auth.set(result);
+								Util.context.set(result);
 								window.location.href = Util.route.home();
 							} else {
 								form.setLoading(false);

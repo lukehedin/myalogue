@@ -13,7 +13,7 @@ export default class AppHeader extends Component {
 		this.onLogout = this.onLogout.bind(this);
 	}
 	onLogout() {
-		Util.auth.clear();
+		Util.context.clear();
 	}
 	render() {
 		return <header className="app-header">
@@ -22,9 +22,9 @@ export default class AppHeader extends Component {
 					<div className="app-header-inner">
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
-						{Util.auth.isAuthenticated()
+						{Util.context.isAuthenticated()
 							? <div className="button-container">
-								<span>{Util.auth.getUsername()}</span>
+								<span>{Util.context.getUsername()}</span>
 								<Button size="sm" onClick={this.onLogout} colour="white" isHollow={true} label="Log out" />
 							</div>
 							: <div className="button-container">

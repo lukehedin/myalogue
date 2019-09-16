@@ -45,8 +45,8 @@ class Comic extends Component {
 	getBlankComicObject() {
 		return {
 			title: this.props.template.title,
-			userId: Util.auth.getUserId(),
-			username: Util.auth.getUsername(),
+			userId: Util.context.getUserId(),
+			username: Util.context.getUsername(),
 			templateId: this.props.template.templateId,
 			comicDialogues: this.props.template.templateDialogues.map(td => {
 				return {
@@ -113,6 +113,8 @@ class Comic extends Component {
 
 		htmlToImage.toPng(comic)
 			.then(dataUrl => {
+				debugger;
+				
 				this.setState({
 					isLoading: false
 				});

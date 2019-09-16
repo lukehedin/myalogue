@@ -63,7 +63,7 @@ export default class TemplatePage extends Component {
 					});
 				}
 				
-				if(comicResult && !comicResult.error) {
+				if(comicResult && !comicResult.error && comicResult.templateId === templateResult.templateId) {
 					this.setState({
 						comic: comicResult
 					});
@@ -85,7 +85,7 @@ export default class TemplatePage extends Component {
 							: this.state.template
 								? <div className="template-feed-inner">
 									<Comic template={this.state.template} comic={this.state.comic} isCallToActionVisible={!!this.state.comic} />
-									<h5>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h5>
+									<h4>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h4>
 									<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
 								</div>
 								: <p className="empty-text">Template not found.</p>

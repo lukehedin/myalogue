@@ -17,38 +17,42 @@ import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
 
 const Util = {
-	auth: {
+	context: {
 		_tokenKey: 'auth-token',
-		_getToken: () => localStorage.getItem(Util.auth._tokenKey),
+		_getToken: () => localStorage.getItem(Util.context._tokenKey),
 
 		_userId: null,
 		_username: null,
+		_referenceData: null,
 
 		set: (authResult) => {
 			authResult.token
-				? localStorage.setItem(Util.auth._tokenKey, authResult.token)
-				: localStorage.removeItem(Util.auth._tokenKey);
+				? localStorage.setItem(Util.context._tokenKey, authResult.token)
+				: localStorage.removeItem(Util.context._tokenKey);
 
-			Util.auth._userId = authResult.userId;
-			Util.auth._username = authResult.username;
+			Util.context._userId = authResult.userId;
+			Util.context._username = authResult.username;
+			Util.context._referenceData = authResult.referenceData;
 		},
 
 		clear: () => {
-			localStorage.removeItem(Util.auth._tokenKey);
+			localStorage.removeItem(Util.context._tokenKey);
 
-			Util.auth._userId = null;
-			Util.auth._username = null;
+			Util.context._userId = null;
+			Util.context._username = null;
+			Util.context._referenceData = null;
 			window.location.href = "/";
 		},
 
-		isAuthenticated: () => !!Util.auth._getToken(),
-		getUserId: () => Util.auth._userId,
-		getUsername: () => Util.auth._username
+		isAuthenticated: () => !!Util.context._getToken(),
+		getUserId: () => Util.context._userId,
+		getUsername: () => Util.context._username,
+		getLatestTemplateId: () => Util.context._referenceData ? Util.context._referenceData.latestTemplateId : null
 	},
 
 	api: {
 		post: (endpoint, params = null) => {
-			let token = Util.auth._getToken();
+			let token = Util.context._getToken();
 
 			return new Promise((resolve, reject) => {
 				axios.post(endpoint, params, {

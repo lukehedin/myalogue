@@ -26,7 +26,7 @@ export default class ComicVote extends Component {
 		});
 	}
 	render() {
-		let isLoggedIn = !!Util.auth.getUserId();
+		let isLoggedIn = !!Util.context.getUserId();
 
 		let getVoteButton = (value) => {
 			return <Button 

@@ -43,6 +43,7 @@ const mapper = {
 			templateId: dbTemplate.TemplateId,
 			title: dbTemplate.Title,
 			imageUrl: dbTemplate.ImageUrl,
+			unlockedAt: dbTemplate.UnlockedAt,
 			templateDialogues: (dbTemplate.TemplateDialogues || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)
 				.map(mapper.fromDbTemplateDialogue)
