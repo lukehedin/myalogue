@@ -120,7 +120,7 @@ export default class ComicList extends Component {
 								: <p className="empty-text">Phew! That's all the comics that have been made with this template.</p>
 							}
 						</div>
-						: <Button label="Load more comics" colour="pink" onClick={() => this.fetchData()} />
+						: <Button label="Load more" colour="black" onClick={() => this.fetchData()} />
 				}
 			</div>
 		</div>;

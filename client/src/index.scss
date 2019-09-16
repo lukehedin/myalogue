@@ -162,7 +162,7 @@ body {
 		.modal-overlay {
 			@include absoluteCover;
 			position: fixed; //override absolute
-			background-color: $colour-transparent-grey;
+			background-color: $colour-transparent-grey-dark;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -193,7 +193,6 @@ body {
 		}
 		
 		h5 {
-			color: $colour-pink-a;
 			text-transform: uppercase;
 		}
 	}

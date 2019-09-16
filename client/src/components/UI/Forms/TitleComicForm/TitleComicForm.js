@@ -11,6 +11,10 @@ class TitleComicForm extends Component {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('title')}
 			{this.props.getField('isAnonymous')}
+			<div className="button-container">
+				<Button colour="black" isHollow={true} label="Cancel" onClick={this.props.onCancel} />
+				<Button colour="pink" label="Submit" isSubmit={true} />
+			</div>
 		</form>
 	}
 }

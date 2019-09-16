@@ -8,10 +8,13 @@ import Button from '../Button/Button';
 import CopyButton from '../CopyButton/CopyButton';
 import TitleComicForm from '../Forms/TitleComicForm/TitleComicForm';
 import ComicTitle from '../ComicTitle/ComicTitle';
+import ReactSVG from 'react-svg';
 
 class Modal extends Component {
-	constructor(props) {
+	constructor(props){
 		super(props);
+
+		this.close = this.close.bind(this);
 	}
 	close() {
 		this.props.closeModal(this.props.modal.modalId);
@@ -20,6 +23,7 @@ class Modal extends Component {
 		let modal = this.props.modal;
 
 		let modalClass = "";
+		let modalIcon = null;
 		let modalTitle = modal.title;
 		let modalContent = modal.content;
 
@@ -51,7 +55,8 @@ class Modal extends Component {
 					</div>
 				</div>
 				break;
-			case Util.enum.ModalType.TitleComicModal:
+			case Util.enum.ModalType.SubmitComicModal:
+				modalTitle = "Submit comic";
 				modalClass = "modal-submit-comic";
 				modalContent = <div className="">
 					<TitleComicForm 
@@ -62,6 +67,7 @@ class Modal extends Component {
 							if(this.onSubmit) this.onSubmit(formData);
 							this.close();
 						}}
+						onCancel={this.close}
 					/>
 					{!Util.context.isAuthenticated()
 						?<div>
@@ -77,9 +83,9 @@ class Modal extends Component {
 			case Util.enum.ModalType.ShareComicModal:
 				let comicLink = Util.route.root + Util.route.template(modal.comic.templateId, modal.comic.comicId);
 
+				modalTitle = "Share comic";
 				modalClass = 'modal-share-comic';
 				modalContent = <div className="share-comic">
-					<h5>Share comic</h5>
 					<h3><ComicTitle comic={modal.comic} /></h3>
 					<input readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
@@ -91,8 +97,18 @@ class Modal extends Component {
 		}
 
 		return <div className={`modal ${modalClass}`}>
-			{modalTitle ? <div>{modalTitle}</div> : null}
-			{modalContent}
+			{modalTitle || modalIcon 
+				? <div className="modal-header">
+					{modalIcon ? <ReactSVG className="modal-icon" src={modalIcon} /> : null}
+					{modalTitle ? <h5 className="modal-title">{modalTitle}</h5> : null}
+					<div className="flex-spacer"></div>
+					<ReactSVG className="modal-close-icon" src={Util.icon.cancel} onClick={this.close} />
+				</div> 
+				: null
+			}
+			<div className="modal-content">
+				{modalContent}
+			</div>
 		</div>
 	}
 }

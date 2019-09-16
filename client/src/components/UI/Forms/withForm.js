@@ -41,7 +41,10 @@ export default function withForm(WrappedForm, formConfig) {
 
 			Object.keys(formConfig.fields).forEach(fieldName => {
 				let fieldConfig = formConfig.fields[fieldName];
-				let error = fieldConfig.getError(this.state.formData[fieldName], this.state.formData);
+				let error = fieldConfig.getError
+					? fieldConfig.getError(this.state.formData[fieldName], this.state.formData)
+					: null;
+
 				if(error) {
 					formErrors = {
 						...formErrors,
@@ -50,9 +53,11 @@ export default function withForm(WrappedForm, formConfig) {
 				}
 			});
 
-			this.setState({formErrors});
+			if(formConfig.getOverallError) formOverallError = formConfig.getOverallError(this.state.formData);
 
-			return !Util.array.any(Object.keys(formErrors));
+			this.setState({ formErrors, formOverallError });
+
+			return formOverallError || !Util.array.any(Object.keys(formErrors));
 		}
 		setOverallError(error) {
 			this.setState({

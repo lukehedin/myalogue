@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
+import { Redirect } from 'react-router-dom';
 
 import Comic from '../../UI/Comic/Comic';
 import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
@@ -27,10 +28,13 @@ export default class TemplatePage extends Component {
 	componentDidMount() {
 		this.setTemplate(this.props.templateId, this.props.comicId);
 	}
-	componentWillReceiveProps(props) {
-		if(props.templateId !== this.props.templateId) {
-			this.setTemplate(props.templateId)
-		}
+	getSnapshotBeforeUpdate(prevProps) {
+		return this.props.templateId !== prevProps.templateId
+			? this.props.templateId
+			: null;
+	}
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if(snapshot) this.setTemplate(snapshot); //a new templateId
 	}
 	setComic(comic) {
 		this.setState({
@@ -39,7 +43,7 @@ export default class TemplatePage extends Component {
 	}
 	setTemplate(templateId, comicId) {
 		this.setState({
-			templateId: templateId ? parseInt(templateId) : null,
+			templateId: templateId ? parseInt(templateId, 10) : null,
 			comic: null,
 			isLoading: true
 		});
@@ -75,23 +79,51 @@ export default class TemplatePage extends Component {
 			});
 	}
 	render() {
+		if(!this.state.isLoading && !this.state.template) return <Redirect to={Util.route.home()} />;
+
 		return <div className="page-template">
 			<div className="container">
 				<div className="row">
-					{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
-					<div className="template-feed">
-						{this.state.isLoading
-							? <div className="loader"></div>
-							: this.state.template
-								? <div className="template-feed-inner">
+					{this.state.templateId ? <TemplateNavigation className="top-template-nav" templateId={this.state.templateId} /> : null }
+				</div>
+			</div>
+			{!this.state.isLoading 
+				? <div className="template-highlight">
+					<div className="container">
+						<div className="row">
+							<div className="template-highlight-inner">
+								<div>
+									{this.props.comicId && !this.state.comic 
+										? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can make a new one right now!</p>
+										: null
+									}
 									<Comic template={this.state.template} comic={this.state.comic} isCallToActionVisible={!!this.state.comic} />
-									<h4>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h4>
-									<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
 								</div>
-								: <p className="empty-text">Template not found.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				: null
+			}
+			<div className="template-feed">
+				<div className="container">
+					<div className="row">
+						{!this.state.isLoading
+							? <div className="template-feed-inner">
+								<h4>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h4>
+								<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
+							</div>
+							: <div className="loader"></div>
 						}
 					</div>
-					{this.state.templateId && !this.state.isLoading ? <TemplateNavigation templateId={this.state.templateId} /> : null }
+				</div>
+			</div>
+			<div className="container">
+				<div className="row">
+					{!this.state.isLoading //Don't show bottom one until loaded
+						? <TemplateNavigation className="bottom-template-nav" templateId={this.state.templateId} /> 
+						: null
+					}
 				</div>
 			</div>
 		</div>;

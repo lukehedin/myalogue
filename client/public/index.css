@@ -396,22 +396,43 @@ body {
         @media (min-width: 576px) {
           body .app-container .app .modal {
             margin: 16px; } }
-        body .app-container .app .modal.modal-prompt {
-          padding: 16px; }
-          body .app-container .app .modal.modal-prompt .button-container {
-            justify-content: flex-end; }
-        body .app-container .app .modal.modal-share-comic {
-          padding: 16px; }
-          body .app-container .app .modal.modal-share-comic .share-comic {
-            display: flex;
-            flex-direction: column;
-            align-items: center; }
-            body .app-container .app .modal.modal-share-comic .share-comic > *:not(:first-child) {
-              margin-top: 16px; }
+        body .app-container .app .modal .modal-header {
+          background-color: #080808;
+          color: #fff;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 4px 8px; }
+          body .app-container .app .modal .modal-header .modal-icon {
+            height: 16px;
+            width: 16px;
+            margin-right: 8px; }
+            body .app-container .app .modal .modal-header .modal-icon path {
+              fill: #fff; }
+          body .app-container .app .modal .modal-header .modal-close-icon {
+            cursor: pointer;
+            height: 24px;
+            width: 24px; }
+            body .app-container .app .modal .modal-header .modal-close-icon path {
+              fill: #fff; }
+            body .app-container .app .modal .modal-header .modal-close-icon:hover path {
+              fill: #ff0052; }
+        body .app-container .app .modal .modal-content {
+          padding: 8px; }
+        body .app-container .app .modal.modal-prompt .modal-content .button-container {
+          justify-content: flex-end; }
+        body .app-container .app .modal.modal-share-comic .modal-content .share-comic {
+          display: flex;
+          flex-direction: column;
+          align-items: center; }
+          body .app-container .app .modal.modal-share-comic .modal-content .share-comic > *:not(:first-child) {
+            margin-top: 16px; }
       body .app-container .app .template-navigation {
         display: flex;
         flex-direction: row;
         align-items: center; }
+        body .app-container .app .template-navigation .template-info h5 {
+          color: #ff0052; }
         body .app-container .app .template-navigation .button .button-label {
           display: none; }
           @media (min-width: 992px) {
@@ -427,9 +448,24 @@ body {
         @media (min-width: 576px) {
           body .app-container .app .page-template .template-navigation {
             margin: 16px 0; } }
+        body .app-container .app .page-template .template-navigation.top-template-nav {
+          margin-top: 0; }
+      body .app-container .app .page-template .template-highlight {
+        background-color: #fff;
+        box-shadow: inset 0 0 8px #00000044;
+        -webkit-box-shadow: inset 0 0 8px #00000044;
+        -moz-box-shadow: inset 0 0 8px #00000044;
+        padding: 16px 0; }
+        @media (min-width: 768px) {
+          body .app-container .app .page-template .template-highlight {
+            padding: 32px 0; } }
       body .app-container .app .page-template .template-feed {
+        position: relative;
         min-height: 100px;
-        position: relative; }
+        padding: 16px 0; }
+        @media (min-width: 768px) {
+          body .app-container .app .page-template .template-feed {
+            padding: 32px 0; } }
         body .app-container .app .page-template .template-feed .template-feed-inner {
           display: flex;
           flex-direction: column;
@@ -459,7 +495,7 @@ body {
       z-index: 10;
       pointer-events: none; }
       body .app-container .loader.masked {
-        background-color: #00000022; }
+        background-color: #00000044; }
       body .app-container .loader.image-loader > img {
         position: absolute;
         animation: loader-spin 2s linear infinite;
@@ -542,7 +578,7 @@ body {
       left: 0;
       top: 0;
       position: fixed;
-      background-color: #00000022;
+      background-color: #00000088;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -561,5 +597,4 @@ body {
     body .app-container h4 {
       font-weight: normal; }
     body .app-container h5 {
-      color: #ff0052;
       text-transform: uppercase; }

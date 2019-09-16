@@ -7,27 +7,62 @@
 		margin: $spacing-sm;
 	}
 
-	&.modal-prompt {
-		padding: $spacing-sm;
+	.modal-header {
+		background-color: $colour-black;
+		color: $colour-white;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: $spacing-xxs $spacing-xs;
 
-		.button-container {
-			justify-content: flex-end;
+		.modal-icon {
+			height: 16px;
+			width: 16px;
+			margin-right: $spacing-xs;
+			@include svgColourStroke($colour-white);
+		}
+
+		.modal-close-icon {
+			cursor: pointer;
+			height: 24px;
+			width: 24px;
+			@include svgColourStroke($colour-white);
+
+			&:hover {
+				@include svgColourStroke($colour-pink-a);
+			}
+		}
+	}
+
+	.modal-content {
+		padding: $spacing-xs;
+	}
+
+	&.modal-prompt {
+		.modal-content {
+			.button-container {
+				justify-content: flex-end;
+			}
 		}
 	}
 
 	&.modal-share-comic {
-		padding: $spacing-sm;
+		.modal-content {
+			.share-comic {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
 
-		.share-comic {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-
-			> * {
-				&:not(:first-child) {
-					margin-top: $spacing-sm;
+				> * {
+					&:not(:first-child) {
+						margin-top: $spacing-sm;
+					}
 				}
 			}
 		}
+	}
+
+	&.modal-submit-comic {
+
 	}
 }

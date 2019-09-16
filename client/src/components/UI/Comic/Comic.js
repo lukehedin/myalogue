@@ -113,8 +113,6 @@ class Comic extends Component {
 
 		htmlToImage.toPng(comic)
 			.then(dataUrl => {
-				debugger;
-				
 				this.setState({
 					isLoading: false
 				});
@@ -143,7 +141,7 @@ class Comic extends Component {
 			});
 		} else {
 			this.props.openModal({
-				type: Util.enum.ModalType.TitleComicModal,
+				type: Util.enum.ModalType.SubmitComicModal,
 				comic: this.state.comic,
 				onSubmit: comic => {
 					this.setState({
@@ -178,8 +176,8 @@ class Comic extends Component {
 				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
 				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
 			>
-				<img onContextMenu={Util.event.absorb} className="comic-template" src={this.props.template.imageUrl} />
-				<img onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
+				<img alt="" onContextMenu={Util.event.absorb} className="comic-template" src={this.props.template.imageUrl} />
+				<img alt="" onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
 				{this.props.template.templateDialogues.map((templateDialogue, idx) => {
 					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === templateDialogue.templateDialogueId);
 					let comicDialogueValue = comicDialogue ? comicDialogue.value : '';
@@ -215,16 +213,13 @@ class Comic extends Component {
 						}
 					</div>
 				})}
-				{isComicViewOnly 
-					? <div className="comic-footer">
-						<div className="comic-footer-inner">
-							<div className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}&nbsp;&nbsp;&nbsp;&nbsp;</div>{/* spaces so the gap scales right */}
-							<div className="flex-spacer"></div>
-							<ComicTitle comic={this.state.comic} />
-						</div>
+				<div className="comic-footer">
+					<div className="comic-footer-inner">
+						<div className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}&nbsp;&nbsp;&nbsp;&nbsp;</div>{/* spaces so the gap scales right */}
+						<div className="flex-spacer"></div>
+						{isComicViewOnly ? <ComicTitle comic={this.state.comic} /> : null}
 					</div>
-					: null
-				}
+				</div>
 				{!this.state.isEditing && !isComicViewOnly
 					? <div className="begin-edit-overlay" >
 						<S4YButton size="lg" onClick={() => this.setIsEditing(true)} />

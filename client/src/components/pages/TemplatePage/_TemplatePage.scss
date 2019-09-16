@@ -4,11 +4,29 @@
 		@include oversm {
 			margin: $spacing-sm 0;
 		}
+
+		&.top-template-nav {
+			margin-top: 0;
+		}
+	}
+
+	.template-highlight {
+		background-color: $colour-white;
+		@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
+
+		padding: $spacing-sm 0;
+		@include overmd {
+			padding: $spacing-md 0;
+		}
 	}
 
 	.template-feed {
-		min-height: 100px;
 		position: relative;
+		min-height: 100px;
+		padding: $spacing-sm 0;
+		@include overmd {
+			padding: $spacing-md 0;
+		}
 
 		.template-feed-inner {
 			display: flex;

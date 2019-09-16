@@ -3,6 +3,12 @@
 	flex-direction: row;
 	align-items: center;
 
+	.template-info {
+		h5 {
+			color: $colour-pink-a;
+		}
+	}
+
 	.button {
 		.button-label {
 			display: none;

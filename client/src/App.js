@@ -23,15 +23,14 @@ class App extends Component {
 			isLoading: true
 		};
 	}
-	componentWillMount() {
-		this.unlisten = this.props.history.listen((location, action) => {
-			this.props.closeAllModals();
-		});
-	}
 	componentWillUnmount() {
 		this.unlisten();
 	}
 	componentDidMount() {
+		this.unlisten = this.props.history.listen((location, action) => {
+			this.props.closeAllModals();
+		});
+
 		Util.api.post('/api/authenticate')
 			.then(result => {
 				if(!result.error) Util.context.set(result);
@@ -42,19 +41,16 @@ class App extends Component {
 			});
 	}
 	render() {
-		let latestTemplateId = Util.context.getLatestTemplateId();
-		let redirectToLatestTemplate = <Redirect to={Util.route.template(latestTemplateId)}/>;
-
 		let content = this.state.isLoading
 			? <div className="loader image-loader">
-				<img src={loaderFace} />
+				<img alt="" src={loaderFace} />
 			</div>
 			: <div className="app">
 				<AppHeader />
 				<Switch>
-					<Route exact path="/" render={() => redirectToLatestTemplate} />
-					<Route exact path="/template/:templateId" render={({ match }) => parseInt(match.params.templateId) <= latestTemplateId ? <TemplatePage templateId={match.params.templateId} /> : redirectToLatestTemplate} />
-					<Route exact path="/template/:templateId/comic/:comicId" render={({ match }) => parseInt(match.params.templateId) <= latestTemplateId ? <TemplatePage templateId={match.params.templateId} comicId={match.params.comicId} /> : redirectToLatestTemplate} />
+					<Route exact path="/" render={() => <Redirect to={Util.route.template(Util.context.getLatestTemplateId())} />} />
+					<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
+					<Route exact path="/template/:templateId/comic/:comicId" render={({ match }) => <TemplatePage templateId={match.params.templateId} comicId={match.params.comicId} />} />
 					<Route exact path="/register" render={({ match }) => <RegisterPage />} />
 					<Route exact path="/login" render={({ match }) => <LoginPage />} />
 					<Route path="/about" render={({ match }) => <div>about</div>}/>

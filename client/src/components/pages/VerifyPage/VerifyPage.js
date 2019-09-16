@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
-import RegisterForm from '../../UI/Forms/RegisterForm/RegisterForm';
 import Button from '../../UI/Button/Button';
 
 export default class VerifyPage extends Component {

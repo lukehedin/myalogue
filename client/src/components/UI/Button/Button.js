@@ -14,7 +14,7 @@ export default class Button extends Component {
 
 			return !this.props.isIconNotSvg
 				? <ReactSVG className="button-icon" src={path} />
-				: <img className="button-icon" src={path} />
+				: <img alt="" className="button-icon" src={path} />
 		};
 
 		let leftIcon = getIcon(this.props.leftIcon);

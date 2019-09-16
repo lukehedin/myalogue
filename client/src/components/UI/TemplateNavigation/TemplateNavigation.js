@@ -7,7 +7,7 @@ export default class TemplateNavigation extends Component {
 	render() {
 		let latestTemplateId = Util.context.getLatestTemplateId();
 		
-		return <div className="template-navigation">
+		return <div className={`template-navigation ${this.props.className || ''}`}>
 			<div className="button-container">
 				<Button 
 					to={Util.route.template(1)} 
@@ -23,7 +23,7 @@ export default class TemplateNavigation extends Component {
 				/>
 			</div>
 			<div className="flex-spacer"></div>
-			<div>
+			<div className="template-info">
 				<h5>Template</h5>
 				<h3>#{this.props.templateId}</h3> 
 			</div>
