@@ -1,0 +1,114 @@
+.checkbox {
+	$checkbox-font-size-sm: 14px;
+	$checkbox-size-sm: 20px;
+	$checkbox-font-size-md: 16px;
+	$checkbox-size-md: 22px;
+
+	@mixin scaleCheckbox($size-width, $size-height, $font-size) {
+		.checkbox-inner {
+			padding-left: calc(#{$size-width} + #{$spacing-xxs});
+			font-size: $font-size;
+
+			.checkmark {
+				height: $size-height;
+				width: $size-width;
+				font-size: $size-height;
+				line-height: $size-height;
+
+				.knob {
+					height: calc(#{$size-height} - 4px);
+					width: calc(#{$size-height} - 4px);
+					top: 2px;
+					left: 2px;
+				}
+			}
+		}
+
+		&.checked {
+			.checkbox-inner {
+				.checkmark {
+					.knob {
+						height: calc(#{$size-height} - 4px);
+						width: calc(#{$size-height} - 4px);
+						left: calc(#{$size-width} - calc(#{$size-height} - 4px) - 2px);
+					}
+				}
+			}
+		}
+	}
+
+	@include scaleCheckbox($checkbox-size-sm, $checkbox-size-sm,$checkbox-font-size-sm);
+	@include oversm {
+		@include scaleCheckbox($checkbox-size-md, $checkbox-size-md, $checkbox-font-size-md);
+	}
+
+	.checkbox-inner {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		position: relative;
+		cursor: pointer;
+		@include noSelect;
+
+		input {
+			cursor: pointer;
+			position: absolute;
+			opacity: 0;
+			height: 0;
+			width: 0;
+		}
+
+		.checkbox-label {
+			margin-top: 2px;
+		}
+
+		.checkmark {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-color: $colour-grey-c;
+			@include borderRadius(4px);
+			color: $colour-white;
+			font-weight: bold;
+		}
+	}
+
+	&:hover {
+		.checkmark {
+			background-color: lighten($colour-grey-c, 6);
+		}
+	}
+
+	&.checked {
+		.checkmark {
+			background-color: $colour-pink-a;
+		}
+
+		&:hover {
+			.checkmark {
+				background-color: lighten($colour-pink-a, 6);
+			}
+		}
+	}
+
+	&.switch {
+		@include scaleCheckbox(($checkbox-size-sm*1.5), $checkbox-size-sm, $checkbox-font-size-sm);
+		@include oversm {
+			@include scaleCheckbox(($checkbox-size-md*1.5), $checkbox-size-md, $checkbox-font-size-md);
+		}
+
+		.checkbox-inner {
+			.checkmark {
+				@include borderRadius(100px);
+				overflow: hidden;
+
+				.knob {
+					background-color: $colour-white;
+					@include borderRadius(50%);
+					position: absolute;
+					transition: left 0.2s;
+				}
+			}
+		}
+	}
+}

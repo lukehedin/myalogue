@@ -97,7 +97,7 @@ export default class TemplatePage extends Component {
 										? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can make a new one right now!</p>
 										: null
 									}
-									<Comic template={this.state.template} comic={this.state.comic} isCallToActionVisible={!!this.state.comic} />
+									<Comic template={this.state.template} comic={this.state.comic} />
 								</div>
 							</div>
 						</div>
@@ -110,7 +110,6 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						{!this.state.isLoading
 							? <div className="template-feed-inner">
-								<h4>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h4>
 								<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
 							</div>
 							: <div className="loader"></div>

@@ -175,7 +175,7 @@ body {
 
 		.empty-text {
 			font-size: 14px;
-			color: $colour-grey-c;
+			color: $colour-grey-d;
 		}
 
 		a {
@@ -194,6 +194,19 @@ body {
 		
 		h5 {
 			text-transform: uppercase;
+		}
+
+		input, select, textarea {
+			&:not([type=checkbox]), &:not([type=radio]) {
+				padding: $spacing-xxs $spacing-xs;
+				@include borderRadius(4px);
+
+				border: 1px solid $colour-grey-b;
+				outline: none;
+				-webkit-box-shadow: none;
+				-moz-box-shadow: none;
+				box-shadow: none;
+			}
 		}
 	}
 }

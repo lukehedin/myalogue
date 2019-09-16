@@ -1,6 +1,6 @@
 .comic {
 	position: relative;
-	border: 1px solid $colour-grey-c;
+	border: 1px solid $colour-grey-d;
 	background-color: $colour-white;
 	@include boxShadow(4px, 4px, 2px, #00000022);
 	@include borderRadius(2px);
@@ -27,7 +27,7 @@
 
 			&.edit-empty {
 				cursor: text;
-				border: 1px solid $colour-grey-b;
+				border: 1px solid $colour-grey-c;
 			}
 
 			&.edit-invalid {
@@ -48,11 +48,6 @@
 
 			textarea {
 				resize: none;
-				outline: none;
-
-				-webkit-box-shadow: none;
-				-moz-box-shadow: none;
-				box-shadow: none;
 			}
 		}
 
@@ -68,7 +63,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: flex-end;
-				color: $colour-grey-b;
+				color: $colour-grey-c;
 
 				.comic-link {
 					text-align: left;
@@ -151,6 +146,12 @@
 		.edit-toolbar {
 			display: flex;
 			flex-direction: row;
+			align-items: center;
+
+			.progress-bar {
+				flex: 1;
+				margin-right: $spacing-sm;
+			}
 		}
 
 		.comic-lower-inner {

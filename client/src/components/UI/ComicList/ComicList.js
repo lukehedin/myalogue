@@ -4,6 +4,7 @@ import Util from '../../../Util';
 import Comic from '../../UI/Comic/Comic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
+import Checkbox from '../Checkbox/Checkbox';
 
 //this.props.template
 export default class ComicList extends Component {
@@ -98,12 +99,11 @@ export default class ComicList extends Component {
 						]} 
 					/>
 					<div className="flex-spacer"></div>
-					<Button
-						size="sm" 
-						label={`Anonymous authors ${this.state.includeAnonymous ? 'ON' : 'OFF'}`} 
-						leftIcon={Util.icon.avatar} 
-						isHollow={!this.state.includeAnonymous} 
-						onClick={() => this.setIncludeAnonymous(!this.state.includeAnonymous)}
+					<Checkbox 
+						isSwitch={true}
+						onChange={this.setIncludeAnonymous} 
+						value={this.state.includeAnonymous}
+						label="Show anonymous authors"
 					/>
 				</div>
 			<div className="comic-list-inner">
@@ -111,11 +111,11 @@ export default class ComicList extends Component {
 					return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
 				})}
 				{this.state.isLoading 
-					? <div className="loader masked"></div> 
+					? <div className="loader"></div> 
 					: this.state.isNoMore
 						? <div>
 							{Util.array.none(this.state.comics) 
-								? <p className="empty-text">No comics have been made using this template. You could make the first one! Think of the possibilities!</p> 
+								? <p className="empty-text">No comics have been made using this template. You could make the very first one!</p> 
 								: <p className="empty-text">Phew! That's all the comics that have been made with this template.</p>
 							}
 						</div>

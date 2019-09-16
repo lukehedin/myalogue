@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
+import { Link } from 'react-router-dom';
 
 import Button from '../../UI/Button/Button';
 
@@ -25,7 +26,7 @@ export default class TemplateNavigation extends Component {
 			<div className="flex-spacer"></div>
 			<div className="template-info">
 				<h5>Template</h5>
-				<h3>#{this.props.templateId}</h3> 
+				<h3><Link to={Util.route.templateList()}>{this.props.templateId}</Link></h3>
 			</div>
 			<div className="flex-spacer"></div>
 			<div className="button-container">

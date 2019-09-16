@@ -11,6 +11,7 @@ import S4YButton from '../S4YButton/S4YButton';
 import Button from '../Button/Button';
 import ComicVote from '../ComicVote/ComicVote';
 import ComicTitle from '../ComicTitle/ComicTitle';
+import ProgressBar from '../ProgressBar/ProgressBar';
 
 //this.props.template + this.props.comic (optional)
 class Comic extends Component {
@@ -20,7 +21,6 @@ class Comic extends Component {
 		this.state = {
 			isLoading: false,
 			isEditing: false,
-			isCallToActionVisible: this.props.isCallToActionVisible,
 			
 			comic: this.props.comic || this.getBlankComicObject(),
 
@@ -75,7 +75,6 @@ class Comic extends Component {
 	setIsEditing(isEditing) {
 		this.setState({
 			isEditing,
-			isCallToActionVisible: false,
 			comic: this.getBlankComicObject()
 		});
 
@@ -221,7 +220,8 @@ class Comic extends Component {
 			<div className="comic-lower">
 				{this.state.isEditing
 					? <div className="edit-toolbar">
-						<Button tabIndex={lastTabIndex + 1} colour="pink" label="I'm done!" onClick={this.submitComic} />
+						<ProgressBar amount={this.state.comic.comicDialogues.filter(cd => !!cd.value).length} total={this.state.comic.comicDialogues.length} />
+						<Button className={this.state.comic.comicDialogues.find(cd => !cd.value) ? 'disabled' : ''} tabIndex={lastTabIndex + 1} colour="pink" label="I'm done!" onClick={this.submitComic} />
 					</div>
 					: null
 				}

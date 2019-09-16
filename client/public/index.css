@@ -50,9 +50,10 @@ body {
       body .app-container .app .comic-list {
         position: relative; }
         body .app-container .app .comic-list .filters {
-          margin: 16px 0;
+          margin-bottom: 16px;
           display: flex;
-          flex-direction: row; }
+          flex-direction: row;
+          align-items: center; }
         body .app-container .app .comic-list .comic-list-inner {
           position: relative;
           min-height: 200px;
@@ -114,11 +115,7 @@ body {
               text-align: center;
               background-color: transparent; }
             body .app-container .app .comic .comic-inner .dialogue textarea {
-              resize: none;
-              outline: none;
-              -webkit-box-shadow: none;
-              -moz-box-shadow: none;
-              box-shadow: none; }
+              resize: none; }
           body .app-container .app .comic .comic-inner .comic-footer {
             position: absolute;
             bottom: 0;
@@ -196,7 +193,11 @@ body {
               margin-top: 16px; }
           body .app-container .app .comic .comic-lower .edit-toolbar {
             display: flex;
-            flex-direction: row; }
+            flex-direction: row;
+            align-items: center; }
+            body .app-container .app .comic .comic-lower .edit-toolbar .progress-bar {
+              flex: 1;
+              margin-right: 16px; }
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
@@ -442,7 +443,7 @@ body {
         display: flex;
         flex-direction: row;
         align-items: center; }
-        body .app-container .app .template-navigation .template-info h5 {
+        body .app-container .app .template-navigation .template-info h3 {
           color: #ff0052; }
         body .app-container .app .template-navigation .button .button-label {
           display: none; }
@@ -452,6 +453,136 @@ body {
       body .app-container .app .s4y-button .button-icon {
         width: 32px;
         height: 32px; }
+      body .app-container .app .progress-bar {
+        height: 10px;
+        width: 100%;
+        background-color: #efefef;
+        border-radius: 100px;
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+        overflow: hidden; }
+        body .app-container .app .progress-bar .progress-bar-inner {
+          height: 100%;
+          transition: width 0.2s;
+          background-color: #ff0052; }
+      body .app-container .app .checkbox .checkbox-inner {
+        padding-left: calc(20px + 4px);
+        font-size: 14px; }
+        body .app-container .app .checkbox .checkbox-inner .checkmark {
+          height: 20px;
+          width: 20px;
+          font-size: 20px;
+          line-height: 20px; }
+          body .app-container .app .checkbox .checkbox-inner .checkmark .knob {
+            height: calc(20px - 4px);
+            width: calc(20px - 4px);
+            top: 2px;
+            left: 2px; }
+      body .app-container .app .checkbox.checked .checkbox-inner .checkmark .knob {
+        height: calc(20px - 4px);
+        width: calc(20px - 4px);
+        left: calc(20px - calc(20px - 4px) - 2px); }
+      @media (min-width: 576px) {
+        body .app-container .app .checkbox .checkbox-inner {
+          padding-left: calc(22px + 4px);
+          font-size: 16px; }
+          body .app-container .app .checkbox .checkbox-inner .checkmark {
+            height: 22px;
+            width: 22px;
+            font-size: 22px;
+            line-height: 22px; }
+            body .app-container .app .checkbox .checkbox-inner .checkmark .knob {
+              height: calc(22px - 4px);
+              width: calc(22px - 4px);
+              top: 2px;
+              left: 2px; }
+        body .app-container .app .checkbox.checked .checkbox-inner .checkmark .knob {
+          height: calc(22px - 4px);
+          width: calc(22px - 4px);
+          left: calc(22px - calc(22px - 4px) - 2px); } }
+      body .app-container .app .checkbox .checkbox-inner {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none; }
+        body .app-container .app .checkbox .checkbox-inner input {
+          cursor: pointer;
+          position: absolute;
+          opacity: 0;
+          height: 0;
+          width: 0; }
+        body .app-container .app .checkbox .checkbox-inner .checkbox-label {
+          margin-top: 2px; }
+        body .app-container .app .checkbox .checkbox-inner .checkmark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: #969696;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          color: #fff;
+          font-weight: bold; }
+      body .app-container .app .checkbox:hover .checkmark {
+        background-color: #a5a5a5; }
+      body .app-container .app .checkbox.checked .checkmark {
+        background-color: #ff0052; }
+      body .app-container .app .checkbox.checked:hover .checkmark {
+        background-color: #ff1f67; }
+      body .app-container .app .checkbox.switch .checkbox-inner {
+        padding-left: calc(30px + 4px);
+        font-size: 14px; }
+        body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
+          height: 20px;
+          width: 30px;
+          font-size: 20px;
+          line-height: 20px; }
+          body .app-container .app .checkbox.switch .checkbox-inner .checkmark .knob {
+            height: calc(20px - 4px);
+            width: calc(20px - 4px);
+            top: 2px;
+            left: 2px; }
+      body .app-container .app .checkbox.switch.checked .checkbox-inner .checkmark .knob {
+        height: calc(20px - 4px);
+        width: calc(20px - 4px);
+        left: calc(30px - calc(20px - 4px) - 2px); }
+      @media (min-width: 576px) {
+        body .app-container .app .checkbox.switch .checkbox-inner {
+          padding-left: calc(33px + 4px);
+          font-size: 16px; }
+          body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
+            height: 22px;
+            width: 33px;
+            font-size: 22px;
+            line-height: 22px; }
+            body .app-container .app .checkbox.switch .checkbox-inner .checkmark .knob {
+              height: calc(22px - 4px);
+              width: calc(22px - 4px);
+              top: 2px;
+              left: 2px; }
+        body .app-container .app .checkbox.switch.checked .checkbox-inner .checkmark .knob {
+          height: calc(22px - 4px);
+          width: calc(22px - 4px);
+          left: calc(33px - calc(22px - 4px) - 2px); } }
+      body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
+        border-radius: 100px;
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+        overflow: hidden; }
+        body .app-container .app .checkbox.switch .checkbox-inner .checkmark .knob {
+          background-color: #fff;
+          border-radius: 50%;
+          -webkit-border-radius: 50%;
+          -moz-border-radius: 50%;
+          position: absolute;
+          transition: left 0.2s; }
       body .app-container .app .page-template .template-navigation {
         margin: 8px 0; }
         @media (min-width: 576px) {
@@ -607,3 +738,13 @@ body {
       font-weight: normal; }
     body .app-container h5 {
       text-transform: uppercase; }
+    body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
+      padding: 4px 8px;
+      border-radius: 4px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border: 1px solid #c8c8c8;
+      outline: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none; }

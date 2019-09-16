@@ -2,9 +2,10 @@
 	position: relative;
 
 	.filters {
-		margin: $spacing-sm 0;
+		margin-bottom: $spacing-sm;
 		display: flex;
 		flex-direction: row;
+		align-items: center;
 	}
 
 	.comic-list-inner {
