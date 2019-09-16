@@ -1,4 +1,4 @@
-import { OPEN_MODAL, CLOSE_MODAL } from "../actionTypes";
+import { OPEN_MODAL, CLOSE_MODAL, CLOSE_ALL_MODALS } from "../actionTypes";
 
 const initialState = {
   modals: []
@@ -21,6 +21,12 @@ export default function(state = initialState, action) {
 					? state.modals.filter(modal => modal.modalId !== modalId)
 					: state.modals.filter((modal, idx) => idx !== state.modals.length - 1)
     		};
+		}
+		case CLOSE_ALL_MODALS: {
+			return {
+				...state,
+				modals: []
+			};
 		}
     	default:
     		return state;

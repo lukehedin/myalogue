@@ -80,8 +80,16 @@ export default function withForm(WrappedForm, formConfig) {
 				case Util.enum.FieldType.Textarea:
 					field = <div>textarea todo</div>;
 					break;
+				case Util.enum.FieldType.Checkbox:
+					field = <input 
+						type="checkbox" 
+						onChange={(e) => this.updateFormData(fieldName, e.target.checked)}
+						value={this.state.formData[fieldName]}
+					/>;
+					break;
 				default:
 					field = <input 
+						placeholder={fieldConfig.placeholder || null}
 						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
 						type={fieldConfig.isPassword ? "password" : "text"} 
 						value={this.state.formData[fieldName]} />;

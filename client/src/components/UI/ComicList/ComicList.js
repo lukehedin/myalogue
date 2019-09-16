@@ -15,7 +15,7 @@ export default class ComicList extends Component {
 			isLoading: true,
 			
 			includeAnonymous: true,
-			sortBy: Util.enum.ComicSortBy.TopRated,
+			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
 			createdAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!

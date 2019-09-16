@@ -1,8 +1,11 @@
 .app-header {
 	background: $colour-black;
-	padding: $spacing-xxs 0;
 	color: $colour-white;
 	@include boxShadow(0px, 4px, 4px, #00000022);
+
+	@include oversm {
+		padding: $spacing-xxs 0;
+	}
 
 	.app-header-inner {
 		display: flex;
@@ -10,7 +13,7 @@
 		align-items: center;
 
 		.app-logo {
-			height: 24px;
+			height: 32px;
 		}
 	
 		.app-title {

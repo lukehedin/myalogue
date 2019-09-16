@@ -47,7 +47,12 @@ let db = {
 	
 	//Tables
 	Comic: defineTable('Comic', {
-		Name: Sequelize.STRING,
+		Title: Sequelize.STRING,
+		IsAnonymous: {
+			type: Sequelize.BOOLEAN,
+			allowNull: false,
+			defaultValue: false
+		},
 		Rating: {
 			type: Sequelize.INTEGER,
 			defaultValue: 0,
@@ -83,10 +88,9 @@ let db = {
 	}),
 
 	Template: defineTable('Template', {
-		Name: Sequelize.STRING,
+		Title: Sequelize.STRING,
 		UnlockedAt: Sequelize.DATE,
-		ImageUrl: Sequelize.STRING,
-		Ordinal: Sequelize.INTEGER
+		ImageUrl: Sequelize.STRING
 	}),
 
 	TemplateDialogue: defineTable('TemplateDialogue', {

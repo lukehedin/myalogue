@@ -4,12 +4,14 @@ import { openModal } from '../../../redux/actions';
 import Textarea from 'react-textarea-autosize';
 import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
+import { Link } from 'react-router-dom';
 
 import frame from './frame.png';
 
+import S4YButton from '../S4YButton/S4YButton';
 import Button from '../Button/Button';
 import ComicVote from '../ComicVote/ComicVote';
-import ReactSVG from 'react-svg';
+import ComicTitle from '../ComicTitle/ComicTitle';
 
 //this.props.template + this.props.comic (optional)
 class Comic extends Component {
@@ -19,7 +21,7 @@ class Comic extends Component {
 		this.state = {
 			isLoading: false,
 			isEditing: false,
-			isShareOverlayVisible: false,
+			isCallToActionVisible: this.props.isCallToActionVisible,
 			
 			comic: this.props.comic || this.getBlankComicObject(),
 
@@ -28,18 +30,21 @@ class Comic extends Component {
 
 		this.comicRef = React.createRef();
 		this.textareaRefs = {};
+		this.touchTimer = null;
 
-		this.toImage = this.toImage.bind(this);
 		this.onDialogueBoxClick = this.onDialogueBoxClick.bind(this);
-		this.setIsShareOverlayVisible = this.setIsShareOverlayVisible.bind(this);
 		this.setIsEditing = this.setIsEditing.bind(this);
 		this.setComicDialogueValue = this.setComicDialogueValue.bind(this);
 		this.submitComic = this.submitComic.bind(this);
 		this.getBlankComicObject = this.getBlankComicObject.bind(this);
+		this.openShareComicModal  = this.openShareComicModal.bind(this);
+
+		this.startShareTimeout = this.startShareTimeout.bind(this);
+		this.cancelShareTimeout = this.cancelShareTimeout.bind(this);
 	}
 	getBlankComicObject() {
 		return {
-			name: this.props.template.name,
+			title: this.props.template.title,
 			userId: Util.auth.getUserId(),
 			username: Util.auth.getUsername(),
 			templateId: this.props.template.templateId,
@@ -70,7 +75,9 @@ class Comic extends Component {
 	}
 	setIsEditing(isEditing) {
 		this.setState({
-			isEditing
+			isEditing,
+			isCallToActionVisible: false,
+			comic: this.getBlankComicObject()
 		});
 
 		if(isEditing) {
@@ -81,26 +88,43 @@ class Comic extends Component {
 			}, 200);
 		}
 	}
-	setIsShareOverlayVisible(isShareOverlayVisible){
-		this.setState({
-			isShareOverlayVisible
-		});
-	}
 	onDialogueBoxClick(e) {
 		if(e.target.classList.contains('dialogue')) {
 			e.target.firstElementChild.focus();
 		}
 	}
-	toImage(){
+	startShareTimeout(e) {
+		let isComicViewOnly = this.state.comic.comicId;
+		if(isComicViewOnly) this.touchTimer = setTimeout(this.openShareComicModal, 500);
+
+		Util.selector.getRootScrollElement().addEventListener('scroll', this.cancelShareTimeout);
+	}
+	cancelShareTimeout() {
+		if(this.touchTimer) clearTimeout(this.touchTimer);
+		
+		Util.selector.getRootScrollElement().removeEventListener('scroll', this.cancelShareTimeout);
+	}
+	openShareComicModal(noUse){
+		this.setState({
+			isLoading: true
+		});
+
 		let comic = this.comicRef.current;
+
 		htmlToImage.toPng(comic)
-			.then(function (dataUrl) {
-				var img = new Image();
-				img.src = dataUrl;
-				document.body.appendChild(img);
+			.then(dataUrl => {
+				this.setState({
+					isLoading: false
+				});
+
+				this.props.openModal({
+					type: Util.enum.ModalType.ShareComicModal,
+					comicImageSrc: dataUrl,
+					comic: this.state.comic
+				});
 			})
-			.catch(function (error) {
-				console.error('oops, something went wrong!', error);
+			.catch((error) => {
+				console.error('Could not generate comic image', error);
 			});
 	}
 	submitComic() {
@@ -116,57 +140,44 @@ class Comic extends Component {
 				invalidTemplateDialogueIds
 			});
 		} else {
-			let submitComicAction = () => {
-				this.setState({
-					isLoading: true
-				});
+			this.props.openModal({
+				type: Util.enum.ModalType.TitleComicModal,
+				comic: this.state.comic,
+				onSubmit: comic => {
+					this.setState({
+						isLoading: true
+					});
 
-				Util.api.post('/api/submitComic', {
-					comic: this.state.comic
-				})
-				.then(result => {
-					if(!result.error) {
-						this.props.openModal({
-							type: Util.enum.ModalType.Alert,
-							content: <div>
-								<p>Your comic (#{this.props.template.ordinal}-{result.comic.comicId}) was submitted successfully.</p>
-							</div>
-						});
-
-						this.setState({
-							isLoading: false,
-							isEditing: false,
-							comic: this.getBlankComicObject()
-						})
-					}
-				});
-			}
-
-			//TODO confirm modal if not logged in
-			if(!Util.auth.isAuthenticated()){
-				this.props.openModal({
-					type: Util.enum.ModalType.Confirm,
-					yesLabel: 'Yes. Submit my comic anonymously.',
-					yesFn: submitComicAction,
-					noLabel: 'No. I will log in or register first.',
-					content: <div>
-						<p>You aren't currently logged in. If you submit this comic, it will be submitted anonymously and you will never be able to claim ownership of it.</p>
-						<p>Do you want to submit this comic anonymously?</p>
-					</div>
-				});
-			} else {
-				submitComicAction();
-			}
+					Util.api.post('/api/submitComic', {
+						comic: comic
+					})
+					.then(result => {
+						if(!result.error) {
+							//Turn the comic into a readonly viewing one
+							this.setState({
+								comic: result,
+								isLoading: false,
+								isEditing: false,
+							}, this.openShareComicModal);
+						}
+					});
+				}
+			});
 		}
 	}
 	render(){
 		let isComicViewOnly = this.state.comic.comicId;
 
 		return <div className="comic">
-			{this.state.isLoading ? <div className="loader"></div> : null}
-			<div className="comic-inner" ref={this.comicRef}>
-				<img className="comic-template" src={this.props.template.imageUrl} />
-				<img className="comic-frame" src={frame} />
+			{this.state.isLoading ? <div className="loader masked"></div> : null}
+			<div className={`comic-inner ${isComicViewOnly ? 'view-only no-select' : ''}`} 
+				ref={this.comicRef}
+				onTouchStart={isComicViewOnly ? this.startShareTimeout : null}
+				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
+				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
+			>
+				<img onContextMenu={Util.event.absorb} className="comic-template" src={this.props.template.imageUrl} />
+				<img onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
 				{this.props.template.templateDialogues.map((templateDialogue, idx) => {
 					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === templateDialogue.templateDialogueId);
 					let comicDialogueValue = comicDialogue ? comicDialogue.value : '';
@@ -202,29 +213,19 @@ class Comic extends Component {
 						}
 					</div>
 				})}
-				<div className="comic-footer">
-					<div className="comic-footer-inner">
-						<div>s4ycomic.com</div>
-						<div className="flex-spacer"></div>
-						<div>
-							<span>#{this.props.template.ordinal}</span>
-							<span>-{this.state.comic.comicId ? `${this.state.comic.comicId}` : '_'}</span>
-							<span> by {this.state.comic.username}</span>
+				{isComicViewOnly 
+					? <div className="comic-footer">
+						<div className="comic-footer-inner">
+							<div className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}&nbsp;&nbsp;&nbsp;&nbsp;</div>{/* spaces so the gap scales right */}
+							<div className="flex-spacer"></div>
+							<ComicTitle comic={this.state.comic} />
 						</div>
-					</div>
-				</div>
-				{!this.state.isEditing && !isComicViewOnly
-					? <div className="begin-edit-overlay" >
-						<Button size="lg" colour="pink" label="Speak 4 Yourself" onClick={() => this.setIsEditing(true)} />
 					</div>
 					: null
 				}
-				{isComicViewOnly
-					? <div className={`share-overlay ${this.state.isShareOverlayVisible ? '' : 'invisible'}`} 
-						onTouchStart={() => this.setIsShareOverlayVisible(true)}
-						onMouseDown={() => this.setIsShareOverlayVisible(true)}
-						>
-						<Button label="Share" onClick={this.toImage} />
+				{!this.state.isEditing && !isComicViewOnly
+					? <div className="begin-edit-overlay" >
+						<S4YButton size="lg" onClick={() => this.setIsEditing(true)} />
 					</div>
 					: null
 				}
@@ -237,7 +238,10 @@ class Comic extends Component {
 					: null
 				}
 				{isComicViewOnly
-					? <div className="">
+					? <div className="comic-lower-inner">
+						<S4YButton onClick={() => this.setIsEditing(true)} />
+						<div className="flex-spacer"></div>
+						<Button isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={this.openShareComicModal} />
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
 					: null

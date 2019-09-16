@@ -1,6 +1,9 @@
 .page-template {
 	.template-navigation { 
-		margin: $spacing-sm 0;
+		margin: $spacing-xs 0;
+		@include oversm {
+			margin: $spacing-sm 0;
+		}
 	}
 
 	.template-feed {

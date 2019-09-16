@@ -23,6 +23,31 @@ const getAuthResult = (userId, username, callback) => {
 	})
 };
 
+//Common functions
+const getDbComicInclude = (db, userId) => {
+	let include = [{
+		model: db.ComicDialogue,
+		as: 'ComicDialogues'
+	}, {
+		model: db.User,
+		as: 'User'
+	}];
+
+	if(userId) {
+		//Include the user's current vote on the comic
+		include.push({
+			model: db.ComicVote,
+			as: 'ComicVotes',
+			required: false,
+			where: {
+				UserId: userId
+			}
+		});
+	}
+
+	return include;
+}
+
 const routes = {
 
 	//Authentication
@@ -147,12 +172,12 @@ const routes = {
 		},
 	
 		getTemplate: (req, res, db) => {
-			let ordinal = req.body.ordinal;
+			let templateId = req.body.templateId;
 
 			db.Template.findAll({
-				where: ordinal
+				where: templateId
 					? {
-						Ordinal: ordinal
+						TemplateId: templateId
 					}
 					: {
 						//TODO no id? get latest
@@ -162,13 +187,33 @@ const routes = {
 					as: 'TemplateDialogues'
 				}],
 				limit: 1,
-				order: [[ 'Ordinal', 'DESC' ]]
+				order: [[ 'TemplateId', 'DESC' ]]
 			})
 			.then(dbTemplates => {
 				if(dbTemplates && dbTemplates[0]) {
 					res.json(mapper.fromDbTemplate(dbTemplates[0]))
 				} else {
 					catchError(res, 'Template not found.');
+				}
+			})
+			.catch(error => catchError(res, error));
+		},
+
+		getComic: (req, res, db) => {
+			let userId = req.userId; //Might be null
+			let comicId = req.body.comicId;
+
+			db.Comic.findOne({
+				where: {
+					ComicId: comicId
+				},
+				include: getDbComicInclude(db, userId)
+			})
+			.then(dbComic => {
+				if(dbComic) {
+					res.json(mapper.fromDbComic(dbComic));
+				} else {
+					catchError(res, 'Comic not found.');
 				}
 			})
 			.catch(error => catchError(res, error));
@@ -200,26 +245,6 @@ const routes = {
 			};
 			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
 
-			let comicInclude = [{
-				model: db.ComicDialogue,
-				as: 'ComicDialogues'
-			}, {
-				model: db.User,
-				as: 'User'
-			}];
-
-			if(userId) {
-				//Include the user's current vote on the comic
-				comicInclude.push({
-					model: db.ComicVote,
-					as: 'ComicVotes',
-					required: false,
-					where: {
-						UserId: userId
-					}
-				});
-			}
-
 			let comicWhere = {
 				TemplateId: templateId,
 				CreatedAt: {
@@ -241,17 +266,9 @@ const routes = {
 				order: comicOrder,
 				offset: offset,
 				limit: limit,
-				include: comicInclude
+				include: getDbComicInclude(db, userId)
 			})
-			.then(dbComics => {
-				res.json(dbComics.map(dbComic => {
-					let comic = mapper.fromDbComic(dbComic);
-					if(dbComic.ComicVotes && dbComic.ComicVotes.length === 1) {
-						comic.voteValue = dbComic.ComicVotes[0].Value;
-					}
-					return comic;
-				}));
-			})
+			.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 			.catch(error => catchError(res, error));
 		},
 
@@ -259,11 +276,13 @@ const routes = {
 			let userId = req.userId; // May be null
 			let comic = req.body.comic;
 
-			let invalidDialogue = !!comic.comicDialogues.find(cd => !cd.value || cd.value.length > 255);
-			if(!invalidDialogue) {
+			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 });
+			let isValidDialogue = !comic.comicDialogues.find(cd => !validator.isLength(cd.value, { min: 1, max: 255 }));
+			
+			if(isValidTitle && isValidDialogue) {
 				db.Comic.create({
 					TemplateId: comic.templateId,
-					UserId: userId,
+					UserId: comic.isAnonymous ? null : userId,
 					ComicDialogues: comic.comicDialogues.map(cd => {
 						return {
 							TemplateDialogueId: cd.templateDialogueId,
@@ -277,9 +296,7 @@ const routes = {
 					}]
 				})
 				.then(dbCreatedComic => {
-					res.json({
-						comic: mapper.fromDbComic(dbCreatedComic)
-					})
+					res.json(mapper.fromDbComic(dbCreatedComic))
 				})
 				.catch(error => catchError(res, error));
 			} else {
@@ -293,7 +310,7 @@ const routes = {
 			let userId = req.userId;
 	
 			let username = req.body.username.trim();
-			let isValidUsername = validator.isLength(username, {min: 3, max: 20 });
+			let isValidUsername = validator.isLength(username, { min: 3, max: 20 });
 	
 			if(isValidUsername) {
 				db.User.findOne({
@@ -448,15 +465,6 @@ const routes = {
 
 			res.json({ success: true });
 
-		},
-
-		//Miscellaneous
-		customers: (req, res, db) => {
-			db.User.findAll()
-				.then(dbUsers => {
-					res.json(dbUsers.map(dbUser => mapper.fromDbUser(dbUser)));
-				})
-				.catch(error => catchError(res, error));
 		}
 	}
 };

@@ -15,13 +15,18 @@ const mapper = {
 	fromDbComic: (dbComic) => {
 		return {
 			comicId: dbComic.ComicId,
+			title: dbComic.Title || "Untitled",
 			templateId: dbComic.TemplateId,
-			userId: dbComic.UserId,
+			isAnonymous: dbComic.IsAnonymous,
+			userId: dbComic.IsAnonymous ? null : dbComic.UserId,
 			rating: dbComic.Rating || 0,
-			username: dbComic.User ? dbComic.User.Username : 'anonymous',
+			username: dbComic.IsAnonymous || !dbComic.User ? 'anonymous' : dbComic.User.Username,
 			comicDialogues: (dbComic.ComicDialogues || [])
 				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)
-				.map(mapper.fromDbComicDialogue)
+				.map(mapper.fromDbComicDialogue),
+			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length === 1
+				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
+				: null
 		}
 	},
 
@@ -36,8 +41,7 @@ const mapper = {
 	fromDbTemplate: (dbTemplate) => {
 		return {
 			templateId: dbTemplate.TemplateId,
-			name: dbTemplate.Name,
-			ordinal: dbTemplate.Ordinal,
+			title: dbTemplate.Title,
 			imageUrl: dbTemplate.ImageUrl,
 			templateDialogues: (dbTemplate.TemplateDialogues || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)

@@ -4,6 +4,7 @@
 	@include borderRadius(4px);
 	text-decoration: none;
 	border: 1px solid;
+	@include noSelect();
 
 	display: inline-flex;
 	align-items: center;

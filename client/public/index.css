@@ -4,393 +4,451 @@ body {
   font-family: sans-serif;
   background-color: #efefef;
   color: #080808; }
-  body .app {
-    text-align: center;
+  body .app-container {
     position: relative;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
     overflow-x: hidden; }
-    body .app .app-header {
-      background: #080808;
-      padding: 4px 0;
-      color: #fff;
-      box-shadow: 0px 4px 4px #00000022;
-      -webkit-box-shadow: 0px 4px 4px #00000022;
-      -moz-box-shadow: 0px 4px 4px #00000022; }
-      body .app .app-header .app-header-inner {
-        display: flex;
-        flex-direction: row;
-        align-items: center; }
-        body .app .app-header .app-header-inner .app-logo {
-          height: 24px; }
-        body .app .app-header .app-header-inner .app-title {
-          font-size: 1.5em;
-          margin: 0; }
-    body .app .app-footer {
-      background: #080808;
-      padding: 4px 0;
-      color: #fff;
-      box-shadow: 0px -4px 4px #00000022;
-      -webkit-box-shadow: 0px -4px 4px #00000022;
-      -moz-box-shadow: 0px -4px 4px #00000022; }
-      body .app .app-footer .app-footer-inner {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        text-align: right; }
-        body .app .app-footer .app-footer-inner .app-logo {
-          height: 24px; }
-    body .app ul {
-      padding: 0;
-      list-style: none;
-      width: 30%;
-      margin: auto; }
-    body .app li {
-      font-size: 1.2rem;
-      line-height: 2rem;
-      border-bottom: 1px dotted #777; }
-    body .app .comic-list {
-      position: relative; }
-      body .app .comic-list .filters {
-        margin: 16px 0;
-        display: flex;
-        flex-direction: row; }
-      body .app .comic-list .comic-list-inner {
-        position: relative;
-        min-height: 200px;
-        display: flex;
-        flex-direction: column;
-        align-items: center; }
-        body .app .comic-list .comic-list-inner .comic {
-          margin-bottom: 32px; }
-    body .app .comic {
-      position: relative;
-      border: 1px solid #373737;
-      background-color: #fff;
-      box-shadow: 4px 4px 2px #00000022;
-      -webkit-box-shadow: 4px 4px 2px #00000022;
-      -moz-box-shadow: 4px 4px 2px #00000022;
-      border-radius: 2px;
-      -webkit-border-radius: 2px;
-      -moz-border-radius: 2px; }
-      body .app .comic .comic-inner {
-        position: relative;
-        width: calc(1080px * 0.28);
-        height: calc(1080px * 0.28); }
-        body .app .comic .comic-inner img {
-          position: absolute;
-          height: 100%;
-          width: 100%;
-          left: 0;
-          top: 0; }
-        body .app .comic .comic-inner .dialogue {
-          position: absolute;
-          background-color: transparent;
+    body .app-container.modal-open {
+      overflow: hidden;
+      margin-right: 17px; }
+    body .app-container .app {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column; }
+      body .app-container .app .app-header {
+        background: #080808;
+        color: #fff;
+        box-shadow: 0px 4px 4px #00000022;
+        -webkit-box-shadow: 0px 4px 4px #00000022;
+        -moz-box-shadow: 0px 4px 4px #00000022; }
+        @media (min-width: 576px) {
+          body .app-container .app .app-header {
+            padding: 4px 0; } }
+        body .app-container .app .app-header .app-header-inner {
           display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          border-radius: 4px;
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px; }
-          body .app .comic .comic-inner .dialogue.edit-empty {
-            cursor: text;
-            border: 1px solid #969696; }
-          body .app .comic .comic-inner .dialogue.edit-invalid {
-            border: 1px solid #f0002d; }
-          body .app .comic .comic-inner .dialogue > * {
-            max-height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            border: none;
-            font-family: Arial, Helvetica, sans-serif;
-            overflow: hidden;
-            text-align: center;
-            background-color: transparent; }
-          body .app .comic .comic-inner .dialogue textarea {
-            resize: none;
-            outline: none;
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none; }
-        body .app .comic .comic-inner .comic-footer {
-          position: absolute;
-          bottom: 0;
-          width: 100%;
-          display: flex;
-          flex-direction: row; }
-          body .app .comic .comic-inner .comic-footer .comic-footer-inner {
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-            color: #969696; }
-        body .app .comic .comic-inner .begin-edit-overlay {
-          position: absolute;
-          height: 100%;
-          width: 100%;
-          left: 0;
-          top: 0;
+          flex-direction: row;
+          align-items: center; }
+          body .app-container .app .app-header .app-header-inner .app-logo {
+            height: 32px; }
+          body .app-container .app .app-header .app-header-inner .app-title {
+            font-size: 1.5em;
+            margin: 0; }
+      body .app-container .app .app-footer {
+        background: #080808;
+        padding: 4px 0;
+        color: #fff;
+        box-shadow: 0px -4px 4px #00000022;
+        -webkit-box-shadow: 0px -4px 4px #00000022;
+        -moz-box-shadow: 0px -4px 4px #00000022; }
+        body .app-container .app .app-footer .app-footer-inner {
           display: flex;
           flex-direction: row;
           align-items: center;
-          justify-content: center; }
-        body .app .comic .comic-inner .share-overlay {
-          position: absolute;
-          height: 100%;
-          width: 100%;
-          left: 0;
-          top: 0;
-          background-color: #00000022; }
-        body .app .comic .comic-inner .dialogue > * {
-          line-height: calc(40px * 0.28);
-          font-size: calc(38px * 0.28); }
-        body .app .comic .comic-inner .comic-footer-inner {
-          font-size: calc(28px * 0.28);
-          padding: 0 calc(8px * 0.28); }
-        @media (min-width: 576px) {
-          body .app .comic .comic-inner {
-            width: calc(1080px * 0.36);
-            height: calc(1080px * 0.36); }
-            body .app .comic .comic-inner .dialogue > * {
-              line-height: calc(40px * 0.36);
-              font-size: calc(38px * 0.36); }
-            body .app .comic .comic-inner .comic-footer-inner {
-              font-size: calc(28px * 0.36);
-              padding: 0 calc(8px * 0.36); } }
-        @media (min-width: 768px) {
-          body .app .comic .comic-inner {
-            width: calc(1080px * 0.44);
-            height: calc(1080px * 0.44); }
-            body .app .comic .comic-inner .dialogue > * {
-              line-height: calc(40px * 0.44);
-              font-size: calc(38px * 0.44); }
-            body .app .comic .comic-inner .comic-footer-inner {
-              font-size: calc(28px * 0.44);
-              padding: 0 calc(8px * 0.44); } }
-        @media (min-width: 992px) {
-          body .app .comic .comic-inner {
-            width: calc(1080px * 0.5);
-            height: calc(1080px * 0.5); }
-            body .app .comic .comic-inner .dialogue > * {
-              line-height: calc(40px * 0.5);
-              font-size: calc(38px * 0.5); }
-            body .app .comic .comic-inner .comic-footer-inner {
-              font-size: calc(28px * 0.5);
-              padding: 0 calc(8px * 0.5); } }
-      body .app .comic .comic-lower {
-        padding: 8px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-end; }
-        body .app .comic .comic-lower .edit-toolbar {
+          text-align: right; }
+          body .app-container .app .app-footer .app-footer-inner .app-logo {
+            height: 24px; }
+      body .app-container .app .comic-list {
+        position: relative; }
+        body .app-container .app .comic-list .filters {
+          margin: 16px 0;
           display: flex;
           flex-direction: row; }
-        body .app .comic .comic-lower:empty {
-          display: none; }
-    body .app .button {
-      background: none;
-      cursor: pointer;
-      border-radius: 4px;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      text-decoration: none;
-      border: 1px solid;
-      display: inline-flex;
-      align-items: center;
-      flex-direction: row; }
-      body .app .button:focus {
-        outline: 0; }
-      body .app .button:hover {
-        text-decoration: none; }
-      body .app .button .button-label:not(:first-child) {
-        margin-left: 8px; }
-      body .app .button .button-label:not(:last-child) {
-        margin-right: 8px; }
-      body .app .button.button-black.button-hollow {
-        color: #080808;
-        border-color: #080808;
-        background-color: transparent; }
-        body .app .button.button-black.button-hollow .button-icon path {
-          fill: #080808; }
-        body .app .button.button-black.button-hollow:hover {
-          border-color: black;
-          color: black; }
-          body .app .button.button-black.button-hollow:hover .button-icon path {
-            fill: black; }
-      body .app .button.button-black.button-solid {
-        color: #fff;
-        border-color: #080808;
-        background: #080808; }
-        body .app .button.button-black.button-solid .button-icon path {
-          fill: #fff; }
-        body .app .button.button-black.button-solid:hover {
-          border-color: #171717;
-          background: #171717; }
-      body .app .button.button-white.button-hollow {
-        color: #fff;
-        border-color: #fff;
-        background-color: transparent; }
-        body .app .button.button-white.button-hollow .button-icon path {
-          fill: #fff; }
-        body .app .button.button-white.button-hollow:hover {
-          border-color: #e6e6e6;
-          color: #e6e6e6; }
-          body .app .button.button-white.button-hollow:hover .button-icon path {
-            fill: #e6e6e6; }
-      body .app .button.button-white.button-solid {
-        color: #fff;
-        border-color: #fff;
-        background: #fff; }
-        body .app .button.button-white.button-solid .button-icon path {
-          fill: #fff; }
-        body .app .button.button-white.button-solid:hover {
-          border-color: white;
-          background: white; }
-      body .app .button.button-green.button-hollow {
-        color: #48AD92;
-        border-color: #48AD92;
-        background-color: transparent; }
-        body .app .button.button-green.button-hollow .button-icon path {
-          fill: #48AD92; }
-        body .app .button.button-green.button-hollow:hover {
-          border-color: #398974;
-          color: #398974; }
-          body .app .button.button-green.button-hollow:hover .button-icon path {
-            fill: #398974; }
-      body .app .button.button-green.button-solid {
-        color: #fff;
-        border-color: #48AD92;
-        background: #48AD92; }
-        body .app .button.button-green.button-solid .button-icon path {
-          fill: #fff; }
-        body .app .button.button-green.button-solid:hover {
-          border-color: #59baa0;
-          background: #59baa0; }
-      body .app .button.button-red.button-hollow {
-        color: #f0002d;
-        border-color: #f0002d;
-        background-color: transparent; }
-        body .app .button.button-red.button-hollow .button-icon path {
-          fill: #f0002d; }
-        body .app .button.button-red.button-hollow:hover {
-          border-color: #bd0023;
-          color: #bd0023; }
-          body .app .button.button-red.button-hollow:hover .button-icon path {
-            fill: #bd0023; }
-      body .app .button.button-red.button-solid {
-        color: #fff;
-        border-color: #f0002d;
-        background: #f0002d; }
-        body .app .button.button-red.button-solid .button-icon path {
-          fill: #fff; }
-        body .app .button.button-red.button-solid:hover {
-          border-color: #ff103c;
-          background: #ff103c; }
-      body .app .button.button-pink.button-hollow {
-        color: #ff0052;
-        border-color: #ff0052;
-        background-color: transparent; }
-        body .app .button.button-pink.button-hollow .button-icon path {
-          fill: #ff0052; }
-        body .app .button.button-pink.button-hollow:hover {
-          border-color: #cc0042;
-          color: #cc0042; }
-          body .app .button.button-pink.button-hollow:hover .button-icon path {
-            fill: #cc0042; }
-      body .app .button.button-pink.button-solid {
-        color: #fff;
-        border-color: #ff0052;
-        background: #ff0052; }
-        body .app .button.button-pink.button-solid .button-icon path {
-          fill: #fff; }
-        body .app .button.button-pink.button-solid:hover {
-          border-color: #ff1f67;
-          background: #ff1f67; }
-      body .app .button.button-sm {
-        padding: 4px 8px;
-        font-size: 12px; }
-        body .app .button.button-sm .button-icon {
-          height: 12px;
-          width: 12px; }
-        @media (min-width: 576px) {
-          body .app .button.button-sm {
-            font-size: 14px; }
-            body .app .button.button-sm .button-icon {
-              height: 14px;
-              width: 14px; } }
-      body .app .button.button-md {
-        padding: 4px 8px;
-        font-size: 14px; }
-        body .app .button.button-md .button-icon {
-          height: 14px;
-          width: 14px; }
-        @media (min-width: 576px) {
-          body .app .button.button-md {
-            padding: 8px 16px;
-            font-size: 16px; }
-            body .app .button.button-md .button-icon {
-              height: 16px;
-              width: 16px; } }
-      body .app .button.button-lg {
-        padding: 8px 16px;
-        font-size: 18px; }
-        body .app .button.button-lg .button-icon {
-          height: 18px;
-          width: 18px; }
-        @media (min-width: 576px) {
-          body .app .button.button-lg {
-            padding: 16px 32px;
-            font-size: 20px; }
-            body .app .button.button-lg .button-icon {
-              height: 20px;
-              width: 20px; } }
-    body .app .modal {
-      background-color: #fff;
-      max-width: 90vw;
-      padding: 16px;
-      margin: 16px; }
-      body .app .modal .button-container {
-        justify-content: flex-end; }
-    body .app .template-navigation {
-      display: flex;
-      flex-direction: row;
-      align-items: center; }
-      body .app .template-navigation .button .button-label {
-        display: none; }
-        @media (min-width: 992px) {
-          body .app .template-navigation .button .button-label {
-            display: initial; } }
-    body .app .form-wrapper {
-      position: relative; }
-    body .app .page-template .template-navigation {
-      margin: 16px 0; }
-    body .app .page-template .template-feed {
-      min-height: 100px;
-      position: relative; }
-      body .app .page-template .template-feed .template-feed-inner {
+        body .app-container .app .comic-list .comic-list-inner {
+          position: relative;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          align-items: center; }
+          body .app-container .app .comic-list .comic-list-inner .comic {
+            margin-bottom: 32px; }
+      body .app-container .app .comic {
+        position: relative;
+        border: 1px solid #373737;
+        background-color: #fff;
+        box-shadow: 4px 4px 2px #00000022;
+        -webkit-box-shadow: 4px 4px 2px #00000022;
+        -moz-box-shadow: 4px 4px 2px #00000022;
+        border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px; }
+        body .app-container .app .comic .comic-inner {
+          position: relative;
+          width: calc(1080px * 0.28);
+          height: calc(1080px * 0.28); }
+          body .app-container .app .comic .comic-inner > img {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none; }
+          body .app-container .app .comic .comic-inner.view-only {
+            cursor: pointer; }
+          body .app-container .app .comic .comic-inner .dialogue {
+            position: absolute;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px; }
+            body .app-container .app .comic .comic-inner .dialogue.edit-empty {
+              cursor: text;
+              border: 1px solid #969696; }
+            body .app-container .app .comic .comic-inner .dialogue.edit-invalid {
+              border: 1px solid #f0002d; }
+            body .app-container .app .comic .comic-inner .dialogue > * {
+              max-height: 100%;
+              width: 100%;
+              margin: 0;
+              padding: 0;
+              border: none;
+              font-family: Arial, Helvetica, sans-serif;
+              overflow: hidden;
+              text-align: center;
+              background-color: transparent; }
+            body .app-container .app .comic .comic-inner .dialogue textarea {
+              resize: none;
+              outline: none;
+              -webkit-box-shadow: none;
+              -moz-box-shadow: none;
+              box-shadow: none; }
+          body .app-container .app .comic .comic-inner .comic-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row; }
+            body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner {
+              flex: 1;
+              display: flex;
+              flex-direction: row;
+              align-items: flex-end;
+              color: #969696; }
+              body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner .comic-link {
+                text-align: left; }
+              body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner .comic-title {
+                text-align: right; }
+          body .app-container .app .comic .comic-inner .begin-edit-overlay {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center; }
+          body .app-container .app .comic .comic-inner .dialogue > * {
+            line-height: calc(40px * 0.28);
+            font-size: calc(38px * 0.28); }
+          body .app-container .app .comic .comic-inner .comic-footer-inner {
+            font-size: calc(20px * 0.28);
+            line-height: calc(20px * 0.28);
+            padding: 0 calc(8px * 0.28); }
+          @media (min-width: 576px) {
+            body .app-container .app .comic .comic-inner {
+              width: calc(1080px * 0.36);
+              height: calc(1080px * 0.36); }
+              body .app-container .app .comic .comic-inner .dialogue > * {
+                line-height: calc(40px * 0.36);
+                font-size: calc(38px * 0.36); }
+              body .app-container .app .comic .comic-inner .comic-footer-inner {
+                font-size: calc(20px * 0.36);
+                line-height: calc(20px * 0.36);
+                padding: 0 calc(8px * 0.36); } }
+          @media (min-width: 768px) {
+            body .app-container .app .comic .comic-inner {
+              width: calc(1080px * 0.44);
+              height: calc(1080px * 0.44); }
+              body .app-container .app .comic .comic-inner .dialogue > * {
+                line-height: calc(40px * 0.44);
+                font-size: calc(38px * 0.44); }
+              body .app-container .app .comic .comic-inner .comic-footer-inner {
+                font-size: calc(20px * 0.44);
+                line-height: calc(20px * 0.44);
+                padding: 0 calc(8px * 0.44); } }
+          @media (min-width: 992px) {
+            body .app-container .app .comic .comic-inner {
+              width: calc(1080px * 0.5);
+              height: calc(1080px * 0.5); }
+              body .app-container .app .comic .comic-inner .dialogue > * {
+                line-height: calc(40px * 0.5);
+                font-size: calc(38px * 0.5); }
+              body .app-container .app .comic .comic-inner .comic-footer-inner {
+                font-size: calc(20px * 0.5);
+                line-height: calc(20px * 0.5);
+                padding: 0 calc(8px * 0.5); } }
+        body .app-container .app .comic .comic-lower {
+          padding: 8px;
+          display: flex;
+          flex-direction: column;
+          justify-content: stretch; }
+          body .app-container .app .comic .comic-lower > * {
+            flex: 1; }
+            body .app-container .app .comic .comic-lower > *:not(:first-child) {
+              margin-top: 16px; }
+          body .app-container .app .comic .comic-lower .edit-toolbar {
+            display: flex;
+            flex-direction: row; }
+          body .app-container .app .comic .comic-lower .comic-lower-inner {
+            display: flex;
+            flex-direction: row;
+            align-items: center; }
+          body .app-container .app .comic .comic-lower .do-better-panel .button {
+            margin-top: 8px; }
+          body .app-container .app .comic .comic-lower:empty {
+            display: none; }
+      body .app-container .app .form-wrapper {
         display: flex;
         flex-direction: column;
+        align-items: stretch; }
+        @media (min-width: 576px) {
+          body .app-container .app .form-wrapper {
+            max-width: 600px; } }
+        body .app-container .app .form-wrapper form {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch; }
+          body .app-container .app .form-wrapper form > *:not(:first-child) {
+            margin-top: 8px; }
+          body .app-container .app .form-wrapper form .button-container {
+            justify-content: center;
+            margin: 16px 0; }
+      body .app-container .app .button {
+        background: none;
+        cursor: pointer;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        text-decoration: none;
+        border: 1px solid;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        display: inline-flex;
+        align-items: center;
+        flex-direction: row; }
+        body .app-container .app .button:focus {
+          outline: 0; }
+        body .app-container .app .button:hover {
+          text-decoration: none; }
+        body .app-container .app .button .button-label:not(:first-child) {
+          margin-left: 8px; }
+        body .app-container .app .button .button-label:not(:last-child) {
+          margin-right: 8px; }
+        body .app-container .app .button.button-black.button-hollow {
+          color: #080808;
+          border-color: #080808;
+          background-color: transparent; }
+          body .app-container .app .button.button-black.button-hollow .button-icon path {
+            fill: #080808; }
+          body .app-container .app .button.button-black.button-hollow:hover {
+            border-color: black;
+            color: black; }
+            body .app-container .app .button.button-black.button-hollow:hover .button-icon path {
+              fill: black; }
+        body .app-container .app .button.button-black.button-solid {
+          color: #fff;
+          border-color: #080808;
+          background: #080808; }
+          body .app-container .app .button.button-black.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-black.button-solid:hover {
+            border-color: #171717;
+            background: #171717; }
+        body .app-container .app .button.button-white.button-hollow {
+          color: #fff;
+          border-color: #fff;
+          background-color: transparent; }
+          body .app-container .app .button.button-white.button-hollow .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-white.button-hollow:hover {
+            border-color: #e6e6e6;
+            color: #e6e6e6; }
+            body .app-container .app .button.button-white.button-hollow:hover .button-icon path {
+              fill: #e6e6e6; }
+        body .app-container .app .button.button-white.button-solid {
+          color: #fff;
+          border-color: #fff;
+          background: #fff; }
+          body .app-container .app .button.button-white.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-white.button-solid:hover {
+            border-color: white;
+            background: white; }
+        body .app-container .app .button.button-green.button-hollow {
+          color: #48AD92;
+          border-color: #48AD92;
+          background-color: transparent; }
+          body .app-container .app .button.button-green.button-hollow .button-icon path {
+            fill: #48AD92; }
+          body .app-container .app .button.button-green.button-hollow:hover {
+            border-color: #398974;
+            color: #398974; }
+            body .app-container .app .button.button-green.button-hollow:hover .button-icon path {
+              fill: #398974; }
+        body .app-container .app .button.button-green.button-solid {
+          color: #fff;
+          border-color: #48AD92;
+          background: #48AD92; }
+          body .app-container .app .button.button-green.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-green.button-solid:hover {
+            border-color: #59baa0;
+            background: #59baa0; }
+        body .app-container .app .button.button-red.button-hollow {
+          color: #f0002d;
+          border-color: #f0002d;
+          background-color: transparent; }
+          body .app-container .app .button.button-red.button-hollow .button-icon path {
+            fill: #f0002d; }
+          body .app-container .app .button.button-red.button-hollow:hover {
+            border-color: #bd0023;
+            color: #bd0023; }
+            body .app-container .app .button.button-red.button-hollow:hover .button-icon path {
+              fill: #bd0023; }
+        body .app-container .app .button.button-red.button-solid {
+          color: #fff;
+          border-color: #f0002d;
+          background: #f0002d; }
+          body .app-container .app .button.button-red.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-red.button-solid:hover {
+            border-color: #ff103c;
+            background: #ff103c; }
+        body .app-container .app .button.button-pink.button-hollow {
+          color: #ff0052;
+          border-color: #ff0052;
+          background-color: transparent; }
+          body .app-container .app .button.button-pink.button-hollow .button-icon path {
+            fill: #ff0052; }
+          body .app-container .app .button.button-pink.button-hollow:hover {
+            border-color: #cc0042;
+            color: #cc0042; }
+            body .app-container .app .button.button-pink.button-hollow:hover .button-icon path {
+              fill: #cc0042; }
+        body .app-container .app .button.button-pink.button-solid {
+          color: #fff;
+          border-color: #ff0052;
+          background: #ff0052; }
+          body .app-container .app .button.button-pink.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-pink.button-solid:hover {
+            border-color: #ff1f67;
+            background: #ff1f67; }
+        body .app-container .app .button.button-sm {
+          padding: 4px 8px;
+          font-size: 12px; }
+          body .app-container .app .button.button-sm .button-icon {
+            height: 12px;
+            width: 12px; }
+          @media (min-width: 576px) {
+            body .app-container .app .button.button-sm {
+              font-size: 14px; }
+              body .app-container .app .button.button-sm .button-icon {
+                height: 14px;
+                width: 14px; } }
+        body .app-container .app .button.button-md {
+          padding: 4px 8px;
+          font-size: 14px; }
+          body .app-container .app .button.button-md .button-icon {
+            height: 14px;
+            width: 14px; }
+          @media (min-width: 576px) {
+            body .app-container .app .button.button-md {
+              padding: 8px 16px;
+              font-size: 16px; }
+              body .app-container .app .button.button-md .button-icon {
+                height: 16px;
+                width: 16px; } }
+        body .app-container .app .button.button-lg {
+          padding: 8px 16px;
+          font-size: 18px; }
+          body .app-container .app .button.button-lg .button-icon {
+            height: 18px;
+            width: 18px; }
+          @media (min-width: 576px) {
+            body .app-container .app .button.button-lg {
+              padding: 16px 32px;
+              font-size: 20px; }
+              body .app-container .app .button.button-lg .button-icon {
+                height: 20px;
+                width: 20px; } }
+      body .app-container .app .modal {
+        background-color: #fff;
+        max-width: 500px;
+        margin: 8px; }
+        @media (min-width: 576px) {
+          body .app-container .app .modal {
+            margin: 16px; } }
+        body .app-container .app .modal.modal-prompt {
+          padding: 16px; }
+          body .app-container .app .modal.modal-prompt .button-container {
+            justify-content: flex-end; }
+        body .app-container .app .modal.modal-share-comic {
+          padding: 16px; }
+          body .app-container .app .modal.modal-share-comic .share-comic {
+            display: flex;
+            flex-direction: column;
+            align-items: center; }
+            body .app-container .app .modal.modal-share-comic .share-comic > *:not(:first-child) {
+              margin-top: 16px; }
+      body .app-container .app .template-navigation {
+        display: flex;
+        flex-direction: row;
         align-items: center; }
-        body .app .page-template .template-feed .template-feed-inner > .comic {
-          margin-bottom: 32px; }
-        body .app .page-template .template-feed .template-feed-inner .comic-list {
-          align-self: stretch; }
-    body .app [class^="page-"] {
-      position: relative;
-      margin: 16px 0; }
+        body .app-container .app .template-navigation .button .button-label {
+          display: none; }
+          @media (min-width: 992px) {
+            body .app-container .app .template-navigation .button .button-label {
+              display: initial; } }
+      body .app-container .app .s4y-button .button-icon {
+        width: 32px;
+        height: 32px; }
+      body .app-container .app .form-wrapper {
+        position: relative; }
+      body .app-container .app .page-template .template-navigation {
+        margin: 8px 0; }
+        @media (min-width: 576px) {
+          body .app-container .app .page-template .template-navigation {
+            margin: 16px 0; } }
+      body .app-container .app .page-template .template-feed {
+        min-height: 100px;
+        position: relative; }
+        body .app-container .app .page-template .template-feed .template-feed-inner {
+          display: flex;
+          flex-direction: column;
+          align-items: center; }
+          body .app-container .app .page-template .template-feed .template-feed-inner > .comic {
+            margin-bottom: 32px; }
+          body .app-container .app .page-template .template-feed .template-feed-inner .comic-list {
+            align-self: stretch; }
+      body .app-container .app [class^="page-"] {
+        position: relative;
+        margin: 8px 0; }
+        @media (min-width: 576px) {
+          body .app-container .app [class^="page-"] {
+            margin: 16px 0; } }
 
 @keyframes loader-spin {
   0% {
     transform: rotate(0deg); }
   100% {
     transform: rotate(360deg); } }
-    body .app .silly-loader {
-      background-position: center;
-      background-size: contain;
-      animation: loader-spin 0.3s linear infinite; }
-    body .app .loader {
+    body .app-container .loader {
       position: absolute;
       height: 100%;
       width: 100%;
@@ -398,9 +456,9 @@ body {
       left: 0;
       z-index: 10;
       pointer-events: none; }
-      body .app .loader.masked {
+      body .app-container .loader.masked {
         background-color: #00000022; }
-      body .app .loader.image-loader > img {
+      body .app-container .loader.image-loader > img {
         position: absolute;
         animation: loader-spin 2s linear infinite;
         left: 50%;
@@ -409,7 +467,7 @@ body {
         height: 64px;
         margin-top: -32px;
         margin-left: -32px; }
-      body .app .loader:not(.image-loader):before {
+      body .app-container .loader:not(.image-loader):before {
         content: '';
         position: absolute;
         border: 4px solid transparent;
@@ -422,62 +480,84 @@ body {
         left: 50%;
         top: 50%;
         animation: loader-spin 0.3s linear infinite; }
-    body .app .hidden {
+    body .app-container .hidden {
       display: none; }
-    body .app .disabled {
+    body .app-container .disabled {
       opacity: 0.2;
       pointer-events: none; }
-    body .app .invisible {
+    body .app-container .invisible {
       opacity: 0; }
-    body .app .container {
+    body .app-container .no-select {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none; }
+    body .app-container .container {
       position: relative;
       margin: 0 auto;
       max-width: 320px; }
       @media (min-width: 576px) {
-        body .app .container {
+        body .app-container .container {
           max-width: 420px; } }
       @media (min-width: 768px) {
-        body .app .container {
+        body .app-container .container {
           max-width: 508px; } }
       @media (min-width: 992px) {
-        body .app .container {
+        body .app-container .container {
           max-width: 572px; } }
-    body .app .row {
+    body .app-container .row {
       position: relative;
       padding: 0 8px; }
       @media (min-width: 576px) {
-        body .app .row {
+        body .app-container .row {
           padding: 0 16px; } }
-    body .app .flex-spacer {
+    body .app-container .field-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; }
+      body .app-container .field-container > label {
+        font-size: 14px;
+        margin-bottom: 4px; }
+      body .app-container .field-container > .field-error {
+        margin-top: 4px;
+        color: #f0002d;
+        font-size: 12px;
+        text-align: left; }
+    body .app-container .flex-spacer {
       flex: 1; }
-    body .app .button-container {
+    body .app-container .button-container {
       display: flex;
       flex-direction: row;
       align-items: center; }
-      body .app .button-container > *:not(:first-child) {
+      body .app-container .button-container > *:not(:first-child) {
         margin-left: 8px; }
-    body .app .modal-overlay {
+    body .app-container .modal-overlay {
       position: absolute;
       height: 100%;
       width: 100%;
       left: 0;
       top: 0;
+      position: fixed;
       background-color: #00000022;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center; }
-    body .app h1, body .app h2, body .app h3, body .app h4, body .app h5, body .app h6 {
+    body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
       margin: 0; }
-    body .app .empty-text {
+    body .app-container .empty-text {
       font-size: 14px;
       color: #373737; }
-    body .app a {
+    body .app-container a {
       cursor: pointer;
       text-decoration: none;
       color: #ff0052; }
-      body .app a:hover {
+      body .app-container a:hover {
         text-decoration: underline; }
-    body .app h5 {
+    body .app-container h4 {
+      font-weight: normal; }
+    body .app-container h5 {
       color: #ff0052;
       text-transform: uppercase; }

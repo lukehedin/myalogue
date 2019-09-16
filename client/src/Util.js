@@ -6,6 +6,7 @@ import iconCancel from './icons/cancel.svg';
 import iconChat from './icons/chat.svg';
 import iconCopy from './icons/copy.svg';
 import iconDislike from './icons/dislike.svg';
+import iconDownload from './icons/download.svg';
 import iconEnvelope from './icons/envelope.svg';
 import iconFirst from './icons/first.svg';
 import iconGarbage from './icons/garbage.svg';
@@ -79,13 +80,49 @@ const Util = {
 		
 		ModalType: {
 			Alert: 1,
-			Confirm: 2
+			Confirm: 2,
+			TitleComicModal: 3,
+			ShareComicModal: 4
 		},
 
 		ComicSortBy: {
 			TopRated: 1,
 			Newest: 2,
 			Random: 3
+		}
+	},
+
+	event: {
+		absorb: (event) => {
+			var e = event || window.event;
+			e.preventDefault && e.preventDefault();
+			e.stopPropagation && e.stopPropagation();
+			e.cancelBubble = true;
+			e.returnValue = false;
+			return false;
+		}
+	},
+
+	fn: {
+		copyToClipboard: (value) => {
+			var textArea = document.createElement("textarea");
+			textArea.style.position = 'fixed';
+			textArea.style.top = 0;
+			textArea.style.left = 0;
+			textArea.style.width = '2em';
+			textArea.style.height = '2em';
+			textArea.style.padding = 0;
+			textArea.style.border = 'none';
+			textArea.style.outline = 'none';
+			textArea.style.boxShadow = 'none';
+			textArea.style.background = 'transparent';
+
+			textArea.value = value;
+			document.body.appendChild(textArea);
+			textArea.focus();
+			textArea.select();
+			document.execCommand('copy');
+			document.body.removeChild(textArea);
 		}
 	},
 
@@ -96,6 +133,7 @@ const Util = {
 		chat: iconChat,
 		copy: iconCopy,
 		dislike: iconDislike,
+		download: iconDownload,
 		envelope: iconEnvelope,
 		first: iconFirst,
 		garbage: iconGarbage,
@@ -107,15 +145,27 @@ const Util = {
 	},
 
 	route: {
+		root: 's4ycomic.com',
+
 		home: () => `/`,
-		template: (ordinal) => ordinal ? `/template/${ordinal}` : Util.route.home(),
+		template: (templateId, comicId) => {
+			if(!templateId) return Util.route.home();
+			return comicId 
+				? `/template/${templateId}/comic/${comicId}` 
+				: `/template/${templateId}`;
+		},
 		login: () => `/login`,
 		profile: (userId) => `/profile/${userId}`,
-		comic: (comicId) => `/comic/${comicId}`,
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,
 		resetPassword: (token) => `/reset-password/${token}`,
 		verify: (token) => `/verify/${token}`
+	},
+
+	selector: {
+		getRootScrollElement: () => {
+			return document.getElementsByClassName('app-container')[0]; 
+		}
 	}
 };
 

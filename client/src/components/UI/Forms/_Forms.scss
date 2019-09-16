@@ -1,0 +1,26 @@
+.form-wrapper {
+	display: flex;
+	flex-direction: column;
+    align-items: stretch;
+
+	@include oversm {
+		max-width: 600px;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+
+		> * {
+			&:not(:first-child) {
+				margin-top: $spacing-xs;
+			}
+		}
+		
+		.button-container {
+			justify-content: center;
+			margin: $spacing-sm 0;
+		}
+	}
+}

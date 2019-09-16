@@ -11,63 +11,87 @@ export default class TemplatePage extends Component {
 
 		this.state = {
 			isLoading: true,
-			ordinal: null,
+			templateId: null,
 			template: null,
 
-			comics: [],
+			comic: null, //viewing comic for template (via link)
+
+			comics: [], // comics using template
 			comicOrderBy: 1,
 			comicLimit: 3,
 			comicSkip: 0
 		};
+
+		this.setComic = this.setComic.bind(this);
 	}
 	componentDidMount() {
-		this.setTemplate(this.props.ordinal);
+		this.setTemplate(this.props.templateId, this.props.comicId);
 	}
 	componentWillReceiveProps(props) {
-		if(props.ordinal !== this.props.ordinal) {
-			this.setTemplate(props.ordinal)
+		if(props.templateId !== this.props.templateId) {
+			this.setTemplate(props.templateId)
 		}
 	}
-	setTemplate(ordinal) {
+	setComic(comic) {
 		this.setState({
-			ordinal: ordinal ? parseInt(ordinal) : null,
+			comic: comic
+		});
+	}
+	setTemplate(templateId, comicId) {
+		this.setState({
+			templateId: templateId ? parseInt(templateId) : null,
+			comic: null,
 			isLoading: true
 		});
 		
-		Util.api.post('/api/getTemplate', {
-			ordinal: ordinal
-		})
-		.then(result => {
-			if(!result.error) {
+		let fetchPromises = [Util.api.post('/api/getTemplate', {
+			templateId: templateId
+		})];
+
+		if(comicId) {
+			fetchPromises.push(Util.api.post('/api/getComic', {
+				comicId: comicId
+			}));
+		}
+
+		Promise.all(fetchPromises)
+			.then(([templateResult, comicResult]) => {
+				if(!templateResult.error) {
+					this.setState({
+						templateId: templateResult.templateId,
+						template: templateResult,
+					});
+				}
+				
+				if(comicResult && !comicResult.error) {
+					this.setState({
+						comic: comicResult
+					});
+				}
+				
 				this.setState({
-					ordinal: result.ordinal,
-					template: result,
+					isLoading: false
 				});
-			}
-			
-			this.setState({
-				isLoading: false
 			});
-		});
 	}
 	render() {
 		return <div className="page-template">
 			<div className="container">
 				<div className="row">
-					{this.state.ordinal ? <TemplateNavigation ordinal={this.state.ordinal} /> : null }
+					{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
 					<div className="template-feed">
 						{this.state.isLoading
 							? <div className="loader"></div>
 							: this.state.template
 								? <div className="template-feed-inner">
-									<Comic template={this.state.template} />
-									<h5>Comics created with this template</h5>
-									<ComicList template={this.state.template} />
+									<Comic template={this.state.template} comic={this.state.comic} isCallToActionVisible={!!this.state.comic} />
+									<h5>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h5>
+									<ComicList sortBy={Util.enum.ComicSortBy.Random} template={this.state.template} />
 								</div>
 								: <p className="empty-text">Template not found.</p>
 						}
 					</div>
-					{this.state.ordinal && !this.state.isLoading ? <TemplateNavigation ordinal={this.state.ordinal} /> : null }
+					{this.state.templateId && !this.state.isLoading ? <TemplateNavigation templateId={this.state.templateId} /> : null }
 				</div>
 			</div>
 		</div>;

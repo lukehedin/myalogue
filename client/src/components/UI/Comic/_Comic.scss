@@ -8,8 +8,13 @@
 	.comic-inner {
 		position: relative;
 
-		img {
+		> img {
 			@include absoluteCover;
+			@include noSelect;
+		}
+
+		&.view-only {
+			cursor: pointer;
 		}
 		
 		.dialogue {
@@ -62,7 +67,16 @@
 				flex: 1;
 				display: flex;
 				flex-direction: row;
+				align-items: flex-end;
 				color: $colour-grey-b;
+
+				.comic-link {
+					text-align: left;
+				}
+
+				.comic-title {
+					text-align: right;
+				}
 			}
 		}
 
@@ -74,18 +88,13 @@
 			justify-content: center;
 		}
 
-		.share-overlay {
-			@include absoluteCover;
-			background-color: $colour-transparent-grey;
-		}
-
 		// Scaling code
 		$comic-width: 1080px;
 		$comic-height: 1080px;
 		$comic-dialogue-line-height: 40px;
 		$comic-dialogue-font-size: 38px;
 	
-		$comic-footer-font-size: 28px;
+		$comic-footer-font-size: 20px;
 		$comic-footer-margin: 8px;
 	
 		$comic-scale-xs: 0.28;
@@ -105,6 +114,7 @@
 			
 			.comic-footer-inner {
 				font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
+				line-height: calc(#{$comic-footer-font-size} * #{$comic-scale});
 				padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
 			}
 		}
@@ -127,13 +137,32 @@
 	.comic-lower {
 		padding: $spacing-xs;
 		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: flex-end;
+		flex-direction: column;
+		justify-content: stretch;
+
+		> * {
+			flex: 1;
+
+			&:not(:first-child) {
+				margin-top: $spacing-sm;
+			}
+		}
 
 		.edit-toolbar {
 			display: flex;
 			flex-direction: row;
+		}
+
+		.comic-lower-inner {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+		}
+
+		.do-better-panel {
+			.button {
+				margin-top: $spacing-xs;
+			}
 		}
 
 		&:empty {

@@ -9,13 +9,13 @@ export default class TemplateNavigation extends Component {
 			<div className="button-container">
 				<Button 
 					to={Util.route.template(1)} 
-					className={this.props.ordinal > 1 ? '' : 'disabled invisible'} 
+					className={this.props.templateId > 1 ? '' : 'disabled invisible'} 
 					label="First"
 					leftIcon={Util.icon.first}
 				/>
 				<Button 
-					to={Util.route.template(this.props.ordinal - 1)} 
-					className={this.props.ordinal > 1 ? '' : 'disabled invisible'} 
+					to={Util.route.template(this.props.templateId - 1)} 
+					className={this.props.templateId > 1 ? '' : 'disabled invisible'} 
 					label="Previous" 
 					leftIcon={Util.icon.back}
 				/>
@@ -23,12 +23,12 @@ export default class TemplateNavigation extends Component {
 			<div className="flex-spacer"></div>
 			<div>
 				<h5>Template</h5>
-				<h3>#{this.props.ordinal}</h3> 
+				<h3>#{this.props.templateId}</h3> 
 			</div>
 			<div className="flex-spacer"></div>
 			<div className="button-container">
 				<Button 
-					to={Util.route.template(this.props.ordinal + 1)} 
+					to={Util.route.template(this.props.templateId + 1)} 
 					label="Next"
 					rightIcon={Util.icon.next}
 				/>

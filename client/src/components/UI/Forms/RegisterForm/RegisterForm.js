@@ -11,9 +11,11 @@ class RegisterForm extends Component {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('email')}
 			{this.props.getField('username')}
-			{this.props.getField('password')}
+			{this.props.getField('password')} 
 			{this.props.getField('confirmPassword')}
-			<Button type="submit" label="Register" />
+			<div className="button-container">
+				<Button type="submit" label="Register" />
+			</div>
 		</form>
 	}
 }
@@ -21,15 +23,16 @@ class RegisterForm extends Component {
 export default withForm(RegisterForm, {
 	fields: {
 		email: {
-			label: 'Email',
+			label: 'Email', 
 			getError: (val) => {
-				if(!validator.isEmail(val)) return 'Enter a valid email';
+				if(!validator.isEmail(val)) return 'Please enter a valid email eg. yourname@example.com';
 			}
 		},
 		username: {
 			label: 'Username',
 			getError: (val) => {
-				if(!validator.isLength(val, { min: 3 })) return 'Enter a valid username (minimum 3 characters)';
+				if(!validator.isLength(val, { min: 3 })) return 'Please enter a longer username (minimum 3 characters)';
+				if(!validator.isLength(val, { max: 20 })) return 'Please enter a shorter username (maximum 20 characters)';
 			}
 		},
 		password: {
