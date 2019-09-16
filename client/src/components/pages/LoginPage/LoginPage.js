@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import Util from '../../../Util';
 
 import LoginForm from '../../UI/Forms/LoginForm/LoginForm';
@@ -29,8 +29,6 @@ export default class LoginPage extends Component {
 							}
 						});
 					}} />
-					<h4>Forgot your password? <Link to={Util.route.forgotPassword()}>Reset password</Link></h4>
-					<h4>Don't have an acount? <Link to={Util.route.register()}>Register</Link></h4>
 				</div>
 			</div>
 		</div>;

@@ -5,9 +5,9 @@ import ReactSVG from 'react-svg'
 export default class Button extends Component {
 	render() {
 		let className = `button ${this.props.className || ''} 
-		button-${this.props.size || 'md'} 
-		button-${this.props.colour || 'black'} 
-		button-${this.props.isHollow ? 'hollow' : 'solid'}`;
+			button-${this.props.size || 'md'} 
+			button-${this.props.colour || 'black'} 
+			button-${this.props.isHollow ? 'hollow' : 'solid'}`;
 
 		let getIcon = (path) => {
 			if(!path) return null;
@@ -28,6 +28,6 @@ export default class Button extends Component {
 			? <Link className={className} to={this.props.to}>{leftIcon}{label}{rightIcon}</Link>
 			: this.props.href
 				? <a className={className} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
-				: <button className={className} type={this.props.type || "button"} onClick={this.props.onClick}>{leftIcon}{label}{rightIcon}</button>
+				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.props.onClick}>{leftIcon}{label}{rightIcon}</button>
 	}
 }

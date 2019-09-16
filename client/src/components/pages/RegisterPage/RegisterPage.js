@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import RegisterForm from '../../UI/Forms/RegisterForm/RegisterForm';
@@ -42,7 +41,6 @@ export default class RegisterPage extends Component {
 							});
 						}} />
 					}
-					<h4>Already have an account? <Link to={Util.route.login()}>Log in</Link></h4>
 				</div>
 			</div>
 		</div>;

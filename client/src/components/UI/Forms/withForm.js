@@ -111,7 +111,7 @@ export default function withForm(WrappedForm, formConfig) {
 		}
 		render() {
 			return <div className="form-wrapper">
-				{this.state.isLoading ? <div className="loader"></div> : null}
+				{this.state.isLoading ? <div className="loader masked"></div> : null}
 				<WrappedForm 
 					formData={this.state.formData} 
 					getField={this.getField}

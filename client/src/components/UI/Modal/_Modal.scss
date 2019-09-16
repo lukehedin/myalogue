@@ -1,11 +1,6 @@
 .modal {
+	width: 94vw;
 	background-color: $colour-white;
-	max-width: 500px;
-
-	margin: $spacing-xs;
-	@include oversm {
-		margin: $spacing-sm;
-	}
 
 	.modal-header {
 		background-color: $colour-black;
@@ -39,6 +34,8 @@
 	}
 
 	&.modal-prompt {
+		max-width: 500px;
+
 		.modal-content {
 			.button-container {
 				justify-content: flex-end;
@@ -47,6 +44,8 @@
 	}
 
 	&.modal-share-comic {
+		max-width: 500px;
+		
 		.modal-content {
 			.share-comic {
 				display: flex;
@@ -63,6 +62,7 @@
 	}
 
 	&.modal-submit-comic {
+		max-width: 500px;
 
 	}
 }

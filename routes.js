@@ -131,7 +131,7 @@ const routes = {
 			let password = req.body.password;
 	
 			let isValidEmail = validator.isEmail(email);
-			let isValidUsername = validator.isLength(username, {min: 3, max: 20 });
+			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username);
 			let isValidPassword = validator.isLength(password, {min:8, max: 127});
 	
 			//TODO validate password and email
@@ -310,6 +310,7 @@ const routes = {
 				db.Comic.create({
 					TemplateId: comic.templateId,
 					UserId: comic.isAnonymous ? null : userId,
+					Title: comic.title,
 					ComicDialogues: comic.comicDialogues.map(cd => {
 						return {
 							TemplateDialogueId: cd.templateDialogueId,

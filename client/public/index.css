@@ -211,21 +211,30 @@ body {
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
       body .app-container .app .form-wrapper {
+        position: relative;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
-        align-items: stretch; }
-        @media (min-width: 576px) {
-          body .app-container .app .form-wrapper {
-            max-width: 600px; } }
+        align-items: stretch;
+        width: 100%;
+        max-width: 340px; }
         body .app-container .app .form-wrapper form {
           display: flex;
           flex-direction: column;
           align-items: stretch; }
           body .app-container .app .form-wrapper form > *:not(:first-child) {
             margin-top: 8px; }
+          body .app-container .app .form-wrapper form .field-container {
+            align-items: stretch; }
+            body .app-container .app .form-wrapper form .field-container > * {
+              text-align: left; }
+          body .app-container .app .form-wrapper form .form-message {
+            font-size: 14px; }
+            body .app-container .app .form-wrapper form .form-message > * {
+              margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
             justify-content: center;
-            margin: 16px 0; }
+            margin-top: 16px; }
       body .app-container .app .button {
         background: none;
         cursor: pointer;
@@ -390,12 +399,8 @@ body {
                 height: 20px;
                 width: 20px; } }
       body .app-container .app .modal {
-        background-color: #fff;
-        max-width: 500px;
-        margin: 8px; }
-        @media (min-width: 576px) {
-          body .app-container .app .modal {
-            margin: 16px; } }
+        width: 94vw;
+        background-color: #fff; }
         body .app-container .app .modal .modal-header {
           background-color: #080808;
           color: #fff;
@@ -419,14 +424,20 @@ body {
               fill: #ff0052; }
         body .app-container .app .modal .modal-content {
           padding: 8px; }
-        body .app-container .app .modal.modal-prompt .modal-content .button-container {
-          justify-content: flex-end; }
-        body .app-container .app .modal.modal-share-comic .modal-content .share-comic {
-          display: flex;
-          flex-direction: column;
-          align-items: center; }
-          body .app-container .app .modal.modal-share-comic .modal-content .share-comic > *:not(:first-child) {
-            margin-top: 16px; }
+        body .app-container .app .modal.modal-prompt {
+          max-width: 500px; }
+          body .app-container .app .modal.modal-prompt .modal-content .button-container {
+            justify-content: flex-end; }
+        body .app-container .app .modal.modal-share-comic {
+          max-width: 500px; }
+          body .app-container .app .modal.modal-share-comic .modal-content .share-comic {
+            display: flex;
+            flex-direction: column;
+            align-items: center; }
+            body .app-container .app .modal.modal-share-comic .modal-content .share-comic > *:not(:first-child) {
+              margin-top: 16px; }
+        body .app-container .app .modal.modal-submit-comic {
+          max-width: 500px; }
       body .app-container .app .template-navigation {
         display: flex;
         flex-direction: row;
@@ -441,8 +452,6 @@ body {
       body .app-container .app .s4y-button .button-icon {
         width: 32px;
         height: 32px; }
-      body .app-container .app .form-wrapper {
-        position: relative; }
       body .app-container .app .page-template .template-navigation {
         margin: 8px 0; }
         @media (min-width: 576px) {
@@ -556,7 +565,7 @@ body {
       flex-direction: column;
       align-items: flex-start; }
       body .app-container .field-container > label {
-        font-size: 14px;
+        font-size: 12px;
         margin-bottom: 4px; }
       body .app-container .field-container > .field-error {
         margin-top: 4px;

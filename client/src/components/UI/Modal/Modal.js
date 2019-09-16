@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import Util from '../../../Util';
 import { connect } from 'react-redux';
 import { closeModal } from '../../../redux/actions';
-import { Link } from 'react-router-dom';
 
 import Button from '../Button/Button';
 import CopyButton from '../CopyButton/CopyButton';
-import TitleComicForm from '../Forms/TitleComicForm/TitleComicForm';
+import SubmitComicForm from '../Forms/SubmitComicForm/SubmitComicForm';
 import ComicTitle from '../ComicTitle/ComicTitle';
 import ReactSVG from 'react-svg';
 
@@ -59,25 +58,25 @@ class Modal extends Component {
 				modalTitle = "Submit comic";
 				modalClass = "modal-submit-comic";
 				modalContent = <div className="">
-					<TitleComicForm 
+					<SubmitComicForm 
 						formData={{
 							...modal.comic
 						}}
 						onSubmit={(form, formData) => {
-							if(this.onSubmit) this.onSubmit(formData);
-							this.close();
+							form.setLoading(true);
+
+							Util.api.post('/api/submitComic', {
+								comic: formData
+							})
+							.then(result => {
+								if(!result.error) {
+									if(modal.onSubmit) modal.onSubmit(result);
+									this.close();
+								}
+							});
 						}}
 						onCancel={this.close}
 					/>
-					{!Util.context.isAuthenticated()
-						?<div>
-							<h6>Your comic will be submitted anonymously and you won't be able to claim ownership of it.</h6>
-							<h6>If you <Link to={Util.route.register()}>register</Link>, you can be recorded as the author.</h6>
-						</div>
-						: <div>
-							<input type="checkbox" value={false}>Submit anonymously</input>
-						</div>
-					}
 				</div>
 				break;
 			case Util.enum.ModalType.ShareComicModal:
@@ -86,10 +85,10 @@ class Modal extends Component {
 				modalTitle = "Share comic";
 				modalClass = 'modal-share-comic';
 				modalContent = <div className="share-comic">
-					<h3><ComicTitle comic={modal.comic} /></h3>
+					<h4><ComicTitle comic={modal.comic} /></h4>
 					<input readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
-					<Button colour="black" isHollow={true} href={modal.comicImageSrc} download={"test"} label={'Download image'} leftIcon={Util.icon.download} download={modal.comic.title} />
+					<Button colour="black" isHollow={true} href={modal.comicImageSrc} label={'Download image'} leftIcon={Util.icon.download} download={modal.comic.title} />
 				</div>
 				break;
 			default:

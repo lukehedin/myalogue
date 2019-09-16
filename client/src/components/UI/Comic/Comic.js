@@ -4,7 +4,6 @@ import { openModal } from '../../../redux/actions';
 import Textarea from 'react-textarea-autosize';
 import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
-import { Link } from 'react-router-dom';
 
 import frame from './frame.png';
 
@@ -144,29 +143,19 @@ class Comic extends Component {
 				type: Util.enum.ModalType.SubmitComicModal,
 				comic: this.state.comic,
 				onSubmit: comic => {
+					//Turn the comic into a readonly viewing one
 					this.setState({
-						isLoading: true
-					});
-
-					Util.api.post('/api/submitComic', {
-						comic: comic
-					})
-					.then(result => {
-						if(!result.error) {
-							//Turn the comic into a readonly viewing one
-							this.setState({
-								comic: result,
-								isLoading: false,
-								isEditing: false,
-							}, this.openShareComicModal);
-						}
-					});
+						comic: comic,
+						isLoading: false,
+						isEditing: false,
+					}, this.openShareComicModal);
 				}
 			});
 		}
 	}
 	render(){
 		let isComicViewOnly = this.state.comic.comicId;
+		let lastTabIndex = 0;
 
 		return <div className="comic">
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
@@ -190,6 +179,8 @@ class Comic extends Component {
 					let percentSizeY = (templateDialogue.sizeY / baseComicSize) * 100;
 
 					let isInvalid = this.state.isEditing && this.state.invalidTemplateDialogueIds.includes(templateDialogue.templateDialogueId);
+
+					lastTabIndex = templateDialogue.ordinal;
 
 					return <div 
 						className={`dialogue ${this.state.isEditing && !comicDialogueValue  ? 'edit-empty' : ''} ${isInvalid ? 'edit-invalid' : ''}`}
@@ -230,7 +221,7 @@ class Comic extends Component {
 			<div className="comic-lower">
 				{this.state.isEditing
 					? <div className="edit-toolbar">
-						<Button colour="pink" label="I'm done!" onClick={this.submitComic} />
+						<Button tabIndex={lastTabIndex + 1} colour="pink" label="I'm done!" onClick={this.submitComic} />
 					</div>
 					: null
 				}

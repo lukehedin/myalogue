@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import validator from 'validator';
+import Util from '../../../../Util';
 
 import withForm from '../withForm';
 
@@ -12,6 +14,10 @@ class LoginForm extends Component {
 			{this.props.getField('password')}
 			<div className="button-container">
 				<Button type="submit" label="Login" />
+			</div>
+			<div className="form-message">
+				<p>Forgot your password? <Link to={Util.route.forgotPassword()}>Reset password</Link></p>
+				<p>Don't have an acount? <Link to={Util.route.register()}>Register</Link></p>
 			</div>
 		</form>
 	}

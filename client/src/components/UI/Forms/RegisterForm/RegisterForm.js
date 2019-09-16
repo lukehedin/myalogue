@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import validator from 'validator';
+import Util from '../../../../Util';
 
 import withForm from '../withForm';
 
@@ -14,6 +16,9 @@ class RegisterForm extends Component {
 			{this.props.getField('confirmPassword')}
 			<div className="button-container">
 				<Button type="submit" label="Register" />
+			</div>
+			<div className="form-message">
+				<p>Already have an account? <Link to={Util.route.login()}>Log in</Link></p>
 			</div>
 		</form>
 	}
@@ -31,6 +36,7 @@ export default withForm(RegisterForm, {
 			label: 'Username',
 			getError: (val) => {
 				if(!validator.isLength(val, { min: 3 })) return 'Please enter a longer username (minimum 3 characters)';
+				if(!validator.isAlphanumeric(val)) return 'Username can only contain letters and numbers';
 				if(!validator.isLength(val, { max: 20 })) return 'Please enter a shorter username (maximum 20 characters)';
 			}
 		},
