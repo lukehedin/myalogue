@@ -72,7 +72,7 @@ class App extends Component {
 				}
 			</div>;
 
-		return <Div100vh className={`app-container ${Util.array.any(this.props.modals) ? 'modal-open' : ''}`}>
+		return <Div100vh onScroll={Util.array.any(this.props.modals) ? Util.event.absorb : null} className="app-container">
 			{content}
 		</Div100vh>;
 	}

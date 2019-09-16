@@ -10,9 +10,6 @@ body {
     flex-direction: column;
     overflow-y: scroll;
     overflow-x: hidden; }
-    body .app-container.modal-open {
-      overflow: hidden;
-      margin-right: 17px; }
     body .app-container .app {
       flex: 1;
       text-align: center;
@@ -204,8 +201,13 @@ body {
             display: flex;
             flex-direction: row;
             align-items: center; }
-          body .app-container .app .comic .comic-lower .do-better-panel .button {
-            margin-top: 8px; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner .share-button {
+              margin-right: 8px; }
+              body .app-container .app .comic .comic-lower .comic-lower-inner .share-button .button-label {
+                display: none; }
+                @media (min-width: 768px) {
+                  body .app-container .app .comic .comic-lower .comic-lower-inner .share-button .button-label {
+                    display: initial; } }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
       body .app-container .app .form-wrapper {

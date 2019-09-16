@@ -157,11 +157,16 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-		}
 
-		.do-better-panel {
-			.button {
-				margin-top: $spacing-xs;
+			.share-button {
+				margin-right: $spacing-xs;
+
+				.button-label {
+					display: none;
+					@include overmd {
+						display: initial;
+					}
+				}
 			}
 		}
 

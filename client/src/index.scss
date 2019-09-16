@@ -17,11 +17,6 @@ body {
 		overflow-y: scroll;
 		overflow-x: hidden;
 
-		&.modal-open {
-			overflow: hidden;
-			margin-right: 17px;
-		}
-
 		.app {
 			@import './components/UI/_UI.scss';
 			@import './components/Pages/_pages.scss';

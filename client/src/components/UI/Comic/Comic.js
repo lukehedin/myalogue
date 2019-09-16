@@ -241,7 +241,7 @@ class Comic extends Component {
 					? <div className="comic-lower-inner">
 						<S4YButton onClick={() => this.setIsEditing(true)} />
 						<div className="flex-spacer"></div>
-						<Button isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={this.openShareComicModal} />
+						<Button className="share-button" isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={this.openShareComicModal} />
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
 					: null

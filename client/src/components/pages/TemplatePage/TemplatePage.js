@@ -86,7 +86,7 @@ export default class TemplatePage extends Component {
 								? <div className="template-feed-inner">
 									<Comic template={this.state.template} comic={this.state.comic} isCallToActionVisible={!!this.state.comic} />
 									<h5>{this.state.comic ? 'Other comics' : 'Comics'} created with this template</h5>
-									<ComicList sortBy={Util.enum.ComicSortBy.Random} template={this.state.template} />
+									<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
 								</div>
 								: <p className="empty-text">Template not found.</p>
 						}
