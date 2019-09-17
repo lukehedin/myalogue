@@ -1,11 +1,16 @@
 .comic-list {
 	position: relative;
 
+	.comic-list-title {
+		margin-bottom: $spacing-sm;
+	}
+
 	.filters {
 		margin-bottom: $spacing-sm;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		justify-content: center;
 	}
 
 	.comic-list-inner {
@@ -49,6 +54,10 @@
 
 			-webkit-animation: slide-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 			animation: slide-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+		}
+
+		.button-container {
+			justify-content: center;
 		}
 	}
 }

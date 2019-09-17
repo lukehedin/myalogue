@@ -75,13 +75,15 @@ export default class TemplatePage extends Component {
 		if(!this.state.isLoading && !this.state.template) return <Redirect to={Util.route.home()} />;
 
 		return <div className="page-template">
-			<div className="container">
-				<div className="row">
-					{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
+			<div className="panel-standard">
+				<div className="container">
+					<div className="row">
+						{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
+					</div>
 				</div>
 			</div>
 			{!this.state.isLoading 
-				? <div className="template-highlight">
+				? <div className="panel-inset">
 					<div className="container">
 						<div className="row">
 							<div className="template-highlight-inner">
@@ -90,7 +92,7 @@ export default class TemplatePage extends Component {
 										? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can make a new one right now!</p>
 										: null
 									}
-									<Comic template={this.state.template} comic={this.state.comic} />
+									<Comic key={this.state.templateId} templateId={this.state.templateId} comic={this.state.comic} />
 								</div>
 							</div>
 						</div>
@@ -98,16 +100,18 @@ export default class TemplatePage extends Component {
 				</div>
 				: null
 			}
-			<div className="template-feed">
+			<div className="panel-standard panel-template-feed">
 				<div className="container">
 					<div className="row">
 						{!this.state.isLoading
-							? <div className="template-feed-inner">
+							? <div className="template-feed">
 								<TemplateNavigation templateId={this.state.templateId} /> 
 								<ComicList
+									emptyText={`No comics have been made using this template. You could make the very first one!`}
+									noMoreText={`Phew! That's all the comics that have been made with this template.`}
 									fetchDelay={1000} //Prevent fast nav spamming
 									sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} 
-									template={this.state.template}
+									templateId={this.state.template.templateId}
 								/>
 							</div>
 							: <div className="loader"></div>

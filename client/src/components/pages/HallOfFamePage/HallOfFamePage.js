@@ -20,7 +20,7 @@ export default class HallOfFamePage extends Component {
 						{this.state.isLoading 
 							? <div className="loader"></div>
 							: this.state.comics.map(comic => {
-								return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
+								// return <Comic key={comic.comicId} comic={comic} />
 							})
 						}
 					</div>

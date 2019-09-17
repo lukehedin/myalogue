@@ -14,6 +14,9 @@ import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import TemplatePage from './components/pages/TemplatePage/TemplatePage';
 import VerifyPage from './components/pages/VerifyPage/VerifyPage';
+import HallOfFamePage from './components/pages/HallOfFamePage/HallOfFamePage';
+import ProfilePage from './components/pages/ProfilePage/ProfilePage';
+import AboutPage from './components/pages/AboutPage/AboutPage';
 
 class App extends Component {
 	constructor(props){
@@ -53,8 +56,9 @@ class App extends Component {
 					<Route exact path="/template/:templateId/comic/:comicId" render={({ match }) => <TemplatePage templateId={match.params.templateId} comicId={match.params.comicId} />} />
 					<Route exact path="/register" render={({ match }) => <RegisterPage />} />
 					<Route exact path="/login" render={({ match }) => <LoginPage />} />
-					<Route path="/about" render={({ match }) => <div>about</div>}/>
-					<Route path="/user/:user" render={({ match }) => <div>user {match.params.user}</div>} />
+					<Route path="/about" render={({ match }) => <AboutPage />}/>
+					<Route path="/hall-of-fame" render={({ match }) => <HallOfFamePage />}/>
+					<Route path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 					<Route path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
 					<Route render={({ match }) => <div>404</div>} />
 				</Switch>

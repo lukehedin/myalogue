@@ -224,7 +224,9 @@ const routes = {
 
 		getComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
+
 			let templateId = req.body.templateId;
+			let authorUserId = req.body.authorUserId;
 
 			let idNotIn = req.body.idNotIn || [];
 			let includeAnonymous = req.body.includeAnonymous;
@@ -249,7 +251,6 @@ const routes = {
 			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
 
 			let comicWhere = {
-				TemplateId: templateId,
 				CreatedAt: {
 					[db.op.lte]: createdAtBefore
 				},
@@ -258,6 +259,14 @@ const routes = {
 				}
 			};
 
+			if(templateId) {
+				comicWhere.TemplateId = templateId;
+			}
+			if(authorUserId) {
+				//Don't return anonymous comics by a user
+				comicWhere.UserId = authorUserId;
+				comicWhere.IsAnonymous = false;
+			}
 			if(!includeAnonymous) {
 				comicWhere.UserId = {
 					[db.op.ne]: null
@@ -306,6 +315,22 @@ const routes = {
 			} else {
 				catchError(res, 'Invalid comic data supplied.');
 			}
+		},
+
+		getUser: (req, res, db) => {
+			let requestedUserId = req.body.requestedUserId; //do not confuse
+
+			db.User.findOne({
+				where: {
+					UserId: requestedUserId
+				}
+			})
+			.then(dbUser => {
+				dbUser
+					? res.json(mapper.fromDbUser(dbUser))
+					: catchError(res, "User not found")
+			})
+			.catch(error => catchError(res, error));
 		}
 	},
 

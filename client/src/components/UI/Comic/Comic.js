@@ -13,10 +13,12 @@ import ComicVote from '../ComicVote/ComicVote';
 import ComicTitle from '../ComicTitle/ComicTitle';
 import ProgressBar from '../ProgressBar/ProgressBar';
 
-//this.props.template + this.props.comic (optional)
+//this.props.templateId AND/OR this.props.comic (optional)
 class Comic extends Component {
 	constructor(props){
 		super(props);
+
+		this.template = Util.context.getTemplateById(this.props.templateId || this.props.comic.templateId);
 
 		this.state = {
 			isLoading: false,
@@ -43,11 +45,11 @@ class Comic extends Component {
 	}
 	getBlankComicObject() {
 		return {
-			title: this.props.template.title,
+			title: this.template.title,
 			userId: Util.context.getUserId(),
 			username: Util.context.getUsername(),
-			templateId: this.props.template.templateId,
-			comicDialogues: this.props.template.templateDialogues.map(td => {
+			templateId: this.template.templateId,
+			comicDialogues: this.template.templateDialogues.map(td => {
 				return {
 					templateDialogueId: td.templateDialogueId,
 					value: ''
@@ -136,7 +138,7 @@ class Comic extends Component {
 	submitComic() {
 		let invalidTemplateDialogueIds = [];
 
-		this.props.template.templateDialogues.forEach(td => {
+		this.template.templateDialogues.forEach(td => {
 			let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === td.templateDialogueId);
 			if(!comicDialogue || !comicDialogue.value) invalidTemplateDialogueIds.push(td.templateDialogueId);
 		});
@@ -172,9 +174,9 @@ class Comic extends Component {
 				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
 				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
 			>
-				<img alt="" onContextMenu={Util.event.absorb} className="comic-template" src={this.props.template.imageUrl} />
+				<img alt="" onContextMenu={Util.event.absorb} className="comic-template" src={this.template.imageUrl} />
 				<img alt="" onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
-				{this.props.template.templateDialogues.map((templateDialogue, idx) => {
+				{this.template.templateDialogues.map((templateDialogue, idx) => {
 					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === templateDialogue.templateDialogueId);
 					let comicDialogueValue = comicDialogue ? comicDialogue.value : '';
 
@@ -214,12 +216,12 @@ class Comic extends Component {
 				<div className="comic-footer-container">
 					<div className="comic-footer">
 						<div className="comic-footer-top">
-							<div className="footer-left">{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}</div>
+							<div className="footer-left">{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.template.templateId}`}</div>
 							<div className="flex-spacer">&nbsp;&nbsp;</div>
 							<div className="footer-right">Speak 4 Yourself</div>
 						</div>
 						<div className="comic-footer-bottom">
-							<div className="footer-left">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}</div>
+							<div className="footer-left">{Util.route.host}{Util.route.template(this.template.templateId, this.state.comic.comicId)}</div>
 							<div className="flex-spacer">&nbsp;&nbsp;</div>
 							<div className="footer-right">@imdoodlir</div>
 						</div>

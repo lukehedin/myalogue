@@ -2,7 +2,9 @@ const mapper = {
 	fromDbUser: (dbUser, includeSensitiveData = false) => {
 		let user = {
 			userId: dbUser.UserId,
-			username: dbUser.Username
+			username: dbUser.Username,
+			createdAt: dbUser.CreatedAt,
+			// bio: dbUser.Bio
 		};
 
 		if(includeSensitiveData) {

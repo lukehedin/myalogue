@@ -156,7 +156,7 @@ const Util = {
 	},
 
 	route: {
-		root: 's4ycomic.com',
+		host: 's4ycomic.com',
 
 		home: () => `/`,
 		template: (templateId, comicId) => {
@@ -182,7 +182,7 @@ const Util = {
 		getApp: () => {
 			return document.getElementsByClassName('app')[0];
 		},
-		
+
 		getRootScrollElement: () => {
 			return document.getElementsByClassName('app-container')[0]; 
 		}

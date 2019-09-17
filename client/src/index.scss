@@ -28,11 +28,6 @@ body {
 	
 			[class^="page-"] {
 				position: relative;
-				
-				margin: $spacing-xs 0;
-				@include oversm {
-					margin: $spacing-sm 0;
-				}
 			}
 		}
 
@@ -55,13 +50,13 @@ body {
 			&.image-loader {
 				> img {
 					position: absolute;
-					animation: loader-spin 2s linear infinite;
+					animation: loader-spin 1.6s linear infinite;
 					left: 50%;
 					top: 50%;
-					width: 64px;
-					height: 64px;
-					margin-top: -32px;
-					margin-left: -32px;
+					width: 48px;
+					height: 48px;
+					margin-top: -24px;
+					margin-left: -24px;
 				}
 			}
 
@@ -99,7 +94,19 @@ body {
 		.no-select {
 			@include noSelect;
 		}
-	
+		
+		[class^="panel-"] {
+			padding: $spacing-xs 0;
+			@include overmd {
+				padding: $spacing-sm 0;
+			}
+			
+			&.panel-inset {
+				background-color: $colour-white;
+				@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
+			}
+		}
+
 		.container {
 			position: relative;
 			margin: 0 auto;
@@ -189,7 +196,7 @@ body {
 			}
 		}
 
-		h4 {
+		h3, h4 {
 			font-weight: normal;
 		}
 		

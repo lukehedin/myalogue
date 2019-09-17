@@ -6,7 +6,6 @@ import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
 import Checkbox from '../Checkbox/Checkbox';
 
-//this.props.template
 export default class ComicList extends Component {
 	constructor(props) {
 		super(props);
@@ -33,12 +32,12 @@ export default class ComicList extends Component {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.template.templateId !== prevProps.template.templateId;
+		return this.props.templateId !== prevProps.templateId;
 	}
 	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
-		if(isNewTemplateId) this.resetFetch();
+		if(isNewTemplateId) this.resetFetch(this.props.fetchDelay);
 	}
-	resetFetch() {
+	resetFetch(fetchDelay) {
 		clearTimeout(this.fetchTimeout);
 
 		this.setState({
@@ -46,7 +45,7 @@ export default class ComicList extends Component {
 			offset: 0,
 			isNoMore: false,
 			comics: []
-		}, () => this.fetchData(true));
+		}, () => this.fetchData(fetchDelay));
 	}
 	setSortBy(sortBy) {
 		this.setState({
@@ -59,7 +58,7 @@ export default class ComicList extends Component {
 			includeAnonymous: includeAnonymous
 		}, this.resetFetch);
 	}
-	fetchData() {
+	fetchData(fetchDelay) {
 		this.setState({
 			isLoading: true
 		});
@@ -68,8 +67,11 @@ export default class ComicList extends Component {
 			let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
 
 			Util.api.post('/api/getComics', {
+				//Optional
+				templateId: this.props.templateId,
+				authorUserId: this.props.authorUserId,
+
 				createdAtBefore: this.state.createdAtBefore,
-				templateId: this.props.template.templateId,
 				sortBy: this.state.sortBy,
 				limit: this.state.limit,
 				includeAnonymous: this.state.includeAnonymous,
@@ -88,10 +90,11 @@ export default class ComicList extends Component {
 					});
 				}
 			});
-		}, this.props.fetchDelay || 0);
+		}, fetchDelay || 0);
 	}
 	render() {
 		return <div className="comic-list">
+				{this.props.title ? <h5 className="comic-list-title">{this.props.title}</h5> : null}
 				<div className="filters">
 					<Dropdown 
 						value={this.state.sortBy}
@@ -111,31 +114,44 @@ export default class ComicList extends Component {
 							}
 						]} 
 					/>
-					<div className="flex-spacer"></div>
-					<Checkbox 
-						isSwitch={true}
-						onChange={this.setIncludeAnonymous} 
-						value={this.state.includeAnonymous}
-						label="Show anonymous authors"
-					/>
+					{this.props.authorUserId
+						? null
+						: <div className="flex-spacer"></div>
+					}
+					{this.props.authorUserId
+						? null
+						: <Checkbox 
+							isSwitch={true}
+							onChange={this.setIncludeAnonymous} 
+							value={this.state.includeAnonymous}
+							label="Show anonymous authors"
+						/>
+					}
 				</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {
-					return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
+					return <Comic key={comic.comicId} comic={comic} />
 				})}
 				{this.state.isLoading 
 					? <div className={`loader ${Util.array.any(this.state.comics) ? 'masked' : ''}`}></div> 
-					: this.state.isNoMore
-						? <p className="empty-text">
-							{Util.array.none(this.state.comics) 
-								? `No comics have been made using this template. You could make the very first one!`
-								: `Phew! That's all the comics that have been made with this template.`
-							}
-						</p>
-						: <div className="button-container">
+					: <div>
+						{this.state.isNoMore
+							? <p className="empty-text">
+								{Util.array.none(this.state.comics) 
+									? (this.props.emptyText || 'No comics to display.')
+									: (this.props.noMoreText || 'No more comics to display.')
+								}
+							</p>
+							: null
+						}
+						<div className="button-container">
 							<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
-							<Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+							{this.state.isNoMore
+								? null
+								: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+							}
 						</div>
+					</div>
 				}
 			</div>
 		</div>;

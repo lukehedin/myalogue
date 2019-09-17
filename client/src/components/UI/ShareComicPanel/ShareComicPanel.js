@@ -6,7 +6,7 @@ import ComicTitle from '../ComicTitle/ComicTitle';
 
 export default class ShareComicPanel extends Component {
 	render() {
-		let comicLink = Util.route.root + Util.route.template(this.props.comic.templateId, this.props.comic.comicId);
+		let comicLink = Util.route.host + Util.route.template(this.props.comic.templateId, this.props.comic.comicId);
 
 		return <div className="share-comic-panel">
 			<h4><ComicTitle comic={this.props.comic} /></h4>

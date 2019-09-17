@@ -18,6 +18,10 @@
 				width: 24px;
 				padding: $spacing-xxs;
 				@include svgColourStroke($colour-white);
+
+				&:hover {
+					@include svgColourStroke($colour-pink-a);
+				}
 			}
 		}
 

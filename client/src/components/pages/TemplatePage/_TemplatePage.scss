@@ -1,33 +1,19 @@
 .page-template {
-	.template-navigation { 
-		margin-bottom: $spacing-xs;
-		@include oversm {
-			margin-bottom: $spacing-sm;
-		}
-	}
-
-	.template-highlight {
-		background-color: $colour-white;
-		@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
-
-		padding: $spacing-xs 0;
-		@include overmd {
-			padding: $spacing-md 0;
-		}
-	}
-
-	.template-feed {
+	.panel-template-feed {
 		position: relative;
 		min-height: 100vh;
-		padding: $spacing-sm 0;
-		@include overmd {
-			padding: $spacing-md 0;
-		}
 
-		.template-feed-inner {
+		.template-feed {
 			display: flex;
 			flex-direction: column;
 			align-items: stretch;
+
+			.template-navigation { 
+				margin-bottom: $spacing-xs;
+				@include oversm {
+					margin-bottom: $spacing-sm;
+				}
+			}
 
 			.comic-list {
 				align-self: stretch;

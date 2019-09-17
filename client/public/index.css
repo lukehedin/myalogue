@@ -34,6 +34,8 @@ body {
             padding: 4px; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon path {
               fill: #fff; }
+            body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon:hover path {
+              fill: #ff0052; }
           body .app-container .app .app-header .app-header-inner .app-logo {
             height: 32px;
             margin-left: 4px; }
@@ -56,11 +58,14 @@ body {
             height: 24px; }
       body .app-container .app .comic-list {
         position: relative; }
+        body .app-container .app .comic-list .comic-list-title {
+          margin-bottom: 16px; }
         body .app-container .app .comic-list .filters {
           margin-bottom: 16px;
           display: flex;
           flex-direction: row;
-          align-items: center; }
+          align-items: center;
+          justify-content: center; }
         body .app-container .app .comic-list .comic-list-inner {
           position: relative;
           min-height: 200px;
@@ -95,6 +100,8 @@ body {
     -webkit-transform: translateY(0);
     transform: translateY(0);
     opacity: 1; } }
+          body .app-container .app .comic-list .comic-list-inner .button-container {
+            justify-content: center; }
       body .app-container .app .comic {
         position: relative;
         border: 1px solid #373737;
@@ -481,7 +488,7 @@ body {
         display: flex;
         flex-direction: row;
         align-items: center; }
-        body .app-container .app .template-navigation .template-info h3 {
+        body .app-container .app .template-navigation .template-info h2 {
           color: #ff0052; }
         body .app-container .app .template-navigation .button .button-label {
           display: none; }
@@ -669,39 +676,25 @@ body {
           body .app-container .app .share-comic-panel .comic-image .image-thumbnail {
             height: 100%;
             width: 100%; }
-      body .app-container .app .page-template .template-navigation {
-        margin-bottom: 8px; }
-        @media (min-width: 576px) {
-          body .app-container .app .page-template .template-navigation {
-            margin-bottom: 16px; } }
-      body .app-container .app .page-template .template-highlight {
-        background-color: #fff;
-        box-shadow: inset 0 0 8px #00000044;
-        -webkit-box-shadow: inset 0 0 8px #00000044;
-        -moz-box-shadow: inset 0 0 8px #00000044;
-        padding: 8px 0; }
-        @media (min-width: 768px) {
-          body .app-container .app .page-template .template-highlight {
-            padding: 32px 0; } }
-      body .app-container .app .page-template .template-feed {
+      body .app-container .app .page-template .panel-template-feed {
         position: relative;
-        min-height: 100vh;
-        padding: 16px 0; }
-        @media (min-width: 768px) {
-          body .app-container .app .page-template .template-feed {
-            padding: 32px 0; } }
-        body .app-container .app .page-template .template-feed .template-feed-inner {
+        min-height: 100vh; }
+        body .app-container .app .page-template .panel-template-feed .template-feed {
           display: flex;
           flex-direction: column;
           align-items: stretch; }
-          body .app-container .app .page-template .template-feed .template-feed-inner .comic-list {
+          body .app-container .app .page-template .panel-template-feed .template-feed .template-navigation {
+            margin-bottom: 8px; }
+            @media (min-width: 576px) {
+              body .app-container .app .page-template .panel-template-feed .template-feed .template-navigation {
+                margin-bottom: 16px; } }
+          body .app-container .app .page-template .panel-template-feed .template-feed .comic-list {
             align-self: stretch; }
-      body .app-container .app [class^="page-"] {
+      body .app-container .app .page-profile .user-info {
         position: relative;
-        margin: 8px 0; }
-        @media (min-width: 576px) {
-          body .app-container .app [class^="page-"] {
-            margin: 16px 0; } }
+        min-height: 60px; }
+      body .app-container .app [class^="page-"] {
+        position: relative; }
 
 @keyframes loader-spin {
   0% {
@@ -719,13 +712,13 @@ body {
         background-color: #00000044; }
       body .app-container .loader.image-loader > img {
         position: absolute;
-        animation: loader-spin 2s linear infinite;
+        animation: loader-spin 1.6s linear infinite;
         left: 50%;
         top: 50%;
-        width: 64px;
-        height: 64px;
-        margin-top: -32px;
-        margin-left: -32px; }
+        width: 48px;
+        height: 48px;
+        margin-top: -24px;
+        margin-left: -24px; }
       body .app-container .loader:not(.image-loader):before {
         content: '';
         position: absolute;
@@ -753,6 +746,16 @@ body {
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none; }
+    body .app-container [class^="panel-"] {
+      padding: 8px 0; }
+      @media (min-width: 768px) {
+        body .app-container [class^="panel-"] {
+          padding: 16px 0; } }
+      body .app-container [class^="panel-"].panel-inset {
+        background-color: #fff;
+        box-shadow: inset 0 0 8px #00000044;
+        -webkit-box-shadow: inset 0 0 8px #00000044;
+        -moz-box-shadow: inset 0 0 8px #00000044; }
     body .app-container .container {
       position: relative;
       margin: 0 auto;
@@ -816,7 +819,7 @@ body {
         cursor: pointer; }
         body .app-container a:not(.dead-link):hover, body .app-container .dead-link:not(.dead-link):hover {
           text-decoration: underline; }
-    body .app-container h4 {
+    body .app-container h3, body .app-container h4 {
       font-weight: normal; }
     body .app-container h5 {
       text-transform: uppercase; }

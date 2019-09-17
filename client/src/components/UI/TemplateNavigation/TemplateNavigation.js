@@ -26,7 +26,7 @@ export default class TemplateNavigation extends Component {
 			<div className="flex-spacer"></div>
 			<div className="template-info">
 				<h5>Template</h5>
-				<h3>{this.props.templateId}</h3>
+				<h2>{this.props.templateId}</h2>
 			</div>
 			<div className="flex-spacer"></div>
 			<div className="button-container">
