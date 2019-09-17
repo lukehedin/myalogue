@@ -727,12 +727,13 @@ body {
     body .app-container .empty-text {
       font-size: 14px;
       color: #373737; }
-    body .app-container a {
-      cursor: pointer;
+    body .app-container a, body .app-container .dead-link {
       text-decoration: none;
       color: #ff0052; }
-      body .app-container a:hover {
-        text-decoration: underline; }
+      body .app-container a:not(.dead-link), body .app-container .dead-link:not(.dead-link) {
+        cursor: pointer; }
+        body .app-container a:not(.dead-link):hover, body .app-container .dead-link:not(.dead-link):hover {
+          text-decoration: underline; }
     body .app-container h4 {
       font-weight: normal; }
     body .app-container h5 {

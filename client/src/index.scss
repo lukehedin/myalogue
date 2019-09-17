@@ -178,13 +178,15 @@ body {
 			color: $colour-grey-d;
 		}
 
-		a {
-			cursor: pointer;
+		a, .dead-link {
 			text-decoration: none;
 			color: $colour-pink-a;
 
-			&:hover {
-				text-decoration: underline;
+			&:not(.dead-link) {
+				cursor: pointer;
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 		}
 

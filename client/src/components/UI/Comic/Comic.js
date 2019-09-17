@@ -206,14 +206,14 @@ class Comic extends Component {
 				<div className="comic-footer-container">
 					<div className="comic-footer">
 						<div className="comic-footer-top">
-							{isComicViewOnly ? <ComicTitle comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}
+							{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}
 							<div className="flex-spacer"></div>
-							<span>imdoodlir</span>
+							<span>Speak 4 Yourself</span>
 						</div>
 						<div className="comic-footer-bottom">
 							<span className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}</span>
 							<div className="flex-spacer"></div>
-							<span>Speak 4 Yourself</span>
+							<span>@imdoodlir</span>
 						</div>
 					</div>
 				</div>
