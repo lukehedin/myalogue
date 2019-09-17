@@ -179,6 +179,10 @@ const Util = {
 	},
 
 	selector: {
+		getApp: () => {
+			return document.getElementsByClassName('app')[0];
+		},
+		
 		getRootScrollElement: () => {
 			return document.getElementsByClassName('app-container')[0]; 
 		}

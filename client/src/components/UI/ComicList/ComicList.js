@@ -132,9 +132,11 @@ export default class ComicList extends Component {
 								: `Phew! That's all the comics that have been made with this template.`
 							}
 						</p>
-						: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+						: <div className="button-container">
+							<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
+							<Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+						</div>
 				}
-				<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" leftIcon={Util.icon.home} />
 			</div>
 		</div>;
 	}

@@ -102,115 +102,6 @@ body {
         border-radius: 2px;
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px; }
-        body .app-container .app .comic .comic-inner {
-          position: relative;
-          width: calc(1080px * 0.28);
-          height: calc(1080px * 0.28); }
-          body .app-container .app .comic .comic-inner > img {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none; }
-          body .app-container .app .comic .comic-inner.view-only {
-            cursor: pointer; }
-          body .app-container .app .comic .comic-inner .dialogue {
-            position: absolute;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px; }
-            body .app-container .app .comic .comic-inner .dialogue.edit-empty {
-              cursor: text;
-              border: 1px solid #969696; }
-            body .app-container .app .comic .comic-inner .dialogue.edit-invalid {
-              border: 1px solid #f0002d; }
-            body .app-container .app .comic .comic-inner .dialogue > * {
-              max-height: 100%;
-              width: 100%;
-              margin: 0;
-              padding: 0;
-              border: none;
-              font-family: Arial, Helvetica, sans-serif;
-              overflow: hidden;
-              text-align: center;
-              background-color: transparent; }
-            body .app-container .app .comic .comic-inner .dialogue textarea {
-              resize: none; }
-          body .app-container .app .comic .comic-inner .comic-footer-container {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            color: #969696; }
-            body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer {
-              display: flex;
-              flex-direction: column; }
-              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer > * {
-                display: flex;
-                flex-direction: row; }
-              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer .comic-footer-left {
-                text-align: left; }
-              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer .comic-footer-right {
-                text-align: right; }
-          body .app-container .app .comic .comic-inner .begin-edit-overlay {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center; }
-          body .app-container .app .comic .comic-inner .dialogue > * {
-            line-height: calc(40px * 0.28);
-            font-size: calc(38px * 0.28); }
-          body .app-container .app .comic .comic-inner .comic-footer {
-            font-size: calc(20px * 0.28);
-            line-height: calc(20px * 0.28);
-            padding: 0 calc(8px * 0.28); }
-          @media (min-width: 576px) {
-            body .app-container .app .comic .comic-inner {
-              width: calc(1080px * 0.36);
-              height: calc(1080px * 0.36); }
-              body .app-container .app .comic .comic-inner .dialogue > * {
-                line-height: calc(40px * 0.36);
-                font-size: calc(38px * 0.36); }
-              body .app-container .app .comic .comic-inner .comic-footer {
-                font-size: calc(20px * 0.36);
-                line-height: calc(20px * 0.36);
-                padding: 0 calc(8px * 0.36); } }
-          @media (min-width: 768px) {
-            body .app-container .app .comic .comic-inner {
-              width: calc(1080px * 0.44);
-              height: calc(1080px * 0.44); }
-              body .app-container .app .comic .comic-inner .dialogue > * {
-                line-height: calc(40px * 0.44);
-                font-size: calc(38px * 0.44); }
-              body .app-container .app .comic .comic-inner .comic-footer {
-                font-size: calc(20px * 0.44);
-                line-height: calc(20px * 0.44);
-                padding: 0 calc(8px * 0.44); } }
-          @media (min-width: 992px) {
-            body .app-container .app .comic .comic-inner {
-              width: calc(1080px * 0.5);
-              height: calc(1080px * 0.5); }
-              body .app-container .app .comic .comic-inner .dialogue > * {
-                line-height: calc(40px * 0.5);
-                font-size: calc(38px * 0.5); }
-              body .app-container .app .comic .comic-inner .comic-footer {
-                font-size: calc(20px * 0.5);
-                line-height: calc(20px * 0.5);
-                padding: 0 calc(8px * 0.5); } }
         body .app-container .app .comic .comic-lower {
           padding: 8px;
           display: flex;
@@ -240,6 +131,130 @@ body {
                     display: initial; } }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
+      body .app-container .app .comic-content {
+        position: relative;
+        overflow: hidden;
+        width: calc(1080px * 0.28);
+        height: calc(1080px * 0.28); }
+        body .app-container .app .comic-content > img {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none; }
+        body .app-container .app .comic-content.view-only {
+          cursor: pointer; }
+        body .app-container .app .comic-content .dialogue {
+          position: absolute;
+          background-color: transparent;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px; }
+          body .app-container .app .comic-content .dialogue.edit-empty {
+            cursor: text;
+            border: 1px solid #969696; }
+          body .app-container .app .comic-content .dialogue.edit-invalid {
+            border: 1px solid #f0002d; }
+          body .app-container .app .comic-content .dialogue > * {
+            max-height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            text-align: center;
+            background-color: transparent; }
+          body .app-container .app .comic-content .dialogue textarea {
+            resize: none; }
+        body .app-container .app .comic-content .comic-footer-container {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          color: #969696; }
+          body .app-container .app .comic-content .comic-footer-container .comic-footer {
+            display: flex;
+            flex-direction: column; }
+            body .app-container .app .comic-content .comic-footer-container .comic-footer > * {
+              display: flex;
+              flex-direction: row; }
+              body .app-container .app .comic-content .comic-footer-container .comic-footer > * .footer-left, body .app-container .app .comic-content .comic-footer-container .comic-footer > * .footer-right {
+                flex-wrap: nowrap;
+                white-space: nowrap; }
+              body .app-container .app .comic-content .comic-footer-container .comic-footer > * .footer-left {
+                text-align: left; }
+              body .app-container .app .comic-content .comic-footer-container .comic-footer > * .footer-right {
+                text-align: right; }
+        body .app-container .app .comic-content .begin-edit-overlay {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center; }
+        body .app-container .app .comic-content .dialogue > * {
+          line-height: calc(40px * 0.28);
+          font-size: calc(38px * 0.28); }
+        body .app-container .app .comic-content .comic-footer {
+          font-size: calc(18px * 0.28);
+          line-height: calc(18px * 0.28);
+          padding: 0 calc(8px * 0.28); }
+        @media (min-width: 576px) {
+          body .app-container .app .comic-content {
+            width: calc(1080px * 0.36);
+            height: calc(1080px * 0.36); }
+            body .app-container .app .comic-content .dialogue > * {
+              line-height: calc(40px * 0.36);
+              font-size: calc(38px * 0.36); }
+            body .app-container .app .comic-content .comic-footer {
+              font-size: calc(18px * 0.36);
+              line-height: calc(18px * 0.36);
+              padding: 0 calc(8px * 0.36); } }
+        @media (min-width: 768px) {
+          body .app-container .app .comic-content {
+            width: calc(1080px * 0.44);
+            height: calc(1080px * 0.44); }
+            body .app-container .app .comic-content .dialogue > * {
+              line-height: calc(40px * 0.44);
+              font-size: calc(38px * 0.44); }
+            body .app-container .app .comic-content .comic-footer {
+              font-size: calc(18px * 0.44);
+              line-height: calc(18px * 0.44);
+              padding: 0 calc(8px * 0.44); } }
+        @media (min-width: 992px) {
+          body .app-container .app .comic-content {
+            width: calc(1080px * 0.5);
+            height: calc(1080px * 0.5); }
+            body .app-container .app .comic-content .dialogue > * {
+              line-height: calc(40px * 0.5);
+              font-size: calc(38px * 0.5); }
+            body .app-container .app .comic-content .comic-footer {
+              font-size: calc(18px * 0.5);
+              line-height: calc(18px * 0.5);
+              padding: 0 calc(8px * 0.5); } }
+        body .app-container .app .comic-content.for-image-capture {
+          z-index: -1;
+          width: calc(1080px * 0.5);
+          height: calc(1080px * 0.5); }
+          body .app-container .app .comic-content.for-image-capture .dialogue > * {
+            line-height: calc(40px * 0.5);
+            font-size: calc(38px * 0.5); }
+          body .app-container .app .comic-content.for-image-capture .comic-footer {
+            font-size: calc(18px * 0.5);
+            line-height: calc(18px * 0.5);
+            padding: 0 calc(8px * 0.5); }
       body .app-container .app .form-wrapper {
         position: relative;
         margin: 0 auto;
@@ -460,12 +475,6 @@ body {
             justify-content: flex-end; }
         body .app-container .app .modal.modal-share-comic {
           max-width: 500px; }
-          body .app-container .app .modal.modal-share-comic .modal-content .share-comic {
-            display: flex;
-            flex-direction: column;
-            align-items: center; }
-            body .app-container .app .modal.modal-share-comic .modal-content .share-comic > *:not(:first-child) {
-              margin-top: 16px; }
         body .app-container .app .modal.modal-submit-comic {
           max-width: 500px; }
       body .app-container .app .template-navigation {
@@ -640,6 +649,26 @@ body {
             font-size: 14px; }
             body .app-container .app .context-menu .menu-items .menu-item:not(:first-child) {
               border-top: 1px solid #c8c8c8; }
+      body .app-container .app .share-comic-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
+        body .app-container .app .share-comic-panel > *:not(:first-child) {
+          margin-top: 16px; }
+        body .app-container .app .share-comic-panel .comic-image {
+          position: relative;
+          height: 200px;
+          width: 200px;
+          overflow: hidden; }
+          body .app-container .app .share-comic-panel .comic-image .image-download {
+            position: absolute;
+            pointer-events: all;
+            height: 540px;
+            width: 540px;
+            opacity: 0.000001; }
+          body .app-container .app .share-comic-panel .comic-image .image-thumbnail {
+            height: 100%;
+            width: 100%; }
       body .app-container .app .page-template .template-navigation {
         margin-bottom: 8px; }
         @media (min-width: 576px) {
@@ -730,10 +759,10 @@ body {
       max-width: 320px; }
       @media (min-width: 576px) {
         body .app-container .container {
-          max-width: 420px; } }
+          max-width: 424px; } }
       @media (min-width: 768px) {
         body .app-container .container {
-          max-width: 508px; } }
+          max-width: 510px; } }
       @media (min-width: 992px) {
         body .app-container .container {
           max-width: 574px; } }
@@ -792,6 +821,7 @@ body {
     body .app-container h5 {
       text-transform: uppercase; }
     body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
+      background-color: #fff;
       padding: 4px 8px;
       border-radius: 4px;
       -webkit-border-radius: 4px;

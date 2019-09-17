@@ -45,24 +45,9 @@
 
 	&.modal-share-comic {
 		max-width: 500px;
-		
-		.modal-content {
-			.share-comic {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-
-				> * {
-					&:not(:first-child) {
-						margin-top: $spacing-sm;
-					}
-				}
-			}
-		}
 	}
 
 	&.modal-submit-comic {
 		max-width: 500px;
-
 	}
 }

@@ -4,131 +4,6 @@
 	background-color: $colour-white;
 	@include borderRadius(2px);
 
-	.comic-inner {
-		position: relative;
-
-		> img {
-			@include absoluteCover;
-			@include noSelect;
-		}
-
-		&.view-only {
-			cursor: pointer;
-		}
-		
-		.dialogue {
-			position: absolute;
-			background-color: transparent;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-end;
-			@include borderRadius(4px);
-
-			&.edit-empty {
-				cursor: text;
-				border: 1px solid $colour-grey-c;
-			}
-
-			&.edit-invalid {
-				border: 1px solid $colour-red-a;
-			}
-
-			> * {				
-				max-height: 100%;
-				width: 100%;
-				margin: 0;
-				padding: 0;
-				border: none;
-				font-family: Arial, Helvetica, sans-serif;
-				overflow: hidden;
-				text-align: center;
-				background-color: transparent;
-			}
-
-			textarea {
-				resize: none;
-			}
-		}
-
-		.comic-footer-container {
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-			color: $colour-grey-c;
-
-			.comic-footer {
-				display: flex;
-				flex-direction: column;
-
-				> * {
-					display: flex;
-					flex-direction: row;
-				}
-	
-				.comic-footer-left {
-					text-align: left;
-				}
-	
-				.comic-footer-right {
-					text-align: right;
-				}
-			}
-		}
-
-		.begin-edit-overlay {
-			@include absoluteCover;
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: center;
-		}
-
-		// Scaling code
-		$comic-width: 1080px;
-		$comic-height: 1080px;
-		$comic-dialogue-line-height: 40px;
-		$comic-dialogue-font-size: 38px;
-	
-		$comic-footer-font-size: 20px;
-		$comic-footer-margin: 8px;
-	
-		$comic-scale-xs: 0.28;
-		$comic-scale-sm: 0.36;
-		$comic-scale-md: 0.44;
-		$comic-scale-lg: 0.5;
-	
-		@mixin scaleComic ($comic-scale) {
-			width: calc(#{$comic-width} * #{$comic-scale});
-			height: calc(#{$comic-width} * #{$comic-scale});
-			.dialogue {
-				> * {
-					line-height: calc(#{$comic-dialogue-line-height} * #{$comic-scale});
-					font-size: calc(#{$comic-dialogue-font-size} * #{$comic-scale});
-				}
-			}
-			
-			.comic-footer {
-				font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
-				line-height: calc(#{$comic-footer-font-size} * #{$comic-scale});
-				padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
-			}
-		}
-	
-		@include scaleComic($comic-scale-xs);
-	
-		@include oversm {
-			@include scaleComic($comic-scale-sm);
-		}
-	
-		@include overmd {
-			@include scaleComic($comic-scale-md);
-		}
-	
-		@include overlg {
-			@include scaleComic($comic-scale-lg);
-		}
-	}
-
 	.comic-lower {
 		padding: $spacing-xs;
 		display: flex;
@@ -174,5 +49,141 @@
 		&:empty {
 			display: none;
 		}
+	}
+}
+
+.comic-content {
+	position: relative;
+	overflow: hidden;
+
+	> img {
+		@include absoluteCover;
+		@include noSelect;
+	}
+
+	&.view-only {
+		cursor: pointer;
+	}
+	
+	.dialogue {
+		position: absolute;
+		background-color: transparent;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		@include borderRadius(4px);
+
+		&.edit-empty {
+			cursor: text;
+			border: 1px solid $colour-grey-c;
+		}
+
+		&.edit-invalid {
+			border: 1px solid $colour-red-a;
+		}
+
+		> * {				
+			max-height: 100%;
+			width: 100%;
+			margin: 0;
+			padding: 0;
+			border: none;
+			font-family: Arial, Helvetica, sans-serif;
+			overflow: hidden;
+			text-align: center;
+			background-color: transparent;
+		}
+
+		textarea {
+			resize: none;
+		}
+	}
+
+	.comic-footer-container {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		color: $colour-grey-c;
+
+		.comic-footer {
+			display: flex;
+			flex-direction: column;
+
+			> * {
+				display: flex;
+				flex-direction: row;
+
+				.footer-left, .footer-right {
+					flex-wrap: nowrap;
+					white-space: nowrap;
+				}
+
+				.footer-left {
+					text-align: left;
+				}
+				
+				.footer-right {
+					text-align: right;
+				}
+			}
+		}
+	}
+
+	.begin-edit-overlay {
+		@include absoluteCover;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	// Scaling code
+	$comic-width: 1080px;
+	$comic-height: 1080px;
+	$comic-dialogue-line-height: 40px;
+	$comic-dialogue-font-size: 38px;
+
+	$comic-footer-font-size: 18px;
+	$comic-footer-margin: 8px;
+
+	$comic-scale-xs: 0.28;
+	$comic-scale-sm: 0.36;
+	$comic-scale-md: 0.44;
+	$comic-scale-lg: 0.5;
+
+	@mixin scaleComic ($comic-scale) {
+		width: calc(#{$comic-width} * #{$comic-scale});
+		height: calc(#{$comic-width} * #{$comic-scale});
+		.dialogue {
+			> * {
+				line-height: calc(#{$comic-dialogue-line-height} * #{$comic-scale});
+				font-size: calc(#{$comic-dialogue-font-size} * #{$comic-scale});
+			}
+		}
+		
+		.comic-footer {
+			font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
+			line-height: calc(#{$comic-footer-font-size} * #{$comic-scale});
+			padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
+		}
+	}
+
+	@include scaleComic($comic-scale-xs);
+
+	@include oversm {
+		@include scaleComic($comic-scale-sm);
+	}
+
+	@include overmd {
+		@include scaleComic($comic-scale-md);
+	}
+
+	@include overlg {
+		@include scaleComic($comic-scale-lg);
+	}
+
+	&.for-image-capture {
+		z-index: -1;
+		@include scaleComic($comic-scale-lg);
 	}
 }

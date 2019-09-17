@@ -27,7 +27,7 @@ class Comic extends Component {
 			invalidTemplateDialogueIds: []
 		}
 
-		this.comicRef = React.createRef();
+		this.comicContentRef = React.createRef();
 		this.textareaRefs = {};
 		this.touchTimer = null;
 
@@ -107,23 +107,31 @@ class Comic extends Component {
 			isLoading: true
 		});
 
-		let comic = this.comicRef.current;
+		let comicContent = this.comicContentRef.current;
+		let clone = comicContent.cloneNode(true);
+		clone.classList.add('for-image-capture');
+		comicContent.appendChild(clone);
 
-		htmlToImage.toPng(comic)
-			.then(dataUrl => {
-				this.setState({
-					isLoading: false
-				});
+		//Might be paranoid, but lets give the dom time to update
+		setTimeout(() => {
+			htmlToImage.toPng(clone)
+				.then(dataUrl => {
+					comicContent.removeChild(clone);
 
-				this.props.openModal({
-					type: Util.enum.ModalType.ShareComicModal,
-					comicImageSrc: dataUrl,
-					comic: this.state.comic
+					this.setState({
+						isLoading: false
+					});
+
+					this.props.openModal({
+						type: Util.enum.ModalType.ShareComicModal,
+						comicDataUrl: dataUrl,
+						comic: this.state.comic
+					});
+				})
+				.catch((error) => {
+					console.error('Could not generate comic image', error);
 				});
-			})
-			.catch((error) => {
-				console.error('Could not generate comic image', error);
-			});
+		}, 100);
 	}
 	submitComic() {
 		let invalidTemplateDialogueIds = [];
@@ -158,8 +166,8 @@ class Comic extends Component {
 
 		return <div className="comic">
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
-			<div className={`comic-inner ${isComicViewOnly ? 'view-only no-select' : ''}`} 
-				ref={this.comicRef}
+			<div className={`comic-content ${isComicViewOnly ? 'view-only no-select' : ''}`} 
+				ref={this.comicContentRef}
 				onTouchStart={isComicViewOnly ? this.startShareTimeout : null}
 				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
 				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
@@ -206,14 +214,14 @@ class Comic extends Component {
 				<div className="comic-footer-container">
 					<div className="comic-footer">
 						<div className="comic-footer-top">
-							{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}
-							<div className="flex-spacer"></div>
-							<span>Speak 4 Yourself</span>
+							<div className="footer-left">{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}</div>
+							<div className="flex-spacer">&nbsp;&nbsp;</div>
+							<div className="footer-right">Speak 4 Yourself</div>
 						</div>
 						<div className="comic-footer-bottom">
-							<span className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}</span>
-							<div className="flex-spacer"></div>
-							<span>@imdoodlir</span>
+							<div className="footer-left">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}</div>
+							<div className="flex-spacer">&nbsp;&nbsp;</div>
+							<div className="footer-right">@imdoodlir</div>
 						</div>
 					</div>
 				</div>

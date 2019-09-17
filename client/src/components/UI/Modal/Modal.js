@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../../redux/actions';
 
 import Button from '../Button/Button';
-import CopyButton from '../CopyButton/CopyButton';
+import ShareComicPanel from '../ShareComicPanel/ShareComicPanel';
 import SubmitComicForm from '../Forms/SubmitComicForm/SubmitComicForm';
-import ComicTitle from '../ComicTitle/ComicTitle';
 import ReactSVG from 'react-svg';
 
 class Modal extends Component {
@@ -80,16 +79,9 @@ class Modal extends Component {
 				</div>
 				break;
 			case Util.enum.ModalType.ShareComicModal:
-				let comicLink = Util.route.root + Util.route.template(modal.comic.templateId, modal.comic.comicId);
-
 				modalTitle = "Share comic";
 				modalClass = 'modal-share-comic';
-				modalContent = <div className="share-comic">
-					<h4><ComicTitle comic={modal.comic} /></h4>
-					<input readOnly={true} defaultValue={comicLink}></input>
-					<CopyButton toCopy={comicLink} />
-					<Button colour="black" isHollow={true} href={modal.comicImageSrc} label={'Download image'} leftIcon={Util.icon.download} download={modal.comic.title} />
-				</div>
+				modalContent = <ShareComicPanel comic={modal.comic} comicDataUrl={modal.comicDataUrl} />
 				break;
 			default:
 				break;

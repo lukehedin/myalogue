@@ -106,10 +106,10 @@ body {
 
 			max-width: 320px;
 			@include oversm {
-				max-width: 420px;
+				max-width: 424px;
 			}
 			@include overmd {
-				max-width: 508px;
+				max-width: 510px;
 			}
 			@include overlg {
 				max-width: 574px;
@@ -199,6 +199,7 @@ body {
 
 		input, select, textarea {
 			&:not([type=checkbox]), &:not([type=radio]) {
+				background-color: $colour-white;
 				padding: $spacing-xxs $spacing-xs;
 				@include borderRadius(4px);
 
