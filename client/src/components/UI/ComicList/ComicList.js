@@ -111,7 +111,7 @@ export default class ComicList extends Component {
 					return <Comic key={comic.comicId} template={this.props.template} comic={comic} />
 				})}
 				{this.state.isLoading 
-					? <div className="loader"></div> 
+					? <div className={`loader ${Util.array.any(this.state.comics) ? 'masked' : ''}`}></div> 
 					: this.state.isNoMore
 						? <div>
 							{Util.array.none(this.state.comics) 

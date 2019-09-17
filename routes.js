@@ -303,7 +303,7 @@ const routes = {
 			let userId = req.userId; // May be null
 			let comic = req.body.comic;
 
-			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 });
+			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 }) && validator.isAlphanumeric(validator.blacklist(val, ' '));
 			let isValidDialogue = !comic.comicDialogues.find(cd => !validator.isLength(cd.value, { min: 1, max: 255 }));
 			
 			if(isValidTitle && isValidDialogue) {

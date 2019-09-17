@@ -203,11 +203,18 @@ class Comic extends Component {
 						}
 					</div>
 				})}
-				<div className="comic-footer">
-					<div className="comic-footer-inner">
-						<div className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}&nbsp;&nbsp;&nbsp;&nbsp;</div>{/* spaces so the gap scales right */}
-						<div className="flex-spacer"></div>
-						{isComicViewOnly ? <ComicTitle comic={this.state.comic} /> : null}
+				<div className="comic-footer-container">
+					<div className="comic-footer">
+						<div className="comic-footer-top">
+							{isComicViewOnly ? <ComicTitle comic={this.state.comic} /> : `Template ${this.props.template.templateId}`}
+							<div className="flex-spacer"></div>
+							<span>imdoodlir</span>
+						</div>
+						<div className="comic-footer-bottom">
+							<span className="comic-link">{Util.route.root}{Util.route.template(this.props.template.templateId, this.state.comic.comicId)}</span>
+							<div className="flex-spacer"></div>
+							<span>Speak 4 Yourself</span>
+						</div>
 					</div>
 				</div>
 				{!this.state.isEditing && !isComicViewOnly

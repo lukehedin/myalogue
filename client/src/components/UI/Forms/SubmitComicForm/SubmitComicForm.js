@@ -39,6 +39,7 @@ export default withForm(SubmitComicForm, {
 			placeholder: 'Untitled',
 			getError: (val) => {
 				if(!validator.isLength(val, { max: 30 })) return 'Please enter a shorter title (maximum 30 characters)';
+				if(!validator.isAlphanumeric(validator.blacklist(val, ' '))) return 'Title can only contain letters, numbers and spaces';
 			}
 		},
 		isAnonymous: {

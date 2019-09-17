@@ -116,21 +116,20 @@ body {
               background-color: transparent; }
             body .app-container .app .comic .comic-inner .dialogue textarea {
               resize: none; }
-          body .app-container .app .comic .comic-inner .comic-footer {
+          body .app-container .app .comic .comic-inner .comic-footer-container {
             position: absolute;
             bottom: 0;
             width: 100%;
-            display: flex;
-            flex-direction: row; }
-            body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner {
-              flex: 1;
+            color: #969696; }
+            body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer {
               display: flex;
-              flex-direction: row;
-              align-items: flex-end;
-              color: #969696; }
-              body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner .comic-link {
+              flex-direction: column; }
+              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer > * {
+                display: flex;
+                flex-direction: row; }
+              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer .comic-footer-left {
                 text-align: left; }
-              body .app-container .app .comic .comic-inner .comic-footer .comic-footer-inner .comic-title {
+              body .app-container .app .comic .comic-inner .comic-footer-container .comic-footer .comic-footer-right {
                 text-align: right; }
           body .app-container .app .comic .comic-inner .begin-edit-overlay {
             position: absolute;
@@ -145,7 +144,7 @@ body {
           body .app-container .app .comic .comic-inner .dialogue > * {
             line-height: calc(40px * 0.28);
             font-size: calc(38px * 0.28); }
-          body .app-container .app .comic .comic-inner .comic-footer-inner {
+          body .app-container .app .comic .comic-inner .comic-footer {
             font-size: calc(20px * 0.28);
             line-height: calc(20px * 0.28);
             padding: 0 calc(8px * 0.28); }
@@ -156,7 +155,7 @@ body {
               body .app-container .app .comic .comic-inner .dialogue > * {
                 line-height: calc(40px * 0.36);
                 font-size: calc(38px * 0.36); }
-              body .app-container .app .comic .comic-inner .comic-footer-inner {
+              body .app-container .app .comic .comic-inner .comic-footer {
                 font-size: calc(20px * 0.36);
                 line-height: calc(20px * 0.36);
                 padding: 0 calc(8px * 0.36); } }
@@ -167,7 +166,7 @@ body {
               body .app-container .app .comic .comic-inner .dialogue > * {
                 line-height: calc(40px * 0.44);
                 font-size: calc(38px * 0.44); }
-              body .app-container .app .comic .comic-inner .comic-footer-inner {
+              body .app-container .app .comic .comic-inner .comic-footer {
                 font-size: calc(20px * 0.44);
                 line-height: calc(20px * 0.44);
                 padding: 0 calc(8px * 0.44); } }
@@ -178,7 +177,7 @@ body {
               body .app-container .app .comic .comic-inner .dialogue > * {
                 line-height: calc(40px * 0.5);
                 font-size: calc(38px * 0.5); }
-              body .app-container .app .comic .comic-inner .comic-footer-inner {
+              body .app-container .app .comic .comic-inner .comic-footer {
                 font-size: calc(20px * 0.5);
                 line-height: calc(20px * 0.5);
                 padding: 0 calc(8px * 0.5); } }
@@ -684,7 +683,7 @@ body {
           max-width: 508px; } }
       @media (min-width: 992px) {
         body .app-container .container {
-          max-width: 572px; } }
+          max-width: 574px; } }
     body .app-container .row {
       position: relative;
       padding: 0 8px; }

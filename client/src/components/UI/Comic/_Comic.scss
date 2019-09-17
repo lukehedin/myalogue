@@ -51,25 +51,26 @@
 			}
 		}
 
-		.comic-footer {
+		.comic-footer-container {
 			position: absolute;
 			bottom: 0;
 			width: 100%;
-			display: flex;
-			flex-direction: row;
+			color: $colour-grey-c;
 
-			.comic-footer-inner {
-				flex: 1;
+			.comic-footer {
 				display: flex;
-				flex-direction: row;
-				align-items: flex-end;
-				color: $colour-grey-c;
+				flex-direction: column;
 
-				.comic-link {
+				> * {
+					display: flex;
+					flex-direction: row;
+				}
+	
+				.comic-footer-left {
 					text-align: left;
 				}
-
-				.comic-title {
+	
+				.comic-footer-right {
 					text-align: right;
 				}
 			}
@@ -107,7 +108,7 @@
 				}
 			}
 			
-			.comic-footer-inner {
+			.comic-footer {
 				font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
 				line-height: calc(#{$comic-footer-font-size} * #{$comic-scale});
 				padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
