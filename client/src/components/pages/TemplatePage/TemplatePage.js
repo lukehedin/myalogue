@@ -105,6 +105,7 @@ export default class TemplatePage extends Component {
 							? <div className="template-feed-inner">
 								<TemplateNavigation templateId={this.state.templateId} /> 
 								<ComicList
+									fetchDelay={1000} //Prevent fast nav spamming
 									sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} 
 									template={this.state.template}
 								/>

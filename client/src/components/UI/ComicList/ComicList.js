@@ -24,6 +24,8 @@ export default class ComicList extends Component {
 			isNoMore: false
 		};
 
+		this.fetchTimeout = null;
+
 		this.setIncludeAnonymous = this.setIncludeAnonymous.bind(this);
 		this.fetchData = this.fetchData.bind(this);
 	}
@@ -37,6 +39,8 @@ export default class ComicList extends Component {
 		if(isNewTemplateId) this.resetFetch();
 	}
 	resetFetch() {
+		clearTimeout(this.fetchTimeout);
+
 		this.setState({
 			createdAtBefore: new Date(),
 			offset: 0,
@@ -59,30 +63,32 @@ export default class ComicList extends Component {
 		this.setState({
 			isLoading: true
 		});
+		
+		this.fetchTimeout = setTimeout(() => {
+			let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
 
-		let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
-
-		Util.api.post('/api/getComics', {
-			createdAtBefore: this.state.createdAtBefore,
-			templateId: this.props.template.templateId,
-			sortBy: this.state.sortBy,
-			limit: this.state.limit,
-			includeAnonymous: this.state.includeAnonymous,
-			offset: isRandomSort ? 0 : this.state.offset,
-			idNotIn: isRandomSort
-				? this.state.comics.map(comic => comic.comicId)
-				: []
-		})
-		.then(result => {
-			if(!result.error) {
-				this.setState({
-					comics: [...this.state.comics, ...result],
-					isLoading: false,
-					offset: this.state.offset + this.state.limit,
-					isNoMore: result.length < this.state.limit
-				});
-			}
-		});
+			Util.api.post('/api/getComics', {
+				createdAtBefore: this.state.createdAtBefore,
+				templateId: this.props.template.templateId,
+				sortBy: this.state.sortBy,
+				limit: this.state.limit,
+				includeAnonymous: this.state.includeAnonymous,
+				offset: isRandomSort ? 0 : this.state.offset,
+				idNotIn: isRandomSort
+					? this.state.comics.map(comic => comic.comicId)
+					: []
+			})
+			.then(result => {
+				if(!result.error) {
+					this.setState({
+						comics: [...this.state.comics, ...result],
+						isLoading: false,
+						offset: this.state.offset + this.state.limit,
+						isNoMore: result.length < this.state.limit
+					});
+				}
+			});
+		}, this.props.fetchDelay || 0);
 	}
 	render() {
 		return <div className="comic-list">
