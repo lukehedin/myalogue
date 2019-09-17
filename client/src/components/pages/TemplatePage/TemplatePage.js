@@ -78,7 +78,7 @@ export default class TemplatePage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
+						{this.state.templateId ? <TemplateNavigation toFn={Util.route.template} templateId={this.state.templateId} /> : null }
 					</div>
 				</div>
 			</div>
@@ -105,7 +105,7 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						{!this.state.isLoading
 							? <div className="template-feed">
-								<TemplateNavigation templateId={this.state.templateId} /> 
+								<TemplateNavigation toFn={Util.route.template} templateId={this.state.templateId} /> 
 								<ComicList
 									emptyText={`No comics have been made using this template. You could make the very first one!`}
 									noMoreText={`Phew! That's all the comics that have been made with this template.`}

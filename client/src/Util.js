@@ -165,7 +165,7 @@ const Util = {
 				? `/template/${templateId}/comic/${comicId}` 
 				: `/template/${templateId}`;
 		},
-		hallOfFame: () => `/hall-of-fame`,
+		hallOfFame: (templateId) => templateId ? `/hall-of-fame/${templateId}` : `/hall-of-fame`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
 		profile: (userId) => `/profile/${userId}`,

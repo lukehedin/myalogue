@@ -488,7 +488,7 @@ body {
         display: flex;
         flex-direction: row;
         align-items: center; }
-        body .app-container .app .template-navigation .template-info h2 {
+        body .app-container .app .template-navigation .template-info h3 {
           color: #ff0052; }
         body .app-container .app .template-navigation .button .button-label {
           display: none; }
@@ -819,7 +819,7 @@ body {
         cursor: pointer; }
         body .app-container a:not(.dead-link):hover, body .app-container .dead-link:not(.dead-link):hover {
           text-decoration: underline; }
-    body .app-container h3, body .app-container h4 {
+    body .app-container h4 {
       font-weight: normal; }
     body .app-container h5 {
       text-transform: uppercase; }

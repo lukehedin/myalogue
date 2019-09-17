@@ -34,6 +34,8 @@ let db = {
 	
 	fn: Sequelize.fn,
 	op: Sequelize.Op,
+	
+	col: sequelize.col,
 
 	sync: () => {
 		sequelize.sync({

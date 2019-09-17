@@ -23,7 +23,7 @@ const getAuthResult = (userId, username, callback) => {
 	})
 };
 
-//Common functions
+//Common db functions
 const getDbComicInclude = (db, userId) => {
 	let include = [{
 		model: db.ComicDialogue,
@@ -46,6 +46,14 @@ const getDbComicInclude = (db, userId) => {
 	}
 
 	return include;
+};
+const getDbTemplateWhereUnlocked = (db) => {
+	return {
+		UnlockedAt: {
+			[db.op.ne]: null,
+			[db.op.lte]: new Date()
+		}
+	};
 }
 
 const routes = {
@@ -59,12 +67,7 @@ const routes = {
 
 			let referenceDataPromises = [
 				db.Template.findAll({
-					where: {
-						UnlockedAt: {
-							[db.op.ne]: null,
-							[db.op.lte]: new Date()
-						}
-					},
+					where: getDbTemplateWhereUnlocked(db),
 					include: [{
 						model: db.TemplateDialogue,
 						as: 'TemplateDialogues'
@@ -222,6 +225,53 @@ const routes = {
 			.catch(error => catchError(res, error));
 		},
 
+		getHallOfFameComics: (req, res, db) => {
+			let userId = req.userId; //Might be null
+
+			db.Template.findAll({
+				where: getDbTemplateWhereUnlocked(db)
+			})
+			.then(dbTemplates => {
+				let unlockedIds = dbTemplates.map(dbTemplate => dbTemplate.TemplateId);
+
+				db.Comic.findAll({
+					where: {
+						TemplateId: {
+							[db.op.in]: unlockedIds
+						}
+					},
+					// a newer comic tie will beat an older comic (it got more ratings in shorter time)
+					order: [[ 'CreatedAt', 'DESC' ]]
+				})
+				.then(dbComics => {
+					let bestComics = {};
+					
+					dbComics.forEach(dbComic => {
+						let currentBest = bestComics[dbComic.TemplateId];
+						if(!currentBest || (currentBest && currentBest.Rating <= dbComic.Rating)) {
+							bestComics[dbComic.TemplateId] = dbComic;
+						}
+					});
+					
+					let hallOfFameComicIds = Object.keys(bestComics).map(key => bestComics[key].ComicId);
+
+					db.Comic.findAll({
+						where: {
+							ComicId: {
+								[db.op.in]: hallOfFameComicIds
+							}
+						},
+						include: getDbComicInclude(db, userId),
+					})
+					.then(dbComics => res.json(dbComics.map(mapper.fromDbComic)))
+					.catch(error => catchError(res, error));
+					
+				})
+				.catch(error => catchError(res, error));
+			})
+			.catch(error => catchError(res, error));
+		},
+		
 		getComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
-import { Link } from 'react-router-dom';
 
 import Button from '../../UI/Button/Button';
 
@@ -11,13 +10,13 @@ export default class TemplateNavigation extends Component {
 		return <div className={`template-navigation ${this.props.className || ''}`}>
 			<div className="button-container">
 				<Button 
-					to={Util.route.template(1)} 
+					to={this.props.toFn(1)} 
 					className={this.props.templateId > 1 ? '' : 'disabled invisible'} 
 					label="First"
 					leftIcon={Util.icon.first}
 				/>
 				<Button 
-					to={Util.route.template(this.props.templateId - 1)} 
+					to={this.props.toFn(this.props.templateId - 1)} 
 					className={this.props.templateId > 1 ? '' : 'disabled invisible'} 
 					label="Previous" 
 					leftIcon={Util.icon.back}
@@ -26,18 +25,18 @@ export default class TemplateNavigation extends Component {
 			<div className="flex-spacer"></div>
 			<div className="template-info">
 				<h5>Template</h5>
-				<h2>{this.props.templateId}</h2>
+				<h3>{this.props.templateId}</h3>
 			</div>
 			<div className="flex-spacer"></div>
 			<div className="button-container">
 				<Button 
-					to={Util.route.template(this.props.templateId + 1)} 
+					to={this.props.toFn(this.props.templateId + 1)} 
 					className={this.props.templateId !== latestTemplateId ? '' : 'disabled invisible'}
 					label="Next"
 					rightIcon={Util.icon.next}
 				/>
 				<Button 
-					to={Util.route.template()} 
+					to={this.props.toFn()} 
 					className={this.props.templateId !== latestTemplateId ? '' : 'disabled invisible'}
 					label="Latest" 
 					rightIcon={Util.icon.last}

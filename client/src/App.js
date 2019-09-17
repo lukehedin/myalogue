@@ -44,6 +44,12 @@ class App extends Component {
 			});
 	}
 	render() {
+		let ifNotAuthenticated = (component) => {
+			return !Util.context.isAuthenticated()
+				? component
+				: <Redirect to={Util.route.home()} /> 
+		};
+
 		let content = this.state.isLoading
 			? <div className="loader image-loader">
 				<img alt="" src={loaderFace} />
@@ -54,13 +60,22 @@ class App extends Component {
 					<Route exact path="/" render={() => <Redirect to={Util.route.template(Util.context.getLatestTemplateId())} />} />
 					<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 					<Route exact path="/template/:templateId/comic/:comicId" render={({ match }) => <TemplatePage templateId={match.params.templateId} comicId={match.params.comicId} />} />
-					<Route exact path="/register" render={({ match }) => <RegisterPage />} />
-					<Route exact path="/login" render={({ match }) => <LoginPage />} />
-					<Route path="/about" render={({ match }) => <AboutPage />}/>
-					<Route path="/hall-of-fame" render={({ match }) => <HallOfFamePage />}/>
-					<Route path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
-					<Route path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
-					<Route render={({ match }) => <div>404</div>} />
+
+					{/* If not authenticated */}
+					<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
+					<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
+					
+					{/* Can verify even if already authenticated with same/another account (odd scenario but plausible) */}
+					<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
+
+					<Route exact path="/hall-of-fame" render={({ match }) => <Redirect to={Util.route.hallOfFame(Util.context.getLatestTemplateId())} /> } />
+					<Route exact path="/hall-of-fame/:templateId" render={({ match }) => <HallOfFamePage templateId={match.params.templateId} />}/>
+					
+					<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
+					
+					<Route exact path="/about" render={({ match }) => <AboutPage />}/>
+					
+					<Route exactrender={({ match }) => <div>404</div>} />
 				</Switch>
 				<div className="flex-spacer"></div>
 				<AppFooter />
