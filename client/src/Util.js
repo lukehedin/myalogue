@@ -50,15 +50,10 @@ const Util = {
 		getUsername: () => Util.context._username,
 
 		//Refdata
-		getTemplateById: (templateId) => Util.context._referenceData
-			? Util.context._referenceData.templates.find(template => templateId === template.templateId)
-			: null,
-		getLatestTemplate: () => Util.context._referenceData 
-			? Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1]
-			: null,
-		getLatestTemplateId: () => Util.context._referenceData 
-			? Util.context.getLatestTemplate().templateId
-			: null
+		getTemplates: () => Util.context._referenceData.templates(),
+		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
+		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
+		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId
 	},
 
 	api: {
@@ -170,7 +165,6 @@ const Util = {
 				? `/template/${templateId}/comic/${comicId}` 
 				: `/template/${templateId}`;
 		},
-		templateBrowse: () => `/templates`,
 		hallOfFame: () => `/hall-of-fame`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,

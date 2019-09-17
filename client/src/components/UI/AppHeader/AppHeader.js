@@ -29,9 +29,6 @@ export default class AppHeader extends Component {
 							label: 'Hall of Fame',
 							to: Util.route.hallOfFame()
 						}, {
-							label: 'Browse Templates',
-							to: Util.route.templateBrowse()
-						}, {
 							label: 'About',
 							to: Util.route.about()
 						}]}>
