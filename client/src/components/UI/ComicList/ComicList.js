@@ -30,7 +30,32 @@ export default class ComicList extends Component {
 	componentDidMount() {
 		this.fetchData();
 	}
-	fetchData(isReset = false) {
+	getSnapshotBeforeUpdate(prevProps) {
+		return this.props.template.templateId !== prevProps.template.templateId;
+	}
+	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
+		if(isNewTemplateId) this.resetFetch();
+	}
+	resetFetch() {
+		this.setState({
+			createdAtBefore: new Date(),
+			offset: 0,
+			isNoMore: false,
+			comics: []
+		}, () => this.fetchData(true));
+	}
+	setSortBy(sortBy) {
+		this.setState({
+			comics: [], //Otherwise random will use these to filter out
+			sortBy: sortBy
+		}, this.resetFetch);
+	}
+	setIncludeAnonymous(includeAnonymous) {
+		this.setState({
+			includeAnonymous: includeAnonymous
+		}, this.resetFetch);
+	}
+	fetchData() {
 		this.setState({
 			isLoading: true
 		});
@@ -51,31 +76,13 @@ export default class ComicList extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					comics: isReset ? result : [...this.state.comics, ...result],
+					comics: [...this.state.comics, ...result],
 					isLoading: false,
 					offset: this.state.offset + this.state.limit,
 					isNoMore: result.length < this.state.limit
 				});
 			}
 		});
-	}
-	resetFetch() {
-		this.setState({
-			createdAtBefore: new Date(),
-			offset: 0,
-			isNoMore: false
-		}, () => this.fetchData(true));
-	}
-	setSortBy(sortBy) {
-		this.setState({
-			comics: [], //Otherwise random will use these to filter out
-			sortBy: sortBy
-		}, this.resetFetch);
-	}
-	setIncludeAnonymous(includeAnonymous) {
-		this.setState({
-			includeAnonymous: includeAnonymous
-		}, this.resetFetch);
 	}
 	render() {
 		return <div className="comic-list">
@@ -113,14 +120,15 @@ export default class ComicList extends Component {
 				{this.state.isLoading 
 					? <div className={`loader ${Util.array.any(this.state.comics) ? 'masked' : ''}`}></div> 
 					: this.state.isNoMore
-						? <div>
+						? <p className="empty-text">
 							{Util.array.none(this.state.comics) 
-								? <p className="empty-text">No comics have been made using this template. You could make the very first one!</p> 
-								: <p className="empty-text">Phew! That's all the comics that have been made with this template.</p>
+								? `No comics have been made using this template. You could make the very first one!`
+								: `Phew! That's all the comics that have been made with this template.`
 							}
-						</div>
-						: <Button label="Load more" colour="black" onClick={() => this.fetchData()} />
+						</p>
+						: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
 				}
+				<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" leftIcon={Util.icon.home} />
 			</div>
 		</div>;
 	}

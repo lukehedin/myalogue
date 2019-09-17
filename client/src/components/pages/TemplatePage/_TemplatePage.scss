@@ -1,12 +1,8 @@
 .page-template {
 	.template-navigation { 
-		margin: $spacing-xs 0;
+		margin-bottom: $spacing-xs;
 		@include oversm {
-			margin: $spacing-sm 0;
-		}
-
-		&.top-template-nav {
-			margin-top: 0;
+			margin-bottom: $spacing-sm;
 		}
 	}
 
@@ -14,7 +10,7 @@
 		background-color: $colour-white;
 		@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
 
-		padding: $spacing-sm 0;
+		padding: $spacing-xs 0;
 		@include overmd {
 			padding: $spacing-md 0;
 		}
@@ -22,7 +18,7 @@
 
 	.template-feed {
 		position: relative;
-		min-height: 100px;
+		min-height: 100vh;
 		padding: $spacing-sm 0;
 		@include overmd {
 			padding: $spacing-md 0;
@@ -31,11 +27,7 @@
 		.template-feed-inner {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-
-			>.comic {
-				margin-bottom: $spacing-md;
-			}
+			align-items: stretch;
 
 			.comic-list {
 				align-self: stretch;

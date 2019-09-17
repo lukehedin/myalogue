@@ -28,8 +28,15 @@ body {
           display: flex;
           flex-direction: row;
           align-items: center; }
+          body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon {
+            height: 24px;
+            width: 24px;
+            padding: 4px; }
+            body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon path {
+              fill: #fff; }
           body .app-container .app .app-header .app-header-inner .app-logo {
-            height: 32px; }
+            height: 32px;
+            margin-left: 4px; }
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
@@ -60,15 +67,38 @@ body {
           display: flex;
           flex-direction: column;
           align-items: center; }
-          body .app-container .app .comic-list .comic-list-inner .comic {
+          body .app-container .app .comic-list .comic-list-inner > * {
             margin-bottom: 32px; }
+          body .app-container .app .comic-list .comic-list-inner .comic {
+            box-shadow: 4px 4px 2px #00000022;
+            -webkit-box-shadow: 4px 4px 2px #00000022;
+            -moz-box-shadow: 4px 4px 2px #00000022;
+            -webkit-animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+
+@-webkit-keyframes slide-up {
+  0% {
+    -webkit-transform: translateY(32px);
+    transform: translateY(32px);
+    opacity: 0; }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1; } }
+
+@keyframes slide-up {
+  0% {
+    -webkit-transform: translateY(32px);
+    transform: translateY(32px);
+    opacity: 0; }
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1; } }
       body .app-container .app .comic {
         position: relative;
         border: 1px solid #373737;
         background-color: #fff;
-        box-shadow: 4px 4px 2px #00000022;
-        -webkit-box-shadow: 4px 4px 2px #00000022;
-        -moz-box-shadow: 4px 4px 2px #00000022;
         border-radius: 2px;
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px; }
@@ -582,25 +612,51 @@ body {
           -moz-border-radius: 50%;
           position: absolute;
           transition: left 0.2s; }
+      body .app-container .app .context-menu {
+        position: relative;
+        cursor: pointer; }
+        body .app-container .app .context-menu .menu-items {
+          position: absolute;
+          z-index: 5;
+          left: 0;
+          top: 100%;
+          background-color: #fff;
+          border: 1px solid #c8c8c8;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          width: 150px;
+          display: none;
+          box-shadow: 4px 4px 4px #00000022;
+          -webkit-box-shadow: 4px 4px 4px #00000022;
+          -moz-box-shadow: 4px 4px 4px #00000022; }
+          body .app-container .app .context-menu .menu-items.open {
+            display: flex;
+            flex-direction: column; }
+          body .app-container .app .context-menu .menu-items .menu-item {
+            padding: 8px 16px;
+            color: #080808;
+            text-align: left;
+            font-size: 14px; }
+            body .app-container .app .context-menu .menu-items .menu-item:not(:first-child) {
+              border-top: 1px solid #c8c8c8; }
       body .app-container .app .page-template .template-navigation {
-        margin: 8px 0; }
+        margin-bottom: 8px; }
         @media (min-width: 576px) {
           body .app-container .app .page-template .template-navigation {
-            margin: 16px 0; } }
-        body .app-container .app .page-template .template-navigation.top-template-nav {
-          margin-top: 0; }
+            margin-bottom: 16px; } }
       body .app-container .app .page-template .template-highlight {
         background-color: #fff;
         box-shadow: inset 0 0 8px #00000044;
         -webkit-box-shadow: inset 0 0 8px #00000044;
         -moz-box-shadow: inset 0 0 8px #00000044;
-        padding: 16px 0; }
+        padding: 8px 0; }
         @media (min-width: 768px) {
           body .app-container .app .page-template .template-highlight {
             padding: 32px 0; } }
       body .app-container .app .page-template .template-feed {
         position: relative;
-        min-height: 100px;
+        min-height: 100vh;
         padding: 16px 0; }
         @media (min-width: 768px) {
           body .app-container .app .page-template .template-feed {
@@ -608,9 +664,7 @@ body {
         body .app-container .app .page-template .template-feed .template-feed-inner {
           display: flex;
           flex-direction: column;
-          align-items: center; }
-          body .app-container .app .page-template .template-feed .template-feed-inner > .comic {
-            margin-bottom: 32px; }
+          align-items: stretch; }
           body .app-container .app .page-template .template-feed .template-feed-inner .comic-list {
             align-self: stretch; }
       body .app-container .app [class^="page-"] {
@@ -631,8 +685,7 @@ body {
       width: 100%;
       top: 0;
       left: 0;
-      z-index: 10;
-      pointer-events: none; }
+      z-index: 10; }
       body .app-container .loader.masked {
         background-color: #00000044; }
       body .app-container .loader.image-loader > img {

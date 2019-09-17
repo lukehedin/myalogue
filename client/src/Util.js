@@ -12,6 +12,7 @@ import iconFirst from './icons/first.svg';
 import iconGarbage from './icons/garbage.svg';
 import iconLast from './icons/last.svg';
 import iconLike from './icons/like.svg';
+import iconMenu from './icons/menu.svg';
 import iconNext from './icons/next.svg';
 import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
@@ -47,7 +48,17 @@ const Util = {
 		isAuthenticated: () => !!Util.context._getToken(),
 		getUserId: () => Util.context._userId,
 		getUsername: () => Util.context._username,
-		getLatestTemplateId: () => Util.context._referenceData ? Util.context._referenceData.latestTemplateId : null
+
+		//Refdata
+		getTemplateById: (templateId) => Util.context._referenceData
+			? Util.context._referenceData.templates.find(template => templateId === template.templateId)
+			: null,
+		getLatestTemplate: () => Util.context._referenceData 
+			? Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1]
+			: null,
+		getLatestTemplateId: () => Util.context._referenceData 
+			? Util.context.getLatestTemplate().templateId
+			: null
 	},
 
 	api: {
@@ -143,6 +154,7 @@ const Util = {
 		garbage: iconGarbage,
 		last: iconLast,
 		like: iconLike,
+		menu: iconMenu,
 		next: iconNext,
 		share: iconShare,
 		star: iconStar
@@ -158,7 +170,7 @@ const Util = {
 				? `/template/${templateId}/comic/${comicId}` 
 				: `/template/${templateId}`;
 		},
-		templateList: () => `/templates`,
+		templateBrowse: () => `/templates`,
 		hallOfFame: () => `/hall-of-fame`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
@@ -166,7 +178,10 @@ const Util = {
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,
 		resetPassword: (token) => `/reset-password/${token}`,
-		verify: (token) => `/verify/${token}`
+		verify: (token) => `/verify/${token}`,
+		about: () => `/about`,
+		terms: () => `/terms`,
+		privacy: () => `/privacy`
 	},
 
 	selector: {

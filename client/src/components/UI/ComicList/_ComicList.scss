@@ -14,9 +14,41 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+
+		> * {
+			margin-bottom: $spacing-md;
+		}
 		
 		.comic {
-			margin-bottom: $spacing-md;
+			@include boxShadow(4px, 4px, 2px, #00000022);
+
+			@-webkit-keyframes slide-up {
+				0% {
+					-webkit-transform: translateY($spacing-md);
+					transform: translateY($spacing-md);
+					opacity: 0;
+				}
+				100% {
+					-webkit-transform: translateY(0);
+					transform: translateY(0);
+					opacity: 1;
+				}
+			  }
+			  @keyframes slide-up {
+				0% {
+				  	-webkit-transform: translateY($spacing-md);
+					transform: translateY($spacing-md);
+					opacity: 0;
+				}
+				100% {
+					-webkit-transform: translateY(0);
+					transform: translateY(0);
+					opacity: 1;
+				}
+			  }
+
+			-webkit-animation: slide-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+			animation: slide-up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 		}
 	}
 }

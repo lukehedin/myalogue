@@ -2,7 +2,6 @@
 	position: relative;
 	border: 1px solid $colour-grey-d;
 	background-color: $colour-white;
-	@include boxShadow(4px, 4px, 2px, #00000022);
 	@include borderRadius(2px);
 
 	.comic-inner {

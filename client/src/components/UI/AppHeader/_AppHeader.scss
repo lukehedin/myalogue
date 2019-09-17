@@ -12,8 +12,18 @@
 		flex-direction: row;
 		align-items: center;
 
+		.app-menu {
+			.app-menu-icon {
+				height: 24px;
+				width: 24px;
+				padding: $spacing-xxs;
+				@include svgColourStroke($colour-white);
+			}
+		}
+
 		.app-logo {
 			height: 32px;
+			margin-left: $spacing-xxs;
 		}
 	
 		.app-title {

@@ -1,0 +1,31 @@
+.context-menu {
+	position: relative;
+	cursor: pointer;
+	
+	.menu-items {
+		position: absolute;
+		z-index: 5;
+		left: 0;
+		top: 100%;
+		background-color: $colour-white;
+		border: 1px solid $colour-grey-b;
+		@include borderRadius(4px);
+		width: 150px;
+		display: none;
+		@include boxShadow(4px, 4px, 4px, #00000022);
+		&.open {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.menu-item {
+			padding: $spacing-xs $spacing-sm;
+			color: $colour-black;
+			text-align: left;
+			font-size: 14px;
+			&:not(:first-child) {
+				border-top: 1px solid $colour-grey-b;
+			}
+		}
+	}	
+}

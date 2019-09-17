@@ -56,23 +56,29 @@ const routes = {
 		authenticate: (req, res, db) => {
 			let userId = req.userId;
 			let username = req.username;
-	
+
 			let referenceDataPromises = [
-				db.Template.findOne({
+				db.Template.findAll({
 					where: {
 						UnlockedAt: {
 							[db.op.ne]: null,
 							[db.op.lte]: new Date()
 						}
 					},
+					include: [{
+						model: db.TemplateDialogue,
+						as: 'TemplateDialogues'
+					}],
 					order: [[ 'TemplateId', 'DESC' ]]
 				})
 			];
 
 			Promise.all(referenceDataPromises)
-				.then(([dbLatestTemplate]) => {
+				.then(([dbTemplates]) => {
 					let referenceData = {
-						latestTemplateId: dbLatestTemplate ? dbLatestTemplate.TemplateId : null
+						templates: dbTemplates
+							.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
+							.map(mapper.fromDbTemplate)
 					};
 
 					if(userId) {
@@ -194,36 +200,6 @@ const routes = {
 					catchError(res, 'Account verification failed.');
 				}
 			});
-		},
-	
-		getTemplate: (req, res, db) => {
-			let templateId = req.body.templateId;
-
-			let templateWhere = {
-				UnlockedAt: {
-					[db.op.ne]: null,
-					[db.op.lte]: new Date()
-				}
-			}
-			if(templateId) templateWhere.TemplateId = templateId;
-
-			db.Template.findAll({
-				where: templateWhere,
-				include: [{
-					model: db.TemplateDialogue,
-					as: 'TemplateDialogues'
-				}],
-				limit: 1,
-				order: [[ 'TemplateId', 'DESC' ]]
-			})
-			.then(dbTemplates => {
-				if(dbTemplates && dbTemplates[0]) {
-					res.json(mapper.fromDbTemplate(dbTemplates[0]))
-				} else {
-					catchError(res, 'Template not found.');
-				}
-			})
-			.catch(error => catchError(res, error));
 		},
 
 		getComic: (req, res, db) => {

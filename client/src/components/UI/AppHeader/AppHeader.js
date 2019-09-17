@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import ReactSVG from 'react-svg';
 import Util from '../../../Util';
 
 import logo from '../../../images/logo_white.png';
 
 import Button from '../Button/Button';
+import ContextMenu from '../ContextMenu/ContextMenu';
 
 export default class AppHeader extends Component {
 	constructor(props) {
@@ -20,6 +22,21 @@ export default class AppHeader extends Component {
 			<div className="container">
 				<div className="row"> 
 					<div className="app-header-inner">
+						<ContextMenu className="app-menu" menuItems={[{
+							label: 'Home',
+							to: Util.route.home()
+						}, {
+							label: 'Hall of Fame',
+							to: Util.route.hallOfFame()
+						}, {
+							label: 'Browse Templates',
+							to: Util.route.templateBrowse()
+						}, {
+							label: 'About',
+							to: Util.route.about()
+						}]}>
+							<ReactSVG className="app-menu-icon" src={Util.icon.menu} />
+						</ContextMenu>
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
 						{Util.context.isAuthenticated()

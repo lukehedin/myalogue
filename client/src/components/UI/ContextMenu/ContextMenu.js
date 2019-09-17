@@ -1,0 +1,39 @@
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import Util from '../../../Util';
+
+export default class ContextMenu extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isMenuVisible: false
+		};
+
+		this.toggleIsMenuVisible = this.toggleIsMenuVisible.bind(this);
+	}
+	toggleIsMenuVisible(e) {
+		let isMenuVisible = !this.state.isMenuVisible;
+
+		this.setState({
+			isMenuVisible
+		});
+
+		if(isMenuVisible) {
+			window.addEventListener('click', this.toggleIsMenuVisible);
+			Util.event.absorb(e);
+		} else {
+			window.removeEventListener('click', this.toggleIsMenuVisible);
+		}
+	}
+	render() {
+		return <div className={`context-menu ${this.props.className || ''}`}>
+			<div className="menu-toggle" onClick={this.toggleIsMenuVisible}>
+				{this.props.children}
+			</div>
+			<div className={`menu-items ${this.state.isMenuVisible ? 'open' : ''}`}>
+				{this.props.menuItems.map((menuItem, idx) => <Link key={idx} className="menu-item" to={menuItem.to}>{menuItem.label}</Link>)}
+			</div>
+		</div>
+	}
+}

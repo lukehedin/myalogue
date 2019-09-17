@@ -26,50 +26,42 @@ export default class TemplatePage extends Component {
 		this.setComic = this.setComic.bind(this);
 	}
 	componentDidMount() {
-		this.setTemplate(this.props.templateId, this.props.comicId);
+		this.setTemplate();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.templateId !== prevProps.templateId
-			? this.props.templateId
-			: null;
+		return this.props.templateId !== prevProps.templateId;
 	}
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		if(snapshot) this.setTemplate(snapshot); //a new templateId
+	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
+		if(isNewTemplateId) this.setTemplate(); //a new templateId
 	}
 	setComic(comic) {
 		this.setState({
 			comic: comic
 		});
 	}
-	setTemplate(templateId, comicId) {
+	setTemplate() {
+		let templateId = this.props.templateId ? parseInt(this.props.templateId, 10) : null;
+		let comicId = this.props.comicId ? parseInt(this.props.comicId, 10) : null;
+
+		let template = templateId 
+			? Util.context.getTemplateById(templateId) 
+			: Util.context.getLatestTemplate();
+		
 		this.setState({
-			templateId: templateId ? parseInt(templateId, 10) : null,
+			templateId: templateId,
+			template: template,
 			comic: null,
-			isLoading: true
+			isLoading: !!comicId
 		});
 		
-		let fetchPromises = [Util.api.post('/api/getTemplate', {
-			templateId: templateId
-		})];
-
 		if(comicId) {
-			fetchPromises.push(Util.api.post('/api/getComic', {
+			Util.api.post('/api/getComic', {
 				comicId: comicId
-			}));
-		}
-
-		Promise.all(fetchPromises)
-			.then(([templateResult, comicResult]) => {
-				if(!templateResult.error) {
+			})
+			.then(result => {
+				if(result && !result.error && result.templateId === this.state.templateId) {
 					this.setState({
-						templateId: templateResult.templateId,
-						template: templateResult,
-					});
-				}
-				
-				if(comicResult && !comicResult.error && comicResult.templateId === templateResult.templateId) {
-					this.setState({
-						comic: comicResult
+						comic: result
 					});
 				}
 				
@@ -77,6 +69,7 @@ export default class TemplatePage extends Component {
 					isLoading: false
 				});
 			});
+		}
 	}
 	render() {
 		if(!this.state.isLoading && !this.state.template) return <Redirect to={Util.route.home()} />;
@@ -84,7 +77,7 @@ export default class TemplatePage extends Component {
 		return <div className="page-template">
 			<div className="container">
 				<div className="row">
-					{this.state.templateId ? <TemplateNavigation className="top-template-nav" templateId={this.state.templateId} /> : null }
+					{this.state.templateId ? <TemplateNavigation templateId={this.state.templateId} /> : null }
 				</div>
 			</div>
 			{!this.state.isLoading 
@@ -110,19 +103,15 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						{!this.state.isLoading
 							? <div className="template-feed-inner">
-								<ComicList sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} template={this.state.template} />
+								<TemplateNavigation templateId={this.state.templateId} /> 
+								<ComicList
+									sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} 
+									template={this.state.template}
+								/>
 							</div>
 							: <div className="loader"></div>
 						}
 					</div>
-				</div>
-			</div>
-			<div className="container">
-				<div className="row">
-					{!this.state.isLoading //Don't show bottom one until loaded
-						? <TemplateNavigation className="bottom-template-nav" templateId={this.state.templateId} /> 
-						: null
-					}
 				</div>
 			</div>
 		</div>;
