@@ -9,12 +9,23 @@ const mapper = require('./mapper');
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
 
-const PASSWORD_RESET_HOURS = 3;
+const TOKEN_RESET_HOURS = 3;
 
 const catchError = (res, error) => {
 	//TODO db log
 	console.log(error);
 	res.json({ error: error });
+};
+
+const isEmailAcceptable = (email, callback) => {
+	https.get(`https://open.kickbox.com/v1/disposable/${email}`, (response) => {
+		let responseBody  = '';
+		response.on('data', (chunk) => { responseBody += chunk; });
+		response.on('end', () => {
+			let responseJson = JSON.parse(responseBody);
+			callback(responseJson && responseJson.hasOwnProperty('disposable') && !responseJson.disposable)
+		});
+	});
 };
 
 //The object sent to a successfully authenticated user
@@ -101,6 +112,15 @@ const routes = {
 						if(process.env.NODE_ENV === 'development') result.isDev = true;
 	
 						if(userId) {
+							//Record the lastloginat - no need to await
+							db.User.update({
+								LastLoginAt: new Date()
+							}, {
+								where: {
+									UserId: userId
+								}
+							});
+
 							//Refresh the token after a successful authenticate
 							getAuthResult(userId, username, authResult => {
 								res.json({
@@ -130,8 +150,19 @@ const routes = {
 			.then(dbUser => {
 				if(dbUser) {
 					if(!!dbUser.VerificationToken) {
-						catchError(res, 'Please verify your email address.');
-						//TODO, if a large period of time has passed, send the verification email again
+						let now = new Date();
+
+						if(dbUser.VerificationTokenSetAt < moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate()) {
+							let newVerificationToken = auth.getHexToken();
+							dbUser.VerificationToken = newVerificationToken;
+							dbUser.VerificationTokenSetAt = now;
+							dbUser.save();
+
+							mailer.sendVerificationEmail(dbUser.Email, dbUser.Username, newVerificationToken);
+							catchError(res, 'Please verify your email address. A new verification email has been sent.');
+						} else {
+							catchError(res, 'Please verify your email address.');
+						}
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
@@ -159,21 +190,24 @@ const routes = {
 			let isValidEmail = validator.isEmail(email);
 			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username);
 	
-			//TODO validate password and email
+			// Basic validation
 			if(isValidEmail && isValidUsername) {
-				https.get(`https://open.kickbox.com/v1/disposable/${email}`, (response) => {
-					if(response && response.hasOwnProperty('disposable') && !response.disposable) {
-						db.User.findOne({
-							where: {
-								[db.op.or]: [{
-									Email: email
-								}, {
-									Username: username
-								}]
-							}
-						})
-						.then(dbExistingUser => {
-							if(!dbExistingUser) {
+				//Check for existing username or email match
+				db.User.findOne({
+					where: {
+						[db.op.or]: [{
+							Email: email
+						}, {
+							Username: username
+						}]
+					}
+				})
+				.then(dbExistingUser => {
+					if(!dbExistingUser) {
+						//Check for disposable email
+						isEmailAcceptable(email, (isAcceptable) => {
+							if(isAcceptable) {
+								//Checks if password valid too
 								auth.hashPassword(password, (error, hashedPassword) => {
 									if(!error && hashedPassword) {
 										let verificationToken = auth.getHexToken();
@@ -182,9 +216,10 @@ const routes = {
 											Email: email,
 											Username: username,
 											Password: hashedPassword,
-											VerificationToken: verificationToken
+											VerificationToken: verificationToken,
+											VerificationTokenSetAt: new Date()
 										})
-										.then(dbCreatedUser => {
+										.then(() => {
 											mailer.sendVerificationEmail(email, username, verificationToken);
 											res.json({ success: true });
 										})
@@ -194,16 +229,16 @@ const routes = {
 									}
 								});
 							} else {
-								catchError(res, dbExistingUser.Email === email
-									? 'Email is already in use. Please log in with your existing account or reset your password.'
-									: 'Username is already in use. Please choose another username.');
+								catchError(res, 'Disposable emails are not allowed. Please enter another email address.');
 							}
-						})
-						.catch(error => catchError(res, error));
+						});
 					} else {
-						catchError(res, 'Disposable emails are not allowed. Please enter another email address.');
+						catchError(res, dbExistingUser.Email === email
+							? 'Email is already in use. Please log in with your existing account or reset your password.'
+							: 'Username is already in use. Please choose another username.');
 					}
-				});
+				})
+				.catch(error => catchError(res, error));
 			} else {
 				catchError(res, 'Something went wrong. Please refresh and try again.');
 			}
@@ -245,7 +280,7 @@ const routes = {
 					[db.op.or]: [{
 						PasswordResetAt: {
 							//Don't let someone request a password if a request is already in progress
-							[db.op.lte]: moment(now).subtract(PASSWORD_RESET_HOURS, 'hours').toDate()
+							[db.op.lte]: moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate()
 						}
 					}, {
 						PasswordResetAt: {
@@ -282,7 +317,7 @@ const routes = {
 				db.User.findOne({
 					where:{
 						PasswordResetAt: {
-							[db.op.lte]: moment(now).add(PASSWORD_RESET_HOURS, 'hours').toDate()
+							[db.op.lte]: moment(now).add(TOKEN_RESET_HOURS, 'hours').toDate()
 						},
 						PasswordResetToken: token
 					}

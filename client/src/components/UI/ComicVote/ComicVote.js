@@ -20,6 +20,7 @@ export default class ComicVote extends Component {
 			rating: this.state.rating + (value - this.state.rating)
 		});
 
+		Util.analytics.event(`Comic`, `Comic rated`);
 		Util.api.post('/api/voteComic', {
 			comicId: this.props.comicId,
 			value: value

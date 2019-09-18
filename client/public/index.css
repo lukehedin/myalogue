@@ -63,6 +63,8 @@ body {
           text-align: right; }
           body .app-container .app .app-footer .app-footer-inner .app-logo {
             height: 24px; }
+          body .app-container .app .app-footer .app-footer-inner h6 {
+            text-align: right; }
       body .app-container .app .comic-list {
         position: relative; }
         body .app-container .app .comic-list .comic-list-title {
@@ -281,7 +283,7 @@ body {
             body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
               border-color: #f0002d; }
           body .app-container .app .form-wrapper form .form-message {
-            font-size: 14px; }
+            text-align: center; }
             body .app-container .app .form-wrapper form .form-message > * {
               margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
@@ -847,7 +849,7 @@ body {
       box-shadow: none; }
       body .app-container input:not([type=checkbox]):focus, body .app-container input:not([type=radio]):focus, body .app-container select:not([type=checkbox]):focus, body .app-container select:not([type=radio]):focus, body .app-container textarea:not([type=checkbox]):focus, body .app-container textarea:not([type=radio]):focus {
         border-color: #969696; }
-    body .app-container .under-maintenance-panel {
+    body .app-container .sorry-panel {
       margin: 0 auto;
       max-width: 500px;
       display: flex;

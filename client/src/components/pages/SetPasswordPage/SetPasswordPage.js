@@ -10,7 +10,7 @@ export default class SetPasswordPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Set new password</h2>
-						<p>Enter a new password for your account.</p>
+						<p className="center">Enter a new password for your account.</p>
 						<SetPasswordForm onSubmit={(form, formData) => {
 							form.setLoading(true);
 

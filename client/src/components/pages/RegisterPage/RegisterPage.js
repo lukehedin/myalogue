@@ -19,10 +19,7 @@ export default class RegisterPage extends Component {
 					<div className="row">
 						<h2>Register</h2>
 						{this.state.isSubmitted
-							? <div>
-								<h2>Please verify your email address</h2>
-								<p>You will receive an email with a verification link.</p>
-							</div>
+							? <p className="center">Please verify your email address. You will receive an email with a verification link.</p>
 							: <RegisterForm onSubmit={(form, formData) => {
 								form.setLoading(true);
 								

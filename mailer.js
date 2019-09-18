@@ -34,7 +34,6 @@ mailer = {
 	sendVerificationEmail: (toEmail, username, verificationToken) => {
 		mailer._send(toEmail, 'Verify your email address', 
 		`<h2>Hi ${username},</h2>
-		<p>thanks for signing up to Speak 4 Yourself.</p>
 		<p><a href="${mailer._host}/verify/${verificationToken}">Click here to verify your email address</a>.</p>`
 		);
 	},
@@ -42,9 +41,9 @@ mailer = {
 	sendForgotPasswordEmail: (toEmail, username, passwordResetToken) => {
 		mailer._send(toEmail, 'Forgot password',
 			`<h2>Hi ${username},</h2>
-			<p>Someone requested a password reset for this email.</p>
+			<p>Someone requested a password reset for this email address.</p>
 			<p><a href="${mailer._host}/set-password/${passwordResetToken}">Click here to reset your password</a>.</p>
-			<p>If you did not make this request, you can ignore this email.</p>`)
+			<p>If you did not make this request, you can simply ignore this email.</p>`)
 	},
 
 	// sendForgotPasswordNoAccountEmail: (toEmail) => {

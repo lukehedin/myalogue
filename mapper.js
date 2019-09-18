@@ -9,6 +9,7 @@ const mapper = {
 
 		if(includeSensitiveData) {
 			user.email = dbUser.Email;
+			user.lastLoginAt = dbUser.LastLoginAt;
 		}
 
 		return user;

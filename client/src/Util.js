@@ -37,6 +37,8 @@ const Util = {
 			Util.context._username = authResult.username;
 			Util.context._isDev = authResult.isDev;
 			Util.context._referenceData = authResult.referenceData;
+
+			Util.analytics.set('userId', authResult.userId);
 		},
 
 		clear: () => {
@@ -46,6 +48,9 @@ const Util = {
 			Util.context._username = null;
 			Util.context._isDev = null;
 			Util.context._referenceData = null;
+
+			Util.analytics.set('userId', null);
+			
 			window.location.href = "/";
 		},
 
@@ -65,9 +70,8 @@ const Util = {
 		init: () => {
 			ReactGA.initialize('UA-92026212-2');
 
+			 //This won't happen because isDev aint set yet
 			if(Util.context.isDev()) console.log(`GA:INIT`);
-
-			Util.analytics.page();
 		},
 
 		set: (property, value) => {

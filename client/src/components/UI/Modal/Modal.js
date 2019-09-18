@@ -63,7 +63,8 @@ class Modal extends Component {
 						}}
 						onSubmit={(form, formData) => {
 							form.setLoading(true);
-
+							
+							Util.analytics.event(`Comic`, `Comic submitted`);
 							Util.api.post('/api/submitComic', {
 								comic: formData
 							})

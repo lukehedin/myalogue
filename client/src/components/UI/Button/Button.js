@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ReactSVG from 'react-svg'
+import Util from '../../../Util';
 
 export default class Button extends Component {
+	constructor(props){
+		super(props);
+
+		this.onClick = this.onClick.bind(this);
+	}
+	onClick(e) {
+		if(this.props.onClick) this.props.onClick(e);
+	}
 	render() {
 		let className = `button ${this.props.className || ''} 
 			button-${this.props.size || 'md'} 
@@ -25,9 +34,9 @@ export default class Button extends Component {
 			: null;
 
 		return this.props.to
-			? <Link className={className} to={this.props.to}>{leftIcon}{label}{rightIcon}</Link>
+			? <Link className={className} onClick={this.onClick} to={this.props.to}>{leftIcon}{label}{rightIcon}</Link>
 			: this.props.href
-				? <a className={className} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
-				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.props.onClick}>{leftIcon}{label}{rightIcon}</button>
+				? <a className={className} onClick={this.onClick} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
+				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.onClick}>{leftIcon}{label}{rightIcon}</button>
 	}
 }

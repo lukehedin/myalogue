@@ -9,9 +9,8 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	ssl: true,
     dialect: 'postgres',
 	protocol: 'postgres',
-    timezone: '+10:00',
     dialectOptions: {
-        ssl: true
+		ssl: true
 	}
 });
 
@@ -80,8 +79,10 @@ let db = {
 		Username: Sequelize.STRING,
 		Password: Sequelize.STRING,
 		VerificationToken: Sequelize.STRING,
+		VerificationTokenSetAt: Sequelize.DATE,
 		PasswordResetToken: Sequelize.STRING,
 		PasswordResetAt: Sequelize.DATE,
+		LastLoginAt: Sequelize.DATE,
 		IsAdmin: {
 			type: Sequelize.BOOLEAN,
 			allowNull: false,

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModal, closeAllModals } from './redux/actions';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { detect as detectBrowser } from 'detect-browser';
 import Util from './Util';
 import Div100vh from 'react-div-100vh';
 
@@ -37,7 +38,7 @@ class App extends Component {
 	}
 	componentDidMount() {
 		Util.analytics.init();
-
+		
 		this.unlisten = this.props.history.listen((location, action) => {
 			this.props.closeAllModals();
 			Util.analytics.page();
@@ -48,11 +49,12 @@ class App extends Component {
 				//An error also triggers maintenance mode
 				if(!result.error && !result.isUnderMaintenance) {
 					Util.context.set(result);
+					Util.analytics.page();
 				}
 
 				this.setState({
 					isLoading: false,
-					isUnderMaintenance: true
+					isUnderMaintenance: result.isUnderMaintenance
 				});
 			});
 	}
@@ -67,6 +69,14 @@ class App extends Component {
 			return !Util.context.isAuthenticated()
 				? component
 				: <Redirect to={Util.route.home()} />;
+		};
+
+		let getSorryPanel = (title, subtitle) => {
+			return <div className="sorry-panel">
+				<img alt="" src={loaderFace} />
+				<h2>{title}</h2>
+				<p>{subtitle}</p>
+			</div>;
 		};
 
 		let getApp = () => {
@@ -112,16 +122,14 @@ class App extends Component {
 				}
 			</div>;
 		}
-
+	
 		let content = this.state.isLoading
 			? <div className="loader image-loader"><img alt="" src={loaderFace} /></div>
 			: this.state.isUnderMaintenance
-				? <div className="under-maintenance-panel">
-					<img alt="" src={loaderFace} />
-					<h2>Sorry, we are experiencing some technical difficulties.</h2>
-					<p>Speak 4 Yourself is currently undergoing maintenance, but should be back online momentarily.</p>
-				</div>
-				: getApp();
+				? getSorryPanel(`Sorry, we are experiencing some technical difficulties.`, `Speak 4 Yourself is currently undergoing maintenance, but should be back online momentarily.`) 
+				: detectBrowser().name === "ie"
+					? getSorryPanel(`Sorry, your browser isn't supported.`, `Speak 4 Yourself can't run on this browser. Please switch to a different browser if possible.`)
+					: getApp();
 
 		return <Div100vh onScroll={Util.array.any(this.props.modals) ? Util.event.absorb : null} className="app-container">
 			{content}
