@@ -174,8 +174,8 @@ const Util = {
 		setPassword: (token) => `/set-password/${token}`,
 		verify: (token) => `/verify/${token}`,
 		about: () => `/about`,
-		terms: () => `/terms`,
-		privacy: () => `/privacy`
+		termsOfService: () => `/terms-of-service`,
+		privacyPolicy: () => `/privacy-policy`
 	},
 
 	selector: {

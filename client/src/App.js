@@ -20,6 +20,8 @@ import AboutPage from './components/pages/AboutPage/AboutPage';
 import Error404Page from './components/pages/Error404Page/Error404Page';
 import ForgotPasswordPage from './components/pages/ForgotPasswordPage/ForgotPasswordPage';
 import SetPasswordPage from './components/pages/SetPasswordPage/SetPasswordPage';
+import TermsOfServicePage from './components/pages/TermsOfServicePage/TermsOfServicePage';
+import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage/PrivacyPolicyPage';
 
 class App extends Component {
 	constructor(props){
@@ -86,6 +88,8 @@ class App extends Component {
 					<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 					
 					<Route exact path="/about" render={({ match }) => <AboutPage />}/>
+					<Route exact path="/privacy-policy" render={({ match }) => <PrivacyPolicyPage />}/>
+					<Route exact path="/terms-of-service" render={({ match }) => <TermsOfServicePage />}/>
 					
 					{/* No other route match, 404 */}
 					<Route render={({ match }) => <Error404Page />} />

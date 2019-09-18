@@ -12,7 +12,7 @@ body {
     overflow-x: hidden; }
     body .app-container .app {
       flex: 1;
-      text-align: center;
+      text-align: left;
       display: flex;
       flex-direction: column; }
       body .app-container .app .app-header {
@@ -698,7 +698,6 @@ body {
       body .app-container .app .page-hall-of-fame .hall-of-fame-table {
         width: 100%; }
         body .app-container .app .page-hall-of-fame .hall-of-fame-table tr td {
-          text-align: left;
           vertical-align: top;
           padding: 16px 0; }
           body .app-container .app .page-hall-of-fame .hall-of-fame-table tr td.cell-button {
@@ -708,6 +707,8 @@ body {
         min-height: 60px; }
       body .app-container .app [class^="page-"] {
         position: relative; }
+        body .app-container .app [class^="page-"] .page-title, body .app-container .app [class^="page-"] .page-subtitle {
+          text-align: center; }
 
 @keyframes loader-spin {
   0% {
@@ -814,7 +815,8 @@ body {
       justify-content: center; }
     body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
       margin: 0;
-      overflow-wrap: break-word; }
+      overflow-wrap: break-word;
+      text-align: center; }
     body .app-container p {
       margin: 16px 0; }
       body .app-container p.sm {

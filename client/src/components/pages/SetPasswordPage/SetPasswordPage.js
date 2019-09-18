@@ -5,7 +5,7 @@ import SetPasswordForm from '../../UI/Forms/SetPasswordForm/SetPasswordForm';
 
 export default class SetPasswordPage extends Component {
 	render() {
-		return <div className="page-about">
+		return <div className="page-set-password">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">

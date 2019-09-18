@@ -15,7 +15,7 @@ export default class AppFooter extends Component {
 						<div>
 							<h6>Created by <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/imdoodlir/">imdoodlir</a></h6>
 							<h6>© 2019 Speak 4 Yourself</h6>
-							<h6><Link to={Util.route.terms()}>Terms of Service</Link> | <Link to={Util.route.privacy()}>Privacy Policy</Link></h6>
+							<h6><Link to={Util.route.termsOfService()}>Terms of Service</Link> | <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link></h6>
 						</div>
 					</div>
 				</div>

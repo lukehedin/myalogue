@@ -18,7 +18,7 @@ export default class ForgotPasswordPage extends Component {
 		});
 	}
 	render() {
-		return <div className="page-about">
+		return <div className="page-forgot-password">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
