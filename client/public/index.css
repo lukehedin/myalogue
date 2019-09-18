@@ -68,7 +68,7 @@ body {
           justify-content: center; }
         body .app-container .app .comic-list .comic-list-inner {
           position: relative;
-          min-height: 200px;
+          min-height: 60vh;
           display: flex;
           flex-direction: column;
           align-items: center; }
@@ -77,29 +77,7 @@ body {
           body .app-container .app .comic-list .comic-list-inner .comic {
             box-shadow: 4px 4px 2px #00000022;
             -webkit-box-shadow: 4px 4px 2px #00000022;
-            -moz-box-shadow: 4px 4px 2px #00000022;
-            -webkit-animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-
-@-webkit-keyframes slide-up {
-  0% {
-    -webkit-transform: translateY(32px);
-    transform: translateY(32px);
-    opacity: 0; }
-  100% {
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-    opacity: 1; } }
-
-@keyframes slide-up {
-  0% {
-    -webkit-transform: translateY(32px);
-    transform: translateY(32px);
-    opacity: 0; }
-  100% {
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-    opacity: 1; } }
+            -moz-box-shadow: 4px 4px 2px #00000022; }
           body .app-container .app .comic-list .comic-list-inner .button-container {
             justify-content: center; }
       body .app-container .app .comic {
@@ -108,7 +86,9 @@ body {
         background-color: #fff;
         border-radius: 2px;
         -webkit-border-radius: 2px;
-        -moz-border-radius: 2px; }
+        -moz-border-radius: 2px;
+        -webkit-animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
         body .app-container .app .comic .comic-lower {
           padding: 8px;
           display: flex;
@@ -138,6 +118,18 @@ body {
                     display: initial; } }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
+
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
       body .app-container .app .comic-content {
         position: relative;
         overflow: hidden;
@@ -180,7 +172,8 @@ body {
             font-family: Arial, Helvetica, sans-serif;
             overflow: hidden;
             text-align: center;
-            background-color: transparent; }
+            background-color: transparent;
+            overflow-wrap: break-word; }
           body .app-container .app .comic-content .dialogue textarea {
             resize: none; }
         body .app-container .app .comic-content .comic-footer-container {
@@ -277,9 +270,16 @@ body {
           body .app-container .app .form-wrapper form > *:not(:first-child) {
             margin-top: 8px; }
           body .app-container .app .form-wrapper form .field-container {
+            display: flex;
+            flex-direction: column;
             align-items: stretch; }
             body .app-container .app .form-wrapper form .field-container > * {
               text-align: left; }
+            body .app-container .app .form-wrapper form .field-container > label {
+              font-size: 12px;
+              margin-bottom: 4px; }
+            body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
+              border-color: #f0002d; }
           body .app-container .app .form-wrapper form .form-message {
             font-size: 14px; }
             body .app-container .app .form-wrapper form .form-message > * {
@@ -287,6 +287,13 @@ body {
           body .app-container .app .form-wrapper form .button-container {
             justify-content: center;
             margin-top: 16px; }
+        body .app-container .app .form-wrapper .field-error {
+          margin-top: 4px;
+          color: #f0002d;
+          font-size: 12px;
+          text-align: left; }
+          body .app-container .app .form-wrapper .field-error.overall-error {
+            text-align: center; }
       body .app-container .app .button {
         background: none;
         cursor: pointer;
@@ -505,40 +512,40 @@ body {
           transition: width 0.2s;
           background-color: #ff0052; }
       body .app-container .app .checkbox .checkbox-inner {
-        padding-left: calc(20px + 4px);
+        padding-left: calc(18px + 4px);
         font-size: 14px; }
         body .app-container .app .checkbox .checkbox-inner .checkmark {
-          height: 20px;
-          width: 20px;
-          font-size: 20px;
-          line-height: 20px; }
+          height: 18px;
+          width: 18px;
+          font-size: 18px;
+          line-height: 18px; }
           body .app-container .app .checkbox .checkbox-inner .checkmark .knob {
-            height: calc(20px - 4px);
-            width: calc(20px - 4px);
+            height: calc(18px - 4px);
+            width: calc(18px - 4px);
             top: 2px;
             left: 2px; }
       body .app-container .app .checkbox.checked .checkbox-inner .checkmark .knob {
-        height: calc(20px - 4px);
-        width: calc(20px - 4px);
-        left: calc(20px - calc(20px - 4px) - 2px); }
+        height: calc(18px - 4px);
+        width: calc(18px - 4px);
+        left: calc(18px - calc(18px - 4px) - 2px); }
       @media (min-width: 576px) {
         body .app-container .app .checkbox .checkbox-inner {
-          padding-left: calc(22px + 4px);
+          padding-left: calc(20px + 4px);
           font-size: 16px; }
           body .app-container .app .checkbox .checkbox-inner .checkmark {
-            height: 22px;
-            width: 22px;
-            font-size: 22px;
-            line-height: 22px; }
+            height: 20px;
+            width: 20px;
+            font-size: 20px;
+            line-height: 20px; }
             body .app-container .app .checkbox .checkbox-inner .checkmark .knob {
-              height: calc(22px - 4px);
-              width: calc(22px - 4px);
+              height: calc(20px - 4px);
+              width: calc(20px - 4px);
               top: 2px;
               left: 2px; }
         body .app-container .app .checkbox.checked .checkbox-inner .checkmark .knob {
-          height: calc(22px - 4px);
-          width: calc(22px - 4px);
-          left: calc(22px - calc(22px - 4px) - 2px); } }
+          height: calc(20px - 4px);
+          width: calc(20px - 4px);
+          left: calc(20px - calc(20px - 4px) - 2px); } }
       body .app-container .app .checkbox .checkbox-inner {
         display: flex;
         flex-direction: row;
@@ -558,26 +565,29 @@ body {
           height: 0;
           width: 0; }
         body .app-container .app .checkbox .checkbox-inner .checkbox-label {
-          margin-top: 2px; }
+          font-size: 12px;
+          margin-top: 4px; }
         body .app-container .app .checkbox .checkbox-inner .checkmark {
           position: absolute;
           top: 0;
           left: 0;
-          background-color: #969696;
+          background-color: #fff;
+          border: 1px solid #c8c8c8;
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px;
-          color: #fff;
-          font-weight: bold; }
+          font-weight: bold;
+          text-align: center; }
       body .app-container .app .checkbox:hover .checkmark {
-        background-color: #a5a5a5; }
+        background-color: #efefef; }
       body .app-container .app .checkbox.checked .checkmark {
-        background-color: #ff0052; }
+        background-color: #ff0052;
+        color: #fff; }
       body .app-container .app .checkbox.checked:hover .checkmark {
         background-color: #ff1f67; }
       body .app-container .app .checkbox.switch .checkbox-inner {
         padding-left: calc(30px + 4px);
-        font-size: 14px; }
+        font-size: 16px; }
         body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
           height: 20px;
           width: 30px;
@@ -592,29 +602,13 @@ body {
         height: calc(20px - 4px);
         width: calc(20px - 4px);
         left: calc(30px - calc(20px - 4px) - 2px); }
-      @media (min-width: 576px) {
-        body .app-container .app .checkbox.switch .checkbox-inner {
-          padding-left: calc(33px + 4px);
-          font-size: 16px; }
-          body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
-            height: 22px;
-            width: 33px;
-            font-size: 22px;
-            line-height: 22px; }
-            body .app-container .app .checkbox.switch .checkbox-inner .checkmark .knob {
-              height: calc(22px - 4px);
-              width: calc(22px - 4px);
-              top: 2px;
-              left: 2px; }
-        body .app-container .app .checkbox.switch.checked .checkbox-inner .checkmark .knob {
-          height: calc(22px - 4px);
-          width: calc(22px - 4px);
-          left: calc(33px - calc(22px - 4px) - 2px); } }
       body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
         border-radius: 100px;
         -webkit-border-radius: 100px;
         -moz-border-radius: 100px;
-        overflow: hidden; }
+        overflow: hidden;
+        background-color: #969696;
+        border: none; }
         body .app-container .app .checkbox.switch .checkbox-inner .checkmark .knob {
           background-color: #fff;
           border-radius: 50%;
@@ -622,6 +616,8 @@ body {
           -moz-border-radius: 50%;
           position: absolute;
           transition: left 0.2s; }
+      body .app-container .app .checkbox.switch.checked .checkbox-inner .checkmark {
+        background-color: #ff0052; }
       body .app-container .app .context-menu {
         position: relative;
         cursor: pointer; }
@@ -757,6 +753,10 @@ body {
         body .app-container [class^="panel-"] {
           padding: 16px 0; } }
       body .app-container [class^="panel-"].panel-inset {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
         background-color: #fff;
         box-shadow: inset 0 0 8px #00000044;
         -webkit-box-shadow: inset 0 0 8px #00000044;
@@ -780,18 +780,6 @@ body {
       @media (min-width: 576px) {
         body .app-container .row {
           padding: 0 16px; } }
-    body .app-container .field-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start; }
-      body .app-container .field-container > label {
-        font-size: 12px;
-        margin-bottom: 4px; }
-      body .app-container .field-container > .field-error {
-        margin-top: 4px;
-        color: #f0002d;
-        font-size: 12px;
-        text-align: left; }
     body .app-container .flex-spacer {
       flex: 1; }
     body .app-container .button-container {
@@ -813,7 +801,8 @@ body {
       align-items: center;
       justify-content: center; }
     body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
-      margin: 0; }
+      margin: 0;
+      overflow-wrap: break-word; }
     body .app-container p {
       margin: 16px 0; }
       body .app-container p.sm {
@@ -839,12 +828,15 @@ body {
       text-transform: uppercase; }
     body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
       background-color: #fff;
-      padding: 4px 8px;
+      padding: 8px 16px;
       border-radius: 4px;
       -webkit-border-radius: 4px;
       -moz-border-radius: 4px;
+      font-size: 16px;
       border: 1px solid #c8c8c8;
       outline: none;
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none; }
+      body .app-container input:not([type=checkbox]):focus, body .app-container input:not([type=radio]):focus, body .app-container select:not([type=checkbox]):focus, body .app-container select:not([type=radio]):focus, body .app-container textarea:not([type=checkbox]):focus, body .app-container textarea:not([type=radio]):focus {
+        border-color: #969696; }

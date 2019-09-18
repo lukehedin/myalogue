@@ -15,15 +15,18 @@ export default class ProfilePage extends Component {
 	}
 	componentDidMount() {
 		Util.api.post('/api/getUser', {
-			requestedUserId: this.props.userId || Util.context.getUserId()
+			requestedUserId: this.props.userId
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					isLoading: false,
 					user: result
 				});
 			}
+
+			this.setState({
+				isLoading: false
+			})
 		});
 	}
 	render() {
@@ -39,7 +42,7 @@ export default class ProfilePage extends Component {
 										<h2>{this.state.user.username}</h2>
 										{/* <p>Member since </p> */}
 									</div>
-									: <p className="empty-text">User not found</p>
+									: <p className="empty-text">User not found.</p>
 							}
 						</div>
 					</div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import validator from 'validator';
 import Util from '../../../../Util';
 
-import withForm from '../withForm';
+import asForm from '../asForm';
 
 import Button from '../../Button/Button';
 
@@ -24,7 +24,7 @@ class RegisterForm extends Component {
 	}
 }
 
-export default withForm(RegisterForm, {
+export default asForm(RegisterForm, {
 	fields: {
 		email: {
 			label: 'Email', 

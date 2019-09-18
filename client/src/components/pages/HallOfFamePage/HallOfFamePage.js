@@ -40,14 +40,14 @@ export default class HallOfFamePage extends Component {
 	componentDidUpdate(prevProps, prevState, isNewGameId) {
 		if(isNewGameId) this.setViewingGameId(this.props.gameId); //a new gameId
 	}
-	setViewingGameId(gameId) {
+	setViewingGameId(gameId, goBackToTop = false) {
 		let viewingGameId = parseInt(gameId, 10);
 		
 		this.setState({
 			viewingGameId
 		});
 
-		Util.selector.getRootScrollElement().scrollTo(0, 0);
+		if(goBackToTop) Util.selector.getRootScrollElement().scrollTo(0, 0);
 	}
 	render() {
 		let viewingGame = Util.context.getGameById(this.state.viewingGameId);
@@ -102,7 +102,7 @@ export default class HallOfFamePage extends Component {
 												{/* <p className="sm">{game.description}</p> */}
 											</td>
 											<td className="cell-button">
-												<Button onClick={() => this.setViewingGameId(comic.gameId)} label="View" colour="black" />
+												<Button onClick={() => this.setViewingGameId(comic.gameId, true)} label="View" colour="black" />
 											</td>
 										</tr>
 									})}

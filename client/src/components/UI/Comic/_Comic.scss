@@ -50,6 +50,18 @@
 			display: none;
 		}
 	}
+
+	@-webkit-keyframes fade-in {
+		0% { opacity: 0; }
+		100% { opacity: 1; }
+	  }
+	  @keyframes fade-in {
+		0% { opacity: 0; }
+		100% { opacity: 1; }
+	  }
+
+	-webkit-animation:fade-in 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	animation: fade-in 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 .comic-content {
@@ -92,6 +104,7 @@
 			overflow: hidden;
 			text-align: center;
 			background-color: transparent;
+			overflow-wrap: break-word;
 		}
 
 		textarea {

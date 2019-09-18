@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import validator from 'validator';
 import Util from '../../../Util';
 
-export default function withForm(WrappedForm, formConfig) {
+import Checkbox from '../Checkbox/Checkbox';
+
+export default function asForm(WrappedForm, formConfig) {
 	return class extends Component {
 		constructor(props){
 			super(props);
@@ -50,9 +53,17 @@ export default function withForm(WrappedForm, formConfig) {
 
 			Object.keys(formConfig.fields).forEach(fieldName => {
 				let fieldConfig = formConfig.fields[fieldName];
+				let fieldValue = this.state.formData[fieldName];
+				
 				let error = fieldConfig.getError
-					? fieldConfig.getError(this.state.formData[fieldName], this.state.formData)
+					? fieldConfig.getError(fieldValue, this.state.formData)
 					: null;
+
+				// Required msg overwrites any custom ones
+				const alwaysOptionalFieldTypes = [Util.enum.FieldType.Checkbox];
+				if(!alwaysOptionalFieldTypes.includes(fieldConfig.type) && !fieldConfig.isOptional && !validator.isLength(fieldValue, { min: 1 })) {
+					error = 'This field is required'
+				};
 
 				if(error) {
 					formErrors = {
@@ -89,15 +100,17 @@ export default function withForm(WrappedForm, formConfig) {
 			let fieldConfig = formConfig.fields[fieldName];
 
 			let field = null;
+			let hideContainerLabel = false;
 
 			switch(fieldConfig.type) {
 				case Util.enum.FieldType.Textarea:
 					field = <div>textarea todo</div>;
 					break;
 				case Util.enum.FieldType.Checkbox:
-					field = <input 
-						type="checkbox" 
-						onChange={(e) => this.updateFormData(fieldName, e.target.checked)}
+						hideContainerLabel = true;
+					field = <Checkbox 
+						label={fieldConfig.label}
+						onChange={(value) => this.updateFormData(fieldName, value)}
 						value={this.state.formData[fieldName]}
 					/>;
 					break;
@@ -114,7 +127,7 @@ export default function withForm(WrappedForm, formConfig) {
 			let fieldError = this.state.formErrors[fieldName];
 
 			return <div className={`field-container ${!!fieldError ? 'error' : ''}`}>
-				<label>{fieldConfig.label}</label>
+				{hideContainerLabel ? null : <label>{fieldConfig.label}</label>}
 				{field}
 				{!!fieldError ? <div className="field-error">{fieldError}</div> : null}
 			</div>;
@@ -127,7 +140,12 @@ export default function withForm(WrappedForm, formConfig) {
 					getField={this.getField}
 					submitForm={this.submitForm}
 					{...this.props} />
-				{this.state.formOverallError ? <div className="field-error">{this.state.formOverallError}</div> : null}
+				{this.state.formOverallError 
+					? <div className="field-container">
+						<div className="overall-error field-error">{this.state.formOverallError}</div> 
+					</div>
+					: null
+				}
 			</div>
 		}
 	}

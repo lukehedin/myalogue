@@ -69,8 +69,14 @@ class Modal extends Component {
 							})
 							.then(result => {
 								if(!result.error) {
+									//Slap on user data(db doesn't use this during create)
+									if(result.userId) result.username = Util.context.getUsername();
+
 									if(modal.onSubmit) modal.onSubmit(result);
 									this.close();
+								} else {
+									form.setLoading(false);
+									form.setOverallError(result.error);
 								}
 							});
 						}}

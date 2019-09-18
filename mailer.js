@@ -12,15 +12,22 @@ mailer = {
 		} else {
 			sgMail.send({
 				to: toEmail,
-				from: 'noreply@myalogue.com',
+				from: 'noreply@s4ycomic.com',
 				subject: `${subject} - Speak 4 Yourself`,
-				html: `<div>
-					${html}
-				</div>
-				<div style="background-color:#ff1f67;color:#fff;">
-					${mailer._host}
+				html: `<div style="max-width:500px; margin: 0 auto;">
+					<div style="padding:8px; background-color:#ff1f67; color:#fff; text-align: center;">
+						Speak 4 Yourself
+					</div>
+					<div style="padding: 8px; background-color: #efefef;">
+						${html}
+					</div>
+					<div style="padding:8px; background-color:#ff1f67; color:#fff; text-align: center;">
+						<a style="color: #fff;" href="${mailer.host}">${mailer._host}</a>
+					</div>
 				</div>`
 			});
+
+			console.log('Mail send success');
 		}
 	},
 
@@ -32,20 +39,20 @@ mailer = {
 		);
 	},
 
-	sendForgotPasswordEmail: (toEmail, passwordResetToken) => {
-		mailer._send(toEmail, 'Request to reset password',
+	sendForgotPasswordEmail: (toEmail, username, passwordResetToken) => {
+		mailer._send(toEmail, 'Forgot password',
 			`<h2>Hi ${username},</h2>
 			<p>Someone requested a password reset for this email.</p>
-			<p><a href="${mailer._host}/reset-password/${passwordResetToken}">Click here to reset your password</a>.</p>
+			<p><a href="${mailer._host}/set-password/${passwordResetToken}">Click here to reset your password</a>.</p>
 			<p>If you did not make this request, you can ignore this email.</p>`)
 	},
 
-	sendForgotPasswordNoAccountEmail: (toEmail) => {
-		mailer._send(toEmail, 'Request to reset password', 
-		`<p>Someone requested a password reset for this email, but it doesn't have a registered account.</p>
-		<p>If you made this request, please <a href="">register for an account</a> instead.</p>
-		<p><p>If you did not make this request, you can ignore this email.</p>`);
-	}
+	// sendForgotPasswordNoAccountEmail: (toEmail) => {
+	// 	mailer._send(toEmail, 'Forgot password', 
+	// 	`<p>Someone requested a password reset for this email, but it doesn't have a registered account.</p>
+	// 	<p>If you made this request, please <a href="">register for an account</a> instead.</p>
+	// 	<p><p>If you did not make this request, you can ignore this email.</p>`);
+	// }
 }
 
 module.exports = mailer;

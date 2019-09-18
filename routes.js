@@ -2,9 +2,12 @@
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const moment = require('moment');
 
 const mailer = require('./mailer');
 const mapper = require('./mapper');
+
+const PASSWORD_RESET_HOURS = 3;
 
 const catchError = (res, error) => {
 	//TODO db log
@@ -141,10 +144,9 @@ const routes = {
 	
 			let isValidEmail = validator.isEmail(email);
 			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username);
-			let isValidPassword = validator.isLength(password, {min:8, max: 127});
 	
 			//TODO validate password and email
-			if(isValidEmail && isValidUsername && isValidPassword) {
+			if(isValidEmail && isValidUsername) {
 				db.User.findOne({
 					where: {
 						[db.op.or]: [{
@@ -156,20 +158,24 @@ const routes = {
 				})
 				.then(dbExistingUser => {
 					if(!dbExistingUser) {
-						auth.hashPassword(password, (err, hashedPassword) => {
-							let verificationToken = auth.getHexToken();
-	
-							db.User.create({
-								Email: email,
-								Username: username,
-								Password: hashedPassword,
-								VerificationToken: verificationToken
-							})
-							.then(dbCreatedUser => {
-								mailer.sendVerificationEmail(email, username, verificationToken);
-								res.json({ success: true });
-							})
-							.catch(error => catchError(res, error));
+						auth.hashPassword(password, (error, hashedPassword) => {
+							if(!error && hashedPassword) {
+								let verificationToken = auth.getHexToken();
+		
+								db.User.create({
+									Email: email,
+									Username: username,
+									Password: hashedPassword,
+									VerificationToken: verificationToken
+								})
+								.then(dbCreatedUser => {
+									mailer.sendVerificationEmail(email, username, verificationToken);
+									res.json({ success: true });
+								})
+								.catch(error => catchError(res, error));
+							} else {
+								catchError(res, 'Invalid password'); //don't give password error details
+							}
 						});
 					} else {
 						catchError(res, dbExistingUser.Email === email
@@ -203,6 +209,92 @@ const routes = {
 					catchError(res, 'Account verification failed.');
 				}
 			});
+		},
+	
+		forgotPassword: (req, res, db) => {
+			let email = req.body.email.trim();
+			
+			let now = new Date();
+
+			db.User.findOne({
+				where: {
+					Email: email,
+					VerificationToken: {
+						[db.op.eq]: null
+					},
+					[db.op.or]: [{
+						PasswordResetAt: {
+							//Don't let someone request a password if a request is already in progress
+							[db.op.lte]: moment(now).subtract(PASSWORD_RESET_HOURS, 'hours').toDate()
+						}
+					}, {
+						PasswordResetAt: {
+							[db.op.eq]: null
+						}
+					}]
+				}
+			})
+			.then(dbUser => {
+				if(dbUser) {
+					let passwordResetToken = auth.getHexToken();
+					dbUser.PasswordResetToken = passwordResetToken;
+					dbUser.PasswordResetAt = now;
+					dbUser.save();
+
+					mailer.sendForgotPasswordEmail(email, dbUser.Username, passwordResetToken);
+				} else {
+					// mailer.sendForgotPasswordNoAccountEmail(email);
+				}
+			})
+			.catch(error => catchError(res, error));
+
+			//Always say the same thing, even if it didn't work
+			res.json({ success: true });
+		},
+
+		setPassword: (req, res, db) => {
+			let token = req.body.token;
+			let password = req.body.password;
+
+			let now = new Date();
+
+			if(token) {
+				db.User.findOne({
+					where:{
+						PasswordResetAt: {
+							[db.op.lte]: moment(now).add(PASSWORD_RESET_HOURS, 'hours').toDate()
+						},
+						PasswordResetToken: token
+					}
+				})
+				.then(dbUser => {
+					if(dbUser) {
+						auth.hashPassword(password, (error, hashedPassword) => {
+							if(!error && hashedPassword) {
+
+								dbUser.Password = hashedPassword;
+								dbUser.PasswordResetAt = null;
+								dbUser.PasswordResetToken = null;
+								dbUser.save()
+									.then(() => {
+										//Wait for this save in case it fails
+										getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+											res.json(authResult);
+										});
+									})
+									.catch(error => catchError(res, error));
+							} else {
+								catchError(res, 'Invalid password'); //don't give password error details
+							}
+						});
+					} else {
+						catchError(res, 'This password reset request is invalid or has expired.');
+					}
+				})
+				.catch(error => catchError(res, error));
+			} else {
+				catchError(res, 'Password request failed');
+			}
 		},
 
 		getComic: (req, res, db) => {
@@ -338,13 +430,15 @@ const routes = {
 			let userId = req.userId; // May be null
 			let comic = req.body.comic;
 
-			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' '));
+			let isValidTitle = validator.isLength(comic.title, { max: 0 })
+				|| (validator.isLength(comic.title, { max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' ')));
 			let isValidDialogue = !comic.comicDialogues.find(cd => !validator.isLength(cd.value, { min: 1, max: 255 }));
 			
 			if(isValidTitle && isValidDialogue) {
 				db.Comic.create({
 					GameId: comic.gameId,
-					UserId: comic.isAnonymous ? null : userId,
+					UserId: userId, //Record userId even if anon, the mapper still conceals it
+					IsAnonymous: comic.isAnonymous,
 					Title: comic.title,
 					ComicDialogues: comic.comicDialogues.map(cd => {
 						return {
@@ -372,7 +466,10 @@ const routes = {
 
 			db.User.findOne({
 				where: {
-					UserId: requestedUserId
+					UserId: requestedUserId,
+					VerificationToken: {
+						[db.op.eq]: null  //unverified users cant be viewed
+					}
 				}
 			})
 			.then(dbUser => {
@@ -400,7 +497,8 @@ const routes = {
 				.then(dbExistingUser => {
 					if(!dbExistingUser) {
 						db.User.update({
-							Username: username
+							Username: username,
+							VerificationToken: null
 						}, {
 							where: {
 								UserId: userId
@@ -414,35 +512,11 @@ const routes = {
 				catchError(res, 'Something went wrong. Please refresh and try again.');
 			}
 		},
-	
-		forgotPassword: (req, res, db) => {
-			let email = req.body.email.trim();
 
-			db.User.findOne({
-				where: {
-					Email: email,
-					VerificationToken: null
-				}
-			})
-			.then(dbUser => {
-				if(dbUser) {
-					let passwordResetToken = auth.getHexToken();
-					dbUser.PasswordResetToken = passwordResetToken;
-					dbUser.PasswordResetAt = new Date();
+		setPassword: (req, res, db) => {
+			//Must be logged in
+			let userId = req.userId;
 
-					mailer.sendForgotPasswordEmail(email, passwordResetToken);
-				} else {
-					mailer.sendForgotPasswordNoAccountEmail(email);
-				}
-
-				//Always say the same thing, even if it didn't work
-				res.json({ success: true });
-			})
-			.catch(error => catchError(res, error));
-		},
-
-		changePassword: (req, res, db) => {
-	
 		},
 
 		//Comics

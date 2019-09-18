@@ -116,7 +116,7 @@ class Comic extends Component {
 
 		//Might be paranoid, but lets give the dom time to update
 		setTimeout(() => {
-			htmlToImage.toPng(clone)
+			htmlToImage.toJpeg(clone)
 				.then(dataUrl => {
 					comicContent.removeChild(clone);
 

@@ -18,6 +18,8 @@ import HallOfFamePage from './components/pages/HallOfFamePage/HallOfFamePage';
 import ProfilePage from './components/pages/ProfilePage/ProfilePage';
 import AboutPage from './components/pages/AboutPage/AboutPage';
 import Error404Page from './components/pages/Error404Page/Error404Page';
+import ForgotPasswordPage from './components/pages/ForgotPasswordPage/ForgotPasswordPage';
+import SetPasswordPage from './components/pages/SetPasswordPage/SetPasswordPage';
 
 class App extends Component {
 	constructor(props){
@@ -45,10 +47,16 @@ class App extends Component {
 			});
 	}
 	render() {
+		let ifAuthenticated = (component) => {
+			return Util.context.isAuthenticated()
+				? component
+				: <Redirect to={Util.route.home()} />;
+		};
+
 		let ifNotAuthenticated = (component) => {
 			return !Util.context.isAuthenticated()
 				? component
-				: <Redirect to={Util.route.home()} /> 
+				: <Redirect to={Util.route.home()} />;
 		};
 
 		let content = this.state.isLoading
@@ -58,20 +66,23 @@ class App extends Component {
 			: <div className="app">
 				<AppHeader />
 				<Switch>
+					{/* If NOT authenticated */}
+					<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
+					<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
+					<Route exact path="/forgot-password" render={({ match }) => ifNotAuthenticated(<ForgotPasswordPage /> )} />
+					
+					{/* Verification and password resets can happen even if logged in (odd scenario but plausible) */}
+					<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
+					<Route exact path="/set-password/:token" render={({ match }) => <SetPasswordPage token={match.params.token} />} />
+
 					<Route exact path="/" render={() => <Redirect to={Util.route.game(Util.context.getLatestGameId())} />} />
 					<Route exact path="/game/:gameId" render={({ match }) => <GamePage gameId={match.params.gameId} />} />
 					<Route exact path="/game/:gameId/comic/:comicId" render={({ match }) => <GamePage gameId={match.params.gameId} comicId={match.params.comicId} />} />
 
-					{/* If not authenticated */}
-					<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
-					<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
-					
-					{/* Can verify even if already authenticated with same/another account (odd scenario but plausible) */}
-					<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
-
 					<Route exact path="/hall-of-fame" render={({ match }) => <Redirect to={Util.route.hallOfFame(Util.context.getLatestGameId())} /> } />
 					<Route exact path="/hall-of-fame/:gameId" render={({ match }) => <HallOfFamePage gameId={match.params.gameId} />}/>
 					
+					<Route exact path="/profile" render={({ match }) => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
 					<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 					
 					<Route exact path="/about" render={({ match }) => <AboutPage />}/>

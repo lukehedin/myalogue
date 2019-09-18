@@ -35,7 +35,7 @@ export default class ContextMenu extends Component {
 				{this.props.menuItems.map((menuItem, idx) => {
 					return menuItem.to
 						? <Link key={idx} className="menu-item" to={menuItem.to}>{menuItem.label}</Link>
-						: <div className="menu-item" onClick={menuItem.onClick}>{menuItem.label}</div>
+						: <div key={idx} className="menu-item" onClick={menuItem.onClick}>{menuItem.label}</div>
 				})}
 			</div>
 		</div>
