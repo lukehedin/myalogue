@@ -33,17 +33,6 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-
-			.share-button {
-				margin-right: $spacing-xs;
-
-				.button-label {
-					display: none;
-					@include overmd {
-						display: initial;
-					}
-				}
-			}
 		}
 
 		&:empty {

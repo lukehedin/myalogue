@@ -1,4 +1,5 @@
 import { OPEN_MODAL, CLOSE_MODAL, CLOSE_ALL_MODALS } from "../actionTypes";
+import Util from "../../Util";
 
 const initialState = {
   modals: []
@@ -8,6 +9,9 @@ export default function(state = initialState, action) {
 	switch (action.type) {
 		case OPEN_MODAL: {
 			const modal = action.payload;
+
+			Util.analytics.modal(Util.enum.toString(Util.enum.ModalType, modal.type));
+
 			return {
 				...state,
 				modals: [...state.modals, modal]

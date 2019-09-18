@@ -116,13 +116,6 @@ body {
             display: flex;
             flex-direction: row;
             align-items: center; }
-            body .app-container .app .comic .comic-lower .comic-lower-inner .share-button {
-              margin-right: 8px; }
-              body .app-container .app .comic .comic-lower .comic-lower-inner .share-button .button-label {
-                display: none; }
-                @media (min-width: 768px) {
-                  body .app-container .app .comic .comic-lower .comic-lower-inner .share-button .button-label {
-                    display: initial; } }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
 
@@ -707,8 +700,6 @@ body {
         min-height: 60px; }
       body .app-container .app [class^="page-"] {
         position: relative; }
-        body .app-container .app [class^="page-"] .page-title, body .app-container .app [class^="page-"] .page-subtitle {
-          text-align: center; }
 
 @keyframes loader-spin {
   0% {
@@ -829,6 +820,8 @@ body {
         margin-top: 0; }
       body .app-container p:last-child {
         margin-bottom: 0; }
+      body .app-container p.center {
+        text-align: center; }
     body .app-container a, body .app-container .dead-link {
       text-decoration: none;
       color: #ff0052; }
@@ -854,3 +847,11 @@ body {
       box-shadow: none; }
       body .app-container input:not([type=checkbox]):focus, body .app-container input:not([type=radio]):focus, body .app-container select:not([type=checkbox]):focus, body .app-container select:not([type=radio]):focus, body .app-container textarea:not([type=checkbox]):focus, body .app-container textarea:not([type=radio]):focus {
         border-color: #969696; }
+    body .app-container .under-maintenance-panel {
+      margin: 0 auto;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: 32px; }

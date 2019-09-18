@@ -60,7 +60,7 @@ export default class HallOfFamePage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Hall of Fame</h2>
-						<p className="page-subtitle sm">The highest rated comics for each game make it into the Hall of Fame. If your comic is rated higher than one of these comics, you'll steal their place!</p>
+						<p className="center sm">The highest rated comics for each game make it into the Hall of Fame. If your comic is rated higher than one of these comics, you'll steal their place!</p>
 						{this.state.viewingGameId
 							? <GameNavigation toFn={Util.route.hallOfFame} gameId={this.state.viewingGameId} />
 							: null

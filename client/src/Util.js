@@ -1,4 +1,5 @@
 import axios from 'axios';
+import ReactGA from 'react-ga';
 
 import iconAvatar from './icons/avatar.svg';
 import iconBack from './icons/back.svg';
@@ -24,6 +25,7 @@ const Util = {
 
 		_userId: null,
 		_username: null,
+		_isDev: null,
 		_referenceData: null,
 
 		set: (authResult) => {
@@ -33,6 +35,7 @@ const Util = {
 
 			Util.context._userId = authResult.userId;
 			Util.context._username = authResult.username;
+			Util.context._isDev = authResult.isDev;
 			Util.context._referenceData = authResult.referenceData;
 		},
 
@@ -41,10 +44,12 @@ const Util = {
 
 			Util.context._userId = null;
 			Util.context._username = null;
+			Util.context._isDev = null;
 			Util.context._referenceData = null;
 			window.location.href = "/";
 		},
 
+		isDev: () => Util.context._isDev,
 		isAuthenticated: () => !!Util.context._getToken(),
 		getUserId: () => Util.context._userId,
 		getUsername: () => Util.context._username,
@@ -54,6 +59,45 @@ const Util = {
 		getGameById: (gameId) => Util.context._referenceData.games.find(game => gameId === game.gameId),
 		getLatestGame: () => Util.context._referenceData.games[Util.context._referenceData.games.length - 1],
 		getLatestGameId: () => Util.context.getLatestGame().gameId
+	},
+
+	analytics: {
+		init: () => {
+			ReactGA.initialize('UA-92026212-2');
+
+			if(Util.context.isDev()) console.log(`GA:INIT`);
+
+			Util.analytics.page();
+		},
+
+		set: (property, value) => {
+			ReactGA.set({ [property]: value });
+			
+			if(Util.context.isDev()) console.log(`GA:SET - ${property}:${value}`);
+		},
+
+		event: (eventCategory, eventAction, value = null, nonInteraction = false) => {
+			ReactGA.event({
+				category: eventCategory,
+				action: eventAction,
+				nonInteraction: nonInteraction,
+				value: value
+			});
+
+			if(Util.context.isDev()) console.log(`GA:EVENT - ${eventCategory}:${eventAction}`);
+		},
+		
+		page: () => {
+			let path = Util.route.getCurrent();
+
+			ReactGA.pageview(path);
+			if(Util.context.isDev()) console.log(`GA:PAGE - ${path}`);
+		},
+
+		modal: (modalName) => {
+			ReactGA.modalview(modalName);
+			if(Util.context.isDev()) console.log(`GA:MODAL - ${modalName}`);
+		}
 	},
 
 	api: {
@@ -81,6 +125,8 @@ const Util = {
 	},
 
 	enum: {
+		toString: (enumObj, enumValue) => Object.keys(enumObj).find(key => enumObj[key] === enumValue),
+
 		FieldType: {
 			Text: 1,
 			Textarea: 2,
@@ -156,7 +202,9 @@ const Util = {
 	},
 
 	route: {
-		host: 's4ycomic.com',
+		getHost: () =>  `s4ycomic.com`,// window.location.host, //prevent heroku link
+		getCurrent: () => window.location.pathname,
+		isCurrently: (route) => Util.route.getCurrent() === route,
 
 		home: () => `/`,
 		game: (gameId, comicId) => {

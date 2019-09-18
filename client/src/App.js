@@ -28,23 +28,31 @@ class App extends Component {
 		super(props);
 
 		this.state = {
-			isLoading: true
+			isLoading: true,
+			isUnderMaintenance: false
 		};
 	}
 	componentWillUnmount() {
 		this.unlisten();
 	}
 	componentDidMount() {
+		Util.analytics.init();
+
 		this.unlisten = this.props.history.listen((location, action) => {
 			this.props.closeAllModals();
+			Util.analytics.page();
 		});
 
 		Util.api.post('/api/authenticate')
 			.then(result => {
-				if(!result.error) Util.context.set(result);
+				//An error also triggers maintenance mode
+				if(!result.error && !result.isUnderMaintenance) {
+					Util.context.set(result);
+				}
 
 				this.setState({
-					isLoading: false
+					isLoading: false,
+					isUnderMaintenance: true
 				});
 			});
 	}
@@ -61,11 +69,8 @@ class App extends Component {
 				: <Redirect to={Util.route.home()} />;
 		};
 
-		let content = this.state.isLoading
-			? <div className="loader image-loader">
-				<img alt="" src={loaderFace} />
-			</div>
-			: <div className="app">
+		let getApp = () => {
+			return <div className="app">
 				<AppHeader />
 				<Switch>
 					{/* If NOT authenticated */}
@@ -106,6 +111,17 @@ class App extends Component {
 					: null
 				}
 			</div>;
+		}
+
+		let content = this.state.isLoading
+			? <div className="loader image-loader"><img alt="" src={loaderFace} /></div>
+			: this.state.isUnderMaintenance
+				? <div className="under-maintenance-panel">
+					<img alt="" src={loaderFace} />
+					<h2>Sorry, we are experiencing some technical difficulties.</h2>
+					<p>Speak 4 Yourself is currently undergoing maintenance, but should be back online momentarily.</p>
+				</div>
+				: getApp();
 
 		return <Div100vh onScroll={Util.array.any(this.props.modals) ? Util.event.absorb : null} className="app-container">
 			{content}

@@ -1,11 +1,13 @@
-//Authentication
-const auth = require('./auth');
-const bcrypt = require('bcrypt');
 const validator = require('validator');
+const https = require('https');
 const moment = require('moment');
 
 const mailer = require('./mailer');
 const mapper = require('./mapper');
+
+//Authentication
+const auth = require('./auth');
+const bcrypt = require('bcrypt');
 
 const PASSWORD_RESET_HOURS = 3;
 
@@ -18,11 +20,13 @@ const catchError = (res, error) => {
 //The object sent to a successfully authenticated user
 const getAuthResult = (userId, username, callback) => {
 	auth.getJwtToken(userId, username, (token) => {
-		callback({
+		let result = {
 			username: username,
 			userId: userId,
 			token
-		});
+		};
+
+		callback(result);
 	})
 };
 
@@ -67,41 +71,51 @@ const routes = {
 		authenticate: (req, res, db) => {
 			let userId = req.userId;
 			let username = req.username;
+			
+			if(process.env.IS_UNDER_MAINTENANCE === 'true') {
+				res.json({
+					isUnderMaintenance: true
+				});
+			} else {
+				let referenceDataPromises = [
+					db.Game.findAll({
+						where: getDbGameWhereUnlocked(db),
+						include: [{
+							model: db.GameDialogue,
+							as: 'GameDialogues'
+						}],
+						order: [[ 'GameId', 'DESC' ]]
+					})
+				];
+	
+				Promise.all(referenceDataPromises)
+					.then(([dbGames]) => {
+						let result = {
+							referenceData: {
+								games: dbGames
+									.sort((t1, t2) => t1.GameId - t2.GameId)
+									.map(mapper.fromDbGame)
+							}
+						}
 
-			let referenceDataPromises = [
-				db.Game.findAll({
-					where: getDbGameWhereUnlocked(db),
-					include: [{
-						model: db.GameDialogue,
-						as: 'GameDialogues'
-					}],
-					order: [[ 'GameId', 'DESC' ]]
-				})
-			];
-
-			Promise.all(referenceDataPromises)
-				.then(([dbGames]) => {
-					let referenceData = {
-						games: dbGames
-							.sort((t1, t2) => t1.GameId - t2.GameId)
-							.map(mapper.fromDbGame)
-					};
-
-					if(userId) {
-						//Refresh the token after a successful authenticate
-						getAuthResult(userId, username, authResult => {
-							res.json({
-								...authResult,
-								referenceData
+						if(process.env.NODE_ENV === 'development') result.isDev = true;
+	
+						if(userId) {
+							//Refresh the token after a successful authenticate
+							getAuthResult(userId, username, authResult => {
+								res.json({
+									...result,
+									...authResult
+								});
 							});
-						});
-					} else {
-						res.json({
-							referenceData
-						});
-					}
-				})
-				.catch(error => catchError(res, error));
+						} else {
+							res.json({
+								...result
+							});
+						}
+					})
+					.catch(error => catchError(res, error));
+			}
 		},
 	
 		login: (req, res, db) => {
@@ -147,43 +161,49 @@ const routes = {
 	
 			//TODO validate password and email
 			if(isValidEmail && isValidUsername) {
-				db.User.findOne({
-					where: {
-						[db.op.or]: [{
-							Email: email
-						}, {
-							Username: username
-						}]
-					}
-				})
-				.then(dbExistingUser => {
-					if(!dbExistingUser) {
-						auth.hashPassword(password, (error, hashedPassword) => {
-							if(!error && hashedPassword) {
-								let verificationToken = auth.getHexToken();
-		
-								db.User.create({
-									Email: email,
-									Username: username,
-									Password: hashedPassword,
-									VerificationToken: verificationToken
-								})
-								.then(dbCreatedUser => {
-									mailer.sendVerificationEmail(email, username, verificationToken);
-									res.json({ success: true });
-								})
-								.catch(error => catchError(res, error));
-							} else {
-								catchError(res, 'Invalid password'); //don't give password error details
+				https.get(`https://open.kickbox.com/v1/disposable/${email}`, (response) => {
+					if(response && response.hasOwnProperty('disposable') && !response.disposable) {
+						db.User.findOne({
+							where: {
+								[db.op.or]: [{
+									Email: email
+								}, {
+									Username: username
+								}]
 							}
-						});
+						})
+						.then(dbExistingUser => {
+							if(!dbExistingUser) {
+								auth.hashPassword(password, (error, hashedPassword) => {
+									if(!error && hashedPassword) {
+										let verificationToken = auth.getHexToken();
+				
+										db.User.create({
+											Email: email,
+											Username: username,
+											Password: hashedPassword,
+											VerificationToken: verificationToken
+										})
+										.then(dbCreatedUser => {
+											mailer.sendVerificationEmail(email, username, verificationToken);
+											res.json({ success: true });
+										})
+										.catch(error => catchError(res, error));
+									} else {
+										catchError(res, 'Invalid password'); //don't give password error details
+									}
+								});
+							} else {
+								catchError(res, dbExistingUser.Email === email
+									? 'Email is already in use. Please log in with your existing account or reset your password.'
+									: 'Username is already in use. Please choose another username.');
+							}
+						})
+						.catch(error => catchError(res, error));
 					} else {
-						catchError(res, dbExistingUser.Email === email
-							? 'Email is already in use. Please log in with your existing account or reset your password.'
-							: 'Username is already in use. Please choose another username.');
+						catchError(res, 'Disposable emails are not allowed. Please enter another email address.');
 					}
-				})
-				.catch(error => catchError(res, error));
+				});
 			} else {
 				catchError(res, 'Something went wrong. Please refresh and try again.');
 			}

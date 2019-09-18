@@ -14,11 +14,11 @@ class RegisterForm extends Component {
 			{this.props.getField('username')}
 			{this.props.getField('password')} 
 			{this.props.getField('confirmPassword')}
+			<div className="form-message">
+				<p className="sm">By registering you confirm you are 13 years old or older and agree to the <Link to={Util.route.termsOfService()}>Terms of Service</Link> and <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link>.</p>
+			</div>
 			<div className="button-container">
 				<Button type="submit" label="Register" />
-			</div>
-			<div className="form-message">
-				<p>Already have an account? <Link to={Util.route.login()}>Log in</Link></p>
 			</div>
 		</form>
 	}

@@ -236,7 +236,7 @@ class Comic extends Component {
 							<div className="footer-right">Speak 4 Yourself</div>
 						</div>
 						<div className="comic-footer-bottom">
-							<div className="footer-left">{Util.route.host}{Util.route.game(this.game.gameId, this.state.comic.comicId)}</div>
+							<div className="footer-left">{Util.route.getHost()}{Util.route.game(this.game.gameId, this.state.comic.comicId)}</div>
 							<div className="flex-spacer">&nbsp;&nbsp;</div>
 							<div className="footer-right">@imdoodlir</div>
 						</div>
@@ -261,7 +261,6 @@ class Comic extends Component {
 					? <div className="comic-lower-inner">
 						<S4YButton onClick={() => this.setIsEditing(true)} />
 						<div className="flex-spacer"></div>
-						<Button className="share-button" isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={() => this.openShareComicModal()} />
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
 					: null
