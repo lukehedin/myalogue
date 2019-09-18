@@ -132,27 +132,29 @@ export default class ComicList extends Component {
 				{this.state.comics.map(comic => {
 					return <Comic key={comic.comicId} comic={comic} />
 				})}
-				{this.state.isLoading 
-					? <div className={`loader ${Util.array.any(this.state.comics) ? 'masked' : ''}`}></div> 
-					: <div>
-						{this.state.isNoMore
-							? <p className="empty-text">
-								{Util.array.none(this.state.comics) 
-									? (this.props.emptyText || 'No comics to display.')
-									: (this.props.noMoreText || 'No more comics to display.')
-								}
-							</p>
-							: null
-						}
-						<div className="button-container">
-							<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
+				<div className="comic-list-bottom">
+					{this.state.isLoading 
+						? <div className="loader"></div> 
+						: <div>
 							{this.state.isNoMore
-								? null
-								: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+								? <p className="empty-text">
+									{Util.array.none(this.state.comics) 
+										? (this.props.emptyText || 'No comics to display.')
+										: (this.props.noMoreText || 'No more comics to display.')
+									}
+								</p>
+								: null
 							}
+							<div className="button-container">
+								<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
+								{this.state.isNoMore
+									? null
+									: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+								}
+							</div>
 						</div>
-					</div>
-				}
+					}
+				</div>
 			</div>
 		</div>;
 	}

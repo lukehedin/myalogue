@@ -9,11 +9,19 @@
 		}
 	}
 
-	.button {
-		.button-label {
-			display: none;
-			@include overlg {
-				display: initial;
+	.button-container {
+		flex: 1;
+
+		&:last-child {
+			justify-content: flex-end;
+		}
+		
+		.button {
+			.button-label {
+				display: none;
+				@include overlg {
+					display: initial;
+				}
 			}
 		}
 	}

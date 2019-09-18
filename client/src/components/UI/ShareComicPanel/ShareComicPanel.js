@@ -7,12 +7,20 @@ import ComicTitle from '../ComicTitle/ComicTitle';
 import Button from '../Button/Button';
 
 export default class ShareComicPanel extends Component {
+	constructor(props){
+		super(props);
+
+		this.onInputClick = this.onInputClick.bind(this);
+	}
+	onInputClick(e) {
+		e.target.select();
+	}
 	render() {
 		let comicLink = Util.route.getHost() + Util.route.game(this.props.comic.gameId, this.props.comic.comicId);
 
 		return <div className="share-comic-panel">
 			<h4><ComicTitle comic={this.props.comic} /></h4>
-			<input readOnly={true} defaultValue={comicLink}></input>
+			<input className="input-link" onClick={this.onInputClick} readOnly={true} defaultValue={comicLink}></input>
 			<CopyButton toCopy={comicLink} />
 			<div className="comic-image">
 				<img className="image-download" src={this.props.comicDataUrl} />

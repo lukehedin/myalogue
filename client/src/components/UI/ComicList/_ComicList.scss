@@ -14,22 +14,22 @@
 	}
 
 	.comic-list-inner {
-		position: relative;
-		min-height: 60vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 
-		> * {
-			margin-bottom: $spacing-md;
-		}
-		
 		.comic {
 			@include boxShadow(4px, 4px, 2px, #00000022);
+			margin-bottom: $spacing-md;
 		}
 
-		.button-container {
-			justify-content: center;
+		.comic-list-bottom {
+			position: relative;
+			min-height: 40vh;
+
+			.button-container {
+				justify-content: center;
+			}
 		}
 	}
 }

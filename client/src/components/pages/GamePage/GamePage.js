@@ -110,7 +110,12 @@ export default class GamePage extends Component {
 									emptyText={`No comics have been made in this game. You could make the very first one!`}
 									noMoreText={`Phew! That's all the comics that have been made in this game.`}
 									fetchDelay={1000} //Prevent fast nav spamming
-									sortBy={this.state.comic ? Util.enum.ComicSortBy.Random : Util.enum.ComicSortBy.TopRated} 
+									sortBy={this.state.comic 
+										? Util.enum.ComicSortBy.Random 
+										: Util.context.getLatestGameId() === this.state.game.gameId
+											? Util.enum.ComicSortBy.Newest
+											: Util.enum.ComicSortBy.TopRated
+									}
 									gameId={this.state.game.gameId}
 								/>
 							</div>

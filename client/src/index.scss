@@ -17,6 +17,10 @@ body {
 		overflow-y: scroll;
 		overflow-x: hidden;
 
+		&.no-scroll {
+			overflow: hidden;
+		}
+
 		.app {
 			@import './components/UI/_UI.scss';
 			@import './components/Pages/_pages.scss';

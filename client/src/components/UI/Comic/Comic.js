@@ -35,7 +35,8 @@ class Comic extends Component {
 		this.touchTimer = null;
 
 		this.onDialogueBoxClick = this.onDialogueBoxClick.bind(this);
-		this.setIsEditing = this.setIsEditing.bind(this);
+		this.cancelEdit = this.cancelEdit.bind(this);
+		this.startEdit = this.startEdit.bind(this);
 		this.setComicDialogueValue = this.setComicDialogueValue.bind(this);
 		this.submitComic = this.submitComic.bind(this);
 		this.getBlankComicObject = this.getBlankComicObject.bind(this);
@@ -75,19 +76,23 @@ class Comic extends Component {
 			invalidGameDialogueIds: this.state.invalidGameDialogueIds.filter(invalidGameDialogueId => invalidGameDialogueId !== gameDialogueId)
 		});
 	}
-	setIsEditing(isEditing) {
+	startEdit() {
 		this.setState({
-			isEditing,
+			isEditing: true,
 			comic: this.getBlankComicObject()
 		});
 
-		if(isEditing) {
-			setTimeout(() => {
-				if(this.textareaRefs && this.textareaRefs[0]) {
-					this.textareaRefs[0].focus();
-				}
-			}, 200);
-		}
+		setTimeout(() => {
+			if(this.textareaRefs && this.textareaRefs[0]) {
+				this.textareaRefs[0].focus();
+			}
+		}, 200);
+	}
+	cancelEdit() {
+		this.setState({
+			isEditing: false,
+			comic: this.initialComic || this.getBlankComicObject()
+		});
 	}
 	onDialogueBoxClick(e) {
 		if(e.target.classList.contains('dialogue')) {
@@ -96,17 +101,18 @@ class Comic extends Component {
 	}
 	startShareTimeout(e) {
 		let isComicViewOnly = this.state.comic.comicId;
-		if(isComicViewOnly) this.touchTimer = setTimeout(() => this.openShareComicModal(), 500);
+		if(isComicViewOnly && !this.isLoading) this.touchTimer = setTimeout(() => this.openShareComicModal(), 500);
 
 		Util.selector.getRootScrollElement().addEventListener('scroll', this.cancelShareTimeout);
 	}
 	cancelShareTimeout() {
 		if(this.touchTimer) clearTimeout(this.touchTimer);
-		
+
 		Util.selector.getRootScrollElement().removeEventListener('scroll', this.cancelShareTimeout);
 	}
 	openShareComicModal(callback){
 		if(this.state.isLoading) return;
+		console.log('opening');
 		
 		this.setState({
 			isLoading: true
@@ -165,7 +171,7 @@ class Comic extends Component {
 					}, () => {
 						this.openShareComicModal(() => {
 							// After generating the share image and opening the modal,
-							// put the initial comic back if there was one
+							// put the initial comic back if there was one. Otherwise, keep the one we just made.
 							if(this.initialComic) {
 								this.setState({
 									comic: this.initialComic
@@ -185,8 +191,8 @@ class Comic extends Component {
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
 			<div className={`comic-content ${isComicViewOnly ? 'view-only no-select' : ''}`} 
 				ref={this.comicContentRef}
-				onTouchStart={isComicViewOnly ? () => this.openShareComicModal() : null}
-				onTouchEnd={isComicViewOnly ? () => this.openShareComicModal() : null}
+				onTouchStart={isComicViewOnly ? () => this.startShareTimeout() : null}
+				onTouchEnd={isComicViewOnly ? () => this.cancelShareTimeout() : null}
 				onMouseDown={isComicViewOnly ? () => this.openShareComicModal() : null}
 			>
 				<img alt="" onContextMenu={Util.event.absorb} className="comic-game" src={this.game.imageUrl} />
@@ -244,7 +250,7 @@ class Comic extends Component {
 				</div>
 				{!this.state.isEditing && !isComicViewOnly
 					? <div className="begin-edit-overlay" >
-						<S4YButton size="lg" onClick={() => this.setIsEditing(true)} />
+						<S4YButton size="lg" onClick={this.startEdit} />
 					</div>
 					: null
 				}
@@ -252,6 +258,7 @@ class Comic extends Component {
 			<div className="comic-lower">
 				{this.state.isEditing
 					? <div className="edit-toolbar">
+						<Button isHollow={true} label="Cancel" colour="black" onClick={this.cancelEdit} />
 						<ProgressBar amount={this.state.comic.comicDialogues.filter(cd => !!cd.value).length} total={this.state.comic.comicDialogues.length} />
 						<Button className={this.state.comic.comicDialogues.find(cd => !cd.value) ? 'disabled' : ''} tabIndex={lastTabIndex + 1} colour="pink" label="I'm done!" onClick={this.submitComic} />
 					</div>
@@ -259,7 +266,7 @@ class Comic extends Component {
 				}
 				{isComicViewOnly
 					? <div className="comic-lower-inner">
-						<S4YButton onClick={() => this.setIsEditing(true)} />
+						<S4YButton onClick={this.startEdit} />
 						<div className="flex-spacer"></div>
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>

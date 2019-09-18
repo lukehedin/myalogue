@@ -131,7 +131,7 @@ class App extends Component {
 					? getSorryPanel(`Sorry, your browser isn't supported.`, `Speak 4 Yourself can't run on this browser. Please switch to a different browser if possible.`)
 					: getApp();
 
-		return <Div100vh onScroll={Util.array.any(this.props.modals) ? Util.event.absorb : null} className="app-container">
+		return <Div100vh className={`app-container ${Util.array.any(this.props.modals) ? 'no-scroll' : ''}`}>
 			{content}
 		</Div100vh>;
 	}

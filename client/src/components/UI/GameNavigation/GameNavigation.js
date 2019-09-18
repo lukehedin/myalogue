@@ -22,12 +22,10 @@ export default class GameNavigation extends Component {
 					leftIcon={Util.icon.back}
 				/>
 			</div>
-			<div className="flex-spacer"></div>
 			<div className="game-info">
 				<h5>Game</h5>
 				<h3>{this.props.gameId}</h3>
 			</div>
-			<div className="flex-spacer"></div>
 			<div className="button-container">
 				<Button 
 					to={this.props.toFn(this.props.gameId + 1)} 

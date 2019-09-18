@@ -10,6 +10,8 @@ body {
     flex-direction: column;
     overflow-y: scroll;
     overflow-x: hidden; }
+    body .app-container.no-scroll {
+      overflow: hidden; }
     body .app-container .app {
       flex: 1;
       text-align: left;
@@ -76,19 +78,19 @@ body {
           align-items: center;
           justify-content: center; }
         body .app-container .app .comic-list .comic-list-inner {
-          position: relative;
-          min-height: 60vh;
           display: flex;
           flex-direction: column;
           align-items: center; }
-          body .app-container .app .comic-list .comic-list-inner > * {
-            margin-bottom: 32px; }
           body .app-container .app .comic-list .comic-list-inner .comic {
             box-shadow: 4px 4px 2px #00000022;
             -webkit-box-shadow: 4px 4px 2px #00000022;
-            -moz-box-shadow: 4px 4px 2px #00000022; }
-          body .app-container .app .comic-list .comic-list-inner .button-container {
-            justify-content: center; }
+            -moz-box-shadow: 4px 4px 2px #00000022;
+            margin-bottom: 32px; }
+          body .app-container .app .comic-list .comic-list-inner .comic-list-bottom {
+            position: relative;
+            min-height: 40vh; }
+            body .app-container .app .comic-list .comic-list-inner .comic-list-bottom .button-container {
+              justify-content: center; }
       body .app-container .app .comic {
         position: relative;
         border: 1px solid #373737;
@@ -113,7 +115,7 @@ body {
             align-items: center; }
             body .app-container .app .comic .comic-lower .edit-toolbar .progress-bar {
               flex: 1;
-              margin-right: 16px; }
+              margin: 0 16px; }
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
@@ -208,7 +210,7 @@ body {
           justify-content: center; }
         body .app-container .app .comic-content .dialogue > * {
           line-height: calc(40px * 0.28);
-          font-size: calc(38px * 0.28); }
+          font-size: calc(36px * 0.28); }
         body .app-container .app .comic-content .comic-footer {
           font-size: calc(18px * 0.28);
           line-height: calc(18px * 0.28);
@@ -219,7 +221,7 @@ body {
             height: calc(1080px * 0.36); }
             body .app-container .app .comic-content .dialogue > * {
               line-height: calc(40px * 0.36);
-              font-size: calc(38px * 0.36); }
+              font-size: calc(36px * 0.36); }
             body .app-container .app .comic-content .comic-footer {
               font-size: calc(18px * 0.36);
               line-height: calc(18px * 0.36);
@@ -230,7 +232,7 @@ body {
             height: calc(1080px * 0.44); }
             body .app-container .app .comic-content .dialogue > * {
               line-height: calc(40px * 0.44);
-              font-size: calc(38px * 0.44); }
+              font-size: calc(36px * 0.44); }
             body .app-container .app .comic-content .comic-footer {
               font-size: calc(18px * 0.44);
               line-height: calc(18px * 0.44);
@@ -241,7 +243,7 @@ body {
             height: calc(1080px * 0.5); }
             body .app-container .app .comic-content .dialogue > * {
               line-height: calc(40px * 0.5);
-              font-size: calc(38px * 0.5); }
+              font-size: calc(36px * 0.5); }
             body .app-container .app .comic-content .comic-footer {
               font-size: calc(18px * 0.5);
               line-height: calc(18px * 0.5);
@@ -252,7 +254,7 @@ body {
           height: calc(1080px * 0.5); }
           body .app-container .app .comic-content.for-image-capture .dialogue > * {
             line-height: calc(40px * 0.5);
-            font-size: calc(38px * 0.5); }
+            font-size: calc(36px * 0.5); }
           body .app-container .app .comic-content.for-image-capture .comic-footer {
             font-size: calc(18px * 0.5);
             line-height: calc(18px * 0.5);
@@ -498,11 +500,15 @@ body {
         align-items: center; }
         body .app-container .app .game-navigation .game-info h3 {
           color: #ff0052; }
-        body .app-container .app .game-navigation .button .button-label {
-          display: none; }
-          @media (min-width: 992px) {
-            body .app-container .app .game-navigation .button .button-label {
-              display: initial; } }
+        body .app-container .app .game-navigation .button-container {
+          flex: 1; }
+          body .app-container .app .game-navigation .button-container:last-child {
+            justify-content: flex-end; }
+          body .app-container .app .game-navigation .button-container .button .button-label {
+            display: none; }
+            @media (min-width: 992px) {
+              body .app-container .app .game-navigation .button-container .button .button-label {
+                display: initial; } }
       body .app-container .app .s4y-button .button-icon {
         width: 32px;
         height: 32px; }
@@ -662,6 +668,8 @@ body {
         align-items: center; }
         body .app-container .app .share-comic-panel > *:not(:first-child) {
           margin-top: 16px; }
+        body .app-container .app .share-comic-panel .input-link {
+          width: 240px; }
         body .app-container .app .share-comic-panel .comic-image {
           position: relative;
           height: 200px;
