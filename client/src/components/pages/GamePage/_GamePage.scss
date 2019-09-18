@@ -1,14 +1,14 @@
-.page-template {
-	.panel-template-feed {
+.page-game {
+	.panel-game-feed {
 		position: relative;
 		min-height: 100vh;
 
-		.template-feed {
+		.game-feed {
 			display: flex;
 			flex-direction: column;
 			align-items: stretch;
 
-			.template-navigation { 
+			.game-navigation { 
 				margin-bottom: $spacing-xs;
 				@include oversm {
 					margin-bottom: $spacing-sm;

@@ -47,7 +47,7 @@ const getDbComicInclude = (db, userId) => {
 
 	return include;
 };
-const getDbTemplateWhereUnlocked = (db) => {
+const getDbGameWhereUnlocked = (db) => {
 	return {
 		UnlockedAt: {
 			[db.op.ne]: null,
@@ -66,22 +66,22 @@ const routes = {
 			let username = req.username;
 
 			let referenceDataPromises = [
-				db.Template.findAll({
-					where: getDbTemplateWhereUnlocked(db),
+				db.Game.findAll({
+					where: getDbGameWhereUnlocked(db),
 					include: [{
-						model: db.TemplateDialogue,
-						as: 'TemplateDialogues'
+						model: db.GameDialogue,
+						as: 'GameDialogues'
 					}],
-					order: [[ 'TemplateId', 'DESC' ]]
+					order: [[ 'GameId', 'DESC' ]]
 				})
 			];
 
 			Promise.all(referenceDataPromises)
-				.then(([dbTemplates]) => {
+				.then(([dbGames]) => {
 					let referenceData = {
-						templates: dbTemplates
-							.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
-							.map(mapper.fromDbTemplate)
+						games: dbGames
+							.sort((t1, t2) => t1.GameId - t2.GameId)
+							.map(mapper.fromDbGame)
 					};
 
 					if(userId) {
@@ -228,15 +228,15 @@ const routes = {
 		getHallOfFameComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
 
-			db.Template.findAll({
-				where: getDbTemplateWhereUnlocked(db)
+			db.Game.findAll({
+				where: getDbGameWhereUnlocked(db)
 			})
-			.then(dbTemplates => {
-				let unlockedIds = dbTemplates.map(dbTemplate => dbTemplate.TemplateId);
+			.then(dbGames => {
+				let unlockedIds = dbGames.map(dbGame => dbGame.GameId);
 
 				db.Comic.findAll({
 					where: {
-						TemplateId: {
+						GameId: {
 							[db.op.in]: unlockedIds
 						}
 					},
@@ -247,9 +247,9 @@ const routes = {
 					let bestComics = {};
 					
 					dbComics.forEach(dbComic => {
-						let currentBest = bestComics[dbComic.TemplateId];
+						let currentBest = bestComics[dbComic.GameId];
 						if(!currentBest || (currentBest && currentBest.Rating <= dbComic.Rating)) {
-							bestComics[dbComic.TemplateId] = dbComic;
+							bestComics[dbComic.GameId] = dbComic;
 						}
 					});
 					
@@ -275,7 +275,7 @@ const routes = {
 		getComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
 
-			let templateId = req.body.templateId;
+			let gameId = req.body.gameId;
 			let authorUserId = req.body.authorUserId;
 
 			let idNotIn = req.body.idNotIn || [];
@@ -309,8 +309,8 @@ const routes = {
 				}
 			};
 
-			if(templateId) {
-				comicWhere.TemplateId = templateId;
+			if(gameId) {
+				comicWhere.GameId = gameId;
 			}
 			if(authorUserId) {
 				//Don't return anonymous comics by a user
@@ -338,17 +338,17 @@ const routes = {
 			let userId = req.userId; // May be null
 			let comic = req.body.comic;
 
-			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 }) && validator.isAlphanumeric(validator.blacklist(val, ' '));
+			let isValidTitle = validator.isLength(comic.title, { min: 0, max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' '));
 			let isValidDialogue = !comic.comicDialogues.find(cd => !validator.isLength(cd.value, { min: 1, max: 255 }));
 			
 			if(isValidTitle && isValidDialogue) {
 				db.Comic.create({
-					TemplateId: comic.templateId,
+					GameId: comic.gameId,
 					UserId: comic.isAnonymous ? null : userId,
 					Title: comic.title,
 					ComicDialogues: comic.comicDialogues.map(cd => {
 						return {
-							TemplateDialogueId: cd.templateDialogueId,
+							GameDialogueId: cd.gameDialogueId,
 							Value: cd.value
 						};
 					})
@@ -516,35 +516,35 @@ const routes = {
 			}
 		},
 	
-		commentComic: (req, res, db) => {
-			let userId = req.userId;
-			let comicId = req.body.comicId;
-			let value = req.body.value;
+		// commentComic: (req, res, db) => {
+		// 	let userId = req.userId;
+		// 	let comicId = req.body.comicId;
+		// 	let value = req.body.value;
 
-			db.ComicComment.create({
-				UserId: userId,
-				ComicId: comicId,
-				Value: value
-			});
+		// 	db.ComicComment.create({
+		// 		UserId: userId,
+		// 		ComicId: comicId,
+		// 		Value: value
+		// 	});
 
-			res.json({ success: true });
+		// 	res.json({ success: true });
 
-		},
+		// },
 
-		deleteComment: (req, res, db) => {
-			let userId = req.userId;
-			let comicCommentId = req.body.comicCommentId;
+		// deleteComment: (req, res, db) => {
+		// 	let userId = req.userId;
+		// 	let comicCommentId = req.body.comicCommentId;
 
-			db.ComicComment.destroy({
-				where: {
-					UserId: userId, //This ensures only the creator can delete
-					ComicCommentId: comicCommentId
-				}
-			});
+		// 	db.ComicComment.destroy({
+		// 		where: {
+		// 			UserId: userId, //This ensures only the creator can delete
+		// 			ComicCommentId: comicCommentId
+		// 		}
+		// 	});
 
-			res.json({ success: true });
+		// 	res.json({ success: true });
 
-		}
+		// }
 	}
 };
 

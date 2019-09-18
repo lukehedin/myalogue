@@ -98,16 +98,12 @@
 
 	&.button-sm {
 		padding: $spacing-xxs $spacing-xs;
-		@include scaleButton(12px);
-
-		@include oversm {
-			@include scaleButton(14px);
-		}
+		@include scaleButton(14px);
 	}
 
 	&.button-md {
 		padding: $spacing-xxs $spacing-xs;
-		@include scaleButton(14px);
+		@include scaleButton(14px); //same as small on small devices
 
 		@include oversm {
 			padding: $spacing-xs $spacing-sm;

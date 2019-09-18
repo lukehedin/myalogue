@@ -13,12 +13,12 @@ import ComicVote from '../ComicVote/ComicVote';
 import ComicTitle from '../ComicTitle/ComicTitle';
 import ProgressBar from '../ProgressBar/ProgressBar';
 
-//this.props.templateId AND/OR this.props.comic (optional)
+//this.props.gameId AND/OR this.props.comic (optional)
 class Comic extends Component {
 	constructor(props){
 		super(props);
 
-		this.template = Util.context.getTemplateById(this.props.templateId || this.props.comic.templateId);
+		this.game = Util.context.getGameById(this.props.gameId || this.props.comic.gameId);
 
 		this.state = {
 			isLoading: false,
@@ -26,7 +26,7 @@ class Comic extends Component {
 			
 			comic: this.props.comic || this.getBlankComicObject(),
 
-			invalidTemplateDialogueIds: []
+			invalidGameDialogueIds: []
 		}
 
 		this.comicContentRef = React.createRef();
@@ -45,33 +45,33 @@ class Comic extends Component {
 	}
 	getBlankComicObject() {
 		return {
-			title: this.template.title,
+			title: this.game.title,
 			userId: Util.context.getUserId(),
 			username: Util.context.getUsername(),
-			templateId: this.template.templateId,
-			comicDialogues: this.template.templateDialogues.map(td => {
+			gameId: this.game.gameId,
+			comicDialogues: this.game.gameDialogues.map(td => {
 				return {
-					templateDialogueId: td.templateDialogueId,
+					gameDialogueId: td.gameDialogueId,
 					value: ''
 				};
 			})
 		};
 	}
-	setComicDialogueValue(templateDialogueId, value) {
+	setComicDialogueValue(gameDialogueId, value) {
 		this.setState({
 			comic: {
 				...this.state.comic,
 				comicDialogues: this.state.comic.comicDialogues.map(cd => {
-					return cd.templateDialogueId === templateDialogueId
+					return cd.gameDialogueId === gameDialogueId
 						? {
 							...cd,
-							templateDialogueId: templateDialogueId,
+							gameDialogueId: gameDialogueId,
 							value: value
 						}
 						: cd
 				})
 			},
-			invalidTemplateDialogueIds: this.state.invalidTemplateDialogueIds.filter(invalidTemplateDialogueId => invalidTemplateDialogueId !== templateDialogueId)
+			invalidGameDialogueIds: this.state.invalidGameDialogueIds.filter(invalidGameDialogueId => invalidGameDialogueId !== gameDialogueId)
 		});
 	}
 	setIsEditing(isEditing) {
@@ -136,16 +136,16 @@ class Comic extends Component {
 		}, 100);
 	}
 	submitComic() {
-		let invalidTemplateDialogueIds = [];
+		let invalidGameDialogueIds = [];
 
-		this.template.templateDialogues.forEach(td => {
-			let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === td.templateDialogueId);
-			if(!comicDialogue || !comicDialogue.value) invalidTemplateDialogueIds.push(td.templateDialogueId);
+		this.game.gameDialogues.forEach(td => {
+			let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.gameDialogueId === td.gameDialogueId);
+			if(!comicDialogue || !comicDialogue.value) invalidGameDialogueIds.push(td.gameDialogueId);
 		});
 
-		if(Util.array.any(invalidTemplateDialogueIds)) {
+		if(Util.array.any(invalidGameDialogueIds)) {
 			this.setState({
-				invalidTemplateDialogueIds
+				invalidGameDialogueIds
 			});
 		} else {
 			this.props.openModal({
@@ -174,27 +174,27 @@ class Comic extends Component {
 				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
 				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
 			>
-				<img alt="" onContextMenu={Util.event.absorb} className="comic-template" src={this.template.imageUrl} />
+				<img alt="" onContextMenu={Util.event.absorb} className="comic-game" src={this.game.imageUrl} />
 				<img alt="" onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
-				{this.template.templateDialogues.map((templateDialogue, idx) => {
-					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.templateDialogueId === templateDialogue.templateDialogueId);
+				{this.game.gameDialogues.map((gameDialogue, idx) => {
+					let comicDialogue = this.state.comic.comicDialogues.find(cd => cd.gameDialogueId === gameDialogue.gameDialogueId);
 					let comicDialogueValue = comicDialogue ? comicDialogue.value : '';
 
 					const baseComicSize = 1080;
 
-					let percentPositionX = (templateDialogue.positionX / baseComicSize) * 100;
-					let percentPositionY = (templateDialogue.positionY / baseComicSize) * 100;
-					let percentSizeX = (templateDialogue.sizeX / baseComicSize) * 100;
-					let percentSizeY = (templateDialogue.sizeY / baseComicSize) * 100;
+					let percentPositionX = (gameDialogue.positionX / baseComicSize) * 100;
+					let percentPositionY = (gameDialogue.positionY / baseComicSize) * 100;
+					let percentSizeX = (gameDialogue.sizeX / baseComicSize) * 100;
+					let percentSizeY = (gameDialogue.sizeY / baseComicSize) * 100;
 
-					let isInvalid = this.state.isEditing && this.state.invalidTemplateDialogueIds.includes(templateDialogue.templateDialogueId);
+					let isInvalid = this.state.isEditing && this.state.invalidGameDialogueIds.includes(gameDialogue.gameDialogueId);
 
-					lastTabIndex = templateDialogue.ordinal;
+					lastTabIndex = gameDialogue.ordinal;
 
 					return <div 
 						className={`dialogue ${this.state.isEditing && !comicDialogueValue  ? 'edit-empty' : ''} ${isInvalid ? 'edit-invalid' : ''}`}
 						onClick={this.state.isEditing ? this.onDialogueBoxClick : null}
-						key={templateDialogue.templateDialogueId}
+						key={gameDialogue.gameDialogueId}
 						style={{ 
 							left: `${percentPositionX}%`, 
 							top: `${percentPositionY}%`,
@@ -205,9 +205,9 @@ class Comic extends Component {
 							? <Textarea 
 								inputRef={ref => this.textareaRefs[idx] = ref}
 								maxLength={255} 
-								tabIndex={templateDialogue.ordinal} 
+								tabIndex={gameDialogue.ordinal} 
 								value={comicDialogueValue} 
-								onChange={(e) => this.setComicDialogueValue(templateDialogue.templateDialogueId, e.target.value)}
+								onChange={(e) => this.setComicDialogueValue(gameDialogue.gameDialogueId, e.target.value)}
 							/>
 							: <div>{comicDialogueValue}</div>
 						}
@@ -216,12 +216,12 @@ class Comic extends Component {
 				<div className="comic-footer-container">
 					<div className="comic-footer">
 						<div className="comic-footer-top">
-							<div className="footer-left">{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Template ${this.template.templateId}`}</div>
+							<div className="footer-left">{isComicViewOnly ? <ComicTitle isFakeLink={true} comic={this.state.comic} /> : `Game ${this.game.gameId}`}</div>
 							<div className="flex-spacer">&nbsp;&nbsp;</div>
 							<div className="footer-right">Speak 4 Yourself</div>
 						</div>
 						<div className="comic-footer-bottom">
-							<div className="footer-left">{Util.route.host}{Util.route.template(this.template.templateId, this.state.comic.comicId)}</div>
+							<div className="footer-left">{Util.route.host}{Util.route.game(this.game.gameId, this.state.comic.comicId)}</div>
 							<div className="flex-spacer">&nbsp;&nbsp;</div>
 							<div className="footer-right">@imdoodlir</div>
 						</div>

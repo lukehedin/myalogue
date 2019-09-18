@@ -10,14 +10,12 @@ export default class ProfilePage extends Component {
 
 		this.state = {
 			isLoading: true,
-
-			user: null,
-			comics: []
+			user: null
 		};
 	}
 	componentDidMount() {
 		Util.api.post('/api/getUser', {
-			requestedUserId: this.props.userId
+			requestedUserId: this.props.userId || Util.context.getUserId()
 		})
 		.then(result => {
 			if(!result.error) {

@@ -50,10 +50,10 @@ const Util = {
 		getUsername: () => Util.context._username,
 
 		//Refdata
-		getTemplates: () => Util.context._referenceData.templates(),
-		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
-		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
-		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId
+		getGames: () => Util.context._referenceData.games(),
+		getGameById: (gameId) => Util.context._referenceData.games.find(game => gameId === game.gameId),
+		getLatestGame: () => Util.context._referenceData.games[Util.context._referenceData.games.length - 1],
+		getLatestGameId: () => Util.context.getLatestGame().gameId
 	},
 
 	api: {
@@ -159,13 +159,13 @@ const Util = {
 		host: 's4ycomic.com',
 
 		home: () => `/`,
-		template: (templateId, comicId) => {
-			if(!templateId) return Util.route.home();
+		game: (gameId, comicId) => {
+			if(!gameId) return Util.route.home();
 			return comicId 
-				? `/template/${templateId}/comic/${comicId}` 
-				: `/template/${templateId}`;
+				? `/game/${gameId}/comic/${comicId}` 
+				: `/game/${gameId}`;
 		},
-		hallOfFame: (templateId) => templateId ? `/hall-of-fame/${templateId}` : `/hall-of-fame`,
+		hallOfFame: (gameId) => gameId ? `/hall-of-fame/${gameId}` : `/hall-of-fame`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
 		profile: (userId) => `/profile/${userId}`,

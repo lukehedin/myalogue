@@ -17,7 +17,7 @@ class SubmitComicForm extends Component {
 			}
 			{!Util.context.isAuthenticated()
 				?<div className="form-message">
-					<p>You aren't logged in so your comic will be submitted anonymously. You can never claim ownership of it.</p>
+					<p>You aren't logged in so your comic will be submitted anonymously. You can never reclaim ownership of it, even if it makes the Hall of Fame.</p>
 					<p>If you <Link to={Util.route.register()}>register</Link>, you can be recorded as the author.</p>
 				</div>
 				: <div>
@@ -37,6 +37,7 @@ export default withForm(SubmitComicForm, {
 		title: {
 			label: 'Comic title (leave blank for "Untitled")',
 			placeholder: 'Untitled',
+			isAutoFocus: true,
 			getError: (val) => {
 				if(!validator.isLength(val, { max: 30 })) return 'Please enter a shorter title (maximum 30 characters)';
 				if(!validator.isAlphanumeric(validator.blacklist(val, ' '))) return 'Title can only contain letters, numbers and spaces';

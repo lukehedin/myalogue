@@ -1,0 +1,18 @@
+.page-hall-of-fame {
+	.hall-of-fame-table {
+		width: 100%;
+
+		tr {
+		
+			td {
+				text-align: left;
+				vertical-align: top;
+				padding: $spacing-sm 0;
+	
+				&.cell-button {
+					text-align: right;
+				}
+			}
+		}
+	}
+}

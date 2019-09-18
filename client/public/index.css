@@ -414,16 +414,10 @@ body {
             background: #ff1f67; }
         body .app-container .app .button.button-sm {
           padding: 4px 8px;
-          font-size: 12px; }
+          font-size: 14px; }
           body .app-container .app .button.button-sm .button-icon {
-            height: 12px;
-            width: 12px; }
-          @media (min-width: 576px) {
-            body .app-container .app .button.button-sm {
-              font-size: 14px; }
-              body .app-container .app .button.button-sm .button-icon {
-                height: 14px;
-                width: 14px; } }
+            height: 14px;
+            width: 14px; }
         body .app-container .app .button.button-md {
           padding: 4px 8px;
           font-size: 14px; }
@@ -484,16 +478,16 @@ body {
           max-width: 500px; }
         body .app-container .app .modal.modal-submit-comic {
           max-width: 500px; }
-      body .app-container .app .template-navigation {
+      body .app-container .app .game-navigation {
         display: flex;
         flex-direction: row;
         align-items: center; }
-        body .app-container .app .template-navigation .template-info h3 {
+        body .app-container .app .game-navigation .game-info h3 {
           color: #ff0052; }
-        body .app-container .app .template-navigation .button .button-label {
+        body .app-container .app .game-navigation .button .button-label {
           display: none; }
           @media (min-width: 992px) {
-            body .app-container .app .template-navigation .button .button-label {
+            body .app-container .app .game-navigation .button .button-label {
               display: initial; } }
       body .app-container .app .s4y-button .button-icon {
         width: 32px;
@@ -656,6 +650,9 @@ body {
             font-size: 14px; }
             body .app-container .app .context-menu .menu-items .menu-item:not(:first-child) {
               border-top: 1px solid #c8c8c8; }
+            body .app-container .app .context-menu .menu-items .menu-item:hover {
+              color: #ff0052;
+              text-decoration: none; }
       body .app-container .app .share-comic-panel {
         display: flex;
         flex-direction: column;
@@ -676,20 +673,28 @@ body {
           body .app-container .app .share-comic-panel .comic-image .image-thumbnail {
             height: 100%;
             width: 100%; }
-      body .app-container .app .page-template .panel-template-feed {
+      body .app-container .app .page-game .panel-game-feed {
         position: relative;
         min-height: 100vh; }
-        body .app-container .app .page-template .panel-template-feed .template-feed {
+        body .app-container .app .page-game .panel-game-feed .game-feed {
           display: flex;
           flex-direction: column;
           align-items: stretch; }
-          body .app-container .app .page-template .panel-template-feed .template-feed .template-navigation {
+          body .app-container .app .page-game .panel-game-feed .game-feed .game-navigation {
             margin-bottom: 8px; }
             @media (min-width: 576px) {
-              body .app-container .app .page-template .panel-template-feed .template-feed .template-navigation {
+              body .app-container .app .page-game .panel-game-feed .game-feed .game-navigation {
                 margin-bottom: 16px; } }
-          body .app-container .app .page-template .panel-template-feed .template-feed .comic-list {
+          body .app-container .app .page-game .panel-game-feed .game-feed .comic-list {
             align-self: stretch; }
+      body .app-container .app .page-hall-of-fame .hall-of-fame-table {
+        width: 100%; }
+        body .app-container .app .page-hall-of-fame .hall-of-fame-table tr td {
+          text-align: left;
+          vertical-align: top;
+          padding: 16px 0; }
+          body .app-container .app .page-hall-of-fame .hall-of-fame-table tr td.cell-button {
+            text-align: right; }
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
@@ -809,9 +814,18 @@ body {
       justify-content: center; }
     body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
       margin: 0; }
-    body .app-container .empty-text {
-      font-size: 14px;
-      color: #373737; }
+    body .app-container p {
+      margin: 16px 0; }
+      body .app-container p.sm {
+        margin: 8px 0;
+        font-size: 12px; }
+      body .app-container p.empty-text {
+        font-size: 14px;
+        color: #373737; }
+      body .app-container p:first-child {
+        margin-top: 0; }
+      body .app-container p:last-child {
+        margin-bottom: 0; }
     body .app-container a, body .app-container .dead-link {
       text-decoration: none;
       color: #ff0052; }

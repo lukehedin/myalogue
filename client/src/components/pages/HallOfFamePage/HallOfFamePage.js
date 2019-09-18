@@ -3,7 +3,9 @@ import Util from '../../../Util';
 import { Redirect } from 'react-router-dom';
 
 import Comic from '../../UI/Comic/Comic';
-import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
+import GameNavigation from '../../UI/GameNavigation/GameNavigation';
+import Button from '../../UI/Button/Button';
+import ComicTitle from '../../UI/ComicTitle/ComicTitle';
 
 export default class HallOfFamePage extends Component {
 	constructor(props) {
@@ -13,7 +15,7 @@ export default class HallOfFamePage extends Component {
 			isLoading: true,
 			
 			comics: [],
-			viewingTemplateId: null
+			viewingGameId: null
 		};
 	}
 	componentDidMount() {
@@ -29,24 +31,28 @@ export default class HallOfFamePage extends Component {
 					isLoading: false
 				});
 
-				this.setViewingTemplateId();
+				this.setViewingGameId(this.props.gameId || Util.context.getLatestGameId());
 			});
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.templateId !== prevProps.templateId;
+		return this.props.gameId !== prevProps.gameId;
 	}
-	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
-		if(isNewTemplateId) this.setViewingTemplateId(); //a new templateId
+	componentDidUpdate(prevProps, prevState, isNewGameId) {
+		if(isNewGameId) this.setViewingGameId(this.props.gameId); //a new gameId
 	}
-	setViewingTemplateId() {
+	setViewingGameId(gameId) {
+		let viewingGameId = parseInt(gameId, 10);
+		
 		this.setState({
-			viewingTemplateId: parseInt(this.props.templateId, 10)
+			viewingGameId
 		});
+
+		Util.selector.getRootScrollElement().scrollTo(0, 0);
 	}
 	render() {
-		let viewingTemplate = Util.context.getTemplateById(this.state.viewingTemplateId);
+		let viewingGame = Util.context.getGameById(this.state.viewingGameId);
 		let viewingComic = Util.array.any(this.state.comics)
-			? this.state.comics.find(comic => comic.templateId === this.state.viewingTemplateId)
+			? this.state.comics.find(comic => comic.gameId === this.state.viewingGameId)
 			: null;
 
 		return <div className="page-hall-of-fame">
@@ -54,8 +60,11 @@ export default class HallOfFamePage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Hall of Fame</h2>
-						<p>The highest rated comics for each template make it into the Hall of Fame. If your comic is rated higher than one of these comics, you'll steal their place!</p>
-						<TemplateNavigation toFn={Util.route.hallOfFame} templateId={this.state.viewingTemplateId} />
+						<p className="sm">The highest rated comics for each game make it into the Hall of Fame. If your comic is rated higher than one of these comics, you'll steal their place!</p>
+						{this.state.viewingGameId
+							? <GameNavigation toFn={Util.route.hallOfFame} gameId={this.state.viewingGameId} />
+							: null
+						}
 					</div>
 				</div>
 			</div>
@@ -65,11 +74,11 @@ export default class HallOfFamePage extends Component {
 					<div className="container">
 						<div className="row">
 							{!viewingComic
-								? <p className="empty-text">No one has made a comic using this template. If you make the first one, you'll (at least temporarily) be in the Hall of Fame!</p>
+								? <p className="empty-text">No one has made a comic in this game. If you make the first one, you'll (at least temporarily) be in the Hall of Fame!</p>
 								: null
 							}
-							{viewingTemplate
-								? <Comic key={this.state.viewingTemplateId} template={viewingTemplate.templateId} comic={viewingComic} />
+							{viewingGame
+								? <Comic key={this.state.viewingGameId} gameId={viewingGame.gameId} comic={viewingComic} />
 								: null
 							}
 						</div>
@@ -81,13 +90,24 @@ export default class HallOfFamePage extends Component {
 					<div className="row">
 						{this.state.isLoading 
 							? <div className="loader"></div>
-							: <div className="hall-of-fame-list">
-								{this.state.comics.map(comic => {
-									return <table className="hall-of-fame-list-item">
-										{/* {} todo comic.title, template.id, username etc */}
-									</table>
-								})}
-							</div>
+							: <table className="hall-of-fame-table">
+								<tbody>
+									{this.state.comics.map(comic => {
+										let game = Util.context.getGameById(comic.gameId);
+
+										return <tr key={comic.gameId} className="hall-of-fame-list-item">
+											{/* {} todo comic.title, game.id, username etc */}
+											<td>
+												<p className="sm"><b>Game {comic.gameId}</b>: <ComicTitle comic={comic} /> ({comic.rating})</p>
+												{/* <p className="sm">{game.description}</p> */}
+											</td>
+											<td className="cell-button">
+												<Button onClick={() => this.setViewingGameId(comic.gameId)} label="View" colour="black" />
+											</td>
+										</tr>
+									})}
+								</tbody>
+							</table>
 						}
 					</div>
 				</div>

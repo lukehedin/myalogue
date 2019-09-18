@@ -34,7 +34,7 @@ let db = {
 	
 	fn: Sequelize.fn,
 	op: Sequelize.Op,
-	
+
 	col: sequelize.col,
 
 	sync: () => {
@@ -89,20 +89,18 @@ let db = {
 		}
 	}),
 
-	Template: defineTable('Template', {
-		Title: Sequelize.STRING,
+	Game: defineTable('Game', {
+		Description: Sequelize.TEXT,
 		UnlockedAt: Sequelize.DATE,
 		ImageUrl: Sequelize.STRING
 	}),
 
-	TemplateDialogue: defineTable('TemplateDialogue', {
-		Placeholder: Sequelize.STRING,
+	GameDialogue: defineTable('GameDialogue', {
 		Ordinal: Sequelize.INTEGER,
 		PositionX: Sequelize.INTEGER,
 		PositionY: Sequelize.INTEGER,
 		SizeX: Sequelize.INTEGER,
-		SizeY: Sequelize.INTEGER,
-		Max: Sequelize.INTEGER
+		SizeY: Sequelize.INTEGER
 	})
 };
 
@@ -120,10 +118,10 @@ createOneToMany('Comic', 'ComicDialogue');
 createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
 
-createOneToMany('Template', 'TemplateDialogue');
-createOneToMany('Template', 'Comic');
+createOneToMany('Game', 'GameDialogue');
+createOneToMany('Game', 'Comic');
 
-createOneToMany('TemplateDialogue', 'ComicDialogue');
+createOneToMany('GameDialogue', 'ComicDialogue');
 
 createOneToMany('User', 'Comic');
 createOneToMany('User', 'ComicVote');

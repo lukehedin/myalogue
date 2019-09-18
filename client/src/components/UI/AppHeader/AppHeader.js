@@ -36,11 +36,17 @@ export default class AppHeader extends Component {
 						</ContextMenu>
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
+						
 						{Util.context.isAuthenticated()
-							? <div className="button-container">
-								<span>{Util.context.getUsername()}</span>
-								<Button size="sm" onClick={this.onLogout} colour="white" isHollow={true} label="Log out" />
-							</div>
+							? <ContextMenu className="app-menu" menuItems={[{
+								label: 'Profile',
+								to: Util.route.profile()
+							}, {
+								label: 'Log out',
+								onClick: this.onLogout
+							}]}>
+								<Button>{Util.context.getUsername()}</Button>
+							</ContextMenu>
 							: <div className="button-container">
 								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />
 								<Button size="sm" colour="pink" to={Util.route.register()} label="Register" />

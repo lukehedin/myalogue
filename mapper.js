@@ -18,7 +18,7 @@ const mapper = {
 		return {
 			comicId: dbComic.ComicId,
 			title: dbComic.Title || "Untitled",
-			templateId: dbComic.TemplateId,
+			gameId: dbComic.GameId,
 			isAnonymous: dbComic.IsAnonymous,
 			userId: dbComic.IsAnonymous ? null : dbComic.UserId,
 			rating: dbComic.Rating || 0,
@@ -35,33 +35,33 @@ const mapper = {
 	fromDbComicDialogue: (dbComicDialogue) => {
 		return {
 			// comicDialogueId: dbComicDialogue.ComicDialogueId,
-			templateDialogueId: dbComicDialogue.TemplateDialogueId,
+			gameDialogueId: dbComicDialogue.GameDialogueId,
 			value: dbComicDialogue.Value
 		}
 	},
 
-	fromDbTemplate: (dbTemplate) => {
+	fromDbGame: (dbGame) => {
 		return {
-			templateId: dbTemplate.TemplateId,
-			title: dbTemplate.Title,
-			imageUrl: dbTemplate.ImageUrl,
-			unlockedAt: dbTemplate.UnlockedAt,
-			templateDialogues: (dbTemplate.TemplateDialogues || [])
+			gameId: dbGame.GameId,
+			description: dbGame.Description,
+			imageUrl: dbGame.ImageUrl,
+			unlockedAt: dbGame.UnlockedAt,
+			gameDialogues: (dbGame.GameDialogues || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)
-				.map(mapper.fromDbTemplateDialogue)
+				.map(mapper.fromDbGameDialogue)
 		}
 	},
 
-	fromDbTemplateDialogue: (dbTemplateDialogue) => {
+	fromDbGameDialogue: (dbGameDialogue) => {
 		return {
-			templateDialogueId: dbTemplateDialogue.TemplateDialogueId,
-			placeholder: dbTemplateDialogue.Placeholder,
-			ordinal: dbTemplateDialogue.Ordinal,
-			positionX: dbTemplateDialogue.PositionX,
-			positionY: dbTemplateDialogue.PositionY,
-			sizeX: dbTemplateDialogue.SizeX,
-			sizeY: dbTemplateDialogue.SizeY,
-			max: dbTemplateDialogue.Max
+			gameDialogueId: dbGameDialogue.GameDialogueId,
+			placeholder: dbGameDialogue.Placeholder,
+			ordinal: dbGameDialogue.Ordinal,
+			positionX: dbGameDialogue.PositionX,
+			positionY: dbGameDialogue.PositionY,
+			sizeX: dbGameDialogue.SizeX,
+			sizeY: dbGameDialogue.SizeY,
+			max: dbGameDialogue.Max
 		};
 	}
 };

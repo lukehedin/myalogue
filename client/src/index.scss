@@ -179,9 +179,25 @@ body {
 			margin: 0;
 		}
 
-		.empty-text {
-			font-size: 14px;
-			color: $colour-grey-d;
+		p {
+			margin: $spacing-sm 0;
+			&.sm {
+				margin: $spacing-xs 0;
+				font-size: 12px;
+			}
+
+			&.empty-text {
+				font-size: 14px;
+				color: $colour-grey-d;
+			}
+
+			&:first-child {
+				margin-top: 0;
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
 		}
 
 		a, .dead-link {

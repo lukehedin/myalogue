@@ -18,12 +18,21 @@ export default function withForm(WrappedForm, formConfig) {
 				formData: formData,
 				formErrors: {},
 				formOverallError: null
-			}
+			};
+
+			this.formWrapperRef = React.createRef();
 
 			this.submitForm = this.submitForm.bind(this);
 			this.validateForm = this.validateForm.bind(this);
 			this.updateFormData = this.updateFormData.bind(this);
 			this.getField = this.getField.bind(this);
+		}
+		componentDidMount() {
+			let formWrapperEl = this.formWrapperRef.current;
+			if(formWrapperEl) {
+				let autoFocusEls = formWrapperEl.getElementsByClassName('auto-focus');
+				if(autoFocusEls[0]) autoFocusEls[0].focus();
+			}
 		}
 		setLoading(isLoading) {
 			this.setState({
@@ -94,6 +103,7 @@ export default function withForm(WrappedForm, formConfig) {
 					break;
 				default:
 					field = <input 
+						className={`${fieldConfig.isAutoFocus ? 'auto-focus' : ''}`}
 						placeholder={fieldConfig.placeholder || null}
 						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
 						type={fieldConfig.isPassword ? "password" : "text"} 
@@ -110,7 +120,7 @@ export default function withForm(WrappedForm, formConfig) {
 			</div>;
 		}
 		render() {
-			return <div className="form-wrapper">
+			return <div ref={this.formWrapperRef} className="form-wrapper">
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
 				<WrappedForm 
 					formData={this.state.formData} 

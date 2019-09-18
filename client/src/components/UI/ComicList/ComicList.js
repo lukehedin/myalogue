@@ -32,10 +32,10 @@ export default class ComicList extends Component {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.templateId !== prevProps.templateId;
+		return this.props.gameId !== prevProps.gameId;
 	}
-	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
-		if(isNewTemplateId) this.resetFetch(this.props.fetchDelay);
+	componentDidUpdate(prevProps, prevState, isNewGameId) {
+		if(isNewGameId) this.resetFetch(this.props.fetchDelay);
 	}
 	resetFetch(fetchDelay) {
 		clearTimeout(this.fetchTimeout);
@@ -68,7 +68,7 @@ export default class ComicList extends Component {
 
 			Util.api.post('/api/getComics', {
 				//Optional
-				templateId: this.props.templateId,
+				gameId: this.props.gameId,
 				authorUserId: this.props.authorUserId,
 
 				createdAtBefore: this.state.createdAtBefore,
@@ -124,7 +124,7 @@ export default class ComicList extends Component {
 							isSwitch={true}
 							onChange={this.setIncludeAnonymous} 
 							value={this.state.includeAnonymous}
-							label="Show anonymous authors"
+							label="Anonymous authors"
 						/>
 					}
 				</div>
