@@ -18,6 +18,7 @@ class Comic extends Component {
 	constructor(props){
 		super(props);
 
+		this.initialComic = this.props.comic;
 		this.game = Util.context.getGameById(this.props.gameId || this.props.comic.gameId);
 
 		this.state = {
@@ -95,7 +96,7 @@ class Comic extends Component {
 	}
 	startShareTimeout(e) {
 		let isComicViewOnly = this.state.comic.comicId;
-		if(isComicViewOnly) this.touchTimer = setTimeout(this.openShareComicModal, 500);
+		if(isComicViewOnly) this.touchTimer = setTimeout(() => this.openShareComicModal(), 500);
 
 		Util.selector.getRootScrollElement().addEventListener('scroll', this.cancelShareTimeout);
 	}
@@ -104,7 +105,9 @@ class Comic extends Component {
 		
 		Util.selector.getRootScrollElement().removeEventListener('scroll', this.cancelShareTimeout);
 	}
-	openShareComicModal(noUse){
+	openShareComicModal(callback){
+		if(this.state.isLoading) return;
+		
 		this.setState({
 			isLoading: true
 		});
@@ -129,6 +132,8 @@ class Comic extends Component {
 						comicDataUrl: dataUrl,
 						comic: this.state.comic
 					});
+
+					if(callback) callback();
 				})
 				.catch((error) => {
 					console.error('Could not generate comic image', error);
@@ -157,7 +162,17 @@ class Comic extends Component {
 						comic: comic,
 						isLoading: false,
 						isEditing: false,
-					}, this.openShareComicModal);
+					}, () => {
+						this.openShareComicModal(() => {
+							// After generating the share image and opening the modal,
+							// put the initial comic back if there was one
+							if(this.initialComic) {
+								this.setState({
+									comic: this.initialComic
+								})
+							}
+						});
+					});
 				}
 			});
 		}
@@ -170,9 +185,9 @@ class Comic extends Component {
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
 			<div className={`comic-content ${isComicViewOnly ? 'view-only no-select' : ''}`} 
 				ref={this.comicContentRef}
-				onTouchStart={isComicViewOnly ? this.startShareTimeout : null}
-				onTouchEnd={isComicViewOnly ? this.cancelShareTimeout : null}
-				onMouseDown={isComicViewOnly ? this.openShareComicModal : null}
+				onTouchStart={isComicViewOnly ? () => this.openShareComicModal() : null}
+				onTouchEnd={isComicViewOnly ? () => this.openShareComicModal() : null}
+				onMouseDown={isComicViewOnly ? () => this.openShareComicModal() : null}
 			>
 				<img alt="" onContextMenu={Util.event.absorb} className="comic-game" src={this.game.imageUrl} />
 				<img alt="" onContextMenu={Util.event.absorb} className="comic-frame" src={frame} />
@@ -246,7 +261,7 @@ class Comic extends Component {
 					? <div className="comic-lower-inner">
 						<S4YButton onClick={() => this.setIsEditing(true)} />
 						<div className="flex-spacer"></div>
-						<Button className="share-button" isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={this.openShareComicModal} />
+						<Button className="share-button" isHollow={true} colour="pink" label="Share" leftIcon={Util.icon.share} onClick={() => this.openShareComicModal()} />
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
 					: null

@@ -34,5 +34,16 @@
 			font-size: 1.5em;
 			margin: 0;
 		}
+
+		.user-name-button {
+			.button-label {
+				text-overflow: ellipsis;
+				overflow: hidden;
+				max-width: 150px;
+				@include overmd {
+					max-width: none;
+				}
+			}
+		}
 	}
 }

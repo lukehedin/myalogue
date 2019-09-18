@@ -70,10 +70,6 @@
 		@include colourizeButton($colour-black);
 	}
 
-	&.button-white {
-		@include colourizeButton($colour-white);
-	}
-
 	&.button-green {
 		@include colourizeButton($colour-green-b);
 	}
@@ -84,6 +80,20 @@
 
 	&.button-pink {
 		@include colourizeButton($colour-pink-a);
+	}
+
+	&.button-white {
+		@include colourizeButton($colour-white);
+		
+		&.button-hollow {
+			&:hover {
+				border-color: $colour-pink-a;
+				color: $colour-pink-a;
+				.button-icon {
+					@include svgColourStroke($colour-pink-a);
+				}
+			}
+		}
 	}
 	
 	//sizes

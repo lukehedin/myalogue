@@ -45,7 +45,7 @@ export default class AppHeader extends Component {
 								label: 'Log out',
 								onClick: this.onLogout
 							}]}>
-								<Button label={Util.context.getUsername()} isHollow={true} colour="white" />
+								<Button size="sm" className="user-name-button" label={Util.context.getUsername()} isHollow={true} colour="white" />
 							</ContextMenu>
 							: <div className="button-container">
 								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />

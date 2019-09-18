@@ -42,6 +42,13 @@ body {
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
+          body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 150px; }
+            @media (min-width: 768px) {
+              body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
+                max-width: none; } }
       body .app-container .app .app-footer {
         background: #080808;
         padding: 4px 0;
@@ -339,26 +346,6 @@ body {
           body .app-container .app .button.button-black.button-solid:hover {
             border-color: #171717;
             background: #171717; }
-        body .app-container .app .button.button-white.button-hollow {
-          color: #fff;
-          border-color: #fff;
-          background-color: transparent; }
-          body .app-container .app .button.button-white.button-hollow .button-icon path {
-            fill: #fff; }
-          body .app-container .app .button.button-white.button-hollow:hover {
-            border-color: #e6e6e6;
-            color: #e6e6e6; }
-            body .app-container .app .button.button-white.button-hollow:hover .button-icon path {
-              fill: #e6e6e6; }
-        body .app-container .app .button.button-white.button-solid {
-          color: #fff;
-          border-color: #fff;
-          background: #fff; }
-          body .app-container .app .button.button-white.button-solid .button-icon path {
-            fill: #fff; }
-          body .app-container .app .button.button-white.button-solid:hover {
-            border-color: white;
-            background: white; }
         body .app-container .app .button.button-green.button-hollow {
           color: #48AD92;
           border-color: #48AD92;
@@ -419,6 +406,31 @@ body {
           body .app-container .app .button.button-pink.button-solid:hover {
             border-color: #ff1f67;
             background: #ff1f67; }
+        body .app-container .app .button.button-white.button-hollow {
+          color: #fff;
+          border-color: #fff;
+          background-color: transparent; }
+          body .app-container .app .button.button-white.button-hollow .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-white.button-hollow:hover {
+            border-color: #e6e6e6;
+            color: #e6e6e6; }
+            body .app-container .app .button.button-white.button-hollow:hover .button-icon path {
+              fill: #e6e6e6; }
+        body .app-container .app .button.button-white.button-solid {
+          color: #fff;
+          border-color: #fff;
+          background: #fff; }
+          body .app-container .app .button.button-white.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-white.button-solid:hover {
+            border-color: white;
+            background: white; }
+        body .app-container .app .button.button-white.button-hollow:hover {
+          border-color: #ff0052;
+          color: #ff0052; }
+          body .app-container .app .button.button-white.button-hollow:hover .button-icon path {
+            fill: #ff0052; }
         body .app-container .app .button.button-sm {
           padding: 4px 8px;
           font-size: 14px; }
