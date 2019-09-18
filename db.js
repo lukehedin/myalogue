@@ -14,7 +14,14 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	}
 });
 
-const defineTable = (name, attributes, options = {}) => {
+const defineTable = (name, attributes, isParanoid = false) => {
+	let options = isParanoid
+		? {
+			deletedAt: 'DeletedAt',
+			paranoid: true
+		}
+		: {};
+	
 	return sequelize.define(name, {
 		[`${name}Id`]: { //Primary key
 			type: Sequelize.INTEGER,
@@ -59,7 +66,7 @@ let db = {
 			defaultValue: 0,
             allowNull: false
 		}
-	}),
+	}, true),
 	
 	ComicDialogue: defineTable('ComicDialogue', {
 		Value: Sequelize.STRING,
@@ -72,6 +79,11 @@ let db = {
 
 	ComicComment: defineTable('ComicComment', {
 		Value: Sequelize.TEXT
+	}, true),
+
+	Log: defineTable('Log', {
+		Type: Sequelize.STRING,
+		Message: Sequelize.TEXT
 	}),
 
 	User: defineTable('User', {
@@ -88,13 +100,13 @@ let db = {
 			allowNull: false,
 			defaultValue: false
 		}
-	}),
+	}, true),
 
 	Game: defineTable('Game', {
 		Description: Sequelize.TEXT,
 		UnlockedAt: Sequelize.DATE,
 		ImageUrl: Sequelize.STRING
-	}),
+	}, true),
 
 	GameDialogue: defineTable('GameDialogue', {
 		Ordinal: Sequelize.INTEGER,

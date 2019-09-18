@@ -11,10 +11,22 @@ const bcrypt = require('bcrypt');
 
 const TOKEN_RESET_HOURS = 3;
 
-const catchError = (res, error) => {
-	//TODO db log
-	console.log(error);
-	res.json({ error: error });
+const catchError = (res, error, db = null) => {
+	// If db param specified, the error is treated as a serious error
+	// It will be logged, and the error to the client will be generic
+
+	if(db) {
+		db.Log.create({
+			Type: '500 ERROR',
+			Message: error
+		});
+	}
+
+	res.json({ 
+		error: db 
+			? 'Sorry, something went wrong. Please try again later.' 
+			: error
+	});
 };
 
 const isEmailAcceptable = (email, callback) => {
@@ -134,7 +146,7 @@ const routes = {
 							});
 						}
 					})
-					.catch(error => catchError(res, error));
+					.catch(error => catchError(res, error, db));
 			}
 		},
 	
@@ -223,9 +235,10 @@ const routes = {
 											mailer.sendVerificationEmail(email, username, verificationToken);
 											res.json({ success: true });
 										})
-										.catch(error => catchError(res, error));
+										.catch(error => catchError(res, error, db));
 									} else {
-										catchError(res, 'Invalid password'); //don't give password error details
+										//don't give password error details
+										catchError(res, 'Invalid password supplied.', db);
 									}
 								});
 							} else {
@@ -238,9 +251,9 @@ const routes = {
 							: 'Username is already in use. Please choose another username.');
 					}
 				})
-				.catch(error => catchError(res, error));
+				.catch(error => catchError(res, error, db));
 			} else {
-				catchError(res, 'Something went wrong. Please refresh and try again.');
+				catchError(res, 'Invalid email or username supplied.', db);
 			}
 		},
 
@@ -301,7 +314,7 @@ const routes = {
 					// mailer.sendForgotPasswordNoAccountEmail(email);
 				}
 			})
-			.catch(error => catchError(res, error));
+			.catch(error => catchError(res, error, db));
 
 			//Always say the same thing, even if it didn't work
 			res.json({ success: true });
@@ -337,18 +350,19 @@ const routes = {
 											res.json(authResult);
 										});
 									})
-									.catch(error => catchError(res, error));
+									.catch(error => catchError(res, error, db));
 							} else {
-								catchError(res, 'Invalid password'); //don't give password error details
+								 //don't give password error details
+								catchError(res, 'Invalid password supplied.', db);
 							}
 						});
 					} else {
 						catchError(res, 'This password reset request is invalid or has expired.');
 					}
 				})
-				.catch(error => catchError(res, error));
+				.catch(error => catchError(res, error, db));
 			} else {
-				catchError(res, 'Password request failed');
+				catchError(res, 'This password reset request is invalid or has expired.');
 			}
 		},
 
@@ -366,10 +380,10 @@ const routes = {
 				if(dbComic) {
 					res.json(mapper.fromDbComic(dbComic));
 				} else {
-					catchError(res, 'Comic not found.');
+					catchError(res, 'Comic not found.', db);
 				}
 			})
-			.catch(error => catchError(res, error));
+			.catch(error => catchError(res, error, db));
 		},
 
 		getHallOfFameComics: (req, res, db) => {
@@ -411,12 +425,12 @@ const routes = {
 						include: getDbComicInclude(db, userId),
 					})
 					.then(dbComics => res.json(dbComics.map(mapper.fromDbComic)))
-					.catch(error => catchError(res, error));
+					.catch(error => catchError(res, error, db));
 					
 				})
-				.catch(error => catchError(res, error));
+				.catch(error => catchError(res, error, db));
 			})
-			.catch(error => catchError(res, error));
+			.catch(error => catchError(res, error, db));
 		},
 		
 		getComics: (req, res, db) => {
@@ -478,7 +492,7 @@ const routes = {
 				include: getDbComicInclude(db, userId)
 			})
 			.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
-			.catch(error => catchError(res, error));
+			.catch(error => catchError(res, error, db));
 		},
 
 		submitComic: (req, res, db) => {
@@ -510,9 +524,9 @@ const routes = {
 				.then(dbCreatedComic => {
 					res.json(mapper.fromDbComic(dbCreatedComic))
 				})
-				.catch(error => catchError(res, error));
+				.catch(error => catchError(res, error, db));
 			} else {
-				catchError(res, 'Invalid comic data supplied.');
+				catchError(res, 'Invalid comic data supplied.', db);
 			}
 		},
 
@@ -530,9 +544,9 @@ const routes = {
 			.then(dbUser => {
 				dbUser
 					? res.json(mapper.fromDbUser(dbUser))
-					: catchError(res, "User not found")
+					: catchError(res, 'User not found.')
 			})
-			.catch(error => catchError(res, error));
+			.catch(error => catchError(res, error, db));
 		}
 	},
 
@@ -564,7 +578,7 @@ const routes = {
 					}
 				});
 			} else {
-				catchError(res, 'Something went wrong. Please refresh and try again.');
+				catchError(res, 'Invalid username supplied.', db);
 			}
 		},
 
@@ -582,7 +596,7 @@ const routes = {
 
 			//Value can only be 1, 0, -1
 			if(value > 1 || value < -1) {
-				catchError(res, 'Invalid vote value supplied.');
+				catchError(res, 'Invalid vote value supplied.', db);
 			} else {
 				db.Comic.findOne({
 					where: {
@@ -638,10 +652,10 @@ const routes = {
 						res.json({ success: true });
 
 					} else {
-						catchError(res, 'Invalid comic ID.');
+						catchError(res, 'Invalid comic ID supplied.', db);
 					}
 				})
-				.catch(error => catchError(res, error));
+				.catch(error => catchError(res, error, db));
 			}
 		},
 	
