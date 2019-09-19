@@ -15,10 +15,12 @@ const catchError = (res, error, db = null) => {
 	// If db param specified, the error is treated as a serious error
 	// It will be logged, and the error to the client will be generic
 
+	console.log(error);
+
 	if(db) {
 		db.Log.create({
 			Type: '500 ERROR',
-			Message: error
+			Message: error.toString()
 		});
 	}
 
@@ -41,11 +43,11 @@ const isEmailAcceptable = (email, callback) => {
 };
 
 //The object sent to a successfully authenticated user
-const getAuthResult = (userId, username, callback) => {
-	auth.getJwtToken(userId, username, (token) => {
+const getAuthResult = (dbUser, callback) => {
+	auth.getJwtToken(dbUser.UserId, (token) => {
 		let result = {
-			username: username,
-			userId: userId,
+			username: dbUser.Username,
+			userId: dbUser.UserId,
 			token
 		};
 
@@ -62,7 +64,7 @@ const getDbComicInclude = (db, userId) => {
 		model: db.User,
 		as: 'User'
 	}];
-
+	
 	if(userId) {
 		//Include the user's current vote on the comic
 		include.push({
@@ -93,7 +95,6 @@ const routes = {
 	public: {
 		authenticate: (req, res, db) => {
 			let userId = req.userId;
-			let username = req.username;
 			
 			if(process.env.IS_UNDER_MAINTENANCE === 'true') {
 				res.json({
@@ -124,21 +125,27 @@ const routes = {
 						if(process.env.NODE_ENV === 'development') result.isDev = true;
 	
 						if(userId) {
-							//Record the lastloginat - no need to await
-							db.User.update({
-								LastLoginAt: new Date()
-							}, {
+							db.User.findOne({
 								where: {
 									UserId: userId
 								}
-							});
+							})
+							.then(dbUser => {
+								if(dbUser) {
+									//Record the lastloginat - no need to await
+									dbUser.LastLoginAt = new Date();
+									dbUser.save();
 
-							//Refresh the token after a successful authenticate
-							getAuthResult(userId, username, authResult => {
-								res.json({
-									...result,
-									...authResult
-								});
+									//Refresh the token after a successful authenticate
+									getAuthResult(dbUser, authResult => {
+										res.json({
+											...result,
+											...authResult
+										});
+									});
+								} else {
+									catchError(res, 'Invalid userId in token', db);
+								}
 							});
 						} else {
 							res.json({
@@ -178,7 +185,7 @@ const routes = {
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
-								getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+								getAuthResult(dbUser, authResult => {
 									res.json(authResult);
 								});
 							} else {
@@ -270,7 +277,7 @@ const routes = {
 					dbUser.VerificationToken = null;
 					dbUser.save();
 
-					getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+					getAuthResult(dbUser, authResult => {
 						res.json(authResult);
 					});
 				} else {
@@ -346,7 +353,7 @@ const routes = {
 								dbUser.save()
 									.then(() => {
 										//Wait for this save in case it fails
-										getAuthResult(dbUser.UserId, dbUser.Username, authResult => {
+										getAuthResult(dbUser, authResult => {
 											res.json(authResult);
 										});
 									})

@@ -17,10 +17,9 @@ const auth = {
 		}
 	},
 	
-	getJwtToken: (userId, username, callback) => {
+	getJwtToken: (userId, callback) => {
 		jwt.sign({
-			userId,
-			username
+			userId
 		}, process.env.JWT_SECRET_KEY, {
 			expiresIn: 604800 //1 week
 		}, (err, token) => {

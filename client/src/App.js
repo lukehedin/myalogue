@@ -50,11 +50,18 @@ class App extends Component {
 				if(!result.error && !result.isUnderMaintenance) {
 					Util.context.set(result);
 					Util.analytics.page();
+				} else {
+					//A failed authenticate should clear context
+					if(result.error) Util.context.clear();
+					
+					//If errored or isUnderMaintenance, show the maintenance screen
+					this.setState({
+						isUnderMaintenance: true
+					});
 				}
 
 				this.setState({
-					isLoading: false,
-					isUnderMaintenance: result.isUnderMaintenance
+					isLoading: false
 				});
 			});
 	}

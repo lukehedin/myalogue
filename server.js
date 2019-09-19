@@ -34,7 +34,6 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 		db.sync();
 	}, 10000);
 } else {
-
 	app.use((req, res, next) => {
 		let token = req.headers['x-access-token'] || req.headers['authorization'];
 		token = token ? token.slice(7, token.length).trimLeft() : null;
@@ -43,7 +42,6 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 			jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
 				if(decodedToken) {
 					req.userId = decodedToken.userId;
-					req.username = decodedToken.username;
 				}
 				next();
 			});
@@ -64,6 +62,7 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 	Object.keys(routes.private).forEach(route => {
 		app.post(`/api/${route}`, (req, res) => {
 			if(req.userId) {
+				//The userId comes from the token, so sending up another one isn't an option
 				routes.private[route](req, res, db);
 			} else {
 				res.status(500).send({ error: 'Authentication failed. Please log in.' });

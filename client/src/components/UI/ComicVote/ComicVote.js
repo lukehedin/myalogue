@@ -17,7 +17,7 @@ export default class ComicVote extends Component {
 	setValue(value) {
 		this.setState({
 			value: value,
-			rating: this.state.rating + (value - this.state.rating)
+			rating: this.state.rating + (value - this.state.value)
 		});
 
 		Util.analytics.event(`Comic`, `Comic rated`);
@@ -44,9 +44,9 @@ export default class ComicVote extends Component {
 			/>
 		}
 		
-		return <div className="comic-vote button-container">
+		return <div className="comic-vote">
 			{getVoteButton(-1)}
-			<h4>{this.state.rating}</h4>
+			<h4 className={`rating ${this.state.value > 0 ? 'positive' : this.state.value < 0 ? 'negative' : ''}`}>{this.state.rating}</h4>
 			{getVoteButton(1)}
 		</div>
 	}

@@ -1,0 +1,18 @@
+.comic-vote {
+	display: flex;
+	flex-direction: row;
+    align-items: center;
+
+	.rating {
+		margin: 0 $spacing-xxs;
+		font-weight: bold;
+		width: 26px;
+
+		&.positive {
+			color: $colour-green-a;
+		}
+		&.negative {
+			color: $colour-red-a;
+		}
+	}
+}

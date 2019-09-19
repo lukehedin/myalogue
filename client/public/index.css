@@ -91,6 +91,18 @@ body {
             min-height: 40vh; }
             body .app-container .app .comic-list .comic-list-inner .comic-list-bottom .button-container {
               justify-content: center; }
+      body .app-container .app .comic-vote {
+        display: flex;
+        flex-direction: row;
+        align-items: center; }
+        body .app-container .app .comic-vote .rating {
+          margin: 0 4px;
+          font-weight: bold;
+          width: 26px; }
+          body .app-container .app .comic-vote .rating.positive {
+            color: #3E8377; }
+          body .app-container .app .comic-vote .rating.negative {
+            color: #f02100; }
       body .app-container .app .comic {
         position: relative;
         border: 1px solid #373737;
@@ -166,7 +178,7 @@ body {
             cursor: text;
             border: 1px solid #969696; }
           body .app-container .app .comic-content .dialogue.edit-invalid {
-            border: 1px solid #f0002d; }
+            border: 1px solid #f02100; }
           body .app-container .app .comic-content .dialogue > * {
             max-height: 100%;
             width: 100%;
@@ -283,7 +295,7 @@ body {
               font-size: 12px;
               margin-bottom: 4px; }
             body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
-              border-color: #f0002d; }
+              border-color: #f02100; }
           body .app-container .app .form-wrapper form .form-message {
             text-align: center; }
             body .app-container .app .form-wrapper form .form-message > * {
@@ -293,7 +305,7 @@ body {
             margin-top: 16px; }
         body .app-container .app .form-wrapper .field-error {
           margin-top: 4px;
-          color: #f0002d;
+          color: #f02100;
           font-size: 12px;
           text-align: left; }
           body .app-container .app .form-wrapper .field-error.overall-error {
@@ -364,25 +376,25 @@ body {
             border-color: #59baa0;
             background: #59baa0; }
         body .app-container .app .button.button-red.button-hollow {
-          color: #f0002d;
-          border-color: #f0002d;
+          color: #f02100;
+          border-color: #f02100;
           background-color: transparent; }
           body .app-container .app .button.button-red.button-hollow .button-icon path {
-            fill: #f0002d; }
+            fill: #f02100; }
           body .app-container .app .button.button-red.button-hollow:hover {
-            border-color: #bd0023;
-            color: #bd0023; }
+            border-color: #bd1a00;
+            color: #bd1a00; }
             body .app-container .app .button.button-red.button-hollow:hover .button-icon path {
-              fill: #bd0023; }
+              fill: #bd1a00; }
         body .app-container .app .button.button-red.button-solid {
           color: #fff;
-          border-color: #f0002d;
-          background: #f0002d; }
+          border-color: #f02100;
+          background: #f02100; }
           body .app-container .app .button.button-red.button-solid .button-icon path {
             fill: #fff; }
           body .app-container .app .button.button-red.button-solid:hover {
-            border-color: #ff103c;
-            background: #ff103c; }
+            border-color: #ff3110;
+            background: #ff3110; }
         body .app-container .app .button.button-pink.button-hollow {
           color: #ff0052;
           border-color: #ff0052;
@@ -830,6 +842,7 @@ body {
         font-size: 12px; }
       body .app-container p.empty-text {
         font-size: 14px;
+        text-align: center;
         color: #373737; }
       body .app-container p:first-child {
         margin-top: 0; }
