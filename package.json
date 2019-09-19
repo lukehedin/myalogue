@@ -1,5 +1,5 @@
 {
-  "name": "myalogue",
+  "name": "Speak 4 Yourself",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -12,7 +12,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run watch-scss\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "author": "Luke Hedin",
+  "author": "imdoodlir",
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
@@ -21,6 +21,7 @@
     "concurrently": "^3.5.1",
     "dotenv": "^8.1.0",
     "express": "^4.16.2",
+    "express-sslify": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",

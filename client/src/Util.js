@@ -206,7 +206,7 @@ const Util = {
 	},
 
 	route: {
-		getHost: () =>  `s4ycomic.com`,// window.location.host, //prevent heroku link
+		getHost: () =>  window.location.host,
 		getCurrent: () => window.location.pathname,
 		isCurrently: (route) => Util.route.getCurrent() === route,
 

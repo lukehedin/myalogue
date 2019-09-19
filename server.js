@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-
-const auth = require('./auth');
+const enforce = require('express-sslify');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -10,6 +9,9 @@ app.use(bodyParser.json());
 
 if(process.env.NODE_ENV === 'production') {
 	//PRODUCTION ENV
+
+	// Use enforce.HTTPS({ trustProtoHeader: true }) because we are behind Heroku (a load balancer)
+	app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 	//Serve static assets if in prod
 	app.use(express.static('client/build'));
