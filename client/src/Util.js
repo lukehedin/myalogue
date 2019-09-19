@@ -68,9 +68,9 @@ const Util = {
 
 	analytics: {
 		init: () => {
-			ReactGA.initialize('UA-92026212-2');
+			ReactGA.initialize('UA-92026212-3');
 
-			 //This won't happen because isDev aint set yet
+			//This won't happen because isDev aint set yet
 			if(Util.context.isDev()) console.log(`GA:INIT`);
 		},
 
