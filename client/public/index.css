@@ -711,6 +711,8 @@ body {
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
+      body .app-container .app .page-error-404 .button-container {
+        justify-content: center; }
       body .app-container .app [class^="page-"] {
         position: relative; }
 
