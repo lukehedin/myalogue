@@ -38,7 +38,7 @@ export default class AppHeader extends Component {
 						<div className="flex-spacer"></div>
 						
 						{Util.context.isAuthenticated()
-							? <ContextMenu className="app-menu" menuItems={[{
+							? <ContextMenu align="right" className="app-menu" menuItems={[{
 								label: 'Profile',
 								to: Util.route.profile()
 							}, {

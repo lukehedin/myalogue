@@ -15,16 +15,18 @@ export default class ContextMenu extends Component {
 	toggleIsMenuVisible(e) {
 		let isMenuVisible = !this.state.isMenuVisible;
 
-		this.setState({
-			isMenuVisible
-		});
-
 		if(isMenuVisible) {
 			window.addEventListener('click', this.toggleIsMenuVisible);
-			Util.event.absorb(e);
 		} else {
 			window.removeEventListener('click', this.toggleIsMenuVisible);
 		}
+
+		//Prevents immediate close
+		setTimeout(() => {
+			this.setState({
+				isMenuVisible
+			});
+		}, 50);
 	}
 	render() {
 		return <div className={`context-menu ${this.props.className || ''} ${this.props.align || 'left'}`}>

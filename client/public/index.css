@@ -637,7 +637,6 @@ body {
         body .app-container .app .context-menu .menu-items {
           position: absolute;
           z-index: 5;
-          left: 0;
           top: 100%;
           background-color: #fff;
           border: 1px solid #c8c8c8;
@@ -662,6 +661,10 @@ body {
             body .app-container .app .context-menu .menu-items .menu-item:hover {
               color: #ff0052;
               text-decoration: none; }
+        body .app-container .app .context-menu.left .menu-items {
+          left: 0; }
+        body .app-container .app .context-menu.right .menu-items {
+          right: 0; }
       body .app-container .app .share-comic-panel {
         display: flex;
         flex-direction: column;

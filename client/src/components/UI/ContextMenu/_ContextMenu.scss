@@ -5,7 +5,6 @@
 	.menu-items {
 		position: absolute;
 		z-index: 5;
-		left: 0;
 		top: 100%;
 		background-color: $colour-white;
 		border: 1px solid $colour-grey-b;
@@ -34,4 +33,15 @@
 			}
 		}
 	}	
+
+	&.left {
+		.menu-items {
+			left: 0;
+		}
+	}
+	&.right {
+		.menu-items {
+			right: 0;
+		}
+	}
 }
