@@ -99,21 +99,19 @@ body {
           margin: 0 4px;
           font-weight: bold;
           width: 26px; }
-          body .app-container .app .comic-vote .rating.positive {
-            color: #3E8377; }
-          body .app-container .app .comic-vote .rating.negative {
-            color: #f02100; }
+          body .app-container .app .comic-vote .rating.rated {
+            color: #ff0052; }
       body .app-container .app .comic {
         position: relative;
-        border: 1px solid #373737;
         background-color: #fff;
-        border-radius: 2px;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        overflow: hidden;
         -webkit-animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
         body .app-container .app .comic .comic-lower {
-          padding: 8px;
+          padding: 4px 8px;
           display: flex;
           flex-direction: column;
           justify-content: stretch; }
@@ -131,7 +129,23 @@ body {
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
-            align-items: center; }
+            align-items: flex-start; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message {
+              margin-left: 4px;
+              margin-top: 4px;
+              display: flex;
+              flex-direction: row; }
+              @media (min-width: 576px) {
+                body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message {
+                  margin-left: 16px; } }
+              body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message img {
+                width: 40px; }
+              body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message h6 {
+                color: #ff0052;
+                display: inline;
+                max-width: 80px;
+                text-align: left;
+                margin-left: 4px; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
 
@@ -224,8 +238,8 @@ body {
           line-height: calc(40px * 0.28);
           font-size: calc(36px * 0.28); }
         body .app-container .app .comic-content .comic-footer {
-          font-size: calc(18px * 0.28);
-          line-height: calc(18px * 0.28);
+          font-size: calc(22px * 0.28);
+          line-height: calc(24px * 0.28);
           padding: 0 calc(8px * 0.28); }
         @media (min-width: 576px) {
           body .app-container .app .comic-content {
@@ -235,8 +249,8 @@ body {
               line-height: calc(40px * 0.36);
               font-size: calc(36px * 0.36); }
             body .app-container .app .comic-content .comic-footer {
-              font-size: calc(18px * 0.36);
-              line-height: calc(18px * 0.36);
+              font-size: calc(22px * 0.36);
+              line-height: calc(24px * 0.36);
               padding: 0 calc(8px * 0.36); } }
         @media (min-width: 768px) {
           body .app-container .app .comic-content {
@@ -246,8 +260,8 @@ body {
               line-height: calc(40px * 0.44);
               font-size: calc(36px * 0.44); }
             body .app-container .app .comic-content .comic-footer {
-              font-size: calc(18px * 0.44);
-              line-height: calc(18px * 0.44);
+              font-size: calc(22px * 0.44);
+              line-height: calc(24px * 0.44);
               padding: 0 calc(8px * 0.44); } }
         @media (min-width: 992px) {
           body .app-container .app .comic-content {
@@ -257,8 +271,8 @@ body {
               line-height: calc(40px * 0.5);
               font-size: calc(36px * 0.5); }
             body .app-container .app .comic-content .comic-footer {
-              font-size: calc(18px * 0.5);
-              line-height: calc(18px * 0.5);
+              font-size: calc(22px * 0.5);
+              line-height: calc(24px * 0.5);
               padding: 0 calc(8px * 0.5); } }
         body .app-container .app .comic-content.for-image-capture {
           z-index: -1;
@@ -268,8 +282,8 @@ body {
             line-height: calc(40px * 0.5);
             font-size: calc(36px * 0.5); }
           body .app-container .app .comic-content.for-image-capture .comic-footer {
-            font-size: calc(18px * 0.5);
-            line-height: calc(18px * 0.5);
+            font-size: calc(22px * 0.5);
+            line-height: calc(24px * 0.5);
             padding: 0 calc(8px * 0.5); }
       body .app-container .app .form-wrapper {
         position: relative;

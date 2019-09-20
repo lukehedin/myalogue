@@ -8,11 +8,8 @@
 		font-weight: bold;
 		width: 26px;
 
-		&.positive {
-			color: $colour-green-a;
-		}
-		&.negative {
-			color: $colour-red-a;
+		&.rated {
+			color: $colour-pink-a;
 		}
 	}
 }

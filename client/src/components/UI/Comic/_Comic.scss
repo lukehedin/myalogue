@@ -1,11 +1,11 @@
 .comic {
 	position: relative;
-	border: 1px solid $colour-grey-d;
 	background-color: $colour-white;
-	@include borderRadius(2px);
+	@include borderRadius(4px);
+	overflow: hidden;
 
 	.comic-lower {
-		padding: $spacing-xs;
+		padding: $spacing-xxs $spacing-xs;
 		display: flex;
 		flex-direction: column;
 		justify-content: stretch;
@@ -32,7 +32,29 @@
 		.comic-lower-inner {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
+			align-items: flex-start;
+			
+			.do-better-message {
+				margin-left: $spacing-xxs;
+				@include oversm {
+					margin-left: $spacing-sm;
+				}
+				margin-top: $spacing-xxs;
+				display: flex;
+				flex-direction: row;
+	
+				img {
+					width: 40px;
+				}
+	
+				h6 {
+					color: $colour-pink-a;
+					display: inline;
+					max-width: 80px;
+					text-align: left;
+					margin-left: $spacing-xxs;
+				}
+			}
 		}
 
 		&:empty {
@@ -145,7 +167,8 @@
 	$comic-dialogue-line-height: 40px;
 	$comic-dialogue-font-size: 36px;
 
-	$comic-footer-font-size: 18px;
+	$comic-footer-line-height: 24px;
+	$comic-footer-font-size: 22px;
 	$comic-footer-margin: 8px;
 
 	$comic-scale-xs: 0.28;
@@ -165,7 +188,7 @@
 		
 		.comic-footer {
 			font-size: calc(#{$comic-footer-font-size} * #{$comic-scale});
-			line-height: calc(#{$comic-footer-font-size} * #{$comic-scale});
+			line-height: calc(#{$comic-footer-line-height} * #{$comic-scale});
 			padding: 0 calc(#{$comic-footer-margin} * #{$comic-scale});
 		}
 	}

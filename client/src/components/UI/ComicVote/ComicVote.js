@@ -32,8 +32,8 @@ export default class ComicVote extends Component {
 		let getVoteButton = (value) => {
 			return <Button 
 				leftIcon={value > 0 ? Util.icon.like : Util.icon.dislike} 
-				isHollow={this.state.value !== value} 
-				colour={this.state.value !== value ? 'black' : (value > 0 ? 'green' : 'red')} 
+				isHollow={true} 
+				colour={this.state.value !== value ? 'black' : (value !== 0 ? 'pink' : '')} 
 				to={isLoggedIn
 					? null
 					: Util.route.register()
@@ -46,7 +46,7 @@ export default class ComicVote extends Component {
 		
 		return <div className="comic-vote">
 			{getVoteButton(-1)}
-			<h4 className={`rating ${this.state.value > 0 ? 'positive' : this.state.value < 0 ? 'negative' : ''}`}>{this.state.rating}</h4>
+			<h4 className={`rating ${this.state.value !== 0 ? 'rated' : ''}`}>{this.state.rating}</h4>
 			{getVoteButton(1)}
 		</div>
 	}

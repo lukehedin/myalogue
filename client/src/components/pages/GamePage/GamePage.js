@@ -94,7 +94,7 @@ export default class GamePage extends Component {
 										? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can make a new one right now!</p>
 										: null
 									}
-									<Comic key={this.state.gameId} gameId={this.state.gameId} comic={this.state.comic} />
+									<Comic key={this.state.gameId} gameId={this.state.gameId} comic={this.state.comic} showDoBetterMessage={!!this.state.comic} />
 								</div>
 							</div>
 						</div>

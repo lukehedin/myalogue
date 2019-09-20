@@ -5,7 +5,8 @@ import Textarea from 'react-textarea-autosize';
 import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
 
-import frame from './frame.png';
+import frame from './frame_2.png';
+import arrow from './arrow.png';
 
 import S4YButton from '../S4YButton/S4YButton';
 import Button from '../Button/Button';
@@ -266,7 +267,16 @@ class Comic extends Component {
 				}
 				{isComicViewOnly
 					? <div className="comic-lower-inner">
-						<S4YButton onClick={this.startEdit} />
+						<div>
+							<S4YButton onClick={this.startEdit} />
+							{this.props.showDoBetterMessage
+								? <div className="do-better-message">
+									<img alt="" src={arrow} />
+									<h6>Think you can do better?</h6>
+								</div>
+								: null
+							}
+						</div>
 						<div className="flex-spacer"></div>
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
