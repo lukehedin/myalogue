@@ -65,10 +65,11 @@ export default class ComicList extends Component {
 		
 		this.fetchTimeout = setTimeout(() => {
 			let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
+			let gameId = this.props.gameId;
 
 			Util.api.post('/api/getComics', {
 				//Optional
-				gameId: this.props.gameId,
+				gameId: gameId,
 				authorUserId: this.props.authorUserId,
 
 				createdAtBefore: this.state.createdAtBefore,
@@ -82,17 +83,21 @@ export default class ComicList extends Component {
 			})
 			.then(result => {
 				if(!result.error) {
-					if(this.props.skipTopComic) {
-						let topComic = Util.context.getTopComicByGameId(this.props.gameId);
-						if(topComic) result = result.filter(comic => comic.comicId !== topComic.comicId);
+					//There is a reasonable chance the selected game has changed since the request began
+					//There will be another request lagging behind, so don't do anything and wait for that one
+					if(gameId === this.props.gameId) {
+						if(this.props.skipTopComic) {
+							let topComic = Util.context.getTopComicByGameId(gameId);
+							if(topComic) result = result.filter(comic => comic.comicId !== topComic.comicId);
+						}
+	
+						this.setState({
+							comics: [...this.state.comics, ...result],
+							isLoading: false,
+							offset: this.state.offset + this.state.limit,
+							isNoMore: result.length < this.state.limit
+						});
 					}
-
-					this.setState({
-						comics: [...this.state.comics, ...result],
-						isLoading: false,
-						offset: this.state.offset + this.state.limit,
-						isNoMore: result.length < this.state.limit
-					});
 				}
 			});
 		}, fetchDelay || 0);
