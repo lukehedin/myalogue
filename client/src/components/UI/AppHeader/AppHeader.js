@@ -26,8 +26,8 @@ export default class AppHeader extends Component {
 							label: 'Home',
 							to: Util.route.home()
 						}, {
-							label: 'Hall of Fame',
-							to: Util.route.hallOfFame()
+							label: 'Top comics',
+							to: Util.route.topComics()
 						}, {
 							label: 'About',
 							to: Util.route.about()

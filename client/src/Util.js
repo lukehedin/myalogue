@@ -60,10 +60,13 @@ const Util = {
 		getUsername: () => Util.context._username,
 
 		//Refdata
-		getGames: () => Util.context._referenceData.games(),
+		getGames: () => Util.context._referenceData.games,
 		getGameById: (gameId) => Util.context._referenceData.games.find(game => gameId === game.gameId),
 		getLatestGame: () => Util.context._referenceData.games[Util.context._referenceData.games.length - 1],
-		getLatestGameId: () => Util.context.getLatestGame().gameId
+		getLatestGameId: () => Util.context.getLatestGame().gameId,
+
+		getTopComics: () => Util.context._referenceData.topComics,
+		getTopComicByGameId: (gameId) => Util.context._referenceData.topComics.find(comic => comic.gameId === gameId)
 	},
 
 	analytics: {
@@ -217,7 +220,7 @@ const Util = {
 				? `/game/${gameId}/comic/${comicId}` 
 				: `/game/${gameId}`;
 		},
-		hallOfFame: (gameId) => gameId ? `/hall-of-fame/${gameId}` : `/hall-of-fame`,
+		topComics: () => `/top-comics`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
 		profile: (userId) => userId ? `/profile/${userId}` : `/profile`,

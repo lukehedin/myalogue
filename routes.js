@@ -109,13 +109,46 @@ const routes = {
 							as: 'GameDialogues'
 						}],
 						order: [[ 'GameId', 'DESC' ]]
+					}),
+					new Promise((resolve, reject) => {
+						db.Comic.findAll({
+							// a newer comic tie will beat an older comic (it got more ratings in shorter time)
+							order: [[ 'CreatedAt', 'DESC' ]]
+						})
+						.then(dbComics => {
+							//Find the top comics
+							let topComics = {};
+							dbComics.forEach(dbComic => {
+								let currentTop = topComics[dbComic.GameId];
+								if(!currentTop || (currentTop && currentTop.Rating <= dbComic.Rating)) {
+									topComics[dbComic.GameId] = dbComic;
+								}
+							});
+							let topComicIds = Object.keys(topComics).map(key => topComics[key].ComicId);
+
+							//Get these ones WITH includes
+							db.Comic.findAll({
+								where: {
+									ComicId: {
+										[db.op.in]: topComicIds
+									}
+								},
+								include: getDbComicInclude(db, userId),
+							})
+							.then(dbComicsWithInclude => resolve(dbComicsWithInclude))
+							.catch(error => reject(error));
+						})
+						.catch(error => catchError(res, error, db));
 					})
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbGames]) => {
+					.then(([dbGames, dbTopComics]) => {
 						let result = {
 							referenceData: {
+								topComics: dbTopComics
+									.sort((c1, c2) => c1.GameId - c2.GameId)
+									.map(mapper.fromDbComic),
 								games: dbGames
 									.sort((t1, t2) => t1.GameId - t2.GameId)
 									.map(mapper.fromDbGame)
@@ -389,53 +422,6 @@ const routes = {
 				} else {
 					catchError(res, 'Comic not found.', db);
 				}
-			})
-			.catch(error => catchError(res, error, db));
-		},
-
-		getHallOfFameComics: (req, res, db) => {
-			let userId = req.userId; //Might be null
-
-			db.Game.findAll({
-				where: getDbGameWhereUnlocked(db)
-			})
-			.then(dbGames => {
-				let unlockedIds = dbGames.map(dbGame => dbGame.GameId);
-
-				db.Comic.findAll({
-					where: {
-						GameId: {
-							[db.op.in]: unlockedIds
-						}
-					},
-					// a newer comic tie will beat an older comic (it got more ratings in shorter time)
-					order: [[ 'CreatedAt', 'DESC' ]]
-				})
-				.then(dbComics => {
-					let bestComics = {};
-					
-					dbComics.forEach(dbComic => {
-						let currentBest = bestComics[dbComic.GameId];
-						if(!currentBest || (currentBest && currentBest.Rating <= dbComic.Rating)) {
-							bestComics[dbComic.GameId] = dbComic;
-						}
-					});
-					
-					let hallOfFameComicIds = Object.keys(bestComics).map(key => bestComics[key].ComicId);
-
-					db.Comic.findAll({
-						where: {
-							ComicId: {
-								[db.op.in]: hallOfFameComicIds
-							}
-						},
-						include: getDbComicInclude(db, userId),
-					})
-					.then(dbComics => res.json(dbComics.map(mapper.fromDbComic)))
-					.catch(error => catchError(res, error, db));
-					
-				})
-				.catch(error => catchError(res, error, db));
 			})
 			.catch(error => catchError(res, error, db));
 		},

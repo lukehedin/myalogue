@@ -15,7 +15,7 @@ import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import GamePage from './components/pages/GamePage/GamePage';
 import VerifyPage from './components/pages/VerifyPage/VerifyPage';
-import HallOfFamePage from './components/pages/HallOfFamePage/HallOfFamePage';
+import TopComicsPage from './components/pages/TopComicsPage/TopComicsPage';
 import ProfilePage from './components/pages/ProfilePage/ProfilePage';
 import AboutPage from './components/pages/AboutPage/AboutPage';
 import Error404Page from './components/pages/Error404Page/Error404Page';
@@ -103,8 +103,7 @@ class App extends Component {
 					<Route exact path="/game/:gameId" render={({ match }) => <GamePage gameId={match.params.gameId} />} />
 					<Route exact path="/game/:gameId/comic/:comicId" render={({ match }) => <GamePage gameId={match.params.gameId} comicId={match.params.comicId} />} />
 
-					<Route exact path="/hall-of-fame" render={({ match }) => <Redirect to={Util.route.hallOfFame(Util.context.getLatestGameId())} /> } />
-					<Route exact path="/hall-of-fame/:gameId" render={({ match }) => <HallOfFamePage gameId={match.params.gameId} />}/>
+					<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
 					
 					<Route exact path="/profile" render={({ match }) => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
 					<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />

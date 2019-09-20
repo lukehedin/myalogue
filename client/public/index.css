@@ -727,6 +727,10 @@ body {
         justify-content: center; }
       body .app-container .app [class^="page-"] {
         position: relative; }
+        body .app-container .app [class^="page-"] .page-subtitle {
+          text-align: center;
+          margin: 0 auto 16px auto;
+          color: #373737; }
 
 @keyframes loader-spin {
   0% {

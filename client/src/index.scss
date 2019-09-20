@@ -32,6 +32,12 @@ body {
 	
 			[class^="page-"] {
 				position: relative;
+
+				.page-subtitle {
+					text-align: center;
+					margin: 0 auto $spacing-sm auto;
+					color: $colour-grey-d;
+				}
 			}
 		}
 

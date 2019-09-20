@@ -14,13 +14,7 @@ export default class GamePage extends Component {
 			isLoading: true,
 			gameId: null,
 			game: null,
-
-			comic: null, //viewing comic for game (via link)
-
-			comics: [], // comics for game
-			comicOrderBy: 1,
-			comicLimit: 3,
-			comicSkip: 0
+			comic: null
 		};
 
 		this.setComic = this.setComic.bind(this);
@@ -40,8 +34,8 @@ export default class GamePage extends Component {
 		});
 	}
 	setGame() {
+		//First, game setting
 		let gameId = this.props.gameId ? parseInt(this.props.gameId, 10) : null;
-		let comicId = this.props.comicId ? parseInt(this.props.comicId, 10) : null;
 
 		let game = gameId 
 			? Util.context.getGameById(gameId) 
@@ -49,12 +43,14 @@ export default class GamePage extends Component {
 		
 		this.setState({
 			gameId: gameId,
-			game: game,
-			comic: null,
-			isLoading: !!comicId
+			game: game
 		});
 		
+		//Then, comic setting
+		let comicId = this.props.comicId ? parseInt(this.props.comicId, 10) : null;
+		
 		if(comicId) {
+			//Url or constructor passed in a comicId
 			Util.api.post('/api/getComic', {
 				comicId: comicId
 			})
@@ -68,6 +64,12 @@ export default class GamePage extends Component {
 				this.setState({
 					isLoading: false
 				});
+			});
+		} else {
+			//Use top comic
+			this.setState({
+				isLoading: false,
+				comic: Util.context.getTopComicByGameId(game.gameId)
 			});
 		}
 	}
@@ -107,14 +109,13 @@ export default class GamePage extends Component {
 							? <div className="game-feed">
 								<GameNavigation toFn={Util.route.game} gameId={this.state.gameId} /> 
 								<ComicList
+									skipTopComic={true}
 									emptyText={`No comics have been made in this game. You could make the very first one!`}
 									noMoreText={`Phew! That's all the comics that have been made in this game.`}
-									fetchDelay={1000} //Prevent fast nav spamming
+									fetchDelay={700} //Prevent fast nav spamming
 									sortBy={this.state.comic 
 										? Util.enum.ComicSortBy.Random 
-										: Util.context.getLatestGameId() === this.state.game.gameId
-											? Util.enum.ComicSortBy.Newest
-											: Util.enum.ComicSortBy.TopRated
+										: Util.enum.ComicSortBy.TopRated
 									}
 									gameId={this.state.game.gameId}
 								/>

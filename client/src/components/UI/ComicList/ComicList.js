@@ -82,6 +82,11 @@ export default class ComicList extends Component {
 			})
 			.then(result => {
 				if(!result.error) {
+					if(this.props.skipTopComic) {
+						let topComic = Util.context.getTopComicByGameId(this.props.gameId);
+						if(topComic) result = result.filter(comic => comic.comicId !== topComic.comicId);
+					}
+
 					this.setState({
 						comics: [...this.state.comics, ...result],
 						isLoading: false,

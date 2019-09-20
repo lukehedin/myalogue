@@ -20,7 +20,7 @@ class SubmitComicForm extends Component {
 					<p>You can submit your comic anonymously and reveal your username later. This is a good option if you want your comic to be judged fairly.</p>
 				</div>
 				: <div className="form-message">
-					<p>You aren't logged in so your comic will be submitted anonymously. You can never reclaim ownership of it, even if it makes the Hall of Fame.</p>
+					<p>You aren't logged in so your comic will be submitted anonymously. You can never reclaim ownership of it, even if it becomes the top comic for this game.</p>
 					<p>If you <Link to={Util.route.register()}>register</Link>, you can be recorded as the author.</p>
 				</div>
 			}
