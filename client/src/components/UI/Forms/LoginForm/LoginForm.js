@@ -8,7 +8,7 @@ import Button from '../../Button/Button';
 class LoginForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>
-			{this.props.getField('email')}
+			{this.props.getField('emailUsername')}
 			{this.props.getField('password')}
 			<div className="button-container">
 				<Button type="submit" label="Login" />
@@ -19,10 +19,10 @@ class LoginForm extends Component {
 
 export default asForm(LoginForm, {
 	fields: {
-		email: {
-			label: 'Email',
+		emailUsername: {
+			label: 'Email or username',
 			getError: (val) => {
-				if(!validator.isEmail(val)) return 'Please enter a valid email: yourname@example.com';
+				if(!validator.isLength(val, { min: 3, max: 255 })) return 'Please enter a valid username or email (3-255 characters)';
 			}
 		},
 		password: {

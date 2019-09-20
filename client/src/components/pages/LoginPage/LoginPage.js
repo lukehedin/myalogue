@@ -15,7 +15,7 @@ export default class LoginPage extends Component {
 							form.setLoading(true);
 							
 							Util.api.post('/api/login', {
-								email: formData.email,
+								emailUsername: formData.emailUsername,
 								password: formData.password
 							})
 							.then((result) => {

@@ -191,12 +191,18 @@ const routes = {
 		},
 	
 		login: (req, res, db) => {
-			let email = req.body.email.trim();
+			let emailUsername = req.body.emailUsername.trim();
 			let password = req.body.password;
 	
+			//Username can't have @ or . in it, while email MUST.
+			//Thus, there can be no crossover.
 			db.User.findOne({
 				where: {
-					Email: email
+					[db.op.or]: [{
+						Email: emailUsername
+					}, {
+						Username: emailUsername
+					}]
 				}
 			})
 			.then(dbUser => {
