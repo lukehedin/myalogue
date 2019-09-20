@@ -11,6 +11,11 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	protocol: 'postgres',
     dialectOptions: {
 		ssl: true
+	},
+	pool: {
+		max: 20,
+		min: 0,
+		idle: 10000
 	}
 });
 
