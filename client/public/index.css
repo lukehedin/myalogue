@@ -131,15 +131,16 @@ body {
             flex-direction: row;
             align-items: flex-start; }
             body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message {
-              margin-left: 4px;
+              margin-left: 16px;
               margin-top: 4px;
               display: flex;
-              flex-direction: row; }
-              @media (min-width: 576px) {
-                body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message {
-                  margin-left: 16px; } }
+              flex-direction: row;
+              align-items: flex-start; }
               body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message img {
-                width: 40px; }
+                width: 20px; }
+                @media (min-width: 768px) {
+                  body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message img {
+                    width: 30px; } }
               body .app-container .app .comic .comic-lower .comic-lower-inner .do-better-message h6 {
                 color: #ff0052;
                 display: inline;

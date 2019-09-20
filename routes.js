@@ -478,11 +478,14 @@ const routes = {
 				comicWhere.IsAnonymous = false;
 			}
 			if(!includeAnonymous) {
-				comicWhere.UserId = {
-					[db.op.ne]: null
-				};
+				comicWhere[db.op.or] = [{
+					UserId: {
+						[db.op.ne]: null
+					}
+				}, {
+					IsAnonymous: false
+				}];
 			}
-
 			db.Comic.findAll({
 				where: comicWhere,
 				order: comicOrder,

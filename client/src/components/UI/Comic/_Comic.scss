@@ -35,16 +35,17 @@
 			align-items: flex-start;
 			
 			.do-better-message {
-				margin-left: $spacing-xxs;
-				@include oversm {
-					margin-left: $spacing-sm;
-				}
+				margin-left: $spacing-sm;
 				margin-top: $spacing-xxs;
 				display: flex;
 				flex-direction: row;
+				align-items: flex-start;
 	
 				img {
-					width: 40px;
+					width: 20px;
+					@include overmd {
+						width: 30px;
+					}
 				}
 	
 				h6 {
