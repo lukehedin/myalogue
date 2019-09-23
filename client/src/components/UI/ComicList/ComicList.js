@@ -13,7 +13,6 @@ export default class ComicList extends Component {
 		this.state = {
 			isLoading: true,
 			
-			includeAnonymous: true,
 			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
@@ -25,17 +24,16 @@ export default class ComicList extends Component {
 
 		this.fetchTimeout = null;
 
-		this.setIncludeAnonymous = this.setIncludeAnonymous.bind(this);
 		this.fetchData = this.fetchData.bind(this);
 	}
 	componentDidMount() {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.gameId !== prevProps.gameId;
+		return this.props.templateId !== prevProps.templateId;
 	}
-	componentDidUpdate(prevProps, prevState, isNewGameId) {
-		if(isNewGameId) this.resetFetch(this.props.fetchDelay);
+	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
+		if(isNewTemplateId) this.resetFetch(this.props.fetchDelay);
 	}
 	resetFetch(fetchDelay) {
 		clearTimeout(this.fetchTimeout);
@@ -53,11 +51,6 @@ export default class ComicList extends Component {
 			sortBy: sortBy
 		}, this.resetFetch);
 	}
-	setIncludeAnonymous(includeAnonymous) {
-		this.setState({
-			includeAnonymous: includeAnonymous
-		}, this.resetFetch);
-	}
 	fetchData(fetchDelay) {
 		this.setState({
 			isLoading: true
@@ -65,17 +58,16 @@ export default class ComicList extends Component {
 		
 		this.fetchTimeout = setTimeout(() => {
 			let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
-			let gameId = this.props.gameId;
+			let templateId = this.props.templateId;
 
 			Util.api.post('/api/getComics', {
 				//Optional
-				gameId: gameId,
+				templateId: templateId,
 				authorUserId: this.props.authorUserId,
 
 				createdAtBefore: this.state.createdAtBefore,
 				sortBy: this.state.sortBy,
 				limit: this.state.limit,
-				includeAnonymous: this.state.includeAnonymous,
 				offset: isRandomSort ? 0 : this.state.offset,
 				idNotIn: isRandomSort
 					? this.state.comics.map(comic => comic.comicId)
@@ -83,11 +75,11 @@ export default class ComicList extends Component {
 			})
 			.then(result => {
 				if(!result.error) {
-					//There is a reasonable chance the selected game has changed since the request began
+					//There is a reasonable chance the selected template has changed since the request began
 					//There will be another request lagging behind, so don't do anything and wait for that one
-					if(gameId === this.props.gameId) {
+					if(templateId === this.props.templateId) {
 						if(this.props.skipTopComic) {
-							let topComic = Util.context.getTopComicByGameId(gameId);
+							let topComic = Util.context.getTopComicByTemplateId(templateId);
 							if(topComic) result = result.filter(comic => comic.comicId !== topComic.comicId);
 						}
 	
@@ -124,19 +116,6 @@ export default class ComicList extends Component {
 							}
 						]} 
 					/>
-					{this.props.authorUserId
-						? null
-						: <div className="flex-spacer"></div>
-					}
-					{this.props.authorUserId
-						? null
-						: <Checkbox 
-							isSwitch={true}
-							onChange={this.setIncludeAnonymous} 
-							value={this.state.includeAnonymous}
-							label="Anonymous authors"
-						/>
-					}
 				</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {

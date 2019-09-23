@@ -59,32 +59,6 @@ let db = {
 	},
 	
 	//Tables
-	Comic: defineTable('Comic', {
-		Title: Sequelize.STRING,
-		IsAnonymous: {
-			type: Sequelize.BOOLEAN,
-			allowNull: false,
-			defaultValue: false
-		},
-		Rating: {
-			type: Sequelize.INTEGER,
-			defaultValue: 0,
-            allowNull: false
-		}
-	}, true),
-	
-	ComicDialogue: defineTable('ComicDialogue', {
-		Value: Sequelize.STRING,
-		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
-	}),
-
-	ComicVote: defineTable('ComicVote', {
-		Value: Sequelize.INTEGER
-	}),
-
-	ComicComment: defineTable('ComicComment', {
-		Value: Sequelize.TEXT
-	}, true),
 
 	Log: defineTable('Log', {
 		Type: Sequelize.STRING,
@@ -106,43 +80,82 @@ let db = {
 			defaultValue: false
 		}
 	}, true),
+	
+	Notification: defineTable('Notification', {
+		Type: Sequelize.INTEGER,
+		Message: Sequelize.TEXT
+	}),
 
-	Game: defineTable('Game', {
+	UserNotification: defineTable('UserNotification', {
+
+	}),
+
+	Template: defineTable('Template', {
 		Description: Sequelize.TEXT,
-		UnlockedAt: Sequelize.DATE,
-		ImageUrl: Sequelize.STRING
+		UnlockedAt: Sequelize.DATE
 	}, true),
 
-	GameDialogue: defineTable('GameDialogue', {
-		Ordinal: Sequelize.INTEGER,
+	TemplatePanel: defineTable('TemplatePanel', {
+		SizeX: Sequelize.INTEGER,
+		SizeY: Sequelize.INTEGER,
 		PositionX: Sequelize.INTEGER,
 		PositionY: Sequelize.INTEGER,
-		SizeX: Sequelize.INTEGER,
-		SizeY: Sequelize.INTEGER
-	})
+		Image: Sequelize.STRING,
+		Ordinal: Sequelize.INTEGER //optional
+	}),
+	
+	Comic: defineTable('Comic', {
+		Title: Sequelize.STRING,
+		CompletedAt: Sequelize.DATE,
+		LockedAt: Sequelize.DATE, // locked while editing (1 min)
+		Token: Sequelize.STRING,
+		Rating: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
+            allowNull: false
+		}
+	}, true),
+	
+	ComicPanel: defineTable('ComicPanel', {
+		Ordinal: Sequelize.INTEGER,
+		Value: Sequelize.STRING,
+		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
+	}),
+
+	ComicVote: defineTable('ComicVote', {
+		Value: Sequelize.INTEGER
+	}),
+
+	ComicComment: defineTable('ComicComment', {
+		Value: Sequelize.TEXT
+	}, true),
 };
 
 // Associations
 
-let createOneToMany = (belongsToTableName, hasManyTableName, hasManyAlias) => {
+let createOneToMany = (belongsToTableName, hasManyTableName, hasManyAlias, belongsToAlias) => {
 	let fk = `${belongsToTableName}Id`;
+
 	if(!hasManyAlias) hasManyAlias = `${hasManyTableName}s`
+	if(!belongsToAlias) belongsToAlias = `${belongsToTableName}`;
 
 	db[belongsToTableName].hasMany(db[hasManyTableName], { as: hasManyAlias, foreignKey: fk });
-	db[hasManyTableName].belongsTo(db[belongsToTableName], { as: belongsToTableName, foreignKey: fk });
+	db[hasManyTableName].belongsTo(db[belongsToTableName], { as: belongsToAlias, foreignKey: fk });
 };
 
-createOneToMany('Comic', 'ComicDialogue');
+createOneToMany('Comic', 'ComicPanel');
 createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
 
-createOneToMany('Game', 'GameDialogue');
-createOneToMany('Game', 'Comic');
+createOneToMany('Template', 'TemplatePanel');
+createOneToMany('Template', 'Comic');
 
-createOneToMany('GameDialogue', 'ComicDialogue');
+createOneToMany('TemplatePanel', 'ComicPanel');
 
-createOneToMany('User', 'Comic');
+createOneToMany('User', 'Comic', null, 'PreviousAuthorUser');
 createOneToMany('User', 'ComicVote');
 createOneToMany('User', 'ComicComment');
+createOneToMany('User', 'Notification');
+createOneToMany('User', 'ComicPanel');
 
 module.exports = db;

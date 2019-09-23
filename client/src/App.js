@@ -11,9 +11,10 @@ import loaderFace from './images/face_black.png';
 import AppHeader from './components/UI/AppHeader/AppHeader';
 import AppFooter from './components/UI/AppFooter/AppFooter';
 import Modal from './components/UI/Modal/Modal';
+
+import HomePage from './components/pages/HomePage/HomePage';
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
-import GamePage from './components/pages/GamePage/GamePage';
 import VerifyPage from './components/pages/VerifyPage/VerifyPage';
 import TopComicsPage from './components/pages/TopComicsPage/TopComicsPage';
 import ProfilePage from './components/pages/ProfilePage/ProfilePage';
@@ -23,6 +24,9 @@ import ForgotPasswordPage from './components/pages/ForgotPasswordPage/ForgotPass
 import SetPasswordPage from './components/pages/SetPasswordPage/SetPasswordPage';
 import TermsOfServicePage from './components/pages/TermsOfServicePage/TermsOfServicePage';
 import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage/PrivacyPolicyPage';
+import TemplatePage from './components/pages/TemplatePage/TemplatePage';
+import ComicPage from './components/pages/ComicPage/ComicPage';
+import PlayPage from './components/pages/PlayPage/PlayPage';
 
 class App extends Component {
 	constructor(props){
@@ -52,7 +56,7 @@ class App extends Component {
 					Util.analytics.page();
 				} else {
 					//A failed authenticate should clear context
-					if(result.error) Util.context.clear();
+					if(result.error) Util.context.clear(true);
 					
 					//If errored or isUnderMaintenance, show the maintenance screen
 					this.setState({
@@ -69,7 +73,7 @@ class App extends Component {
 		let ifAuthenticated = (component) => {
 			return Util.context.isAuthenticated()
 				? component
-				: <Redirect to={Util.route.home()} />;
+				: <Redirect to={Util.route.register()} />;
 		};
 
 		let ifNotAuthenticated = (component) => {
@@ -99,9 +103,15 @@ class App extends Component {
 					<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
 					<Route exact path="/set-password/:token" render={({ match }) => <SetPasswordPage token={match.params.token} />} />
 
-					<Route exact path="/" render={() => <Redirect to={Util.route.game(Util.context.getLatestGameId())} />} />
-					<Route exact path="/game/:gameId" render={({ match }) => <GamePage gameId={match.params.gameId} />} />
-					<Route exact path="/game/:gameId/comic/:comicId" render={({ match }) => <GamePage gameId={match.params.gameId} comicId={match.params.comicId} />} />
+					<Route exact path="/" render={() => <HomePage />} />
+					
+					<Route exact path="/play" render={({ match }) => ifAuthenticated(<PlayPage />) } />
+					<Route exact path="/play/:templateId" render={({ match }) => ifAuthenticated(<PlayPage templateId={match.params.templateId} />) } />
+
+					<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
+					<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} comicId={match.params.comicId} />} />
+
+					<Route exact path="/template/:template" render={({ match }) => <TemplatePage comicId={match.params.templateId} />} />
 
 					<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
 					

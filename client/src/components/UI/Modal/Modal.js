@@ -5,7 +5,6 @@ import { closeModal } from '../../../redux/actions';
 
 import Button from '../Button/Button';
 import ShareComicPanel from '../ShareComicPanel/ShareComicPanel';
-import SubmitComicForm from '../Forms/SubmitComicForm/SubmitComicForm';
 import ReactSVG from 'react-svg';
 
 class Modal extends Component {
@@ -51,38 +50,6 @@ class Modal extends Component {
 							if(modal.yesFn) modal.yesFn();
 						}} />
 					</div>
-				</div>
-				break;
-			case Util.enum.ModalType.SubmitComicModal:
-				modalTitle = "Submit comic";
-				modalClass = "modal-submit-comic";
-				modalContent = <div className="">
-					<SubmitComicForm 
-						formData={{
-							...modal.comic
-						}}
-						onSubmit={(form, formData) => {
-							form.setLoading(true);
-							
-							Util.analytics.event(`Comic`, `Comic submitted`);
-							Util.api.post('/api/submitComic', {
-								comic: formData
-							})
-							.then(result => {
-								if(!result.error) {
-									//Slap on user data(db doesn't use this during create)
-									if(result.userId) result.username = Util.context.getUsername();
-
-									if(modal.onSubmit) modal.onSubmit(result);
-									this.close();
-								} else {
-									form.setLoading(false);
-									form.setOverallError(result.error);
-								}
-							});
-						}}
-						onCancel={this.close}
-					/>
 				</div>
 				break;
 			case Util.enum.ModalType.ShareComicModal:

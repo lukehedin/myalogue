@@ -3,7 +3,7 @@ import Util from '../../../Util';
 
 import Button from '../Button/Button';
 
-export default class S4YButton extends Component {
+export default class CopyButton extends Component {
 	constructor(props){
 		super(props);
 

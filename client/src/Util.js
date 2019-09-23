@@ -41,7 +41,7 @@ const Util = {
 			Util.analytics.set('userId', authResult.userId);
 		},
 
-		clear: () => {
+		clear: (noRedirect = false) => {
 			localStorage.removeItem(Util.context._tokenKey);
 
 			Util.context._userId = null;
@@ -51,7 +51,7 @@ const Util = {
 
 			Util.analytics.set('userId', null);
 			
-			window.location.href = "/";
+			if(!noRedirect) window.location.href = "/";
 		},
 
 		isDev: () => Util.context._isDev,
@@ -60,13 +60,13 @@ const Util = {
 		getUsername: () => Util.context._username,
 
 		//Refdata
-		getGames: () => Util.context._referenceData.games,
-		getGameById: (gameId) => Util.context._referenceData.games.find(game => gameId === game.gameId),
-		getLatestGame: () => Util.context._referenceData.games[Util.context._referenceData.games.length - 1],
-		getLatestGameId: () => Util.context.getLatestGame().gameId,
+		getTemplates: () => Util.context._referenceData.templates,
+		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
+		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
+		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
 
 		getTopComics: () => Util.context._referenceData.topComics,
-		getTopComicByGameId: (gameId) => Util.context._referenceData.topComics.find(comic => comic.gameId === gameId)
+		getTopComicByTemplateId: (templateId) => Util.context._referenceData.topComics.find(comic => comic.templateId === templateId)
 	},
 
 	analytics: {
@@ -128,7 +128,8 @@ const Util = {
 
 	array: {
 		any: arr => arr && arr.length > 0,
-		none: arr => !Util.array.any(arr)
+		none: arr => !Util.array.any(arr),
+		random: arr => arr[Math.floor(Math.random()*arr.length)]
 	},
 
 	enum: {
@@ -144,8 +145,7 @@ const Util = {
 		ModalType: {
 			Alert: 1,
 			Confirm: 2,
-			SubmitComicModal: 3,
-			ShareComicModal: 4
+			ShareComicModal: 3
 		},
 
 		ComicSortBy: {
@@ -214,12 +214,8 @@ const Util = {
 		isCurrently: (route) => Util.route.getCurrent() === route,
 
 		home: () => `/`,
-		game: (gameId, comicId) => {
-			if(!gameId) return Util.route.home();
-			return comicId 
-				? `/game/${gameId}/comic/${comicId}` 
-				: `/game/${gameId}`;
-		},
+		template: (templateId) => `/template/${templateId}`,
+		comic: (comicId) => `/comic/${comicId}`,
 		topComics: () => `/top-comics`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
@@ -230,7 +226,8 @@ const Util = {
 		verify: (token) => `/verify/${token}`,
 		about: () => `/about`,
 		termsOfService: () => `/terms-of-service`,
-		privacyPolicy: () => `/privacy-policy`
+		privacyPolicy: () => `/privacy-policy`,
+		play: (templateId) => templateId ? `play/${templateId}` : `/play`
 	},
 
 	selector: {

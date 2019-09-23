@@ -11,6 +11,8 @@ const bcrypt = require('bcrypt');
 
 const TOKEN_RESET_HOURS = 3;
 
+const COMIC_PANEL_LENGTH = 8;
+
 const catchError = (res, error, db = null) => {
 	// If db param specified, the error is treated as a serious error
 	// It will be logged, and the error to the client will be generic
@@ -56,14 +58,18 @@ const getAuthResult = (dbUser, callback) => {
 };
 
 //Common db functions
-const getDbComicInclude = (db, userId) => {
+const getDbComicInclude = (db, userId, excludePanelUsers = false) => {
 	let include = [{
-		model: db.ComicDialogue,
-		as: 'ComicDialogues'
-	}, {
-		model: db.User,
-		as: 'User'
+		model: db.ComicPanel,
+		as: 'ComicPanels'
 	}];
+
+	if(!excludePanelUsers) {
+		include.include = [{
+			model: db.User,
+			as: 'User'
+		}];
+	}
 	
 	if(userId) {
 		//Include the user's current vote on the comic
@@ -79,7 +85,7 @@ const getDbComicInclude = (db, userId) => {
 
 	return include;
 };
-const getDbGameWhereUnlocked = (db) => {
+const getDbTemplateWhereUnlocked = (db) => {
 	return {
 		UnlockedAt: {
 			[db.op.ne]: null,
@@ -102,16 +108,21 @@ const routes = {
 				});
 			} else {
 				let referenceDataPromises = [
-					db.Game.findAll({
-						where: getDbGameWhereUnlocked(db),
+					db.Template.findAll({
+						where: getDbTemplateWhereUnlocked(db),
 						include: [{
-							model: db.GameDialogue,
-							as: 'GameDialogues'
+							model: db.TemplatePanel,
+							as: 'TemplatePanels'
 						}],
-						order: [[ 'GameId', 'DESC' ]]
+						order: [[ 'TemplateId', 'DESC' ]]
 					}),
 					new Promise((resolve, reject) => {
 						db.Comic.findAll({
+							where: {
+								CompletedAt: {
+									[db.op.ne]: null
+								}
+							},
 							// a newer comic tie will beat an older comic (it got more ratings in shorter time)
 							order: [[ 'CreatedAt', 'DESC' ]]
 						})
@@ -119,9 +130,9 @@ const routes = {
 							//Find the top comics
 							let topComics = {};
 							dbComics.forEach(dbComic => {
-								let currentTop = topComics[dbComic.GameId];
+								let currentTop = topComics[dbComic.TemplateId];
 								if(!currentTop || (currentTop && currentTop.Rating <= dbComic.Rating)) {
-									topComics[dbComic.GameId] = dbComic;
+									topComics[dbComic.TemplateId] = dbComic;
 								}
 							});
 							let topComicIds = Object.keys(topComics).map(key => topComics[key].ComicId);
@@ -143,15 +154,15 @@ const routes = {
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbGames, dbTopComics]) => {
+					.then(([dbTemplates, dbTopComics]) => {
 						let result = {
 							referenceData: {
 								topComics: dbTopComics
-									.sort((c1, c2) => c1.GameId - c2.GameId)
+									.sort((c1, c2) => c1.TemplateId - c2.TemplateId)
 									.map(mapper.fromDbComic),
-								games: dbGames
-									.sort((t1, t2) => t1.GameId - t2.GameId)
-									.map(mapper.fromDbGame)
+								templates: dbTemplates
+									.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
+									.map(mapper.fromDbTemplate)
 							}
 						}
 
@@ -418,6 +429,9 @@ const routes = {
 
 			db.Comic.findOne({
 				where: {
+					CompletedAt: {
+						[db.op.ne]: null
+					},
 					ComicId: comicId
 				},
 				include: getDbComicInclude(db, userId)
@@ -435,11 +449,9 @@ const routes = {
 		getComics: (req, res, db) => {
 			let userId = req.userId; //Might be null
 
-			let gameId = req.body.gameId;
-			let authorUserId = req.body.authorUserId;
+			let templateId = req.body.templateId;
 
 			let idNotIn = req.body.idNotIn || [];
-			let includeAnonymous = req.body.includeAnonymous;
 			let createdAtBefore = req.body.createdAtBefore || new Date();
 			let sortBy = req.body.sortBy || 1;
 			let offset = req.body.offset || 0;
@@ -461,6 +473,9 @@ const routes = {
 			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
 
 			let comicWhere = {
+				CompletedAt: {
+					[db.op.ne]: null
+				},
 				CreatedAt: {
 					[db.op.lte]: createdAtBefore
 				},
@@ -469,26 +484,8 @@ const routes = {
 				}
 			};
 
-			if(gameId) {
-				comicWhere.GameId = gameId;
-			}
-			if(authorUserId) {
-				//Don't return anonymous comics by a user
-				comicWhere.UserId = authorUserId;
-				comicWhere.IsAnonymous = false;
-			}
-			if(!includeAnonymous) {
-				//Hide anons
-				comicWhere[db.op.or] = [{
-					UserId: {
-						[db.op.ne]: null
-					},
-					IsAnonymous: false
-				}, {
-					UserId: {
-						[db.op.eq]: null
-					}
-				}];
+			if(templateId) {
+				comicWhere.TemplateId = templateId;
 			}
 			db.Comic.findAll({
 				where: comicWhere,
@@ -499,41 +496,6 @@ const routes = {
 			})
 			.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 			.catch(error => catchError(res, error, db));
-		},
-
-		submitComic: (req, res, db) => {
-			let userId = req.userId; // May be null
-			let comic = req.body.comic;
-
-			let isValidTitle = validator.isLength(comic.title, { max: 0 })
-				|| (validator.isLength(comic.title, { max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' ')));
-			let isValidDialogue = !comic.comicDialogues.find(cd => !validator.isLength(cd.value, { min: 1, max: 255 }));
-			
-			if(isValidTitle && isValidDialogue) {
-				db.Comic.create({
-					GameId: comic.gameId,
-					UserId: userId, //Record userId even if anon, the mapper still conceals it
-					IsAnonymous: comic.isAnonymous,
-					Title: comic.title,
-					ComicDialogues: comic.comicDialogues.map(cd => {
-						return {
-							GameDialogueId: cd.gameDialogueId,
-							Value: cd.value
-						};
-					})
-				}, {
-					include: [{
-						model: db.ComicDialogue,
-						as: 'ComicDialogues'
-					}]
-				})
-				.then(dbCreatedComic => {
-					res.json(mapper.fromDbComic(dbCreatedComic))
-				})
-				.catch(error => catchError(res, error, db));
-			} else {
-				catchError(res, 'Invalid comic data supplied.', db);
-			}
 		},
 
 		getUser: (req, res, db) => {
@@ -573,7 +535,9 @@ const routes = {
 					if(!dbExistingUser) {
 						db.User.update({
 							Username: username,
-							VerificationToken: null
+							VerificationToken: {
+								[db.op.eq]: null
+							}
 						}, {
 							where: {
 								UserId: userId
@@ -592,6 +556,98 @@ const routes = {
 			//Must be logged in
 			let userId = req.userId;
 
+		},
+
+		//Gets a comic in progress or starts new
+		play: (req, res, db) => {
+			let templateId = req.body.templateId;
+
+			let now = new Date();
+
+			let comicWhere = {
+				CompletedAt: {
+					[db.op.eq]: null
+				},
+				[db.op.or]: [{
+					LockedAt: {
+						[db.op.eq]: null
+					}
+				}, {
+					LockedAt: {
+						[db.op.gte]: moment(now).add(1, 'minute').toDate()
+					}
+				}]
+			};
+
+			if(templateId) comicWhere.TemplateId = template;
+
+			//Get random incomplete comic
+			db.Comic.findAll({
+				limit: 1,
+				where: comicWhere,
+				include: getDbComicInclude(db, null, true),
+				order: [db.fn('RANDOM')]
+			})
+			.then(dbComics => {
+				let dbComic = dbComics[0];
+
+				if(dbComic) {
+					let currentPanel = dbComic.ComicPanels[dbComic.ComicPanels.length - 1];
+					let isLastPanel = dbComic.ComicPanels.length === (COMIC_PANEL_LENGTH  - 1);
+
+					dbComic.LockedAt = now;
+					dbComic.save()
+						.then(() => res.json({
+							comicId: dbComic.ComicId,
+							templateId: dbComic.TemplateId,
+							currentPanel: mapper.fromDbComicPanel(currentPanel),
+							isLastPanel: isLastPanel
+						}))
+						.catch(error => catchError(res, error, db));
+
+				} else {
+					//Client will create new comic
+					res.json({ isNew: true });
+				}
+			})
+			.catch(error => catchError(res, error, db));
+		},
+
+		submitComicPanel: (req, res, db) => {
+			let userId = req.userId; // May be null
+			let comic = req.body.comic;
+			let dialogue = req.body.dialogue;
+
+			let isValidTitle = validator.isLength(comic.title, { max: 0 })
+				|| (validator.isLength(comic.title, { max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' ')));
+			let isValidDialogue = validator.isLength(dialogue, { min: 1, max: 255 });
+			
+
+			///TODO
+			if(isValidTitle && isValidDialogue) {
+				db.Comic.create({
+					TemplateId: comic.templateId,
+					UserId: userId,
+					Title: comic.title,
+					ComicDialogues: comic.comicDialogues.map(cd => {
+						return {
+							TemplateDialogueId: cd.templateDialogueId,
+							Value: cd.value
+						};
+					})
+				}, {
+					include: [{
+						model: db.ComicDialogue,
+						as: 'ComicDialogues'
+					}]
+				})
+				.then(dbCreatedComic => {
+					res.json(mapper.fromDbComic(dbCreatedComic))
+				})
+				.catch(error => catchError(res, error, db));
+			} else {
+				catchError(res, 'Invalid comic data supplied.', db);
+			}
 		},
 
 		//Comics

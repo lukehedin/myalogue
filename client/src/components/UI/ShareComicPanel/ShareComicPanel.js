@@ -16,7 +16,7 @@ export default class ShareComicPanel extends Component {
 		e.target.select();
 	}
 	render() {
-		let comicLink = Util.route.getHost() + Util.route.game(this.props.comic.gameId, this.props.comic.comicId);
+		let comicLink = Util.route.getHost() + Util.route.comic(this.props.comic.comicId);
 
 		return <div className="share-comic-panel">
 			<h4><ComicTitle comic={this.props.comic} /></h4>
@@ -29,9 +29,9 @@ export default class ShareComicPanel extends Component {
 					: <p className="empty-text">Could not generate comic image. You can still share the comic using the link above.</p>
 				}
 			</div>
-			{Util.route.isCurrently(Util.route.game(this.props.comic.gameId))
+			{Util.route.isCurrently(Util.route.template(this.props.comic.templateId))
 				? null
-				: <Button to={Util.route.game(this.props.comic.gameId)} size="sm" colour="black" label="View other comics in game" />
+				: <Button to={Util.route.template(this.props.comic.templateId)} size="sm" colour="black" label="View more comics using this template" />
 			}
 		</div>;
 	}
