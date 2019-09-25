@@ -112,8 +112,10 @@ let db = {
 		Image: Sequelize.STRING,
 		Ordinal: Sequelize.INTEGER, //optional
 		Description: Sequelize.TEXT,
-		IsLastOnly: getBoooleanNotNull(),
-		IsFirstOnly: getBoooleanNotNull()
+		IsOnlyLast: getBoooleanNotNull(),
+		IsOnlyFirst: getBoooleanNotNull(),
+		IsNeverLast: getBoooleanNotNull(),
+		IsNeverFirst: getBoooleanNotNull()
 	}, true),
 	
 	Comic: defineTable('Comic', {

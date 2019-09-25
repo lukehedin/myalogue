@@ -593,12 +593,13 @@ const routes = {
 						[db.op.eq]: null
 					}
 				},
-				LockedByUserId: { //Where I wasn't the last lock (even if the lock expired - helps keep the comics in rotation)
-					[db.op.or]: {
-						[db.op.ne]: userId,
-						[db.op.eq]: null
-					}
-				},
+				// Disabling this so people can bounce between 2 comics while skipping (prevents mass creates)
+				// LockedByUserId: { //Where I wasn't the last lock (even if the lock expired - helps keep the comics in rotation)
+				// 	[db.op.or]: {
+				// 		[db.op.ne]: userId,
+				// 		[db.op.eq]: null
+				// 	}
+				// },
 				LockedAt: { //That aren't in the lock window (currently being edited)
 					[db.op.or]: {
 						[db.op.lte]: getComicLockWindow(),
@@ -639,8 +640,13 @@ const routes = {
 						};
 
 						//Certain panels only show up in the first or last position
-						if(!isFirst) templatePanelWhere.IsFirstOnly = false;
-						if(!isLast) templatePanelWhere.IsLastOnly = false;
+						isFirst
+							? templatePanelWhere.IsNeverFirst = false
+							: templatePanelWhere.IsOnlyFirst = false;
+
+						isLast
+							? templatePanelWhere.IsNeverLast = false
+							: templatePanelWhere.IsOnlyLast = false;
 
 						db.TemplatePanel.findAll({
 							limit: 1,
