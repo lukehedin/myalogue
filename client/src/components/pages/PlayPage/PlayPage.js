@@ -171,7 +171,7 @@ export default class PlayPage extends Component {
 					: <div>
 						<h2>Sorry, you ran out of time!</h2>
 						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
-						<p className="center">Why not have another crack?</p>
+						<p className="center">Why not try again?</p>
 						<div className="button-container justify-center">
 							<S4YButton label="Try again" onClick={() => this.playNew()} size="lg" />				
 						</div>
