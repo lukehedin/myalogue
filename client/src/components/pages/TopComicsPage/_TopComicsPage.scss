@@ -1,15 +1,32 @@
-.page-hall-of-fame {
-	.hall-of-fame-table {
-		width: 100%;
+.page-top-comics {
+	.top-comics-inner {
+		position: relative;
+		min-height: 60vh;
 
-		tr {
-		
-			td {
-				vertical-align: top;
-				padding: $spacing-sm 0;
+		.top-comics-table {
+			border-collapse: collapse;
+			width: 100%;
 	
-				&.cell-button {
-					text-align: right;
+			tr {
+				&:not(:last-child) {
+					border-bottom: 1px solid $colour-grey-b;
+				}
+	
+				td {
+					vertical-align: top;
+					padding: $spacing-sm 0;
+		
+					&.cell-button {
+						text-align: right;
+
+						.button-container {
+							justify-content: flex-end;
+							
+							&:not(:first-child) {
+								margin-top: $spacing-xs;
+							}
+						}
+					}
 				}
 			}
 		}

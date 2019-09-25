@@ -29,14 +29,21 @@ body {
 			text-align: left;
 			display: flex;
 			flex-direction: column;
-	
-			[class^="page-"] {
-				position: relative;
 
-				.page-subtitle {
-					text-align: center;
-					margin: 0 auto $spacing-sm auto;
-					color: $colour-grey-d;
+			.app-inner {
+				display: flex;
+				flex-direction: column;
+				min-height: 100vh;
+	
+				[class^="page-"] {
+					position: relative;
+	
+					.page-subtitle {
+						text-align: center;
+						margin: $spacing-xs auto;
+						color: $colour-grey-d;
+						max-width: 600px;
+					}
 				}
 			}
 		}
@@ -52,7 +59,7 @@ body {
 			width: 100%;
 			top: 0;
 			left: 0;
-			z-index: 10;
+			z-index: 5;
 			&.masked {
 				background-color: $colour-transparent-grey;
 			}
@@ -162,6 +169,7 @@ body {
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
+			z-index: 20;
 		}
 		
 		@include allHeadings {

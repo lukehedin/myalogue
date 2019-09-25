@@ -6,7 +6,7 @@
 		color: $colour-black;
 		cursor: default;
 		position: absolute;
-		z-index: 5;
+		z-index: 10;
 		top: calc(100% + #{$spacing-xxs});
 		background-color: $colour-white;
 		border: 1px solid $colour-grey-b;

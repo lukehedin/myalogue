@@ -15,6 +15,7 @@ import iconLast from './icons/last.svg';
 import iconLike from './icons/like.svg';
 import iconMenu from './icons/menu.svg';
 import iconNext from './icons/next.svg';
+import iconNotification from './icons/notification.svg';
 import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
 
@@ -212,6 +213,7 @@ const Util = {
 		like: iconLike,
 		menu: iconMenu,
 		next: iconNext,
+		notification: iconNotification,
 		share: iconShare,
 		star: iconStar
 	},

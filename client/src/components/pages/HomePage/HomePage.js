@@ -5,15 +5,17 @@ import Util from '../../../Util';
 import S4YButton from '../../UI/S4YButton/S4YButton';
 import ComicList from '../../UI/ComicList/ComicList';
 
+import logo from '../../../images/logo_black.png';
+
 export default class HomePage extends Component {
 	render() {
-		return <div className="page-login">
+		return <div className="page-home">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Speak 4 Yourself</h2>
-						<p className="center">A multiplayer game where players take turns continuing the story in a comic, while only having the previous panel to work out the overall plot.</p>
-						<div className="button-container justify-center">
+						<img src={logo} className="app-logo" alt="logo" />
+						<p className="page-subtitle center">A game where players take turns creating the story for panels in a comic. Each player can use the previous panel to get an idea of where the story was going, but the rest of the comic is hidden until it is completed.</p>
+							<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
 					</div>

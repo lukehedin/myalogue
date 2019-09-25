@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
+import moment from 'moment';
 
 import Comic from '../../UI/Comic/Comic';
 import ComicList from '../../UI/ComicList/ComicList';
-import ComicTitle from '../../UI/ComicTitle/ComicTitle';
 import Button from '../../UI/Button/Button';
+import ComicPanelAuthorList from '../../UI/ComicPanelAuthorList/ComicPanelAuthorList';
 
 //this.props.comicId
 export default class ComicPage extends Component {
@@ -55,6 +56,14 @@ export default class ComicPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Comic #{this.props.comicId}</h2>
+						{this.state.comic
+							? <p className="page-subtitle center">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
+							: null
+						}
+						{this.state.comic
+							? <p className="page-subtitle center">Panels by <ComicPanelAuthorList comic={this.state.comic} /></p>
+							: null
+						}
 					</div>
 				</div>
 			</div>
@@ -62,15 +71,15 @@ export default class ComicPage extends Component {
 				<div className="container">
 					<div className="row">
 						<div className="comic-highlight-inner">
-						{this.state.isLoading
-							? <div className="loader"></div>
-							: !this.state.comic
-								? <div>
-									<p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can start a new one right now!</p>
-									<Button colour="pink" label="Play" to={Util.route.play()} />
-								</div>
-								: <Comic key={this.state.comic.comicId} comic={this.state.comic} />
-						}
+							{this.state.isLoading
+								? <div className="loader"></div>
+								: !this.state.comic
+									? <div>
+										<p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can start a new one right now!</p>
+										<Button colour="pink" label="Play" to={Util.route.play()} />
+									</div>
+									: <Comic key={this.state.comic.comicId} comic={this.state.comic} />
+							}
 						</div>
 					</div>
 				</div>

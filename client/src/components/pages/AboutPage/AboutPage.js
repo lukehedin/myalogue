@@ -9,12 +9,12 @@ export default class AboutPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>About</h2>
-						<p>Speak 4 Yourself is a multiplayer game about making part of a comic without knowing the whole plot.</p>
-						<p>Players can rate the comics that are submitted, with the top comic for each template getting prominently displayed on the top comics page.</p>
+						<p>Speak 4 Yourself is a game where players take turns creating the story for panels in a comic. Each player can use the previous panel to get an idea of where the story was going, but the rest of the comic is hidden until it is completed.</p>
+						<p>Players can rate the comics that are submitted, with the top comic for each template getting a place in the top comics page.</p>
 						<p>If you have questions, suggestions or problems with this service, you can send an email to <a rel="noopener noreferrer" href="mailto:contact@s4ycomic.com">contact@s4ycomic.com</a>.</p>
 						<p>Created by <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/imdoodlir/">imdoodlir</a>.</p>
 						<p className="sm"><Link to={Util.route.termsOfService()}>Terms of Service</Link> | <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link></p>
-						<p className="sm">SVG icons made by <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></p>
+						<p className="sm">SVG icons made by <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> and <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></p>
 					</div>
 				</div>
 			</div>

@@ -93,39 +93,41 @@ class App extends Component {
 		let getApp = () => {
 			return <div className="app">
 				<AppHeader />
-				<Switch>
-					{/* If NOT authenticated */}
-					<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
-					<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
-					<Route exact path="/forgot-password" render={({ match }) => ifNotAuthenticated(<ForgotPasswordPage /> )} />
-					
-					{/* Verification and password resets can happen even if logged in (odd scenario but plausible) */}
-					<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
-					<Route exact path="/set-password/:token" render={({ match }) => <SetPasswordPage token={match.params.token} />} />
+				<div className="app-inner">
+					<Switch>
+						{/* If NOT authenticated */}
+						<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
+						<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
+						<Route exact path="/forgot-password" render={({ match }) => ifNotAuthenticated(<ForgotPasswordPage /> )} />
+						
+						{/* Verification and password resets can happen even if logged in (odd scenario but plausible) */}
+						<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
+						<Route exact path="/set-password/:token" render={({ match }) => <SetPasswordPage token={match.params.token} />} />
 
-					<Route exact path="/" render={() => <HomePage />} />
-					
-					<Route exact path="/play" render={({ match }) => ifAuthenticated(<PlayPage />) } />
-					<Route exact path="/play/:templateId" render={({ match }) => ifAuthenticated(<PlayPage templateId={match.params.templateId} />) } />
+						<Route exact path="/" render={() => <HomePage />} />
+						
+						<Route exact path="/play" render={({ match }) => ifAuthenticated(<PlayPage />) } />
+						<Route exact path="/play/:templateId" render={({ match }) => ifAuthenticated(<PlayPage templateId={match.params.templateId} />) } />
 
-					<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
-					<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} comicId={match.params.comicId} />} />
+						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
+						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 
-					<Route exact path="/template/:template" render={({ match }) => <TemplatePage comicId={match.params.templateId} />} />
+						<Route exact path="/template/:template" render={({ match }) => <TemplatePage comicId={match.params.templateId} />} />
 
-					<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
-					
-					<Route exact path="/profile" render={({ match }) => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
-					<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
-					
-					<Route exact path="/about" render={({ match }) => <AboutPage />}/>
-					<Route exact path="/privacy-policy" render={({ match }) => <PrivacyPolicyPage />}/>
-					<Route exact path="/terms-of-service" render={({ match }) => <TermsOfServicePage />}/>
-					
-					{/* No other route match, 404 */}
-					<Route render={({ match }) => <Error404Page />} />
-				</Switch>
-				<div className="flex-spacer"></div>
+						<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
+						
+						<Route exact path="/profile" render={({ match }) => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
+						<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
+						
+						<Route exact path="/about" render={({ match }) => <AboutPage />}/>
+						<Route exact path="/privacy-policy" render={({ match }) => <PrivacyPolicyPage />}/>
+						<Route exact path="/terms-of-service" render={({ match }) => <TermsOfServicePage />}/>
+						
+						{/* No other route match, 404 */}
+						<Route render={({ match }) => <Error404Page />} />
+					</Switch>
+					<div className="flex-spacer"></div>
+				</div>
 				<AppFooter />
 				{Util.array.any(this.props.modals)
 					? <div className="modal-overlay" onMouseDown={(e) => {

@@ -6,7 +6,6 @@ import Util from '../../../Util';
 
 import ComicPanel from '../ComicPanel/ComicPanel';
 import ComicVote from '../ComicVote/ComicVote';
-import ComicTitle from '../ComicTitle/ComicTitle';
 
 //this.props.comic
 class Comic extends Component {

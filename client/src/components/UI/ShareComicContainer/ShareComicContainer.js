@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import CopyButton from '../CopyButton/CopyButton';
-import ComicTitle from '../ComicTitle/ComicTitle';
-import Button from '../Button/Button';
 
 export default class ShareComicPanel extends Component {
 	constructor(props){

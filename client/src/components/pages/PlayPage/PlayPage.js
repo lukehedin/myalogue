@@ -137,10 +137,8 @@ export default class PlayPage extends Component {
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
 				</div>
 				<div className="button-container justify-center">
+					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
-				</div>
-				<div className="button-container justify-center">
-					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} />
 				</div>
 			</div>;
 		} else {

@@ -10,6 +10,7 @@ export default class Timer extends Component {
 			isOn: false
 		};
 
+		this.tenSeconds = new Date() - moment().subtract(10, 'seconds').toDate().getTime();
 		this.timerInterval = null;
 
 		this.startTimer = this.startTimer.bind(this);
@@ -54,7 +55,7 @@ export default class Timer extends Component {
 		if(this.props.onComplete) this.props.onComplete();
 	}
 	render() {
-		return <div className="timer">
+		return <div className={`timer ${this.state.time < this.tenSeconds ? 'urgent' : ''}`}>
 			<h2>{moment(this.state.time).format('mm:ss')}</h2>
 		</div>
 	}
