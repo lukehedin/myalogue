@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import CopyButton from '../CopyButton/CopyButton';
@@ -23,9 +22,9 @@ export default class ShareComicPanel extends Component {
 			<CopyButton toCopy={comicLink} />
 			<div className="comic-image">
 				<div className="image-fade-overlay"></div>
-				<img className="image-download" src={this.props.comicDataUrl} />
+				<img alt="" className="image-download" src={this.props.comicDataUrl} />
 				{this.props.comicDataUrl
-					? <img className="image-thumbnail" src={this.props.comicDataUrl} />
+					? <img alt="" className="image-thumbnail" src={this.props.comicDataUrl} />
 					: <p className="empty-text">Could not generate comic image. You can still share the comic using the link above.</p>
 				}
 			</div>

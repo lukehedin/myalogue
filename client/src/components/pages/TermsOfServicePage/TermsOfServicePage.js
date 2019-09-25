@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Util from '../../../Util';
 
 export default class TermsOfServicePage extends Component {
 	render() {

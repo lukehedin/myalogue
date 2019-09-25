@@ -4,7 +4,6 @@ import Util from '../../../Util';
 import Comic from '../../UI/Comic/Comic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
-import Checkbox from '../Checkbox/Checkbox';
 
 export default class ComicList extends Component {
 	constructor(props) {

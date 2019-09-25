@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
-import { Redirect } from 'react-router-dom';
 
-import Comic from '../../UI/Comic/Comic';
-import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import Button from '../../UI/Button/Button';
 import ComicPanelAuthorList from '../../UI/ComicPanelAuthorList/ComicPanelAuthorList';
 

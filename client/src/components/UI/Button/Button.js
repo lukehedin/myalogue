@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ReactSVG from 'react-svg'
-import Util from '../../../Util';
 
 export default class Button extends Component {
 	constructor(props){

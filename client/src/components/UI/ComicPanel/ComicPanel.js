@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import Textarea from 'react-textarea-autosize';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
-
-import Button from '../Button/Button';
 
 //this.props.templateId, this.props.comicPanel (editing if not present)
 export default class ComicPanel extends Component {

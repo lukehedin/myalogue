@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Util from '../../../Util';
 
 export default class ContextMenu extends Component {
 	constructor(props) {
