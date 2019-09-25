@@ -48,13 +48,14 @@ export default class PlayPage extends Component {
 			dialogue: ''
 		});
 	}
-	playNew() {
+	playNew(skippedComicId) {
 		this.resetPlayData();
 		this.setState({
 			isLoading: true
 		});
 
 		Util.api.post('/api/play', {
+			skippedComicId: skippedComicId, //optional
 			token: this.props.token //optional
 		})
 		.then(result => {
@@ -139,7 +140,7 @@ export default class PlayPage extends Component {
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
 				</div>
 				<div className="button-container justify-center">
-					<Button onClick={this.playNew} colour="black" label="Skip" isHollow={true} />
+					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} />
 				</div>
 			</div>;
 		} else {
@@ -159,7 +160,7 @@ export default class PlayPage extends Component {
 							: null
 						}
 						<div className="button-container justify-center">
-							<S4YButton label="Play again" onClick={this.playNew} size="lg" />
+							<S4YButton label="Play again" onClick={() => this.playNew()} size="lg" />
 						</div>
 					</div>				
 					: <div>
@@ -167,7 +168,7 @@ export default class PlayPage extends Component {
 						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
 						<p className="center">Why not have another crack?</p>
 						<div className="button-container justify-center">
-							<S4YButton label="Try again" onClick={this.playNew} size="lg" />				
+							<S4YButton label="Try again" onClick={() => this.playNew()} size="lg" />				
 						</div>
 					</div>
 				}

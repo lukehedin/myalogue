@@ -580,6 +580,7 @@ const routes = {
 		play: (req, res, db) => {
 			let userId = req.userId;
 
+			let skippedComicId = req.body.skippedComicId;
 			let templateId = req.body.templateId;
 
 			let comicWhere = {
@@ -607,6 +608,12 @@ const routes = {
 			};
 
 			if(templateId) comicWhere.TemplateId = template;
+			if(skippedComicId) {
+				//Don't bring back the same comic we just skipped
+				comicWhere.ComicId = {
+					[db.op.ne]: skippedComicId
+				};
+			}
 
 			//Get random incomplete comic
 			db.Comic.findAll({
@@ -693,6 +700,19 @@ const routes = {
 						.catch(error => catchError(res, error, db));
 					})
 					.catch(error => catchError(res, error, db));
+				}
+
+				//Clear the lock on a skipped comic (needs to happen after the query above)
+				if(skippedComicId) {
+					db.Comic.update({
+						LockedAt: null,
+						LockedByUserId: null
+					}, {
+						where: {
+							ComicId: skippedComicId,
+							LockedByUserId: userId //Important! without this anyone can clear any lock
+						}
+					});
 				}
 			})
 			.catch(error => catchError(res, error, db));
