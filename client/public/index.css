@@ -799,6 +799,14 @@ body {
           @media screen and (orientation: landscape) {
             body .app-container .app .page-play .play-area .comic-panels {
               flex-direction: row; } }
+        body .app-container .app .page-play .play-area .start-help {
+          margin-top: 64px;
+          color: #969696; }
+          body .app-container .app .page-play .play-area .start-help ul {
+            text-align: center;
+            list-style-type: none;
+            padding: 0;
+            font-size: 14px; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;
         min-height: 60vh; }

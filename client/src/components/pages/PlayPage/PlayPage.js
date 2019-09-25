@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+// import randomWords from 'random-words';
 import Util from '../../../Util';
-import { Redirect } from 'react-router-dom';
 
 import Timer from '../../UI/Timer/Timer';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
@@ -140,6 +140,13 @@ export default class PlayPage extends Component {
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
 				</div>
+				{/* {this.state.currentComicPanel
+					? null
+					: <div className="start-help">
+						<h5>Random words for story ideas</h5>
+						<ul>{randomWords({exactly:5, wordsPerString:1}).map(rw => <li>{rw}</li>)}</ul>
+					</div>
+				} */}
 			</div>;
 		} else {
 			//Not submitted, not in progress, must have ran out of time
