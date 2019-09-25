@@ -23,6 +23,7 @@ export default class ShareComicPanel extends Component {
 			<input className="input-link" onClick={this.onInputClick} readOnly={true} defaultValue={comicLink}></input>
 			<CopyButton toCopy={comicLink} />
 			<div className="comic-image">
+				<div className="image-fade-overlay"></div>
 				<img className="image-download" src={this.props.comicDataUrl} />
 				{this.props.comicDataUrl
 					? <img className="image-thumbnail" src={this.props.comicDataUrl} />

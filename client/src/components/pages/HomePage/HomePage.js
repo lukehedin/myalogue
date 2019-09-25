@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import S4YButton from '../../UI/S4YButton/S4YButton';
+import ComicList from '../../UI/ComicList/ComicList';
 
 export default class HomePage extends Component {
 	render() {
@@ -21,7 +22,12 @@ export default class HomePage extends Component {
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
-						<h3>Recent Games</h3>
+						<ComicList 
+								sortBy={Util.enum.ComicSortBy.Newest}
+								emptyText={`No recent comics to show! I hope the database didn't explode.`}
+								noMoreText={`Wow. You've read every comic. Are you proud of yourself? You should be!`}
+								title={`Recent comics`} 
+						/>
 					</div>
 				</div>
 			</div>

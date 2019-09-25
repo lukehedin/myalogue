@@ -14,16 +14,22 @@
 	}
 
 	.comic-image {
+
 		position: relative;		
-		width: 140px;
+		max-width: 140px;
+		max-height: 50vh;
 		overflow: hidden;
 
 		.image-download {
 			position: absolute;
 			pointer-events: all;
-			height: 540px;
-			width: 540px;
 			opacity: 0.000001;
+		}
+
+		.image-fade-overlay {
+			@include absoluteCover;
+			$fade-gradient: transparent 80%, $colour-white 90%;
+			@include gradient(top, $fade-gradient);
 		}
 
 		.image-thumbnail {

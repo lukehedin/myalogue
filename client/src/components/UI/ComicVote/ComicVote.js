@@ -8,6 +8,8 @@ export default class ComicVote extends Component {
 		super(props);
 
 		this.state = {
+			isLocked: false,
+
 			value: this.props.defaultValue || 0,
 			rating: this.props.defaultRating || 0
 		};
@@ -15,7 +17,10 @@ export default class ComicVote extends Component {
 		this.setValue = this.setValue.bind(this);
 	}
 	setValue(value) {
+		if(this.state.isLocked) return;
+		
 		this.setState({
+			isLocked: true,
 			value: value,
 			rating: this.state.rating + (value - this.state.value)
 		});
@@ -24,6 +29,11 @@ export default class ComicVote extends Component {
 		Util.api.post('/api/voteComic', {
 			comicId: this.props.comicId,
 			value: value
+		})
+		.then(() => {
+			this.setState({
+				isLocked: false
+			});
 		});
 	}
 	render() {
@@ -31,9 +41,10 @@ export default class ComicVote extends Component {
 
 		let getVoteButton = (value) => {
 			return <Button 
-				leftIcon={value > 0 ? Util.icon.like : Util.icon.dislike} 
-				isHollow={true} 
-				colour={this.state.value !== value ? 'black' : (value !== 0 ? 'pink' : '')} 
+				label={value > 0 ? '😂' : '😒'} 
+				isHollow={value !== this.state.value} 
+				size="sm"
+				colour={value !== this.state.value ? 'grey' : 'grey'}
 				to={isLoggedIn
 					? null
 					: Util.route.register()

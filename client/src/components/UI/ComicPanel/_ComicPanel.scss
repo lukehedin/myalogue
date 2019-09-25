@@ -6,6 +6,8 @@
 	$panel-height: 450px;
 	$panel-dialogue-line-height: 40px;
 	$panel-dialogue-font-size: 36px;
+	$panel-author-line-height: 18px;
+	$panel-author-font-size: 16px;
 
 	$panel-scale-xs: 0.32;
 	$panel-scale-sm: 0.48;
@@ -15,11 +17,17 @@
 	@mixin scaleComicPanel ($scale) {
 		width: calc(#{$panel-width} * #{$scale});
 		height: calc(#{$panel-height} * #{$scale});
+		
 		.dialogue {
 			> * {
 				line-height: calc(#{$panel-dialogue-line-height} * #{$scale});
 				font-size: calc(#{$panel-dialogue-font-size} * #{$scale});
 			}
+		}
+
+		.comic-panel-subtle {
+			line-height: calc(#{$panel-author-line-height} * #{$scale});
+			font-size: calc(#{$panel-author-font-size} * #{$scale});
 		}
 	}
 
@@ -75,6 +83,22 @@
 
 		textarea {
 			resize: none;
+		}
+	}
+
+	.comic-panel-subtle {
+		position: absolute;
+		color: $colour-grey-b;
+		background-color: $colour-white;
+
+		&.comic-panel-id, &.comic-panel-site {
+			bottom: 0;
+			left: 0;
+		}
+
+		&.comic-panel-author {
+			bottom: 0;
+			right: 0;
 		}
 	}
 

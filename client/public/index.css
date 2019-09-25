@@ -85,7 +85,7 @@ body {
             box-shadow: 4px 4px 2px #00000022;
             -webkit-box-shadow: 4px 4px 2px #00000022;
             -moz-box-shadow: 4px 4px 2px #00000022;
-            margin-bottom: 32px; }
+            margin: 32px auto; }
           body .app-container .app .comic-list .comic-list-inner .comic-list-bottom {
             position: relative;
             min-height: 40vh; }
@@ -94,11 +94,9 @@ body {
         flex-direction: row;
         align-items: center; }
         body .app-container .app .comic-vote .rating {
-          margin: 0 4px;
           font-weight: bold;
-          width: 26px; }
-          body .app-container .app .comic-vote .rating.rated {
-            color: #ff0052; }
+          width: 26px;
+          color: #969696; }
       body .app-container .app .comic {
         position: relative;
         background-color: #fff;
@@ -109,16 +107,18 @@ body {
         -webkit-animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
         body .app-container .app .comic .comic-content .paired-comic-panels {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap; }
+          display: inline; }
+          @media screen and (orientation: landscape) {
+            body .app-container .app .comic .comic-content .paired-comic-panels {
+              display: flex;
+              flex-direction: row; } }
         body .app-container .app .comic .comic-content.for-image-capture {
           position: absolute;
           z-index: -1;
           top: 0;
           left: 0; }
         body .app-container .app .comic .comic-lower {
-          padding: 4px 8px;
+          padding: 4px 0;
           display: flex;
           flex-direction: column;
           justify-content: stretch; }
@@ -152,55 +152,79 @@ body {
         body .app-container .app .comic-panel .dialogue > * {
           line-height: calc(40px * 0.32);
           font-size: calc(36px * 0.32); }
+        body .app-container .app .comic-panel .comic-panel-subtle {
+          line-height: calc(18px * 0.32);
+          font-size: calc(16px * 0.32); }
         @media (min-height: 660px) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.48);
             height: calc(450px * 0.48); }
             body .app-container .app .comic-panel .dialogue > * {
               line-height: calc(40px * 0.48);
-              font-size: calc(36px * 0.48); } }
+              font-size: calc(36px * 0.48); }
+            body .app-container .app .comic-panel .comic-panel-subtle {
+              line-height: calc(18px * 0.48);
+              font-size: calc(16px * 0.48); } }
         @media (min-height: 800px) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.64);
             height: calc(450px * 0.64); }
             body .app-container .app .comic-panel .dialogue > * {
               line-height: calc(40px * 0.64);
-              font-size: calc(36px * 0.64); } }
+              font-size: calc(36px * 0.64); }
+            body .app-container .app .comic-panel .comic-panel-subtle {
+              line-height: calc(18px * 0.64);
+              font-size: calc(16px * 0.64); } }
         @media (min-height: 996px) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.68);
             height: calc(450px * 0.68); }
             body .app-container .app .comic-panel .dialogue > * {
               line-height: calc(40px * 0.68);
-              font-size: calc(36px * 0.68); } }
+              font-size: calc(36px * 0.68); }
+            body .app-container .app .comic-panel .comic-panel-subtle {
+              line-height: calc(18px * 0.68);
+              font-size: calc(16px * 0.68); } }
         @media screen and (orientation: landscape) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.32);
             height: calc(450px * 0.32); }
             body .app-container .app .comic-panel .dialogue > * {
               line-height: calc(40px * 0.32);
-              font-size: calc(36px * 0.32); } }
+              font-size: calc(36px * 0.32); }
+            body .app-container .app .comic-panel .comic-panel-subtle {
+              line-height: calc(18px * 0.32);
+              font-size: calc(16px * 0.32); } }
   @media screen and (orientation: landscape) and (min-height: 516px) {
     body .app-container .app .comic-panel {
       width: calc(540px * 0.48);
       height: calc(450px * 0.48); }
       body .app-container .app .comic-panel .dialogue > * {
         line-height: calc(40px * 0.48);
-        font-size: calc(36px * 0.48); } }
+        font-size: calc(36px * 0.48); }
+      body .app-container .app .comic-panel .comic-panel-subtle {
+        line-height: calc(18px * 0.48);
+        font-size: calc(16px * 0.48); } }
   @media screen and (orientation: landscape) and (min-height: 680px) {
     body .app-container .app .comic-panel {
       width: calc(540px * 0.64);
       height: calc(450px * 0.64); }
       body .app-container .app .comic-panel .dialogue > * {
         line-height: calc(40px * 0.64);
-        font-size: calc(36px * 0.64); } }
+        font-size: calc(36px * 0.64); }
+      body .app-container .app .comic-panel .comic-panel-subtle {
+        line-height: calc(18px * 0.64);
+        font-size: calc(16px * 0.64); } }
   @media screen and (orientation: landscape) and (min-height: 800px) {
     body .app-container .app .comic-panel {
       width: calc(540px * 0.68);
       height: calc(450px * 0.68); }
       body .app-container .app .comic-panel .dialogue > * {
         line-height: calc(40px * 0.68);
-        font-size: calc(36px * 0.68); } }
+        font-size: calc(36px * 0.68); }
+      body .app-container .app .comic-panel .comic-panel-subtle {
+        line-height: calc(18px * 0.68);
+        font-size: calc(16px * 0.68); } }
         body .app-container .app .comic-panel > img {
           width: 100%;
           height: 100%; }
@@ -236,6 +260,16 @@ body {
             user-select: none; }
           body .app-container .app .comic-panel .dialogue textarea {
             resize: none; }
+        body .app-container .app .comic-panel .comic-panel-subtle {
+          position: absolute;
+          color: #c8c8c8;
+          background-color: #fff; }
+          body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-id, body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-site {
+            bottom: 0;
+            left: 0; }
+          body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author {
+            bottom: 0;
+            right: 0; }
         body .app-container .app .comic-panel.editing {
           cursor: pointer; }
       body .app-container .app .form-wrapper {
@@ -301,6 +335,26 @@ body {
           margin-left: 8px; }
         body .app-container .app .button .button-label:not(:last-child) {
           margin-right: 8px; }
+        body .app-container .app .button.button-grey.button-hollow {
+          color: #c8c8c8;
+          border-color: #c8c8c8;
+          background-color: transparent; }
+          body .app-container .app .button.button-grey.button-hollow .button-icon path {
+            fill: #c8c8c8; }
+          body .app-container .app .button.button-grey.button-hollow:hover {
+            border-color: #afafaf;
+            color: #afafaf; }
+            body .app-container .app .button.button-grey.button-hollow:hover .button-icon path {
+              fill: #afafaf; }
+        body .app-container .app .button.button-grey.button-solid {
+          color: #fff;
+          border-color: #c8c8c8;
+          background: #c8c8c8; }
+          body .app-container .app .button.button-grey.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-grey.button-solid:hover {
+            border-color: #d7d7d7;
+            background: #d7d7d7; }
         body .app-container .app .button.button-black.button-hollow {
           color: #080808;
           border-color: #080808;
@@ -653,14 +707,23 @@ body {
           width: 240px; }
         body .app-container .app .share-comic-container .comic-image {
           position: relative;
-          width: 140px;
+          max-width: 140px;
+          max-height: 50vh;
           overflow: hidden; }
           body .app-container .app .share-comic-container .comic-image .image-download {
             position: absolute;
             pointer-events: all;
-            height: 540px;
-            width: 540px;
             opacity: 0.000001; }
+          body .app-container .app .share-comic-container .comic-image .image-fade-overlay {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+            background: -webkit-linear-gradient(top, transparent 80%, #fff 90%);
+            background: -moz-linear-gradient(top, transparent 80%, #fff 90%);
+            background: -o-linear-gradient(top, transparent 80%, #fff 90%);
+            background: linear-gradient(top, transparent 80%, #fff 90%); }
           body .app-container .app .share-comic-container .comic-image .image-thumbnail {
             height: 100%;
             width: 100%; }

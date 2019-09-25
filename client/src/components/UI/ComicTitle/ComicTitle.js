@@ -13,6 +13,6 @@ export default class ComicTitle extends Component {
 				: <Link to={Util.route.profile(comic.userId)}>{comic.username}</Link>;
 		}
 		
-		return <span className="comic-title">"{comic.title}" by {getComicAuthorLabel()}</span>;
+		return <span className="comic-title">#{comic.comicId}</span>;
 	}
 }

@@ -20,7 +20,7 @@
 
 		.comic {
 			@include boxShadow(4px, 4px, 2px, #00000022);
-			margin-bottom: $spacing-md;
+			margin: $spacing-md auto;
 		}
 
 		.comic-list-bottom {

@@ -24,7 +24,7 @@ const mapper = {
 			comicPanels: (dbComic.ComicPanels || [])
 				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)
 				.map(mapper.fromDbComicPanel),
-			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length === 1
+			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length > 0
 				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
 				: null
 		}
@@ -32,12 +32,14 @@ const mapper = {
 
 	fromDbComicPanel: (dbComicPanel) => {
 		return {
+			comicId: dbComicPanel.ComicId,
 			comicPanelId: dbComicPanel.ComicPanelId,
 			templatePanelId: dbComicPanel.TemplatePanelId,
 			value: dbComicPanel.Value,
 			userId: dbComicPanel.UserId,
 			username: !dbComicPanel.User ? null : dbComicPanel.User.Username
-		}
+		};
+		
 	},
 
 	fromDbTemplate: (dbTemplate) => {

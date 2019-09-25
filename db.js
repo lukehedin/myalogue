@@ -6,7 +6,7 @@ pg.defaults.ssl = true;
 
 // I think some of these configs might be excessive, but trying to be safe
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-	// logging: false,
+	logging: false,
 	ssl: true,
     dialect: 'postgres',
 	protocol: 'postgres',

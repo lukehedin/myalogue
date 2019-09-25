@@ -4,12 +4,8 @@
     align-items: center;
 
 	.rating {
-		margin: 0 $spacing-xxs;
 		font-weight: bold;
 		width: 26px;
-
-		&.rated {
-			color: $colour-pink-a;
-		}
+		color: $colour-grey-c;
 	}
 }

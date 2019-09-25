@@ -59,15 +59,12 @@ const getAuthResult = (dbUser, callback) => {
 const getDbComicInclude = (db, userId, includeUsers = false) => {
 	let include = [{
 		model: db.ComicPanel,
-		as: 'ComicPanels'
-	}];
-
-	if(includeUsers) {
-		include.include = [{
+		as: 'ComicPanels',
+		include: includeUsers ? [{
 			model: db.User,
 			as: 'User'
-		}];
-	}
+		}] : []
+	}];
 	
 	if(userId) {
 		//Include the user's current vote on the comic
