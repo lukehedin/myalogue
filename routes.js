@@ -88,6 +88,24 @@ const getUnlockedDbTemplatesWhere = (db) => {
 		}
 	};
 };
+const createNotifications = (db, userIds, title, message, comicId) => {
+	//Unique userids
+	userIds = [...new Set(userIds)];
+
+	db.Notification.create({
+		Title: title,
+		Message: message,
+		ComicId: comicId
+	})
+	.then(dbNotification => {
+		db.UserNotification.bulkCreate(userIds.map(userId => {
+			return {
+				NotificationId: dbNotification.NotificationId,
+				UserId: userId
+			};
+		}));
+	});
+}
 const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
 	return moment(new Date()).subtract(3, 'minutes').toDate();
@@ -98,8 +116,6 @@ const getRandomPanelCount = () => {
 };
 
 const routes = {
-
-	//Authentication
 
 	public: {
 		authenticate: (req, res, db) => {
@@ -113,56 +129,20 @@ const routes = {
 				let referenceDataPromises = [
 					db.Template.findAll({
 						where: getUnlockedDbTemplatesWhere(db),
+						paranoid: false, //Include archived templates
 						include: [{
 							model: db.TemplatePanel,
-							as: 'TemplatePanels'
+							as: 'TemplatePanels',
+							paranoid: false //Include archived panels
 						}],
 						order: [[ 'TemplateId', 'DESC' ]]
-					}),
-					new Promise((resolve, reject) => {
-						db.Comic.findAll({
-							where: {
-								CompletedAt: {
-									[db.op.ne]: null
-								}
-							},
-							// a newer comic tie will beat an older comic (it got more ratings in shorter time)
-							order: [[ 'CreatedAt', 'DESC' ]]
-						})
-						.then(dbComics => {
-							//Find the top comics
-							let topComics = {};
-							dbComics.forEach(dbComic => {
-								let currentTop = topComics[dbComic.TemplateId];
-								if(!currentTop || (currentTop && currentTop.Rating <= dbComic.Rating)) {
-									topComics[dbComic.TemplateId] = dbComic;
-								}
-							});
-							let topComicIds = Object.keys(topComics).map(key => topComics[key].ComicId);
-
-							//Get these ones WITH includes
-							db.Comic.findAll({
-								where: {
-									ComicId: {
-										[db.op.in]: topComicIds
-									}
-								},
-								include: getDbComicInclude(db, userId, true),
-							})
-							.then(dbComicsWithInclude => resolve(dbComicsWithInclude))
-							.catch(error => reject(error));
-						})
-						.catch(error => catchError(res, error, db));
 					})
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbTemplates, dbTopComics]) => {
+					.then(([dbTemplates]) => {
 						let result = {
 							referenceData: {
-								topComics: dbTopComics
-									.sort((c1, c2) => c1.TemplateId - c2.TemplateId)
-									.map(mapper.fromDbComic),
 								templates: dbTemplates
 									.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
 									.map(mapper.fromDbTemplate)
@@ -238,9 +218,7 @@ const routes = {
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
-								getAuthResult(dbUser, authResult => {
-									res.json(authResult);
-								});
+								getAuthResult(dbUser, authResult => res.json(authResult));
 							} else {
 								//Invalid password
 								catchError(res, 'Invalid email or password.');
@@ -328,11 +306,27 @@ const routes = {
 			.then((dbUser) => {
 				if(dbUser) {
 					dbUser.VerificationToken = null;
-					dbUser.save();
+					dbUser.save()
+						.then(() => {
+							getAuthResult(dbUser, authResult => res.json(authResult));
+						})
+						.catch(error => catchError(res, error, db));
 
-					getAuthResult(dbUser, authResult => {
-						res.json(authResult);
-					});
+					//Also add a welcome notification
+					db.Notification.findOne({
+						where: {
+							IsWelcomeNotification: true
+						}
+					})
+					.then(dbWelcomeNotificaton => {
+						if(dbWelcomeNotificaton) {
+							db.UserNotification.create({
+								NotificationId: dbWelcomeNotificaton.NotificationId,
+								UserId: dbUser.UserId
+							});
+						}
+					})
+					.catch(error => catchError(res, error, db));
 				} else {
 					catchError(res, 'Account verification failed.');
 				}
@@ -350,16 +344,12 @@ const routes = {
 					VerificationToken: {
 						[db.op.eq]: null
 					},
-					[db.op.or]: [{
-						PasswordResetAt: {
-							//Don't let someone request a password if a request is already in progress
-							[db.op.lte]: moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate()
-						}
-					}, {
-						PasswordResetAt: {
+					PasswordResetAt: { //Don't let someone request a password if a request is already in progress
+						[db.op.or]: {
+							[db.op.lte]: moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate(),
 							[db.op.eq]: null
 						}
-					}]
+					}
 				}
 			})
 			.then(dbUser => {
@@ -406,9 +396,7 @@ const routes = {
 								dbUser.save()
 									.then(() => {
 										//Wait for this save in case it fails
-										getAuthResult(dbUser, authResult => {
-											res.json(authResult);
-										});
+										getAuthResult(dbUser, authResult => res.json(authResult));
 									})
 									.catch(error => catchError(res, error, db));
 							} else {
@@ -453,9 +441,10 @@ const routes = {
 			let userId = req.userId; //Might be null
 
 			let templateId = req.body.templateId;
+			let authorUserId = req.body.authorUserId;
 
-			let idNotIn = req.body.idNotIn || [];
-			let createdAtBefore = req.body.createdAtBefore || new Date();
+			let ignoreComicIds = req.body.ignoreComicIds || [];
+			let completedAtBefore = req.body.completedAtBefore || new Date();
 			let sortBy = req.body.sortBy || 1;
 			let offset = req.body.offset || 0;
 			let limit = req.body.limit || 5;
@@ -473,31 +462,95 @@ const routes = {
 					comicOrder.push([ 'Rating', 'DESC' ]);
 					break;
 			};
-			comicOrder.push([ 'CreatedAt', 'DESC' ]);//Thenby
+			comicOrder.push([ 'CompletedAt', 'DESC' ]);//Thenby
 
 			let comicWhere = {
 				CompletedAt: {
-					[db.op.ne]: null
+					[db.op.ne]: null,
+					[db.op.lte]: completedAtBefore
 				},
-				CreatedAt: {
-					[db.op.lte]: createdAtBefore
-				},
-				ComicId: {
-					[db.op.notIn]: idNotIn
+				ComicId: { //Code below (comicWhere.ComicId = ) relies on this being present
+					[db.op.notIn]: ignoreComicIds
 				}
 			};
-
-			if(templateId) {
-				comicWhere.TemplateId = templateId;
+			if(templateId) comicWhere.TemplateId = templateId;
+			
+			if(authorUserId) {
+				db.ComicPanel.findAll({
+					where: {
+						UserId: authorUserId,
+						ComicCompletedAt: {
+							[db.op.ne]: null,
+							[db.op.lte]: completedAtBefore
+						}
+					}
+				})
+				.then(dbComicPanels => {
+					let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
+					
+					comicWhere.ComicId = {
+						...comicWhere.ComicId,
+						[db.op.in]: comicIds
+					};
+					
+					db.Comic.findAll({
+						where: comicWhere,
+						order: comicOrder,
+						offset: offset,
+						limit: limit,
+						include: getDbComicInclude(db, userId, true)
+					})
+					.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
+					.catch(error => catchError(res, error, db));;
+				})
+			} else {
+				db.Comic.findAll({
+					where: comicWhere,
+					order: comicOrder,
+					offset: offset,
+					limit: limit,
+					include: getDbComicInclude(db, userId, true)
+				})
+				.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
+				.catch(error => catchError(res, error, db));
 			}
+		},
+
+		getTopComics: (req, res, db) => {
+			let userId = req.userId;
+
 			db.Comic.findAll({
-				where: comicWhere,
-				order: comicOrder,
-				offset: offset,
-				limit: limit,
-				include: getDbComicInclude(db, userId, true)
+				where: {
+					CompletedAt: {
+						[db.op.ne]: null
+					}
+				},
+				// a newer comic tie will beat an older comic (it got more ratings in shorter time)
+				order: [[ 'CompletedAt', 'DESC' ]]
 			})
-			.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
+			.then(dbComics => {
+				//Find the top comics
+				let topComics = {};
+				dbComics.forEach(dbComic => {
+					let currentTop = topComics[dbComic.TemplateId];
+					if(!currentTop || (currentTop && currentTop.Rating <= dbComic.Rating)) {
+						topComics[dbComic.TemplateId] = dbComic;
+					}
+				});
+				let topComicIds = Object.keys(topComics).map(key => topComics[key].ComicId);
+
+				//Get these ones WITH includes
+				db.Comic.findAll({
+					where: {
+						ComicId: {
+							[db.op.in]: topComicIds
+						}
+					},
+					include: getDbComicInclude(db, userId, true),
+				})
+				.then(dbComicsWithInclude => res.json(dbComicsWithInclude.map(mapper.fromDbComic)))
+				.catch(error => catchError(res, error, db));
+			})
 			.catch(error => catchError(res, error, db));
 		},
 
@@ -522,84 +575,36 @@ const routes = {
 	},
 
 	private: {
-		changeUsername: (req, res, db) => {
-			let userId = req.userId;
-	
-			let username = req.body.username.trim();
-			let isValidUsername = validator.isLength(username, { min: 3, max: 20 });
-	
-			if(isValidUsername) {
-				db.User.findOne({
-					where: {
-						Username: username
-					}
-				})
-				.then(dbExistingUser => {
-					if(!dbExistingUser) {
-						db.User.update({
-							Username: username,
-							VerificationToken: {
-								[db.op.eq]: null
-							}
-						}, {
-							where: {
-								UserId: userId
-							}
-						})
-					} else {
-		
-					}
-				});
-			} else {
-				catchError(res, 'Invalid username supplied.', db);
-			}
-		},
-
-		setPassword: (req, res, db) => {
-			//Must be logged in
-			let userId = req.userId;
-
-		},
 
 		//Gets a comic in progress or starts new
 		play: (req, res, db) => {
 			let userId = req.userId;
+
 			let templateId = req.body.templateId;
 
 			let comicWhere = {
 				CompletedAt: {
 					[db.op.eq]: null //Incomplete comics
 				},
-				[db.op.or]: [{ //Where I wasn't the last author
-					LastAuthorUserId: {
+				LastAuthorUserId: { //Where I wasn't the last author
+					[db.op.or]: {
+						[db.op.ne]: userId,
 						[db.op.eq]: null
 					}
-				}, {
-					LastAuthorUserId: {
-						[db.op.ne]: userId
-					}
-				}],
-				[db.op.or]: [{ //Where I wasn't the last lock (even if the lock expired - helps keep the comics in rotation)
-					LockedByUserId: {
+				},
+				LockedByUserId: { //Where I wasn't the last lock (even if the lock expired - helps keep the comics in rotation)
+					[db.op.or]: {
+						[db.op.ne]: userId,
 						[db.op.eq]: null
 					}
-				}, {
-					LockedByUserId: {
-						[db.op.ne]: userId
-					}
-				}],
-				[db.op.or]: [{ //That aren't in the lock window (currently being edited)
-					LockedAt: {
+				},
+				LockedAt: { //That aren't in the lock window (currently being edited)
+					[db.op.or]: {
+						[db.op.lte]: getComicLockWindow(),
 						[db.op.eq]: null
 					}
-				}, {
-					LockedAt: {
-						[db.op.lte]: getComicLockWindow()
-					}
-				}]
+				}
 			};
-
-			console.log(getComicLockWindow());
 
 			if(templateId) comicWhere.TemplateId = template;
 
@@ -616,19 +621,24 @@ const routes = {
 				//Function used below for an existing or new comic
 				const prepareComicForPlay = (dbComic) => {
 					return new Promise((resolve, reject) => {
-						let currentComicPanel = dbComic.ComicPanels && dbComic.ComicPanels.length
+						let currentComicPanel = dbComic.ComicPanels && dbComic.ComicPanels.length > 0
 							? dbComic.ComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[dbComic.ComicPanels.length - 1]
 							: null;
-						let isLast = !!currentComicPanel
-							? dbComic.ComicPanels.length === (dbComic.PanelCount - 1)
-							: false;
+						let isFirst = !currentComicPanel;
+						let isLast = dbComic.ComicPanels && dbComic.ComicPanels.length + 1 === dbComic.PanelCount;
+							
+						let templatePanelWhere = {
+							TemplateId: dbComic.TemplateId
+						};
+
+						//Certain panels only show up in the first or last position
+						if(!isFirst) templatePanelWhere.IsFirstOnly = false;
+						if(!isLast) templatePanelWhere.IsLastOnly = false;
 
 						db.TemplatePanel.findAll({
 							limit: 1,
 							order: [db.fn('RANDOM')],
-							where: {
-								TemplateId: dbComic.TemplateId
-							}
+							where: templatePanelWhere
 						})
 						.then(dbTemplatePanels => {
 							let dbTemplatePanel = dbTemplatePanels[0];
@@ -643,8 +653,7 @@ const routes = {
 									templatePanelId: dbTemplatePanel.TemplatePanelId,
 									currentComicPanel: currentComicPanel 
 										? mapper.fromDbComicPanel(currentComicPanel) 
-										: null,
-									isLast: isLast
+										: null
 								}))
 								.catch(error => reject(error));
 
@@ -735,6 +744,10 @@ const routes = {
 										ComicId: dbComic.ComicId
 									}
 								});
+
+								//Notify other panel creators, but not this one.
+								let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
+								createNotifications(db, notifyUserIds, `Comic #${dbComic.ComicId} completed!`, `A comic you made a panel for has been completed. Click here to view the comic.`, dbComic.ComicId);
 							}
 
 							dbComic.LockedAt = null;
@@ -760,7 +773,6 @@ const routes = {
 			.catch(error => catchError(res, error, db));
 		},
 
-		//Comics
 		voteComic: (req, res, db) => {
 			let userId = req.userId;
 			let comicId = req.body.comicId;
@@ -830,6 +842,89 @@ const routes = {
 				.catch(error => catchError(res, error, db));
 			}
 		},
+
+		getNotifications: (req, res, db) => {
+			let userId = req.userId;
+
+			let lastCheckedAt = req.body.lastCheckedAt;
+
+			let notificationWhere = {
+				UserId: userId
+			};
+
+			if(lastCheckedAt) {
+				notificationWhere = {
+					...notificationWhere,
+					CreatedAt: {
+						[db.op.gte]: lastCheckedAt
+					}
+				};
+			} else {
+				//First request
+				notificationWhere = {
+					...notificationWhere,
+					[db.op.or]: [{
+						CreatedAt: {
+							[db.op.gte]: moment().subtract(2, 'days').toDate()
+						}
+					}, {
+						SeenAt: {
+							[db.op.eq]: null
+						}
+					}]
+				};
+			}
+
+			db.UserNotification.findAll({
+				where: notificationWhere,
+				include: [{
+					model: db.Notification,
+					as: 'Notification'
+				}]
+			})
+			.then(dbUserNotifications => res.json(dbUserNotifications.map(mapper.fromDbUserNotification)))
+			.catch(error => catchError(res, error, db));
+		},
+
+		seenNotifications: (req, res, db) => {
+			let userId = req.userId;
+			let userNotificationIds = req.body.userNotificationIds;
+
+			db.UserNotification.update({
+				SeenAt: new Date()
+			}, {
+				where: {
+					SeenAt: {
+						[db.op.eq]: null
+					},
+					UserId: userId,
+					UserNotificationId: {
+						[db.op.in]: userNotificationIds
+					}
+				}
+			});
+
+			res.json({ success: true });
+		},
+
+		actionedUserNotification: (req, res, db) => {
+			let userId = req.userId;
+			let userNotificationId = req.body.userNotificationId;
+
+			db.UserNotification.update({
+				ActionedAt: new Date()
+			}, {
+				where: {
+					ActionedAt: {
+						[db.op.eq]: null
+					},
+					UserId: userId,
+					UserNotificationId: userNotificationId
+				}
+			});
+
+			res.json({ success: true });
+		}
 	
 		// commentComic: (req, res, db) => {
 		// 	let userId = req.userId;
@@ -860,6 +955,46 @@ const routes = {
 		// 	res.json({ success: true });
 
 		// }
+
+		
+		// changeUsername: (req, res, db) => {
+		// 	let userId = req.userId;
+	
+		// 	let username = req.body.username.trim();
+		// 	let isValidUsername = validator.isLength(username, { min: 3, max: 20 });
+	
+		// 	if(isValidUsername) {
+		// 		db.User.findOne({
+		// 			where: {
+		// 				Username: username
+		// 			}
+		// 		})
+		// 		.then(dbExistingUser => {
+		// 			if(!dbExistingUser) {
+		// 				db.User.update({
+		// 					Username: username,
+		// 					VerificationToken: {
+		// 						[db.op.eq]: null
+		// 					}
+		// 				}, {
+		// 					where: {
+		// 						UserId: userId
+		// 					}
+		// 				})
+		// 			} else {
+		
+		// 			}
+		// 		});
+		// 	} else {
+		// 		catchError(res, 'Invalid username supplied.', db);
+		// 	}
+		// },
+
+		// setPassword: (req, res, db) => {
+		// 	//Must be logged in
+		// 	let userId = req.userId;
+
+		// },
 	}
 };
 

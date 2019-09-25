@@ -51,6 +51,13 @@ export default class ComicPage extends Component {
 	}
 	render() {
 		return <div className="page-comic">
+			<div className="panel-standard">
+				<div className="container">
+					<div className="row">
+						<h2>Comic #{this.props.comicId}</h2>
+					</div>
+				</div>
+			</div>
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
@@ -74,12 +81,13 @@ export default class ComicPage extends Component {
 						{!this.state.isLoading
 							? <div className="template-feed">
 								<ComicList
-									skipTopComic={true}
+									title="Other comics using this template"
 									emptyText={`No other comics have been made with this template.`}
 									noMoreText={`Phew! That's all the comics that have been made using this template.`}
 									fetchDelay={700} //Prevent fast nav spamming
 									sortBy={Util.enum.ComicSortBy.Random}
 									templateId={this.state.comic.templateId}
+									ignoreComicIds={[this.props.comicId]}
 								/>
 							</div>
 							: null

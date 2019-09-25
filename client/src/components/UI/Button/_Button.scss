@@ -74,15 +74,15 @@
 	}
 
 	&.button-green {
-		@include colourizeButton($colour-green-b);
+		@include colourizeButton($colour-green);
 	}
 
 	&.button-red {
-		@include colourizeButton($colour-red-a);
+		@include colourizeButton($colour-red);
 	}
 
 	&.button-pink {
-		@include colourizeButton($colour-pink-a);
+		@include colourizeButton($colour-pink);
 	}
 
 	&.button-white {
@@ -90,10 +90,10 @@
 		
 		&.button-hollow {
 			&:hover {
-				border-color: $colour-pink-a;
-				color: $colour-pink-a;
+				border-color: $colour-pink;
+				color: $colour-pink;
 				.button-icon {
-					@include svgColourStroke($colour-pink-a);
+					@include svgColourStroke($colour-pink);
 				}
 			}
 		}

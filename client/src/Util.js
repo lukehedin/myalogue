@@ -74,10 +74,7 @@ const Util = {
 		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
 		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
 		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
-		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
-
-		getTopComics: () => Util.context._referenceData.topComics,
-		getTopComicByTemplateId: (templateId) => Util.context._referenceData.topComics.find(comic => comic.templateId === templateId)
+		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId]
 	},
 
 	analytics: {

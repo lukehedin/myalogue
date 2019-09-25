@@ -16,7 +16,7 @@ export default class ComicList extends Component {
 			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
-			createdAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!
+			completedAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!
 			
 			comics: [],
 			isNoMore: false
@@ -39,7 +39,7 @@ export default class ComicList extends Component {
 		clearTimeout(this.fetchTimeout);
 
 		this.setState({
-			createdAtBefore: new Date(),
+			completedAtBefore: new Date(),
 			offset: 0,
 			isNoMore: false,
 			comics: []
@@ -65,24 +65,22 @@ export default class ComicList extends Component {
 				templateId: templateId,
 				authorUserId: this.props.authorUserId,
 
-				createdAtBefore: this.state.createdAtBefore,
+				completedAtBefore: this.state.completedAtBefore,
 				sortBy: this.state.sortBy,
 				limit: this.state.limit,
 				offset: isRandomSort ? 0 : this.state.offset,
-				idNotIn: isRandomSort
-					? this.state.comics.map(comic => comic.comicId)
-					: []
+				ignoreComicIds: [
+					...(this.props.ignoreComicIds || []),
+					...(isRandomSort
+						? this.state.comics.map(comic => comic.comicId)
+						: [])
+					]
 			})
 			.then(result => {
 				if(!result.error) {
 					//There is a reasonable chance the selected template has changed since the request began
 					//There will be another request lagging behind, so don't do anything and wait for that one
 					if(templateId === this.props.templateId) {
-						if(this.props.skipTopComic) {
-							let topComic = Util.context.getTopComicByTemplateId(templateId);
-							if(topComic) result = result.filter(comic => comic.comicId !== topComic.comicId);
-						}
-	
 						this.setState({
 							comics: [...this.state.comics, ...result],
 							isLoading: false,

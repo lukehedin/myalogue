@@ -1,0 +1,51 @@
+.notification-menu {
+	.context-menu-content {
+		width: 200px;
+	}
+
+	.notification-content {
+		font-size: 12px;
+		max-height: 300px;
+		overflow-y: auto;
+	
+		.notification {
+			padding: $spacing-xs;
+			position: relative;
+
+			&.actionable {
+				background-color: $colour-light-pink;
+			}
+
+			.title {
+				margin: 0;
+				font-weight: bold;
+			}
+
+			.message, .date {
+				margin: 0;
+				margin-top: $spacing-xs;
+			}
+
+			.link {
+				@include absoluteCover;
+			}
+
+			&.linked {
+				&:hover {
+					color: $colour-pink;
+				}
+			}
+			&:not(.linked) {
+				color: $colour-grey-d;
+			}
+
+			&:not(:first-child) {
+				border-top: 1px solid $colour-grey-b;
+			}
+		}
+
+		>.empty-text {
+			padding: $spacing-sm;
+		}
+	}	
+}

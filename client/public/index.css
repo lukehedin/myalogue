@@ -44,10 +44,13 @@ body {
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
+          body .app-container .app .app-header .app-header-inner .notification-button {
+            margin-right: 4px; }
           body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
             text-overflow: ellipsis;
             overflow: hidden;
-            max-width: 150px; }
+            max-width: 110px;
+            white-space: nowrap; }
             @media (min-width: 768px) {
               body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
                 max-width: none; } }
@@ -82,10 +85,7 @@ body {
           flex-direction: column;
           align-items: center; }
           body .app-container .app .comic-list .comic-list-inner .comic {
-            box-shadow: 4px 4px 2px #00000022;
-            -webkit-box-shadow: 4px 4px 2px #00000022;
-            -moz-box-shadow: 4px 4px 2px #00000022;
-            margin: 32px auto; }
+            margin-bottom: 32px; }
           body .app-container .app .comic-list .comic-list-inner .comic-list-bottom {
             position: relative;
             min-height: 40vh; }
@@ -99,24 +99,28 @@ body {
           color: #969696; }
       body .app-container .app .comic {
         position: relative;
-        background-color: #fff;
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
         overflow: hidden;
         -webkit-animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-        body .app-container .app .comic .comic-content .paired-comic-panels {
-          display: inline; }
-          @media screen and (orientation: landscape) {
-            body .app-container .app .comic .comic-content .paired-comic-panels {
-              display: flex;
-              flex-direction: row; } }
-        body .app-container .app .comic .comic-content.for-image-capture {
-          position: absolute;
-          z-index: -1;
-          top: 0;
-          left: 0; }
+        body .app-container .app .comic .comic-content {
+          cursor: pointer;
+          border: 1px solid #c8c8c8;
+          background-color: #fff;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          position: relative; }
+          body .app-container .app .comic .comic-content .paired-comic-panels {
+            display: inline; }
+            @media screen and (orientation: landscape) {
+              body .app-container .app .comic .comic-content .paired-comic-panels {
+                display: flex;
+                flex-direction: row; } }
+          body .app-container .app .comic .comic-content.for-image-capture {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0; }
         body .app-container .app .comic .comic-lower {
           padding: 4px 0;
           display: flex;
@@ -264,7 +268,7 @@ body {
           position: absolute;
           color: #c8c8c8;
           background-color: #fff; }
-          body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-id, body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-site {
+          body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-id {
             bottom: 0;
             left: 0; }
           body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author {
@@ -666,10 +670,12 @@ body {
       body .app-container .app .context-menu {
         position: relative;
         cursor: pointer; }
-        body .app-container .app .context-menu .menu-items {
+        body .app-container .app .context-menu .context-menu-content {
+          color: #080808;
+          cursor: default;
           position: absolute;
           z-index: 5;
-          top: 100%;
+          top: calc(100% + 4px);
           background-color: #fff;
           border: 1px solid #c8c8c8;
           border-radius: 4px;
@@ -680,23 +686,27 @@ body {
           box-shadow: 4px 4px 4px #00000022;
           -webkit-box-shadow: 4px 4px 4px #00000022;
           -moz-box-shadow: 4px 4px 4px #00000022; }
-          body .app-container .app .context-menu .menu-items.open {
+          body .app-container .app .context-menu .context-menu-content.open {
             display: flex;
             flex-direction: column; }
-          body .app-container .app .context-menu .menu-items .menu-item {
-            padding: 8px 16px;
-            color: #080808;
-            text-align: left;
-            font-size: 14px; }
-            body .app-container .app .context-menu .menu-items .menu-item:not(:first-child) {
-              border-top: 1px solid #c8c8c8; }
-            body .app-container .app .context-menu .menu-items .menu-item:hover {
-              color: #ff0052;
-              text-decoration: none; }
-        body .app-container .app .context-menu.left .menu-items {
-          left: 0; }
-        body .app-container .app .context-menu.right .menu-items {
-          right: 0; }
+          body .app-container .app .context-menu .context-menu-content.left {
+            left: 0; }
+          body .app-container .app .context-menu .context-menu-content.right {
+            right: 0; }
+          body .app-container .app .context-menu .context-menu-content .menu-items {
+            display: flex;
+            flex-direction: column; }
+            body .app-container .app .context-menu .context-menu-content .menu-items .menu-item {
+              padding: 8px 16px;
+              color: #080808;
+              text-align: left;
+              font-size: 14px;
+              cursor: pointer; }
+              body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:not(:first-child) {
+                border-top: 1px solid #c8c8c8; }
+              body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover {
+                color: #ff0052;
+                text-decoration: none; }
       body .app-container .app .share-comic-container {
         display: flex;
         flex-direction: column;
@@ -727,6 +737,37 @@ body {
           body .app-container .app .share-comic-container .comic-image .image-thumbnail {
             height: 100%;
             width: 100%; }
+      body .app-container .app .notification-menu .context-menu-content {
+        width: 200px; }
+      body .app-container .app .notification-menu .notification-content {
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto; }
+        body .app-container .app .notification-menu .notification-content .notification {
+          padding: 8px;
+          position: relative; }
+          body .app-container .app .notification-menu .notification-content .notification.actionable {
+            background-color: #ffedf3; }
+          body .app-container .app .notification-menu .notification-content .notification .title {
+            margin: 0;
+            font-weight: bold; }
+          body .app-container .app .notification-menu .notification-content .notification .message, body .app-container .app .notification-menu .notification-content .notification .date {
+            margin: 0;
+            margin-top: 8px; }
+          body .app-container .app .notification-menu .notification-content .notification .link {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0; }
+          body .app-container .app .notification-menu .notification-content .notification.linked:hover {
+            color: #ff0052; }
+          body .app-container .app .notification-menu .notification-content .notification:not(.linked) {
+            color: #777777; }
+          body .app-container .app .notification-menu .notification-content .notification:not(:first-child) {
+            border-top: 1px solid #c8c8c8; }
+        body .app-container .app .notification-menu .notification-content > .empty-text {
+          padding: 16px; }
       body .app-container .app .page-comic .comic-highlight-inner {
         position: relative;
         min-height: 60vh;
@@ -763,7 +804,7 @@ body {
         body .app-container .app [class^="page-"] .page-subtitle {
           text-align: center;
           margin: 0 auto 16px auto;
-          color: #373737; }
+          color: #777777; }
 
 @keyframes loader-spin {
   0% {
@@ -816,10 +857,7 @@ body {
       -ms-user-select: none;
       user-select: none; }
     body .app-container [class^="panel-"] {
-      padding: 8px 0; }
-      @media (min-width: 768px) {
-        body .app-container [class^="panel-"] {
-          padding: 16px 0; } }
+      padding: 16px 0; }
       body .app-container [class^="panel-"].panel-inset {
         margin-left: -16px;
         margin-right: -16px;
@@ -873,19 +911,19 @@ body {
       body .app-container p.empty-text {
         font-size: 14px;
         text-align: center;
-        color: #373737; }
+        color: #777777; }
       body .app-container p:first-child {
         margin-top: 0; }
       body .app-container p:last-child {
         margin-bottom: 0; }
       body .app-container p.center {
         text-align: center; }
-    body .app-container a, body .app-container .dead-link {
-      text-decoration: none;
-      color: #ff0052; }
-      body .app-container a:not(.dead-link), body .app-container .dead-link:not(.dead-link) {
+    body .app-container a, body .app-container .faux-link {
+      text-decoration: none; }
+      body .app-container a:not(.link-no-style), body .app-container .faux-link:not(.link-no-style) {
+        color: #ff0052;
         cursor: pointer; }
-        body .app-container a:not(.dead-link):hover, body .app-container .dead-link:not(.dead-link):hover {
+        body .app-container a:not(.link-no-style):hover, body .app-container .faux-link:not(.link-no-style):hover {
           text-decoration: underline; }
     body .app-container h4 {
       font-weight: normal; }

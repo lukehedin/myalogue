@@ -12,7 +12,7 @@ export default class HomePage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Speak 4 Yourself</h2>
-						<p className="center">A multiplayer game about making comics without knowing the whole plot.</p>
+						<p className="center">A multiplayer game where players take turns continuing the story in a comic, while only having the previous panel to work out the overall plot.</p>
 						<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
@@ -24,7 +24,7 @@ export default class HomePage extends Component {
 					<div className="row">
 						<ComicList 
 								sortBy={Util.enum.ComicSortBy.Newest}
-								emptyText={`No recent comics to show! I hope the database didn't explode.`}
+								emptyText={`No recent comics to show! There better be a good reason for this...`}
 								noMoreText={`Wow. You've read every comic. Are you proud of yourself? You should be!`}
 								title={`Recent comics`} 
 						/>

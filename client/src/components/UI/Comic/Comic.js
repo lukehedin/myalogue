@@ -85,14 +85,13 @@ class Comic extends Component {
 			} else {
 				comicPanelsPaired.push(<div key={idx} className="paired-comic-panels">
 					{heldPanel}
-					<ComicPanel comicPanel={comicPanel} includeSite={idx === this.state.comic.comicPanels.length - 1} />
+					<ComicPanel comicPanel={comicPanel} />
 				</div>);
 				heldPanel = null;
 			}
 		});
 
 		return <div className="comic">
-			{this.state.isLoading ? <div className="loader masked"></div> : null}
 			<div className="comic-content no-select"
 				ref={this.comicContentRef}
 				onTouchStart={() => this.startShareTimeout()}
@@ -100,6 +99,7 @@ class Comic extends Component {
 				onMouseDown={() => this.openShareComicModal()}
 			>
 				{comicPanelsPaired.map(comicPanelPair => comicPanelPair)}
+				{this.state.isLoading ? <div className="loader masked"></div> : null}
 			</div>
 			<div className="comic-lower">
 				<div className="comic-lower-inner">

@@ -19,7 +19,7 @@ export default class ShareComicPanel extends Component {
 		let comicLink = Util.route.getHost() + Util.route.comic(this.props.comic.comicId);
 
 		return <div className="share-comic-container">
-			<h4><ComicTitle comic={this.props.comic} /></h4>
+			<h4>Comic #{this.props.comic.comicId}</h4>
 			<input className="input-link" onClick={this.onInputClick} readOnly={true} defaultValue={comicLink}></input>
 			<CopyButton toCopy={comicLink} />
 			<div className="comic-image">

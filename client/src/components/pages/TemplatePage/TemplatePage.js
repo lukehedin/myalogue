@@ -48,32 +48,13 @@ export default class TemplatePage extends Component {
 					</div>
 				</div>
 			</div>
-			{!this.state.isLoading 
-				? <div className="panel-inset">
-					<div className="container">
-						<div className="row">
-							<div className="template-highlight-inner">
-								<div>
-									{this.props.comicId && !this.state.comic 
-										? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can make a new one right now!</p>
-										: null
-									}
-									<Comic key={this.state.templateId} comic={Util.context.getTopComicByTemplateId(this.state.template.templateId)} />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				: null
-			}
-			<div className="panel-standard panel-template-feed">
+			<div className="panel-inset panel-template-feed">
 				<div className="container">
 					<div className="row">
 						{!this.state.isLoading
 							? <div className="template-feed">
 								<TemplateNavigation toFn={Util.route.template} templateId={this.state.templateId} />
 								<ComicList
-									skipTopComic={true}
 									emptyText={`No other comics have been made using this template.`}
 									noMoreText={`Phew! That's all the comics that have been made using this template.`}
 									fetchDelay={700} //Prevent fast nav spamming

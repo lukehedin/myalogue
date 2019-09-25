@@ -24,7 +24,7 @@
 			@include svgColourStroke($colour-white);
 
 			&:hover {
-				@include svgColourStroke($colour-pink-a);
+				@include svgColourStroke($colour-pink);
 			}
 		}
 	}

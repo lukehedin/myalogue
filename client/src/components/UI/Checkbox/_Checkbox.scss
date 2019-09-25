@@ -83,13 +83,13 @@
 
 	&.checked {
 		.checkmark {
-			background-color: $colour-pink-a;
+			background-color: $colour-pink;
 			color: $colour-white;
 		}
 
 		&:hover {
 			.checkmark {
-				background-color: lighten($colour-pink-a, 6);
+				background-color: lighten($colour-pink, 6);
 			}
 		}
 	}
@@ -120,7 +120,7 @@
 		&.checked {
 			.checkbox-inner {
 				.checkmark {
-					background-color: $colour-pink-a;
+					background-color: $colour-pink;
 				}
 			}
 		}

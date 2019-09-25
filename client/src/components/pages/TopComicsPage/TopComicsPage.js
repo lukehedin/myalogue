@@ -8,6 +8,28 @@ import Button from '../../UI/Button/Button';
 import ComicTitle from '../../UI/ComicTitle/ComicTitle';
 
 export default class TopComicsPage extends Component {
+	constructor(props){
+		super(props);
+
+		this.state = {
+			isLoading: true,
+			topComics: []
+		}
+	}
+	componentDidMount() {
+		Util.api.post('/api/getTopComics')
+			.then(result => {
+				if(!result.error) {
+					this.setState({
+						topComics: result
+					});
+				}
+
+				this.setState({
+					isLoading: false
+				})
+			});
+	}
 	render() {
 		return <div className="page-hall-of-fame">
 			<div className="panel-standard">
@@ -21,22 +43,27 @@ export default class TopComicsPage extends Component {
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
-						<table className="hall-of-fame-table">
-							<tbody>
-								{Util.context.getTopComics().map(comic => {
-									let template = Util.context.getTemplateById(comic.templateId);
-									return <tr key={comic.templateId} className="hall-of-fame-list-item">
-										<td>
-											<p className="sm"><b>Template {comic.templateId}</b>: <ComicTitle comic={comic} /> ({comic.rating})</p>
-											<p className="sm">{template.description}</p>
-										</td>
-										<td className="cell-button">
-											<Button to={Util.route.template(comic.templateId)} label="View" colour="black" />
-										</td>
-									</tr>
-								})}
-							</tbody>
-						</table>
+						{this.state.isLoading
+							? <div className="loader"></div>
+							: Util.array.any(this.state.topComics)
+								? <table className="hall-of-fame-table">
+									<tbody>
+										{this.state.topComics.map(comic => {
+											let template = Util.context.getTemplateById(comic.templateId);
+											return <tr key={comic.templateId} className="hall-of-fame-list-item">
+												<td>
+													<p className="sm"><b>Template {comic.templateId}</b>: Comic #{comic.comicId} ({comic.rating})</p>
+													<p className="sm">{template.description}</p>
+												</td>
+												<td className="cell-button">
+													<Button to={Util.route.template(comic.templateId)} label="View" colour="black" />
+												</td>
+											</tr>
+										})}
+									</tbody>
+								</table>
+							: <p className="empty-text align-center">No top comics to show.</p>
+						}
 					</div>
 				</div>
 			</div>

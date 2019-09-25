@@ -20,7 +20,7 @@
 				@include svgColourStroke($colour-white);
 
 				&:hover {
-					@include svgColourStroke($colour-pink-a);
+					@include svgColourStroke($colour-pink);
 				}
 			}
 		}
@@ -35,11 +35,16 @@
 			margin: 0;
 		}
 
+		.notification-button {
+			margin-right: $spacing-xxs;
+		}
+
 		.user-name-button {
 			.button-label {
 				text-overflow: ellipsis;
 				overflow: hidden;
-				max-width: 150px;
+				max-width: 110px;
+				white-space: nowrap;
 				@include overmd {
 					max-width: none;
 				}

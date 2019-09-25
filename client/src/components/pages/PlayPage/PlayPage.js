@@ -7,7 +7,7 @@ import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import Button from '../../UI/Button/Button';
 import S4YButton from '../../UI/S4YButton/S4YButton';
 
-const playTimerMins = 10;
+const playTimerMins = 2;
 
 export default class PlayPage extends Component {
 	constructor(props) {
@@ -149,14 +149,16 @@ export default class PlayPage extends Component {
 					 ?<div>
 						<h2>Panel created!</h2>
 						{this.state.completedComicId
-							? <p className="center">The comic has been completed!</p>
-							: <p className="center">Your panel was created. The comic isn't complete yet, but you'll get a notification when it's ready.</p>
+							? <p className="center">Your panel was created and the comic has been completed! You can now view the whole comic.</p>
+							: <p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
+						}
+						{this.state.completedComicId
+							? <div className="button-container justify-center">
+								<Button to={Util.route.comic(this.state.completedComicId)} label="View comic" colour="black" size="lg" />
+							</div>
+							: null
 						}
 						<div className="button-container justify-center">
-							{this.state.completedComicId
-								? <Button to={Util.route.comic(this.state.completedComicId)} label="View comic" colour="black" size="lg" />
-								: null
-							}
 							<S4YButton label="Play again" onClick={this.playNew} size="lg" />
 						</div>
 					</div>				

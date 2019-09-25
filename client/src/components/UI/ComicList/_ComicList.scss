@@ -19,8 +19,7 @@
 		align-items: center;
 
 		.comic {
-			@include boxShadow(4px, 4px, 2px, #00000022);
-			margin: $spacing-md auto;
+			margin-bottom: $spacing-md;
 		}
 
 		.comic-list-bottom {

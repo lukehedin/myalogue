@@ -75,7 +75,7 @@ body {
 					content: '';
 					position: absolute;
 					border: 4px solid transparent;
-					border-top: 4px solid $colour-pink-a;
+					border-top: 4px solid $colour-pink;
 					border-radius: 50%;
 					width: 32px;
 					height: 32px;
@@ -106,10 +106,7 @@ body {
 		}
 		
 		[class^="panel-"] {
-			padding: $spacing-xs 0;
-			@include overmd {
-				padding: $spacing-sm 0;
-			}
+			padding: $spacing-sm 0;
 			
 			&.panel-inset {
 				//Hide side boxshadows
@@ -199,11 +196,10 @@ body {
 			}
 		}
 
-		a, .dead-link {
+		a, .faux-link {
 			text-decoration: none;
-			color: $colour-pink-a;
-
-			&:not(.dead-link) {
+			&:not(.link-no-style) {
+				color: $colour-pink;
 				cursor: pointer;
 				&:hover {
 					text-decoration: underline;

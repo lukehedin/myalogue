@@ -33,7 +33,7 @@
 			
 			&.error {
 				@include textInputs {
-					border-color: $colour-red-a;
+					border-color: $colour-red;
 				}
 			}
 		}
@@ -53,7 +53,7 @@
 
 	.field-error {
 		margin-top: $spacing-xxs;
-		color: $colour-red-a;
+		color: $colour-red;
 		font-size: 12px;
 
 		text-align: left;		

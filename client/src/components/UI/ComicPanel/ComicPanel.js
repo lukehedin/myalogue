@@ -62,12 +62,8 @@ export default class ComicPanel extends Component {
 					: <div>{this.state.dialogue}</div>
 				}
 			</div>
-			{!isEditing && this.props.includeSite
-				? <div className="comic-panel-site comic-panel-subtle">{Util.route.getHost()}</div> 
-				: null
-			}
 			{!isEditing && this.props.includeComicId
-				? <div className="comic-panel-id comic-panel-subtle">#{this.props.comicPanel.comicId}</div> 
+				? <div className="comic-panel-id comic-panel-subtle">Comic #{this.props.comicPanel.comicId} {Util.route.getHost()}</div> 
 				: null
 			}
 			{!isEditing && this.props.comicPanel.username 

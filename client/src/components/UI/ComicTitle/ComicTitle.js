@@ -9,7 +9,7 @@ export default class ComicTitle extends Component {
 		let getComicAuthorLabel = () => {
 			if(!comic.userId) return <span>{comic.username || 'TODO'}</span>;
 			return this.props.isFakeLink
-				? <span className="dead-link">{comic.username}</span>
+				? <span className="faux-link">{comic.username}</span>
 				: <Link to={Util.route.profile(comic.userId)}>{comic.username}</Link>;
 		}
 		

@@ -7,6 +7,7 @@ import logo from '../../../images/logo_white.png';
 
 import Button from '../Button/Button';
 import ContextMenu from '../ContextMenu/ContextMenu';
+import NotificationMenu from '../NotificationMenu/NotificationMenu';
 
 export default class AppHeader extends Component {
 	constructor(props) {
@@ -39,7 +40,10 @@ export default class AppHeader extends Component {
 						</ContextMenu>
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
-						
+						{Util.context.isAuthenticated()
+							? <NotificationMenu />
+							: null
+						}
 						{Util.context.isAuthenticated()
 							? <ContextMenu align="right" className="app-menu" menuItems={[{
 								label: 'Profile',

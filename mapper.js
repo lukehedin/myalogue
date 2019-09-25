@@ -65,6 +65,21 @@ const mapper = {
 			max: dbTemplatePanel.Max,
 			image: dbTemplatePanel.Image
 		};
+	},
+
+	fromDbUserNotification: (dbUserNotification) => {
+		let isActionable = !dbUserNotification.ActionedAt 
+			&& !!dbUserNotification.Notification.ComicId;
+
+		return {
+			userNotificationId: dbUserNotification.UserNotificationId,
+			isSeen: !!dbUserNotification.SeenAt,
+			isActionable: isActionable,
+			createdAt: dbUserNotification.Notification.CreatedAt,
+			title: dbUserNotification.Notification.Title,
+			message: dbUserNotification.Notification.Message,
+			comicId: dbUserNotification.Notification.ComicId
+		}
 	}
 };
 

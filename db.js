@@ -23,7 +23,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 const defineTable = (name, attributes, isParanoid = false) => {
 	let options = isParanoid
 		? {
-			deletedAt: 'DeletedAt',
+			deletedAt: 'ArchivedAt',
 			paranoid: true
 		}
 		: {};
@@ -88,16 +88,20 @@ let db = {
 	
 	Notification: defineTable('Notification', {
 		Type: Sequelize.INTEGER,
-		Message: Sequelize.TEXT
+		Title: Sequelize.STRING,
+		Message: Sequelize.TEXT,
+		IsWelcomeNotification: getBoooleanNotNull()
 	}),
 
 	UserNotification: defineTable('UserNotification', {
-
+		SeenAt: Sequelize.DATE,
+		ActionedAt: Sequelize.DATE
 	}),
 
 	Template: defineTable('Template', {
-		Description: Sequelize.TEXT,
-		UnlockedAt: Sequelize.DATE
+		UnlockedAt: Sequelize.DATE,
+		Name: Sequelize.STRING,
+		Ordinal: Sequelize.INTEGER
 	}, true),
 
 	TemplatePanel: defineTable('TemplatePanel', {
@@ -107,12 +111,10 @@ let db = {
 		PositionY: Sequelize.INTEGER,
 		Image: Sequelize.STRING,
 		Ordinal: Sequelize.INTEGER, //optional
-
-		// Each comic can have 4 or 8 panels. These quarters (1-4) are scaled by that factor
-		// Eg. a comic with 8 panels turns QuarterMax: 1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8
-		// QuarterMin: Sequelize.INTEGER, // 3 = only appears in first three panels
-		// QuarterMax: Sequelize.INTEGER // 2 = only appears in last two panels
-	}),
+		Description: Sequelize.TEXT,
+		IsLastOnly: getBoooleanNotNull(),
+		IsFirstOnly: getBoooleanNotNull()
+	}, true),
 	
 	Comic: defineTable('Comic', {
 		CompletedAt: Sequelize.DATE,
@@ -160,6 +162,7 @@ let createOneToMany = (belongsToTableName, hasManyTableName, belongsToAlias, has
 createOneToMany('Comic', 'ComicPanel');
 createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
+createOneToMany('Comic', 'Notification');
 
 createOneToMany('Template', 'TemplatePanel');
 createOneToMany('Template', 'Comic');
@@ -167,11 +170,13 @@ createOneToMany('Template', 'Comic');
 createOneToMany('TemplatePanel', 'ComicPanel');
 createOneToMany('TemplatePanel', 'Comic', 'NextTemplatePanel');
 
+createOneToMany('Notification', 'UserNotification');
+
 createOneToMany('User', 'Comic', 'LastAuthorUser', 'LastAuthoredComics');
 createOneToMany('User', 'Comic', 'LockedByUser', 'LockedComics');
 createOneToMany('User', 'ComicVote');
 createOneToMany('User', 'ComicComment');
-createOneToMany('User', 'Notification');
+createOneToMany('User', 'UserNotification');
 createOneToMany('User', 'ComicPanel');
 
 module.exports = db;

@@ -26,19 +26,27 @@ export default class ContextMenu extends Component {
 			this.setState({
 				isMenuVisible
 			});
+
+			if(isMenuVisible && this.props.onShow) this.props.onShow(); 
 		}, 50);
 	}
 	render() {
-		return <div className={`context-menu ${this.props.className || ''} ${this.props.align || 'left'}`}>
+		return <div className={`context-menu ${this.props.className || ''}`}>
 			<div className="menu-toggle" onClick={this.toggleIsMenuVisible}>
 				{this.props.children}
 			</div>
-			<div className={`menu-items ${this.state.isMenuVisible ? 'open' : ''}`}>
-				{this.props.menuItems.map((menuItem, idx) => {
-					return menuItem.to
-						? <Link key={idx} className="menu-item" to={menuItem.to}>{menuItem.label}</Link>
-						: <div key={idx} className="menu-item" onClick={menuItem.onClick}>{menuItem.label}</div>
-				})}
+			<div className={`context-menu-content ${this.props.align || 'left'} ${this.state.isMenuVisible ? 'open' : ''}`}>
+				{this.props.content}
+				{this.props.menuItems
+					? <div className="menu-items">
+						{this.props.menuItems.map((menuItem, idx) => {
+							return menuItem.to
+								? <Link key={idx} className="menu-item" to={menuItem.to}>{menuItem.label}</Link>
+								: <div key={idx} className="menu-item" onClick={menuItem.onClick}>{menuItem.label}</div>
+						})}
+					</div>
+					: null
+				}
 			</div>
 		</div>
 	}
