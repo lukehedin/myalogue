@@ -6,6 +6,7 @@ pg.defaults.ssl = true;
 
 // I think some of these configs might be excessive, but trying to be safe
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
+	// logging: false,
 	ssl: true,
     dialect: 'postgres',
 	protocol: 'postgres',
@@ -41,6 +42,14 @@ const defineTable = (name, attributes, isParanoid = false) => {
 	});
 };
 
+const getBoooleanNotNull = () => {
+	return {
+		type: Sequelize.BOOLEAN,
+		allowNull: false,
+		defaultValue: false
+	};
+};
+
 let db = {
 	
 	fn: Sequelize.fn,
@@ -74,11 +83,7 @@ let db = {
 		PasswordResetToken: Sequelize.STRING,
 		PasswordResetAt: Sequelize.DATE,
 		LastLoginAt: Sequelize.DATE,
-		IsAdmin: {
-			type: Sequelize.BOOLEAN,
-			allowNull: false,
-			defaultValue: false
-		}
+		IsAdmin: getBoooleanNotNull()
 	}, true),
 	
 	Notification: defineTable('Notification', {
@@ -101,25 +106,34 @@ let db = {
 		PositionX: Sequelize.INTEGER,
 		PositionY: Sequelize.INTEGER,
 		Image: Sequelize.STRING,
-		Ordinal: Sequelize.INTEGER //optional
+		Ordinal: Sequelize.INTEGER, //optional
+
+		// Each comic can have 4 or 8 panels. These quarters (1-4) are scaled by that factor
+		// Eg. a comic with 8 panels turns QuarterMax: 1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8
+		// QuarterMin: Sequelize.INTEGER, // 3 = only appears in first three panels
+		// QuarterMax: Sequelize.INTEGER // 2 = only appears in last two panels
 	}),
 	
 	Comic: defineTable('Comic', {
-		Title: Sequelize.STRING,
 		CompletedAt: Sequelize.DATE,
 		LockedAt: Sequelize.DATE, // locked while editing (1 min)
-		Token: Sequelize.STRING,
+		Token: Sequelize.STRING, //If present, the comic is private
+		PanelCount: Sequelize.INTEGER,
 		Rating: {
 			type: Sequelize.INTEGER,
 			defaultValue: 0,
             allowNull: false
-		}
+		},
+		
+		//Used for display
+		Title: Sequelize.STRING //First line of dialogue?
 	}, true),
 	
 	ComicPanel: defineTable('ComicPanel', {
 		Ordinal: Sequelize.INTEGER,
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
+		ComicCompletedAt: Sequelize.DATE //For queryability
 	}),
 
 	ComicVote: defineTable('ComicVote', {
@@ -133,11 +147,11 @@ let db = {
 
 // Associations
 
-let createOneToMany = (belongsToTableName, hasManyTableName, hasManyAlias, belongsToAlias) => {
-	let fk = `${belongsToTableName}Id`;
-
+let createOneToMany = (belongsToTableName, hasManyTableName, belongsToAlias, hasManyAlias) => {
 	if(!hasManyAlias) hasManyAlias = `${hasManyTableName}s`
 	if(!belongsToAlias) belongsToAlias = `${belongsToTableName}`;
+
+	let fk = `${belongsToAlias}Id`;
 
 	db[belongsToTableName].hasMany(db[hasManyTableName], { as: hasManyAlias, foreignKey: fk });
 	db[hasManyTableName].belongsTo(db[belongsToTableName], { as: belongsToAlias, foreignKey: fk });
@@ -151,8 +165,10 @@ createOneToMany('Template', 'TemplatePanel');
 createOneToMany('Template', 'Comic');
 
 createOneToMany('TemplatePanel', 'ComicPanel');
+createOneToMany('TemplatePanel', 'Comic', 'NextTemplatePanel');
 
-createOneToMany('User', 'Comic', null, 'PreviousAuthorUser');
+createOneToMany('User', 'Comic', 'LastAuthorUser', 'LastAuthoredComics');
+createOneToMany('User', 'Comic', 'LockedByUser', 'LockedComics');
 createOneToMany('User', 'ComicVote');
 createOneToMany('User', 'ComicComment');
 createOneToMany('User', 'Notification');

@@ -25,6 +25,10 @@ $spacing-md: 32px;
 $spacing-lg: 64px;
 $spacing-xl: 128px;
 
-$screen-sm-min: 576px; // Small tablets and large smartphones (landscape view)
-$screen-md-min: 768px; // Small tablets (portrait view)
-$screen-lg-min: 992px; // Tablets and small desktops
+$screen-width-sm-min: 576px;
+$screen-width-md-min: 768px;
+$screen-width-lg-min: 992px;
+
+$screen-height-sm-min: 576px;
+$screen-height-md-min: 800px;
+$screen-height-lg-min: 992px;

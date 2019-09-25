@@ -1,11 +1,19 @@
-@mixin oversm { // Small devices
-	@media (min-width: #{$screen-sm-min}) { @content; }
+@mixin oversm {
+	@media (min-width: #{$screen-width-sm-min}) { @content; }
 }
-@mixin overmd { // Medium devices
-	@media (min-width: #{$screen-md-min}) { @content; }
+@mixin overmd {
+	@media (min-width: #{$screen-width-md-min}) { @content; }
 }
-@mixin overlg { // Large devices
-	@media (min-width: #{$screen-lg-min}) { @content; }
+@mixin overlg {
+	@media (min-width: #{$screen-width-lg-min}) { @content; }
+}
+
+@mixin isLandscape {
+	@media screen and (orientation:landscape) { @content; }
+}
+
+@mixin isPortrait {
+	@media screen and (orientation:portrait) { @content; }
 }
 
 @mixin absoluteCover {

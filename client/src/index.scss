@@ -126,17 +126,7 @@ body {
 		.container {
 			position: relative;
 			margin: 0 auto;
-
-			max-width: 320px;
-			@include oversm {
-				max-width: 424px;
-			}
-			@include overmd {
-				max-width: 510px;
-			}
-			@include overlg {
-				max-width: 574px;
-			}
+			max-width: 900px;
 		}
 	
 		.row {
@@ -154,7 +144,11 @@ body {
 		.button-container {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
+			align-items: center; 
+
+			&.justify-center {
+				justify-content: center;
+			}
 
 			> * {
 				&:not(:first-child) {

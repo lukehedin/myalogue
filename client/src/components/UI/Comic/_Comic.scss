@@ -4,6 +4,21 @@
 	@include borderRadius(4px);
 	overflow: hidden;
 
+	.comic-content {
+		.paired-comic-panels {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+
+		&.for-image-capture {
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			left: 0;
+		}
+	}
+
 	.comic-lower {
 		padding: $spacing-xxs $spacing-xs;
 		display: flex;

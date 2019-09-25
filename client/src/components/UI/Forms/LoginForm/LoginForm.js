@@ -10,7 +10,7 @@ class LoginForm extends Component {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('emailUsername')}
 			{this.props.getField('password')}
-			<div className="button-container">
+			<div className="button-container justify-center">
 				<Button type="submit" label="Login" />
 			</div>
 		</form>

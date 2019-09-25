@@ -134,7 +134,7 @@ export default class ComicList extends Component {
 								</p>
 								: null
 							}
-							<div className="button-container">
+							<div className="button-container justify-center">
 								<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
 								{this.state.isNoMore
 									? null

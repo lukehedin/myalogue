@@ -2,9 +2,21 @@
 	.play-area {
 		position: relative;
 		min-height: 60vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-		.comic-panel {
-			
+		.button-container {
+			margin-top: $spacing-xs;
+		}
+
+		.comic-panels {
+			display: flex;
+			flex-direction: column;
+		
+			@include isLandscape {
+				flex-direction: row;
+			}
 		}
 	}
 }

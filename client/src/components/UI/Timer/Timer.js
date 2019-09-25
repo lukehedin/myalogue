@@ -18,6 +18,9 @@ export default class Timer extends Component {
 	componentDidMount() {
 		if(this.props.autoStart) this.startTimer(this.props.autoStart);
 	}
+	componentWillUnmount() {
+		clearInterval(this.timerInterval);
+	}
 	startTimer(time) {
 		this.setState({
 			isOn: true
@@ -48,11 +51,11 @@ export default class Timer extends Component {
 			time: 0
 		});
 
-		if(this.onComplete) this.onComplete.bind(this);
+		if(this.props.onComplete) this.props.onComplete();
 	}
 	render() {
 		return <div className="timer">
-			<p>{moment(this.state.time).format('mm:ss')}</p>
+			<h2>{moment(this.state.time).format('mm:ss')}</h2>
 		</div>
 	}
 }

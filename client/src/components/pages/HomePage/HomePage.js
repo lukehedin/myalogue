@@ -11,8 +11,10 @@ export default class HomePage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>Speak 4 Yourself</h2>
-						<p>A game that allows you to put your own dialogue into the panel of a comic, changing the plot and interactions between characters.</p>
-						<S4YButton size="lg" />
+						<p className="center">A multiplayer game about making comics without knowing the whole plot.</p>
+						<div className="button-container justify-center">
+							<S4YButton size="lg" />
+						</div>
 					</div>
 				</div>
 			</div>

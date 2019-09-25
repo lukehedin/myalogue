@@ -123,11 +123,11 @@
 
 	&.button-lg {
 		padding: $spacing-xs $spacing-sm;
-		@include scaleButton(18px);
+		@include scaleButton(16px);
 
 		@include oversm {
 			padding: $spacing-sm $spacing-md;
-			@include scaleButton(20px);
+			@include scaleButton(18px);
 		}
 	}
 }

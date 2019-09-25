@@ -5,6 +5,9 @@ import { Redirect } from 'react-router-dom';
 import Timer from '../../UI/Timer/Timer';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import Button from '../../UI/Button/Button';
+import S4YButton from '../../UI/S4YButton/S4YButton';
+
+const playTimerMins = 10;
 
 export default class PlayPage extends Component {
 	constructor(props) {
@@ -13,28 +16,53 @@ export default class PlayPage extends Component {
 		this.state = {
 			isLoading: true,
 			error: null,
+			isSubmitted: false,
+			completedComicId: null,
 
-			comic: null
+			// Play data
+			comicId: null,
+			templatePanelId: null,
+			currentComicPanel: null,
+
+			dialogue: ''
 		};
+
+		this.playNew = this.playNew.bind(this);
+		this.submitComicPanel = this.submitComicPanel.bind(this);
+		this.onDialogueChange = this.onDialogueChange.bind(this);
+		this.resetPlayData = this.resetPlayData.bind(this);
 	}
 	componentDidMount() {
-		this.fetchData();
+		this.playNew();
 	}
-	fetchData() {
+	onDialogueChange(value) {
+		this.setState({
+			dialogue: value
+		});
+	}
+	resetPlayData() {
+		this.setState({
+			comicId: null,
+			templatePanelId: null,
+			currentComicPanel: null,
+			dialogue: ''
+		});
+	}
+	playNew() {
+		this.resetPlayData();
 		this.setState({
 			isLoading: true
 		});
 
 		Util.api.post('/api/play', {
-			templateId: this.props.templateId,
 			token: this.props.token //optional
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					templateId: result.templateId || Util.array.random(Util.context.getTemplates()).templateId,
-					currentPanel: result.currentPanel, //May be null
-					comicId: result.comicId // May be null
+					comicId: result.comicId,
+					templatePanelId: result.templatePanelId,
+					currentComicPanel: result.currentComicPanel, //May be null
 				});
 			} else {
 				this.setState({
@@ -47,36 +75,112 @@ export default class PlayPage extends Component {
 			});
 		});
 	}
+	submitComicPanel() {
+		let dialogue = this.state.dialogue;
+
+		this.setState({
+			isLoading: true
+		});
+
+		Util.api.post('/api/submitComicPanel', {
+			comicId: this.state.comicId,
+			dialogue: dialogue
+		})
+		.then(result => {
+			if(!result.error) {
+				this.setState({
+					isSubmitted: true,
+					completedComicId: result.completedComicId
+				});
+			} else {
+				this.setState({
+					error: result.error
+				});
+			}
+
+			this.setState({
+				isLoading: false
+			});
+			this.resetPlayData();
+		});
+	}
 	render() {
+		let content = null;
+
+		if(this.state.isLoading) {
+			//Loading
+			content = <div className="play-area">
+				<div className="loader"></div>
+			</div>;
+		} else if(this.state.error) {
+			//Error
+			content = <div className="play-area">
+				<p className="empty-text center">{this.state.error}</p>
+				<div className="button-container justify-center">
+					<Button label="Back to home" to={Util.route.home()} colour="pink" size="lg" />
+				</div>
+			</div>
+		} else if(this.state.templatePanelId) {
+			//In progress
+			content = <div className="play-area">
+				{this.state.currentComicPanel
+					? <h5 className="center">Continue the story in the comic</h5>
+					: <h5 className="center">Begin the story for the comic</h5>
+				}
+				<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
+				<div className="comic-panels">
+					{this.state.currentComicPanel
+						? <ComicPanel comicPanel={this.state.currentComicPanel} />
+						: null
+					}
+					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
+				</div>
+				<div className="button-container justify-center">
+					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
+				</div>
+				<div className="button-container justify-center">
+					<Button onClick={this.playNew} colour="black" label="Skip" isHollow={true} />
+				</div>
+			</div>;
+		} else {
+			//Not submitted, not in progress, must have ran out of time
+			content = <div className="play-area">
+				{this.state.isSubmitted 
+					 ?<div>
+						<h2>Panel created!</h2>
+						{this.state.completedComicId
+							? <p className="center">The comic has been completed!</p>
+							: <p className="center">Your panel was created. The comic isn't complete yet, but you'll get a notification when it's ready.</p>
+						}
+						<div className="button-container justify-center">
+							{this.state.completedComicId
+								? <Button to={Util.route.comic(this.state.completedComicId)} label="View comic" colour="black" size="lg" />
+								: null
+							}
+							<S4YButton label="Play again" onClick={this.playNew} size="lg" />
+						</div>
+					</div>				
+					: <div>
+						<h2>Sorry, you ran out of time!</h2>
+						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
+						<p className="center">Why not have another crack?</p>
+						<div className="button-container justify-center">
+							<S4YButton label="Try again" onClick={this.playNew} size="lg" />				
+						</div>
+					</div>
+				}
+			</div>
+		}
+
 		return <div className="page-play">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Speak 4 Yourself</h2>
-						{!this.state.isLoading ? <Timer autoStart={{ minutes: 0, seconds: 10 }} /> : null}
-						<div className="play-area">
-							{this.state.isLoading
-								? <div className="loader"></div>
-								: this.state.error
-									? <p className="empty-text">{this.state.error}</p>
-									: <div>
-										{this.state.comicPanel
-											? <div>
-												<p>Continue the story in the comic. This is the current panel:</p>
-												<ComicPanel comicPanel={this.state.comicPanel} />
-											</div>
-											: <div>
-												<p>You are starting the story for this comic. Go nuts!</p>
-											</div>
-										}
-										<ComicPanel isEditing={true} templateId={this.state.templateId} />
-									</div>
-							}
-						</div>
+						{content}
 					</div>
 				</div>
 			</div>
-			<div className="panel-inset">
+			{/* <div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<h3>Tips</h3>
@@ -86,7 +190,7 @@ export default class PlayPage extends Component {
 						</ul>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>;
 	}
 }

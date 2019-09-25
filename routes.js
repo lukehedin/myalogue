@@ -11,8 +11,6 @@ const bcrypt = require('bcrypt');
 
 const TOKEN_RESET_HOURS = 3;
 
-const COMIC_PANEL_LENGTH = 8;
-
 const catchError = (res, error, db = null) => {
 	// If db param specified, the error is treated as a serious error
 	// It will be logged, and the error to the client will be generic
@@ -58,13 +56,13 @@ const getAuthResult = (dbUser, callback) => {
 };
 
 //Common db functions
-const getDbComicInclude = (db, userId, excludePanelUsers = false) => {
+const getDbComicInclude = (db, userId, includeUsers = false) => {
 	let include = [{
 		model: db.ComicPanel,
 		as: 'ComicPanels'
 	}];
 
-	if(!excludePanelUsers) {
+	if(includeUsers) {
 		include.include = [{
 			model: db.User,
 			as: 'User'
@@ -85,14 +83,22 @@ const getDbComicInclude = (db, userId, excludePanelUsers = false) => {
 
 	return include;
 };
-const getDbTemplateWhereUnlocked = (db) => {
+const getUnlockedDbTemplatesWhere = (db) => {
 	return {
 		UnlockedAt: {
 			[db.op.ne]: null,
 			[db.op.lte]: new Date()
 		}
 	};
-}
+};
+const getComicLockWindow = () => {
+	//2min lock in case of slow data fetching and submitting
+	return moment(new Date()).subtract(3, 'minutes').toDate();
+};
+const getRandomPanelCount = () => {
+	//Returns 4,6, or 8
+	return 4 + (Math.floor(Math.random()*3) * 2);
+};
 
 const routes = {
 
@@ -109,7 +115,7 @@ const routes = {
 			} else {
 				let referenceDataPromises = [
 					db.Template.findAll({
-						where: getDbTemplateWhereUnlocked(db),
+						where: getUnlockedDbTemplatesWhere(db),
 						include: [{
 							model: db.TemplatePanel,
 							as: 'TemplatePanels'
@@ -144,7 +150,7 @@ const routes = {
 										[db.op.in]: topComicIds
 									}
 								},
-								include: getDbComicInclude(db, userId),
+								include: getDbComicInclude(db, userId, true),
 							})
 							.then(dbComicsWithInclude => resolve(dbComicsWithInclude))
 							.catch(error => reject(error));
@@ -423,7 +429,7 @@ const routes = {
 			}
 		},
 
-		getComic: (req, res, db) => {
+		getComicById: (req, res, db) => {
 			let userId = req.userId; //Might be null
 			let comicId = req.body.comicId;
 
@@ -434,7 +440,7 @@ const routes = {
 					},
 					ComicId: comicId
 				},
-				include: getDbComicInclude(db, userId)
+				include: getDbComicInclude(db, userId, true)
 			})
 			.then(dbComic => {
 				if(dbComic) {
@@ -492,7 +498,7 @@ const routes = {
 				order: comicOrder,
 				offset: offset,
 				limit: limit,
-				include: getDbComicInclude(db, userId)
+				include: getDbComicInclude(db, userId, true)
 			})
 			.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 			.catch(error => catchError(res, error, db));
@@ -560,24 +566,43 @@ const routes = {
 
 		//Gets a comic in progress or starts new
 		play: (req, res, db) => {
+			let userId = req.userId;
 			let templateId = req.body.templateId;
-
-			let now = new Date();
 
 			let comicWhere = {
 				CompletedAt: {
-					[db.op.eq]: null
+					[db.op.eq]: null //Incomplete comics
 				},
-				[db.op.or]: [{
+				[db.op.or]: [{ //Where I wasn't the last author
+					LastAuthorUserId: {
+						[db.op.eq]: null
+					}
+				}, {
+					LastAuthorUserId: {
+						[db.op.ne]: userId
+					}
+				}],
+				[db.op.or]: [{ //Where I wasn't the last lock (even if the lock expired - helps keep the comics in rotation)
+					LockedByUserId: {
+						[db.op.eq]: null
+					}
+				}, {
+					LockedByUserId: {
+						[db.op.ne]: userId
+					}
+				}],
+				[db.op.or]: [{ //That aren't in the lock window (currently being edited)
 					LockedAt: {
 						[db.op.eq]: null
 					}
 				}, {
 					LockedAt: {
-						[db.op.gte]: moment(now).add(1, 'minute').toDate()
+						[db.op.lte]: getComicLockWindow()
 					}
 				}]
 			};
+
+			console.log(getComicLockWindow());
 
 			if(templateId) comicWhere.TemplateId = template;
 
@@ -585,29 +610,83 @@ const routes = {
 			db.Comic.findAll({
 				limit: 1,
 				where: comicWhere,
-				include: getDbComicInclude(db, null, true),
+				include: getDbComicInclude(db),
 				order: [db.fn('RANDOM')]
 			})
 			.then(dbComics => {
 				let dbComic = dbComics[0];
 
+				//Function used below for an existing or new comic
+				const prepareComicForPlay = (dbComic) => {
+					return new Promise((resolve, reject) => {
+						let currentComicPanel = dbComic.ComicPanels && dbComic.ComicPanels.length
+							? dbComic.ComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[dbComic.ComicPanels.length - 1]
+							: null;
+						let isLast = !!currentComicPanel
+							? dbComic.ComicPanels.length === (dbComic.PanelCount - 1)
+							: false;
+
+						db.TemplatePanel.findAll({
+							limit: 1,
+							order: [db.fn('RANDOM')],
+							where: {
+								TemplateId: dbComic.TemplateId
+							}
+						})
+						.then(dbTemplatePanels => {
+							let dbTemplatePanel = dbTemplatePanels[0];
+
+							dbComic.LockedAt = new Date();
+							dbComic.LockedByUserId = userId;
+							dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
+
+							dbComic.save()
+								.then(() => resolve({
+									comicId: dbComic.ComicId,
+									templatePanelId: dbTemplatePanel.TemplatePanelId,
+									currentComicPanel: currentComicPanel 
+										? mapper.fromDbComicPanel(currentComicPanel) 
+										: null,
+									isLast: isLast
+								}))
+								.catch(error => reject(error));
+
+						})
+						.catch(err => reject(err));
+					});
+				};
+
 				if(dbComic) {
-					let currentPanel = dbComic.ComicPanels[dbComic.ComicPanels.length - 1];
-					let isLastPanel = dbComic.ComicPanels.length === (COMIC_PANEL_LENGTH  - 1);
-
-					dbComic.LockedAt = now;
-					dbComic.save()
-						.then(() => res.json({
-							comicId: dbComic.ComicId,
-							templateId: dbComic.TemplateId,
-							currentPanel: mapper.fromDbComicPanel(currentPanel),
-							isLastPanel: isLastPanel
-						}))
+					prepareComicForPlay(dbComic)
+						.then(result => res.json(result))
 						.catch(error => catchError(res, error, db));
-
 				} else {
-					//Client will create new comic
-					res.json({ isNew: true });
+					//Find a random template
+					db.Template.findAll({
+						limit: 1,
+						where: getUnlockedDbTemplatesWhere(db),
+						order: [db.fn('RANDOM')],
+						include: [{
+							model: db.TemplatePanel,
+							as: 'TemplatePanels'
+						}]
+					})
+					.then((dbTemplates) => {
+						let dbTemplate = dbTemplates[0];
+
+						//Create a new comic with this template
+						db.Comic.create({
+							TemplateId: dbTemplate.TemplateId,
+							PanelCount: getRandomPanelCount()
+						})
+						.then(dbNewComic => {
+							prepareComicForPlay(dbNewComic)
+								.then(result => res.json(result))
+								.catch(error => catchError(res, error, db));
+						})
+						.catch(error => catchError(res, error, db));
+					})
+					.catch(error => catchError(res, error, db));
 				}
 			})
 			.catch(error => catchError(res, error, db));
@@ -615,39 +694,73 @@ const routes = {
 
 		submitComicPanel: (req, res, db) => {
 			let userId = req.userId; // May be null
-			let comic = req.body.comic;
+			let comicId = req.body.comicId;
 			let dialogue = req.body.dialogue;
 
-			let isValidTitle = validator.isLength(comic.title, { max: 0 })
-				|| (validator.isLength(comic.title, { max: 30 }) && validator.isAlphanumeric(validator.blacklist(comic.title, ' ')));
-			let isValidDialogue = validator.isLength(dialogue, { min: 1, max: 255 });
-			
+			db.Comic.findOne({
+				where: {
+					ComicId: comicId, //Find the comic
+					CompletedAt: {
+						[db.op.eq]: null // that is incomplete
+					},
+					LockedByUserId: userId, //and the lock is held by me
+					LockedAt: {
+						[db.op.gte]: getComicLockWindow() //and the lock is still valid
+					}
+				},
+				include: getDbComicInclude(db)
+			})
+			.then(dbComic => {
+				if(dbComic) {
+					let isDialogueValid = validator.isLength(dialogue, { min: 1, max: 255 });
+					let isComicValid = dbComic.CompletedAt === null && dbComic.ComicPanels.length < dbComic.PanelCount;
 
-			///TODO
-			if(isValidTitle && isValidDialogue) {
-				db.Comic.create({
-					TemplateId: comic.templateId,
-					UserId: userId,
-					Title: comic.title,
-					ComicDialogues: comic.comicDialogues.map(cd => {
-						return {
-							TemplateDialogueId: cd.templateDialogueId,
-							Value: cd.value
-						};
-					})
-				}, {
-					include: [{
-						model: db.ComicDialogue,
-						as: 'ComicDialogues'
-					}]
-				})
-				.then(dbCreatedComic => {
-					res.json(mapper.fromDbComic(dbCreatedComic))
-				})
-				.catch(error => catchError(res, error, db));
-			} else {
-				catchError(res, 'Invalid comic data supplied.', db);
-			}
+					if(isComicValid && isDialogueValid) {
+						db.ComicPanel.create({
+							TemplatePanelId: dbComic.NextTemplatePanelId,
+							ComicId: dbComic.ComicId,
+							Value: dialogue,
+							Ordinal: dbComic.ComicPanels.length + 1,
+							UserId: userId
+						})
+						.then(() => {
+							let completedPanelCount = (dbComic.ComicPanels.length + 1);
+							let isCompletedComic = completedPanelCount === dbComic.PanelCount;
+							
+							if(isCompletedComic) {
+								let now = new Date();
+								dbComic.CompletedAt = now;
+								//No need to await
+								db.ComicPanel.update({
+									ComicCompletedAt: now
+								}, {
+									where: {
+										ComicId: dbComic.ComicId
+									}
+								});
+							}
+
+							dbComic.LockedAt = null;
+							dbComic.LockedByUserId = null;
+							dbComic.LastAuthorUserId = userId;
+							dbComic.save()
+								.then(() => {
+									res.json({ 
+										success: true, 
+										completedComicId: isCompletedComic ? dbComic.ComicId : null
+									});
+								})
+								.catch(error => catchError(res, error, db));
+						})
+						.catch(error => catchError(res, error, db));
+					} else {
+						catchError(res, 'Invalid dialogue supplied.');
+					}
+				} else {
+					catchError(res, 'Invalid comic submitted.');
+				}
+			})
+			.catch(error => catchError(res, error, db));
 		},
 
 		//Comics

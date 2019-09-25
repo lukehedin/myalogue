@@ -9,7 +9,7 @@ export default class AboutPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h2>About</h2>
-						<p>Speak 4 Yourself is a game that allows you to put your own dialogue into the panel of a comic, changing the plot and interactions between characters.</p>
+						<p>Speak 4 Yourself is a multiplayer game about making comics without knowing the whole plot.</p>
 						<p>Players can rate the comics that are submitted, with the top comic for each template getting prominently displayed on the top comics page.</p>
 						<p>If you have questions, suggestions or problems with this service, you can send an email to <a rel="noopener noreferrer" href="mailto:contact@s4ycomic.com">contact@s4ycomic.com</a>.</p>
 						<p>Created by <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/imdoodlir/">imdoodlir</a>.</p>

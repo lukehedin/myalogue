@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { closeModal } from '../../../redux/actions';
 
 import Button from '../Button/Button';
-import ShareComicPanel from '../ShareComicPanel/ShareComicPanel';
+import ShareComicContainer from '../ShareComicContainer/ShareComicContainer';
 import ReactSVG from 'react-svg';
 
 class Modal extends Component {
@@ -55,7 +55,7 @@ class Modal extends Component {
 			case Util.enum.ModalType.ShareComicModal:
 				modalTitle = "Share comic";
 				modalClass = 'modal-share-comic';
-				modalContent = <ShareComicPanel comic={modal.comic} comicDataUrl={modal.comicDataUrl} />
+				modalContent = <ShareComicContainer comic={modal.comic} comicDataUrl={modal.comicDataUrl} />
 				break;
 			default:
 				break;
