@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Comic from '../../UI/Comic/Comic';
 import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import Button from '../../UI/Button/Button';
+import ComicPanelAuthorList from '../../UI/ComicPanelAuthorList/ComicPanelAuthorList';
 
 export default class TopComicsPage extends Component {
 	constructor(props){
@@ -52,7 +53,7 @@ export default class TopComicsPage extends Component {
 												let template = Util.context.getTemplateById(comic.templateId);
 												return <tr key={comic.templateId} className="top-comics-list-item">
 													<td>
-														<p className="sm"><b>Template {comic.templateId}</b>: Comic #{comic.comicId} ({comic.rating})</p>
+														<p className="sm"><b>Template {comic.templateId}</b> - Comic #{comic.comicId} (Rating: {comic.rating}) by <ComicPanelAuthorList comic={comic} />.</p>
 														<p className="sm">{template.description}</p>
 													</td>
 													<td className="cell-button">

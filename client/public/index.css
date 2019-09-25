@@ -811,7 +811,11 @@ body {
             vertical-align: top;
             padding: 16px 0; }
             body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
-              text-align: right; }
+              text-align: right;
+              min-width: 120px; }
+              @media (min-width: 576px) {
+                body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
+                  min-width: 160px; } }
               body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container {
                 justify-content: flex-end; }
                 body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {

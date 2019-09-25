@@ -18,6 +18,10 @@
 		
 					&.cell-button {
 						text-align: right;
+						min-width: 120px;
+						@include oversm {
+							min-width: 160px;
+						}
 
 						.button-container {
 							justify-content: flex-end;

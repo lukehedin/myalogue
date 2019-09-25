@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
+import moment from 'moment';
 
 import ComicList from '../../UI/ComicList/ComicList';
 
@@ -31,7 +32,7 @@ export default class ProfilePage extends Component {
 	}
 	render() {
 		return <div className="page-profile">
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						<div className="user-info">
@@ -40,7 +41,7 @@ export default class ProfilePage extends Component {
 								: this.state.user
 									? <div className="user-info-inner">
 										<h2>{this.state.user.username}</h2>
-										{/* <p>Member since </p> */}
+										<p className="page-subtitle">Joined {moment().fromNow(this.state.user.createdAt)}</p>
 									</div>
 									: <p className="empty-text">User not found.</p>
 							}
@@ -48,7 +49,7 @@ export default class ProfilePage extends Component {
 					</div>
 				</div>
 			</div>
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						{this.state.user
