@@ -712,7 +712,8 @@ const routes = {
 				if(skippedComicId) {
 					db.Comic.update({
 						LockedAt: null,
-						LockedByUserId: null
+						LockedByUserId: null,
+						NextTemplatePanelId: null
 					}, {
 						where: {
 							ComicId: skippedComicId,
