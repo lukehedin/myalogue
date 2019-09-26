@@ -42,7 +42,6 @@ export default class PlayPage extends Component {
 	}
 	resetPlayData() {
 		this.setState({
-			isSubmitted: false,
 			comicId: null,
 			templatePanelId: null,
 			currentComicPanel: null,
@@ -78,11 +77,12 @@ export default class PlayPage extends Component {
 		});
 	}
 	submitComicPanel() {
-		let dialogue = this.state.dialogue;
-
+		this.resetPlayData();
 		this.setState({
 			isLoading: true
 		});
+		
+		let dialogue = this.state.dialogue;
 
 		Util.api.post('/api/submitComicPanel', {
 			comicId: this.state.comicId,
@@ -103,7 +103,6 @@ export default class PlayPage extends Component {
 			this.setState({
 				isLoading: false
 			});
-			this.resetPlayData();
 		});
 	}
 	render() {
