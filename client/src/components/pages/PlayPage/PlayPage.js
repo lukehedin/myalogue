@@ -42,6 +42,7 @@ export default class PlayPage extends Component {
 	}
 	resetPlayData() {
 		this.setState({
+			isSubmitted: false,
 			comicId: null,
 			templatePanelId: null,
 			currentComicPanel: null,
