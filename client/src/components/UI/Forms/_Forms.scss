@@ -39,7 +39,9 @@
 		}
 
 		.form-message {
+			color: $colour-grey-c;
 			text-align: center;
+			font-size: 12px;
 
 			> * {
 				margin: $spacing-xs 0;

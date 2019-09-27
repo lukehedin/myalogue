@@ -11,12 +11,11 @@ class RegisterForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('email')}
+			<p class="form-message">Your email will only be used to verify and manage your account.</p>
 			{this.props.getField('username')}
 			{this.props.getField('password')} 
 			{this.props.getField('confirmPassword')}
-			<div className="form-message">
-				<p className="sm">By registering you confirm you are 13 years old or older and agree to the <Link to={Util.route.termsOfService()}>Terms of Service</Link> and <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link>.</p>
-			</div>
+			<p className="form-message">By registering you confirm you are 13 years old or older and agree to the <Link to={Util.route.termsOfService()}>Terms of Service</Link> and <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link>.</p>
 			<div className="button-container justify-center">
 				<Button type="submit" label="Register" />
 			</div>
