@@ -112,7 +112,7 @@ class App extends Component {
 						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 
-						<Route exact path="/template/:template" render={({ match }) => <TemplatePage comicId={match.params.templateId} />} />
+						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 
 						<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
 						

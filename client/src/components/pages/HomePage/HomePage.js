@@ -25,9 +25,9 @@ export default class HomePage extends Component {
 					<div className="row">
 						<ComicList 
 								sortBy={Util.enum.ComicSortBy.Newest}
-								emptyText={`No recent comics to show! There better be a good reason for this...`}
+								emptyText={`No comics to show! There better be a good reason for this...`}
 								noMoreText={`Wow. You've read every comic. Are you proud of yourself? You should be!`}
-								title={`Recent comics`} 
+								title={`Completed comics`} 
 						/>
 					</div>
 				</div>
