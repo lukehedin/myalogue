@@ -302,7 +302,9 @@ body {
             body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
               border-color: #f02100; }
           body .app-container .app .form-wrapper form .form-message {
-            text-align: center; }
+            color: #969696;
+            text-align: center;
+            font-size: 12px; }
             body .app-container .app .form-wrapper form .form-message > * {
               margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
