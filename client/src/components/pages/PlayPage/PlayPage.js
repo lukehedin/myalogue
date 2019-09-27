@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 // import randomWords from 'random-words';
 import Util from '../../../Util';
 
@@ -106,6 +107,7 @@ export default class PlayPage extends Component {
 		});
 	}
 	render() {
+		if(this.state.completedComicId) return <Redirect to={Util.route.comic(this.state.completedComicId)} />;
 		let content = null;
 
 		if(this.state.isLoading) {
@@ -154,16 +156,7 @@ export default class PlayPage extends Component {
 				{this.state.isSubmitted 
 					 ?<div>
 						<h2>Panel created!</h2>
-						{this.state.completedComicId
-							? <p className="center">Your panel was created and the comic has been completed! You can now view the whole comic.</p>
-							: <p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
-						}
-						{this.state.completedComicId
-							? <div className="button-container justify-center">
-								<Button to={Util.route.comic(this.state.completedComicId)} label="View comic" colour="black" size="lg" />
-							</div>
-							: null
-						}
+						<p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
 						<div className="button-container justify-center">
 							<S4YButton label="Play again" onClick={() => this.playNew()} size="lg" />
 						</div>

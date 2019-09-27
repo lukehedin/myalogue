@@ -74,11 +74,14 @@ export default class ComicPage extends Component {
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: !this.state.comic
-									? <div>
-										<p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can start a new one right now!</p>
-										<Button colour="pink" label="Play" to={Util.route.play()} />
-									</div>
+									? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can start a new one right now!</p>
 									: <Comic key={this.state.comic.comicId} comic={this.state.comic} />
+							}
+							{this.state.isLoading
+								? null
+								: <div className="button-container justify-center">
+									<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+								</div>
 							}
 						</div>
 					</div>
