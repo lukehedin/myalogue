@@ -40,17 +40,18 @@ body {
               fill: #ff0052; }
           body .app-container .app .app-header .app-header-inner .app-logo {
             height: 32px;
-            margin-left: 4px; }
+            margin-left: 8px; }
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
-          body .app-container .app .app-header .app-header-inner .button-container {
+          body .app-container .app .app-header .app-header-inner .play-button {
+            margin-left: 8px;
+            display: none; }
+            @media (min-width: 576px) {
+              body .app-container .app .app-header .app-header-inner .play-button {
+                display: flex; } }
+          body .app-container .app .app-header .app-header-inner .notification-button {
             margin-right: 4px; }
-            body .app-container .app .app-header .app-header-inner .button-container .play-button {
-              display: none; }
-              @media (min-width: 576px) {
-                body .app-container .app .app-header .app-header-inner .button-container .play-button {
-                  display: flex; } }
           body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
             text-overflow: ellipsis;
             overflow: hidden;

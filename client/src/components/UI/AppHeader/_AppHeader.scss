@@ -27,7 +27,7 @@
 
 		.app-logo {
 			height: 32px;
-			margin-left: $spacing-xxs;
+			margin-left: $spacing-xs;
 		}
 	
 		.app-title {
@@ -35,15 +35,8 @@
 			margin: 0;
 		}
 
-		.button-container {
+		.notification-button {
 			margin-right: $spacing-xxs;
-
-			.play-button {
-				display: none;
-				@include oversm {
-					display: flex;
-				}
-			}
 		}
 
 		.user-name-button {
