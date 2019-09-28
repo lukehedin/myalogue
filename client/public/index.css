@@ -44,8 +44,13 @@ body {
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
-          body .app-container .app .app-header .app-header-inner .notification-button {
+          body .app-container .app .app-header .app-header-inner .button-container {
             margin-right: 4px; }
+            body .app-container .app .app-header .app-header-inner .button-container .play-button {
+              display: none; }
+              @media (min-width: 576px) {
+                body .app-container .app .app-header .app-header-inner .button-container .play-button {
+                  display: flex; } }
           body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
             text-overflow: ellipsis;
             overflow: hidden;

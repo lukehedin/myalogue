@@ -78,9 +78,13 @@ const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
 	return moment(new Date()).subtract(3, 'minutes').toDate();
 };
+const getRandomInt = (min, max) => {
+	max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
+	return Math.floor(Math.random() * (max - min)) + min;
+};
 const getRandomPanelCount = () => {
 	//Returns 4,6, or 8
-	return 4 + (Math.floor(Math.random()*3) * 2);
+	return 4 + (getRandomInt(0,2) * 2);
 };
 
 //Common INCLUDES
@@ -686,18 +690,14 @@ const routes = {
 						.then(result => res.json(result))
 						.catch(error => catchError(res, error, db));
 				} else {
-					//Find a random template
+					//Find latest 4 templates
 					db.Template.findAll({
-						limit: 1,
+						limit: 4,
 						where: getWhereForUnlockedTemplates(db),
-						order: [db.fn('RANDOM')],
-						include: [{
-							model: db.TemplatePanel,
-							as: 'TemplatePanels'
-						}]
+						order: [[ 'CreatedAt', 'DESC' ]]
 					})
-					.then((dbTemplates) => {
-						let dbTemplate = dbTemplates[0];
+					.then((dbLatestTemplates) => {
+						let dbTemplate = dbLatestTemplates[getRandomInt(0, dbLatestTemplates.length - 1)];
 
 						//Create a new comic with this template
 						db.Comic.create({

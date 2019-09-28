@@ -41,7 +41,10 @@ export default class AppHeader extends Component {
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
 						<div className="flex-spacer"></div>
 						{Util.context.isAuthenticated()
-							? <NotificationMenu />
+							? <div className="button-container">
+								<Button className="play-button" to={Util.route.play()} colour="pink" label="Play" size="sm" />
+								<NotificationMenu />
+							</div>
 							: null
 						}
 						{Util.context.isAuthenticated()

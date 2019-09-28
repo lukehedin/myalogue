@@ -35,8 +35,15 @@
 			margin: 0;
 		}
 
-		.notification-button {
+		.button-container {
 			margin-right: $spacing-xxs;
+
+			.play-button {
+				display: none;
+				@include oversm {
+					display: flex;
+				}
+			}
 		}
 
 		.user-name-button {
