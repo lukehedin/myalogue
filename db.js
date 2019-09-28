@@ -52,10 +52,11 @@ const getBoooleanNotNull = () => {
 
 let db = {
 	
+	//Could be importing these but want to avoid using without db
 	fn: Sequelize.fn,
 	op: Sequelize.Op,
-
-	col: sequelize.col,
+	col: Sequelize.col,
+	where: Sequelize.where,
 
 	sync: () => {
 		sequelize.sync({

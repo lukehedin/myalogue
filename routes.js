@@ -55,39 +55,7 @@ const getAuthResult = (dbUser, callback) => {
 	})
 };
 
-//Common db functions
-const getDbComicInclude = (db, userId, includeUsers = false) => {
-	let include = [{
-		model: db.ComicPanel,
-		as: 'ComicPanels',
-		include: includeUsers ? [{
-			model: db.User,
-			as: 'User'
-		}] : []
-	}];
-	
-	if(userId) {
-		//Include the user's current vote on the comic
-		include.push({
-			model: db.ComicVote,
-			as: 'ComicVotes',
-			required: false,
-			where: {
-				UserId: userId
-			}
-		});
-	}
-
-	return include;
-};
-const getUnlockedDbTemplatesWhere = (db) => {
-	return {
-		UnlockedAt: {
-			[db.op.ne]: null,
-			[db.op.lte]: new Date()
-		}
-	};
-};
+//Common functions
 const createNotifications = (db, userIds, title, message, comicId) => {
 	//Unique userids
 	userIds = [...new Set(userIds)];
@@ -115,6 +83,54 @@ const getRandomPanelCount = () => {
 	return 4 + (Math.floor(Math.random()*3) * 2);
 };
 
+//Common INCLUDES
+const getIncludeForComic = (db, userId, includeUsers = false) => {
+	let include = [{
+		model: db.ComicPanel,
+		as: 'ComicPanels',
+		include: includeUsers ? [{
+			model: db.User,
+			as: 'User'
+		}] : []
+	}];
+	
+	if(userId) {
+		//Include the user's current vote on the comic
+		include.push({
+			model: db.ComicVote,
+			as: 'ComicVotes',
+			required: false,
+			where: {
+				UserId: userId
+			}
+		});
+	}
+
+	return include;
+};
+
+//Common WHERES
+const getWhereForUnlockedTemplates = (db) => {
+	return {
+		UnlockedAt: {
+			[db.op.ne]: null,
+			[db.op.lte]: new Date()
+		}
+	};
+};
+const getWhereForEmailUsernameMatch = (db, email, username) => {
+	//This should already be done, but just to be sure
+	let cleanEmail = email.trim().toLowerCase();
+	let cleanUsername = username.trim().toLowerCase();
+
+	return {
+		[db.op.or]: [
+			db.where(db.fn('lower', db.col('Email')), cleanEmail),
+			db.where(db.fn('lower', db.col('Username')), cleanUsername)
+		]
+	}
+};
+
 const routes = {
 
 	public: {
@@ -128,7 +144,7 @@ const routes = {
 			} else {
 				let referenceDataPromises = [
 					db.Template.findAll({
-						where: getUnlockedDbTemplatesWhere(db),
+						where: getWhereForUnlockedTemplates(db),
 						paranoid: false, //Include archived templates
 						include: [{
 							model: db.TemplatePanel,
@@ -191,13 +207,7 @@ const routes = {
 			//Username can't have @ or . in it, while email MUST.
 			//Thus, there can be no crossover.
 			db.User.findOne({
-				where: {
-					[db.op.or]: [{
-						Email: emailUsername
-					}, {
-						Username: emailUsername
-					}]
-				}
+				where: getWhereForEmailUsernameMatch(db, emailUsername, emailUsername)
 			})
 			.then(dbUser => {
 				if(dbUser) {
@@ -244,13 +254,7 @@ const routes = {
 			if(isValidEmail && isValidUsername) {
 				//Check for existing username or email match
 				db.User.findOne({
-					where: {
-						[db.op.or]: [{
-							Email: email
-						}, {
-							Username: username
-						}]
-					}
+					where: getWhereForEmailUsernameMatch(db, email, username)
 				})
 				.then(dbExistingUser => {
 					if(!dbExistingUser) {
@@ -334,13 +338,15 @@ const routes = {
 		},
 	
 		forgotPassword: (req, res, db) => {
-			let email = req.body.email.trim().toLowerCase();
-			
+			let emailUsername = req.body.emailUsername.trim().toLowerCase();
+
 			let now = new Date();
+
+			let userWhere = getWhereForEmailUsernameMatch(db, emailUsername, emailUsername);
 
 			db.User.findOne({
 				where: {
-					Email: email,
+					...userWhere,
 					VerificationToken: {
 						[db.op.eq]: null
 					},
@@ -359,9 +365,9 @@ const routes = {
 					dbUser.PasswordResetAt = now;
 					dbUser.save();
 
-					mailer.sendForgotPasswordEmail(email, dbUser.Username, passwordResetToken);
+					mailer.sendForgotPasswordEmail(dbUser.Email, dbUser.Username, passwordResetToken);
 				} else {
-					// mailer.sendForgotPasswordNoAccountEmail(email);
+					// mailer.sendForgotPasswordNoAccountEmail(dbUser.Email);
 				}
 			})
 			.catch(error => catchError(res, error, db));
@@ -425,7 +431,7 @@ const routes = {
 					},
 					ComicId: comicId
 				},
-				include: getDbComicInclude(db, userId, true)
+				include: getIncludeForComic(db, userId, true)
 			})
 			.then(dbComic => {
 				if(dbComic) {
@@ -498,7 +504,7 @@ const routes = {
 						order: comicOrder,
 						offset: offset,
 						limit: limit,
-						include: getDbComicInclude(db, userId, true)
+						include: getIncludeForComic(db, userId, true)
 					})
 					.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 					.catch(error => catchError(res, error, db));;
@@ -509,7 +515,7 @@ const routes = {
 					order: comicOrder,
 					offset: offset,
 					limit: limit,
-					include: getDbComicInclude(db, userId, true)
+					include: getIncludeForComic(db, userId, true)
 				})
 				.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 				.catch(error => catchError(res, error, db));
@@ -546,7 +552,7 @@ const routes = {
 							[db.op.in]: topComicIds
 						}
 					},
-					include: getDbComicInclude(db, userId, true),
+					include: getIncludeForComic(db, userId, true),
 				})
 				.then(dbComicsWithInclude => res.json(dbComicsWithInclude.map(mapper.fromDbComic)))
 				.catch(error => catchError(res, error, db));
@@ -620,7 +626,7 @@ const routes = {
 			db.Comic.findAll({
 				limit: 1,
 				where: comicWhere,
-				include: getDbComicInclude(db),
+				include: getIncludeForComic(db),
 				order: [db.fn('RANDOM')]
 			})
 			.then(dbComics => {
@@ -683,7 +689,7 @@ const routes = {
 					//Find a random template
 					db.Template.findAll({
 						limit: 1,
-						where: getUnlockedDbTemplatesWhere(db),
+						where: getWhereForUnlockedTemplates(db),
 						order: [db.fn('RANDOM')],
 						include: [{
 							model: db.TemplatePanel,
@@ -741,7 +747,7 @@ const routes = {
 						[db.op.gte]: getComicLockWindow() //and the lock is still valid
 					}
 				},
-				include: getDbComicInclude(db)
+				include: getIncludeForComic(db)
 			})
 			.then(dbComic => {
 				if(dbComic) {
@@ -992,9 +998,7 @@ const routes = {
 	
 		// 	if(isValidUsername) {
 		// 		db.User.findOne({
-		// 			where: {
-		// 				Username: username
-		// 			}
+		// 			where: getWhereForEmailUsernameMatch(db, null) ??? todo
 		// 		})
 		// 		.then(dbExistingUser => {
 		// 			if(!dbExistingUser) {
