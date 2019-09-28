@@ -694,7 +694,7 @@ const routes = {
 					db.Template.findAll({
 						limit: 4,
 						where: getWhereForUnlockedTemplates(db),
-						order: [[ 'CreatedAt', 'DESC' ]]
+						order: [[ 'UnlockedAt', 'DESC' ]]
 					})
 					.then((dbLatestTemplates) => {
 						let dbTemplate = dbLatestTemplates[getRandomInt(0, dbLatestTemplates.length - 1)];
