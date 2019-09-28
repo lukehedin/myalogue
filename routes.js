@@ -185,7 +185,7 @@ const routes = {
 		},
 	
 		login: (req, res, db) => {
-			let emailUsername = req.body.emailUsername.trim();
+			let emailUsername = req.body.emailUsername.trim().toLowerCase();
 			let password = req.body.password;
 	
 			//Username can't have @ or . in it, while email MUST.
@@ -233,8 +233,8 @@ const routes = {
 		},
 	
 		register: (req, res, db) => {
-			let email = req.body.email.trim();
-			let username = req.body.username.trim();
+			let email = req.body.email.trim().toLowerCase();
+			let username = req.body.username.trim().toLowerCase();
 			let password = req.body.password;
 	
 			let isValidEmail = validator.isEmail(email);
@@ -334,7 +334,7 @@ const routes = {
 		},
 	
 		forgotPassword: (req, res, db) => {
-			let email = req.body.email.trim();
+			let email = req.body.email.trim().toLowerCase();
 			
 			let now = new Date();
 
@@ -987,7 +987,7 @@ const routes = {
 		// changeUsername: (req, res, db) => {
 		// 	let userId = req.userId;
 	
-		// 	let username = req.body.username.trim();
+		// 	let username = req.body.username.trim().toLowerCase();
 		// 	let isValidUsername = validator.isLength(username, { min: 3, max: 20 });
 	
 		// 	if(isValidUsername) {

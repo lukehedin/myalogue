@@ -4,10 +4,18 @@ import Util from '../../../Util';
 
 export default class ComicPanelAuthorList extends Component {
 	render() {
-		let comicPanels = this.props.comic.comicPanels;
+		let authors = [];
+		this.props.comic.comicPanels.forEach(comicPanel => {
+			if(!authors.find(author => author.userId === comicPanel.userId)) {
+				authors.push({
+					userId: comicPanel.userId,
+					username: comicPanel.username
+				});
+			}
+		});
 
-		return <span>{comicPanels.map((comicPanel, idx) => {
-			return <span key={idx}><Link to={Util.route.profile(comicPanel.userId)}>{comicPanel.username}</Link>{(idx === comicPanels.length - 2 ? ' and ' : idx === comicPanels.length - 1 ? '' : ', ')}</span>
+		return <span>{authors.map((author, idx) => {
+			return <span key={idx}><Link to={Util.route.profile(author.userId)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
 		})}</span>
 	}
 }

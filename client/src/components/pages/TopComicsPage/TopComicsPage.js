@@ -46,21 +46,24 @@ export default class TopComicsPage extends Component {
 								: Util.array.any(this.state.topComics)
 									? <table className="top-comics-table">
 										<tbody>
-											{this.state.topComics.map(comic => {
-												let template = Util.context.getTemplateById(comic.templateId);
-												return <tr key={comic.templateId} className="top-comics-list-item">
+											{Util.context.getTemplates().map(template => {
+												let topComic = this.state.topComics.find(comic => comic.templateId === template.templateId);
+												return <tr key={template.templateId} className="top-comics-list-item">
 													<td>
-														<p className="sm"><b>Template {comic.templateId}</b> - Comic #{comic.comicId} (Rating: {comic.rating}) by <ComicPanelAuthorList comic={comic} />.</p>
+														<p className="sm"><b>Template {template.templateId}</b>{topComic ? <span> - Comic #{topComic.comicId} (Rating: {topComic.rating}) by <ComicPanelAuthorList comic={topComic} /></span> : null}.</p>
 														<p className="sm">{template.description}</p>
 													</td>
-													<td className="cell-button">
-														<div className="button-container">
-															<Button to={Util.route.comic(comic.comicId)} label="View comic" colour="pink" />
-														</div>
-														<div className="button-container">
-															<Button to={Util.route.template(comic.templateId)} label="View template" colour="black" />
-														</div>
-													</td>
+													{topComic
+														? <td className="cell-button">
+															<div className="button-container">
+																<Button to={Util.route.comic(topComic.comicId)} label="View comic" colour="pink" />
+															</div>
+															<div className="button-container">
+																<Button to={Util.route.template(topComic.templateId)} label="View template" colour="black" />
+															</div>
+														</td>
+														: <td></td>
+													}
 												</tr>
 											})}
 										</tbody>
