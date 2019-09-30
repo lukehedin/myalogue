@@ -29,7 +29,7 @@ export default class LoginPage extends Component {
 							});
 						}} />
 						<p className="center">Forgot your password? <Link to={Util.route.forgotPassword()}>Forgot password</Link></p>
-						<p className="center">Don't have an acount? <Link to={Util.route.register()}>Register</Link></p>
+						<p className="center">Don't have an account? <Link to={Util.route.register()}>Register</Link></p>
 					</div>
 				</div>
 			</div>

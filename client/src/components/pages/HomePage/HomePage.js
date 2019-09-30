@@ -8,15 +8,21 @@ import logo from '../../../images/logo_black.png';
 
 export default class HomePage extends Component {
 	render() {
+		let activeComicCount = Util.context.getActiveComicCount();
+
 		return <div className="page-home">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<img src={logo} className="app-logo" alt="logo" />
-						<p className="page-subtitle center">A game where players take turns creating the story for panels in a comic. Each player can use the previous panel to get an idea of where the story was going, but the rest of the comic is hidden until it is completed.</p>
-							<div className="button-container justify-center">
+						<div className="home-banner">
+							<img src={logo} className="app-logo" alt="logo" />
+							<p className="page-subtitle center">A game where players take turns creating the story for panels in a comic.</p>
+							<p className="page-subtitle center">Each player can use the previous panel to get an idea of where the story was going, but the rest of the comic is hidden until it is completed.</p>
+						</div>
+						<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
+						<h5 className="in-progress-count">{activeComicCount} {Util.format.pluralise(activeComicCount, 'comic')} in progress</h5>
 					</div>
 				</div>
 			</div>

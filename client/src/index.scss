@@ -41,8 +41,37 @@ body {
 					.page-subtitle {
 						text-align: center;
 						margin: $spacing-xs auto;
-						color: $colour-grey-d;
+						color: $colour-grey-e;
 						max-width: 600px;
+					}
+				}
+		
+				[class^="panel-"] {
+					padding: $spacing-md 0;
+					@include oversm {
+						padding: $spacing-md 0;
+					}
+					
+					&.panel-inset {
+						//Hide side boxshadows
+						margin-left: -$spacing-sm;
+						margin-right: -$spacing-sm;
+						padding-left: $spacing-sm;
+						padding-right: $spacing-sm;
+		
+						background-color: $colour-white;
+						@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
+					}
+				}
+
+				.container {
+					position: relative;
+					margin: 0 auto;
+					max-width: 900px;
+			
+					.row {
+						position: relative;
+						padding: 0 $spacing-sm;
 					}
 				}
 			}
@@ -110,35 +139,6 @@ body {
 
 		.no-select {
 			@include noSelect;
-		}
-		
-		[class^="panel-"] {
-			padding: $spacing-sm 0;
-			
-			&.panel-inset {
-				//Hide side boxshadows
-				margin-left: -$spacing-sm;
-				margin-right: -$spacing-sm;
-				padding-left: $spacing-sm;
-				padding-right: $spacing-sm;
-
-				background-color: $colour-white;
-				@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
-			}
-		}
-
-		.container {
-			position: relative;
-			margin: 0 auto;
-			max-width: 900px;
-		}
-	
-		.row {
-			position: relative;
-			padding: 0 $spacing-xs;
-			@include oversm {
-				padding: 0 $spacing-sm;
-			}
 		}
 	
 		.flex-spacer {

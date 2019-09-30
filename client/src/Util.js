@@ -75,7 +75,9 @@ const Util = {
 		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
 		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
 		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
-		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId]
+		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
+
+		getActiveComicCount: () => Util.context._referenceData.activeComicCount
 	},
 
 	analytics: {
@@ -198,6 +200,14 @@ const Util = {
 		}
 	},
 
+	format: {
+		pluralise: (arrayOrCount, singular, plural) => {
+			if(!plural) plural = singular + 's';
+			let count = Array.isArray(arrayOrCount) ? arrayOrCount.length : arrayOrCount;
+			return count === 1 ? singular : plural;
+		}
+	},
+
 	icon: {
 		avatar: iconAvatar,
 		back: iconBack,
@@ -224,7 +234,7 @@ const Util = {
 		isCurrently: (route) => Util.route.getCurrent() === route,
 
 		home: () => `/`,
-		template: (templateId) => `/template/${templateId}`,
+		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,
 		topComics: () => `/top-comics`,
 		leaderboard: () => `/leaderboard`,

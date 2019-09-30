@@ -33,6 +33,9 @@ export default class AppHeader extends Component {
 							label: 'Top comics',
 							to: Util.route.topComics()
 						}, {
+							label: 'Templates',
+							to: Util.route.template()
+						}, {
 							label: 'About',
 							to: Util.route.about()
 						}]}>

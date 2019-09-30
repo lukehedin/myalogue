@@ -139,7 +139,7 @@ const routes = {
 
 	public: {
 		authenticate: (req, res, db) => {
-			let userId = req.userId;
+			let userId = req.userId; // May be null
 			
 			if(process.env.IS_UNDER_MAINTENANCE === 'true') {
 				res.json({
@@ -156,16 +156,30 @@ const routes = {
 							paranoid: false //Include archived panels
 						}],
 						order: [[ 'TemplateId', 'DESC' ]]
+					}),
+					db.Comic.findAll({
+						where: {
+							CompletedAt: {
+								[db.op.eq]: null
+							},
+							LastAuthorUserId: {
+								[db.op.or]: {
+									[db.op.ne]: userId, //even if null this becomes !== null or === null
+									[db.op.eq]: null
+								}
+							}
+						}
 					})
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbTemplates]) => {
+					.then(([dbTemplates, dbActiveComics]) => {
 						let result = {
 							referenceData: {
 								templates: dbTemplates
 									.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
-									.map(mapper.fromDbTemplate)
+									.map(mapper.fromDbTemplate),
+								activeComicCount: dbActiveComics.length
 							}
 						}
 

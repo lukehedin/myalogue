@@ -46,6 +46,7 @@ class App extends Component {
 		this.unlisten = this.props.history.listen((location, action) => {
 			this.props.closeAllModals();
 			Util.analytics.page();
+			Util.selector.getRootScrollElement().scrollTo(0, 0);
 		});
 
 		Util.api.post('/api/authenticate')
@@ -96,9 +97,9 @@ class App extends Component {
 				<div className="app-inner">
 					<Switch>
 						{/* If NOT authenticated */}
-						<Route exact path="/register" render={({ match }) => ifNotAuthenticated(<RegisterPage />)} />
-						<Route exact path="/login" render={({ match }) => ifNotAuthenticated(<LoginPage />)} />
-						<Route exact path="/forgot-password" render={({ match }) => ifNotAuthenticated(<ForgotPasswordPage /> )} />
+						<Route exact path="/register" render={() => ifNotAuthenticated(<RegisterPage />)} />
+						<Route exact path="/login" render={() => ifNotAuthenticated(<LoginPage />)} />
+						<Route exact path="/forgot-password" render={() => ifNotAuthenticated(<ForgotPasswordPage /> )} />
 						
 						{/* Verification and password resets can happen even if logged in (odd scenario but plausible) */}
 						<Route exact path="/verify/:token" render={({ match }) => <VerifyPage token={match.params.token} />} />
@@ -106,22 +107,23 @@ class App extends Component {
 
 						<Route exact path="/" render={() => <HomePage />} />
 						
-						<Route exact path="/play" render={({ match }) => ifAuthenticated(<PlayPage />) } />
+						<Route exact path="/play" render={() => ifAuthenticated(<PlayPage />) } />
 						<Route exact path="/play/:templateId" render={({ match }) => ifAuthenticated(<PlayPage templateId={match.params.templateId} />) } />
 
 						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 
+						<Route exact path="/template" render={() => <TemplatePage /> } />
 						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 
-						<Route exact path="/top-comics" render={({ match }) => <TopComicsPage /> } />
+						<Route exact path="/top-comics" render={() => <TopComicsPage /> } />
 						
-						<Route exact path="/profile" render={({ match }) => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
+						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
 						<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 						
-						<Route exact path="/about" render={({ match }) => <AboutPage />}/>
-						<Route exact path="/privacy-policy" render={({ match }) => <PrivacyPolicyPage />}/>
-						<Route exact path="/terms-of-service" render={({ match }) => <TermsOfServicePage />}/>
+						<Route exact path="/about" render={() => <AboutPage />}/>
+						<Route exact path="/privacy-policy" render={() => <PrivacyPolicyPage />}/>
+						<Route exact path="/terms-of-service" render={() => <TermsOfServicePage />}/>
 						
 						{/* No other route match, 404 */}
 						<Route render={({ match }) => <Error404Page />} />

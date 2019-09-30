@@ -29,10 +29,10 @@ export default class ComicList extends Component {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.templateId !== prevProps.templateId;
+		return this.props.templateId !== prevProps.templateId || this.props.authorUserId !== prevProps.authorUserId;
 	}
-	componentDidUpdate(prevProps, prevState, isNewTemplateId) {
-		if(isNewTemplateId) this.resetFetch(this.props.fetchDelay);
+	componentDidUpdate(prevProps, prevState, isNewProps) {
+		if(isNewProps) this.resetFetch(this.props.fetchDelay);
 	}
 	resetFetch(fetchDelay) {
 		clearTimeout(this.fetchTimeout);
@@ -93,7 +93,10 @@ export default class ComicList extends Component {
 	}
 	render() {
 		return <div className="comic-list">
-				{this.props.title ? <h4 className="comic-list-title">{this.props.title}</h4> : null}
+				{this.props.title 
+					? <h3 className="comic-list-title">{this.props.title}</h3> 
+					: null
+				}
 				<div className="filters">
 					<Dropdown 
 						value={this.state.sortBy}

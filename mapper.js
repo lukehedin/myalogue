@@ -46,7 +46,7 @@ const mapper = {
 	fromDbTemplate: (dbTemplate) => {
 		return {
 			templateId: dbTemplate.TemplateId,
-			description: dbTemplate.Description,
+			name: dbTemplate.Name,
 			unlockedAt: dbTemplate.UnlockedAt,
 			templatePanels: (dbTemplate.TemplatePanels || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)
@@ -76,7 +76,7 @@ const mapper = {
 			userNotificationId: dbUserNotification.UserNotificationId,
 			isSeen: !!dbUserNotification.SeenAt,
 			isActionable: isActionable,
-			createdAt: dbUserNotification.Notification.CreatedAt,
+			createdAt: dbUserNotification.CreatedAt,
 			title: dbUserNotification.Notification.Title,
 			message: dbUserNotification.Notification.Message,
 			comicId: dbUserNotification.Notification.ComicId

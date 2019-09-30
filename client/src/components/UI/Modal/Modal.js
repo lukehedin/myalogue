@@ -53,7 +53,7 @@ class Modal extends Component {
 				</div>
 				break;
 			case Util.enum.ModalType.ShareComicModal:
-				modalTitle = "Share comic";
+				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
 				modalContent = <ShareComicContainer comic={modal.comic} comicDataUrl={modal.comicDataUrl} />
 				break;

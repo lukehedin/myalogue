@@ -44,12 +44,6 @@ body {
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
-          body .app-container .app .app-header .app-header-inner .play-button {
-            margin-left: 8px;
-            display: none; }
-            @media (min-width: 576px) {
-              body .app-container .app .app-header .app-header-inner .play-button {
-                display: flex; } }
           body .app-container .app .app-header .app-header-inner .notification-button {
             margin-right: 4px; }
           body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
@@ -310,11 +304,13 @@ body {
           body .app-container .app .form-wrapper form .form-message {
             color: #969696;
             text-align: center;
-            font-size: 12px; }
-            body .app-container .app .form-wrapper form .form-message > * {
-              margin: 8px 0; }
+            font-size: 12px;
+            margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
-            margin-top: 16px; }
+            margin-top: 8px; }
+            @media (min-width: 576px) {
+              body .app-container .app .form-wrapper form .button-container {
+                margin-top: 16px; } }
         body .app-container .app .form-wrapper .field-error {
           margin-top: 4px;
           color: #f02100;
@@ -720,7 +716,7 @@ body {
         flex-direction: column;
         align-items: center; }
         body .app-container .app .share-comic-container > *:not(:first-child) {
-          margin-top: 16px; }
+          margin-top: 8px; }
         body .app-container .app .share-comic-container .input-link {
           width: 240px; }
         body .app-container .app .share-comic-container .comic-image {
@@ -787,10 +783,15 @@ body {
         flex-direction: column; }
         body .app-container .app .page-comic .comic-highlight-inner .comic {
           margin: 0 auto; }
-      body .app-container .app .page-home .app-logo {
-        margin: 0 auto;
-        width: 200px;
-        display: block; }
+      body .app-container .app .page-home .home-banner {
+        margin-bottom: 16px; }
+        body .app-container .app .page-home .home-banner .app-logo {
+          margin: 0 auto;
+          width: 200px;
+          display: block; }
+      body .app-container .app .page-home .in-progress-count {
+        color: #ff0052;
+        margin-top: 8px; }
       body .app-container .app .page-play .play-area {
         position: relative;
         min-height: 60vh;
@@ -848,8 +849,29 @@ body {
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             text-align: center;
             margin: 8px auto;
-            color: #777777;
+            color: #525252;
             max-width: 600px; }
+        body .app-container .app .app-inner [class^="panel-"] {
+          padding: 32px 0; }
+          @media (min-width: 576px) {
+            body .app-container .app .app-inner [class^="panel-"] {
+              padding: 32px 0; } }
+          body .app-container .app .app-inner [class^="panel-"].panel-inset {
+            margin-left: -16px;
+            margin-right: -16px;
+            padding-left: 16px;
+            padding-right: 16px;
+            background-color: #fff;
+            box-shadow: inset 0 0 8px #00000044;
+            -webkit-box-shadow: inset 0 0 8px #00000044;
+            -moz-box-shadow: inset 0 0 8px #00000044; }
+        body .app-container .app .app-inner .container {
+          position: relative;
+          margin: 0 auto;
+          max-width: 900px; }
+          body .app-container .app .app-inner .container .row {
+            position: relative;
+            padding: 0 16px; }
 
 @keyframes loader-spin {
   0% {
@@ -901,27 +923,6 @@ body {
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none; }
-    body .app-container [class^="panel-"] {
-      padding: 16px 0; }
-      body .app-container [class^="panel-"].panel-inset {
-        margin-left: -16px;
-        margin-right: -16px;
-        padding-left: 16px;
-        padding-right: 16px;
-        background-color: #fff;
-        box-shadow: inset 0 0 8px #00000044;
-        -webkit-box-shadow: inset 0 0 8px #00000044;
-        -moz-box-shadow: inset 0 0 8px #00000044; }
-    body .app-container .container {
-      position: relative;
-      margin: 0 auto;
-      max-width: 900px; }
-    body .app-container .row {
-      position: relative;
-      padding: 0 8px; }
-      @media (min-width: 576px) {
-        body .app-container .row {
-          padding: 0 16px; } }
     body .app-container .flex-spacer {
       flex: 1; }
     body .app-container .button-container {

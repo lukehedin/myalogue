@@ -34,8 +34,6 @@ export default class ComicPage extends Component {
 		});
 	}
 	fetchData() {
-		//TODO: try to get from top comics first?
-
 		Util.api.post('/api/getComicById', {
 			comicId: this.props.comicId
 		})

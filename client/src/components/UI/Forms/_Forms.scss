@@ -42,14 +42,14 @@
 			color: $colour-grey-c;
 			text-align: center;
 			font-size: 12px;
-
-			> * {
-				margin: $spacing-xs 0;
-			}
+			margin: $spacing-xs 0;
 		}
 
 		.button-container {
-			margin-top: $spacing-sm;
+			margin-top: $spacing-xs;
+			@include oversm {
+				margin-top: $spacing-sm;
+			}
 		}
 	}
 

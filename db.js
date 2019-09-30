@@ -49,6 +49,13 @@ const getBoooleanNotNull = () => {
 		defaultValue: false
 	};
 };
+const getIntegerNotNull = () => {
+	return {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false
+	}
+};
 
 let db = {
 	
@@ -124,11 +131,7 @@ let db = {
 		LockedAt: Sequelize.DATE, // locked while editing (1 min)
 		Token: Sequelize.STRING, //If present, the comic is private
 		PanelCount: Sequelize.INTEGER,
-		Rating: {
-			type: Sequelize.INTEGER,
-			defaultValue: 0,
-            allowNull: false
-		},
+		Rating: getIntegerNotNull(),
 		
 		//Used for display
 		Title: Sequelize.STRING //First line of dialogue?
@@ -138,7 +141,8 @@ let db = {
 		Ordinal: Sequelize.INTEGER,
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
-		ComicCompletedAt: Sequelize.DATE //For queryability
+		ComicCompletedAt: Sequelize.DATE, //For queryability
+		// SkipCount: getIntegerNotNull() //currently won't work as players can skip the same repeatedly
 	}),
 
 	ComicVote: defineTable('ComicVote', {

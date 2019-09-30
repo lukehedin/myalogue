@@ -15,6 +15,19 @@ export default class ProfilePage extends Component {
 		};
 	}
 	componentDidMount() {
+		this.fetchData();
+	}
+	getSnapshotBeforeUpdate(prevProps) {
+		return this.props.userId !== prevProps.userId;
+	}
+	componentDidUpdate(prevProps, prevState, isNewUserId) {
+		if(isNewUserId) this.fetchData();
+	}
+	fetchData() {
+		this.setState({
+			isLoading: true
+		});
+		
 		Util.api.post('/api/getUser', {
 			requestedUserId: this.props.userId
 		})
