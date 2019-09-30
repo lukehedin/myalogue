@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-// import randomWords from 'random-words';
 import Util from '../../../Util';
 
 import Timer from '../../UI/Timer/Timer';
@@ -8,6 +7,7 @@ import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
 import Button from '../../UI/Button/Button';
 import S4YButton from '../../UI/S4YButton/S4YButton';
+import ProgressBar from '../../UI/ProgressBar/ProgressBar';
 
 const playTimerMins = 2;
 
@@ -47,7 +47,9 @@ export default class PlayPage extends Component {
 			comicId: null,
 			templatePanelId: null,
 			currentComicPanel: null,
-			dialogue: ''
+			dialogue: '',
+			completedPanelCount: null,
+			totalPanelCount: null
 		});
 	}
 	playNew(skippedComicId) {
@@ -66,6 +68,9 @@ export default class PlayPage extends Component {
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
 					currentComicPanel: result.currentComicPanel, //May be null
+
+					completedPanelCount: result.completedPanelCount,
+					totalPanelCount: result.totalPanelCount
 				});
 			} else {
 				this.setState({
@@ -127,29 +132,28 @@ export default class PlayPage extends Component {
 		} else if(this.state.templatePanelId) {
 			//In progress
 			content = <div className="play-area">
-				{this.state.currentComicPanel
-					? <h5 className="center">Continue the comic</h5>
-					: <h5 className="center">Begin the comic</h5>
-				}
-				<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
+				<div className="play-area-top">
+					<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
+					<p className="center sm">{this.state.currentComicPanel
+						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
+							? `End` 
+							: `Continue`
+						: `Begin`} the comic</p>
+					<ProgressBar total={this.state.totalPanelCount} amount={this.state.completedPanelCount}
+						label={`panel ${this.state.completedPanelCount + 1} of ${this.state.totalPanelCount}`}
+					/>
+				</div>
 				<ComicPanelPair>
 					{this.state.currentComicPanel
 						? <ComicPanel comicPanel={this.state.currentComicPanel} />
 						: null
 					}
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
-				</ComicPanelPair>
+				</ComicPanelPair> 
 				<div className="button-container justify-center">
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
 				</div>
-				{/* {this.state.currentComicPanel
-					? null
-					: <div className="start-help">
-						<h5>Random words for comic ideas</h5>
-						<ul>{randomWords({exactly:5, wordsPerString:1}).map(rw => <li>{rw}</li>)}</ul>
-					</div>
-				} */}
 			</div>;
 		} else {
 			//Not submitted, not in progress, must have ran out of time
@@ -182,17 +186,6 @@ export default class PlayPage extends Component {
 					</div>
 				</div>
 			</div>
-			{/* <div className="panel-inset">
-				<div className="container">
-					<div className="row">
-						<h3>Tips</h3>
-						<ul>
-							<li>Pay attention to the previous panel, don't just something random (unless you're the first dialogue, in which case just go nuts).</li>
-							<li>Don't overthink it!</li>
-						</ul>
-					</div>
-				</div>
-			</div> */}
 		</div>;
 	}
 }

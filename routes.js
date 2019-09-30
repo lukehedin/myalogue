@@ -667,11 +667,12 @@ const routes = {
 				//Function used below for an existing or new comic
 				const prepareComicForPlay = (dbComic) => {
 					return new Promise((resolve, reject) => {
-						let currentComicPanel = dbComic.ComicPanels && dbComic.ComicPanels.length > 0
-							? dbComic.ComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[dbComic.ComicPanels.length - 1]
+						let currentComicPanels = dbComic.ComicPanels || [];
+						let currentComicPanel = currentComicPanels.length > 0
+							? currentComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[currentComicPanels.length - 1]
 							: null;
 						let isFirst = !currentComicPanel;
-						let isLast = dbComic.ComicPanels && dbComic.ComicPanels.length + 1 === dbComic.PanelCount;
+						let isLast = currentComicPanels.length + 1 === dbComic.PanelCount;
 							
 						let templatePanelWhere = {
 							TemplateId: dbComic.TemplateId
@@ -702,6 +703,10 @@ const routes = {
 								.then(() => resolve({
 									comicId: dbComic.ComicId,
 									templatePanelId: dbTemplatePanel.TemplatePanelId,
+
+									totalPanelCount: dbComic.PanelCount,
+									completedPanelCount: currentComicPanels.length,
+
 									currentComicPanel: currentComicPanel 
 										? mapper.fromDbComicPanel(currentComicPanel) 
 										: null

@@ -6,10 +6,14 @@
 		flex-direction: column;
 		align-items: center;
 
-		.timer {
-			margin: $spacing-xxs 0;
+		.play-area-top {
+			margin-bottom: $spacing-xs;
 		}
-		
+
+		.progress-bar {
+			width: 200px;
+		}
+
 		.comic-panel-pair {
 			@include comicWrapperStyle;
 		}
