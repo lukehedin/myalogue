@@ -5,6 +5,7 @@ import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
 
 import ComicPanel from '../ComicPanel/ComicPanel';
+import ComicPanelPair from '../ComicPanelPair/ComicPanelPair';
 import ComicVote from '../ComicVote/ComicVote';
 
 //this.props.comic
@@ -76,16 +77,16 @@ class Comic extends Component {
 	}
 	render() {
 		//Put comic panels into pairs
-		let comicPanelsPaired = [];
+		let comicPanelsPairs = [];
 		let heldPanel = null;
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
 			if(idx % 2 === 0) {
 				heldPanel = <ComicPanel comicPanel={comicPanel} includeComicId={idx === 0} />;
 			} else {
-				comicPanelsPaired.push(<div key={idx} className="paired-comic-panels">
+				comicPanelsPairs.push(<ComicPanelPair key={idx}>
 					{heldPanel}
 					<ComicPanel comicPanel={comicPanel} />
-				</div>);
+				</ComicPanelPair>);
 				heldPanel = null;
 			}
 		});
@@ -97,7 +98,7 @@ class Comic extends Component {
 				onTouchEnd={() => this.cancelShareTimeout()}
 				onMouseDown={() => this.openShareComicModal()}
 			>
-				{comicPanelsPaired.map(comicPanelPair => comicPanelPair)}
+				{comicPanelsPairs.map(comicPanelPair => comicPanelPair)}
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
 			</div>
 			<div className="comic-lower">

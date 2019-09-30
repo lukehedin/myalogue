@@ -6,6 +6,6 @@ import Util from '../../../Util';
 import Button from '../Button/Button';
 export default class S4YButton extends Component {
 	render() {
-		return <Button {...this.props} onClick={this.props.onClick} to={this.props.to || Util.route.play()} className="s4y-button" colour="pink" label={this.props.label || "Play"} size={this.props.size || "md"} />
+		return <Button {...this.props} onClick={this.props.onClick} to={Util.route.play()} className="s4y-button" colour="pink" label={this.props.label || "Play"} size={this.props.size || "md"} />
 	}
 }

@@ -5,6 +5,7 @@ import Util from '../../../Util';
 
 import Timer from '../../UI/Timer/Timer';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
+import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
 import Button from '../../UI/Button/Button';
 import S4YButton from '../../UI/S4YButton/S4YButton';
 
@@ -127,17 +128,17 @@ export default class PlayPage extends Component {
 			//In progress
 			content = <div className="play-area">
 				{this.state.currentComicPanel
-					? <h5 className="center">Continue the story in the comic</h5>
-					: <h5 className="center">Begin the story for the comic</h5>
+					? <h5 className="center">Continue the comic</h5>
+					: <h5 className="center">Begin the comic</h5>
 				}
 				<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
-				<div className="comic-panels">
+				<ComicPanelPair>
 					{this.state.currentComicPanel
 						? <ComicPanel comicPanel={this.state.currentComicPanel} />
 						: null
 					}
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
-				</div>
+				</ComicPanelPair>
 				<div className="button-container justify-center">
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
@@ -145,7 +146,7 @@ export default class PlayPage extends Component {
 				{/* {this.state.currentComicPanel
 					? null
 					: <div className="start-help">
-						<h5>Random words for story ideas</h5>
+						<h5>Random words for comic ideas</h5>
 						<ul>{randomWords({exactly:5, wordsPerString:1}).map(rw => <li>{rw}</li>)}</ul>
 					</div>
 				} */}
@@ -155,14 +156,14 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				{this.state.isSubmitted 
 					 ?<div>
-						<h2>Panel created!</h2>
+						<h1>Panel created!</h1>
 						<p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
 						<div className="button-container justify-center">
 							<S4YButton label="Play again" onClick={() => this.playNew()} size="lg" />
 						</div>
 					</div>				
 					: <div>
-						<h2>Sorry, you ran out of time!</h2>
+						<h1>Sorry, you ran out of time!</h1>
 						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
 						<p className="center">Why not try again?</p>
 						<div className="button-container justify-center">

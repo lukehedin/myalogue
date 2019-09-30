@@ -34,7 +34,7 @@ export default class VerifyPage extends Component {
 							{this.state.isLoading 
 								? <div className="loader"></div> 
 								: <div className="verify-message">
-										<h2>Sorry, something went wrong.</h2>
+										<h1>Sorry, something went wrong.</h1>
 										<p className="center">Could not verify account.</p>
 										<Button to={Util.route.home()} colour="pink" size="lg" label="Back to home" />
 									</div>

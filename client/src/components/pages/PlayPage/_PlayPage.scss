@@ -14,15 +14,6 @@
 			margin-top: $spacing-xs;
 		}
 
-		.comic-panels {
-			display: flex;
-			flex-direction: column;
-		
-			@include isLandscape {
-				flex-direction: row;
-			}
-		}
-
 		.start-help {
 			margin-top: $spacing-lg;
 			color: $colour-grey-c;

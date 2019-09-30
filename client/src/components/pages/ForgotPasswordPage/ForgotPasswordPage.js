@@ -21,7 +21,7 @@ export default class ForgotPasswordPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Forgot password</h2>
+						<h1>Forgot password</h1>
 						{this.state.isSubmitted
 							? <p className="page-subtitle">An email has been sent to you with instructions on how to reset your password.</p>
 							: <div>

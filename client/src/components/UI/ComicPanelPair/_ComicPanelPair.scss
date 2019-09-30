@@ -1,0 +1,18 @@
+.comic-panel-pair {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	@include isLandscape {
+		flex-direction: row;
+		justify-content: center;
+	}
+}
+
+// .paired-comic-panels {
+// 	display: inline;
+// 	@include isLandscape {
+// 		display: flex;
+// 		flex-direction: row;
+// 	}
+// }

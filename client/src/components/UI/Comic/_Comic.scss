@@ -8,14 +8,7 @@
 		background-color: $colour-white;
 		@include borderRadius(4px);
 		position: relative;
-
-		.paired-comic-panels {
-			display: inline;
-			@include isLandscape {
-				display: flex;
-				flex-direction: row;
-			}
-		}
+		display: inline-block;
 
 		&.for-image-capture {
 			position: absolute;

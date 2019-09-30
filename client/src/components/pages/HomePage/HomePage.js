@@ -16,13 +16,12 @@ export default class HomePage extends Component {
 					<div className="row">
 						<div className="home-banner">
 							<img src={logo} className="app-logo" alt="logo" />
-							<p className="page-subtitle center">A game where players take turns writing the dialogue for the panels of a comic, without knowing the full story.</p>
-							<p className="page-subtitle center">Each player can use the previous panel to get an idea of where things were going, but the rest of the comic is hidden until it is completed.</p>
+							<p className="page-subtitle center">A game where players take turns writing the dialogue for the panels of a comic, without knowing everything that has happened so far.</p>
 						</div>
 						<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
-						<h5 className="in-progress-count">{activeComicCount} {Util.format.pluralise(activeComicCount, 'comic')} ready to play</h5>
+						<h4 className="in-progress-count">{activeComicCount} {Util.format.pluralise(activeComicCount, 'comic')} in progress</h4>
 					</div>
 				</div>
 			</div>

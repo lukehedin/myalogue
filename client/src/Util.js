@@ -77,7 +77,8 @@ const Util = {
 		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
 		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
 
-		getActiveComicCount: () => Util.context._referenceData.activeComicCount
+		getActiveComicCount: () => Util.context._referenceData.activeComicCount,
+		getTopComic: () => Util.context._referenceData.topComic
 	},
 
 	analytics: {
@@ -239,6 +240,7 @@ const Util = {
 		topComics: () => `/top-comics`,
 		leaderboard: () => `/leaderboard`,
 		login: () => `/login`,
+		howToPlay: () => `/how-to-play`,
 		profile: (userId) => userId ? `/profile/${userId}` : `/profile`,
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,

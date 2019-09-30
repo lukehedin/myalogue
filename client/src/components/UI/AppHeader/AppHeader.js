@@ -36,6 +36,9 @@ export default class AppHeader extends Component {
 							label: 'Templates',
 							to: Util.route.template()
 						}, {
+							label: 'How to play',
+							to: Util.route.howToPlay()
+						}, {
 							label: 'About',
 							to: Util.route.about()
 						}]}>

@@ -32,8 +32,8 @@ export default class TopComicsPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Top comics</h2>
-						<p className="page-subtitle center">The highest rated comics for each comic template.</p>
+						<h1>Top comics</h1>
+						<p className="page-subtitle center">The highest rated comics for each template.</p>
 					</div>
 				</div>
 			</div>

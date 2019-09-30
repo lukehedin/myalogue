@@ -158,34 +158,35 @@ const routes = {
 						order: [[ 'TemplateId', 'DESC' ]]
 					}),
 					db.Comic.findAll({
-						where: !!userId 
-							? {
-								CompletedAt: {
-									[db.op.ne]: null
-								},
-								LastAuthorUserId: {
-									[db.op.or]: {
-										[db.op.ne]: userId,
-										[db.op.eq]: null
-									}
-								}
+						where: {
+							CompletedAt: {
+								[db.op.eq]: null
 							}
-							: {
-								CompletedAt: {
-									[db.op.ne]: null
-								}
+						}
+					}),
+					db.Comic.findAll({
+						where: {
+							CompletedAt: {
+								[db.op.ne]: null
 							}
+						},
+						include: getIncludeForComic(db, userId, true),
+						order: [[ 'Rating', 'DESC' ]],
+						limit: 1
 					})
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbTemplates, dbActiveComics]) => {
+					.then(([dbTemplates, dbActiveComics, dbTopComics]) => {
 						let result = {
 							referenceData: {
 								templates: dbTemplates
 									.sort((t1, t2) => t1.TemplateId - t2.TemplateId)
 									.map(mapper.fromDbTemplate),
-								activeComicCount: dbActiveComics.length
+								topComic: dbTopComics && dbTopComics.length === 1 
+									? mapper.fromDbComic(dbTopComics[0]) 
+									: null,
+								activeComicCount: dbActiveComics.length,
 							}
 						}
 
@@ -576,7 +577,7 @@ const routes = {
 							[db.op.in]: topComicIds
 						}
 					},
-					include: getIncludeForComic(db, userId, true),
+					include: getIncludeForComic(db, userId, true)
 				})
 				.then(dbComicsWithInclude => res.json(dbComicsWithInclude.map(mapper.fromDbComic)))
 				.catch(error => catchError(res, error, db));

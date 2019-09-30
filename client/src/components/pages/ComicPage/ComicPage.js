@@ -53,7 +53,7 @@ export default class ComicPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Comic #{this.props.comicId}</h2>
+						<h1>Comic #{this.props.comicId}</h1>
 						{this.state.comic
 							? <p className="page-subtitle center">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
 							: null

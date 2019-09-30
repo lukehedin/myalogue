@@ -19,6 +19,7 @@ import VerifyPage from './components/pages/VerifyPage/VerifyPage';
 import TopComicsPage from './components/pages/TopComicsPage/TopComicsPage';
 import ProfilePage from './components/pages/ProfilePage/ProfilePage';
 import AboutPage from './components/pages/AboutPage/AboutPage';
+import HowToPlayPage from './components/pages/HowToPlayPage/HowToPlayPage';
 import Error404Page from './components/pages/Error404Page/Error404Page';
 import ForgotPasswordPage from './components/pages/ForgotPasswordPage/ForgotPasswordPage';
 import SetPasswordPage from './components/pages/SetPasswordPage/SetPasswordPage';
@@ -74,7 +75,7 @@ class App extends Component {
 		let ifAuthenticated = (component) => {
 			return Util.context.isAuthenticated()
 				? component
-				: <Redirect to={Util.route.register()} />;
+				: <Redirect to={Util.route.howToPlay()} />;
 		};
 
 		let ifNotAuthenticated = (component) => {
@@ -86,7 +87,7 @@ class App extends Component {
 		let getSorryPanel = (title, subtitle) => {
 			return <div className="sorry-panel">
 				<img alt="" src={loaderFace} />
-				<h2>{title}</h2>
+				<h1>{title}</h1>
 				<p>{subtitle}</p>
 			</div>;
 		};
@@ -121,6 +122,7 @@ class App extends Component {
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
 						<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 						
+						<Route exact path="/how-to-play" render={() => <HowToPlayPage />} />
 						<Route exact path="/about" render={() => <AboutPage />}/>
 						<Route exact path="/privacy-policy" render={() => <PrivacyPolicyPage />}/>
 						<Route exact path="/terms-of-service" render={() => <TermsOfServicePage />}/>

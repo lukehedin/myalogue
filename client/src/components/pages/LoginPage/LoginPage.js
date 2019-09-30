@@ -10,7 +10,7 @@ export default class LoginPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h2>Login</h2>
+						<h1>Login</h1>
 						<LoginForm onSubmit={(form, formData) => {
 							form.setLoading(true);
 							

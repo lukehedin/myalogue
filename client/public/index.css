@@ -109,13 +109,8 @@ body {
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px;
-          position: relative; }
-          body .app-container .app .comic .comic-content .paired-comic-panels {
-            display: inline; }
-            @media screen and (orientation: landscape) {
-              body .app-container .app .comic .comic-content .paired-comic-panels {
-                display: flex;
-                flex-direction: row; } }
+          position: relative;
+          display: inline-block; }
           body .app-container .app .comic .comic-content.for-image-capture {
             position: absolute;
             z-index: -1;
@@ -276,6 +271,14 @@ body {
             right: 0; }
         body .app-container .app .comic-panel.editing {
           cursor: pointer; }
+      body .app-container .app .comic-panel-pair {
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
+        @media screen and (orientation: landscape) {
+          body .app-container .app .comic-panel-pair {
+            flex-direction: row;
+            justify-content: center; } }
       body .app-container .app .form-wrapper {
         position: relative;
         margin: 0 auto;
@@ -790,12 +793,6 @@ body {
           margin: 4px 0; }
         body .app-container .app .page-play .play-area .button-container {
           margin-top: 8px; }
-        body .app-container .app .page-play .play-area .comic-panels {
-          display: flex;
-          flex-direction: column; }
-          @media screen and (orientation: landscape) {
-            body .app-container .app .page-play .play-area .comic-panels {
-              flex-direction: row; } }
         body .app-container .app .page-play .play-area .start-help {
           margin-top: 64px;
           color: #969696; }
@@ -828,12 +825,23 @@ body {
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
+      body .app-container .app .page-how-to-play .how-to-play-image {
+        margin: 0 auto;
+        border: 1px solid #c8c8c8;
+        display: block;
+        max-width: 80vw; }
+      body .app-container .app .page-how-to-play .comic-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
       body .app-container .app .app-inner {
         display: flex;
         flex-direction: column;
         min-height: 100vh; }
         body .app-container .app .app-inner [class^="page-"] {
           position: relative; }
+          body .app-container .app .app-inner [class^="page-"] .page-title {
+            margin-bottom: 8px; }
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             text-align: center;
             margin: 8px auto;
@@ -938,6 +946,10 @@ body {
       margin: 0;
       overflow-wrap: break-word;
       text-align: center; }
+    body .app-container h3 {
+      color: #777777; }
+    body .app-container h5 {
+      text-transform: uppercase; }
     body .app-container p {
       margin: 16px 0; }
       body .app-container p.sm {
@@ -960,10 +972,6 @@ body {
         cursor: pointer; }
         body .app-container a:not(.link-no-style):hover, body .app-container .faux-link:not(.link-no-style):hover {
           text-decoration: underline; }
-    body .app-container h4 {
-      font-weight: normal; }
-    body .app-container h5 {
-      text-transform: uppercase; }
     body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
       background-color: #fff;
       padding: 8px 16px;
