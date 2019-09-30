@@ -9,6 +9,10 @@
 		.timer {
 			margin: $spacing-xxs 0;
 		}
+		
+		.comic-panel-pair {
+			@include comicWrapperStyle;
+		}
 
 		.button-container {
 			margin-top: $spacing-xs;

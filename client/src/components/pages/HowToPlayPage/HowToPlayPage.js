@@ -87,7 +87,7 @@ export default class HowToPlayPage extends Component {
 							</div>
 							: <div>
 								<p className="center">You'll need an account to start playing.</p>
-								<p className="center">It's quick, easy, and <b>your email is only used to verify your account</b>.</p>
+								<p className="center">It's quick, easy, and your email is <b>only used to verify your account</b>.</p>
 								<div className="button-container justify-center">
 									<Button to={Util.route.register()} colour="pink" size="lg" label="Get started" />
 								</div>

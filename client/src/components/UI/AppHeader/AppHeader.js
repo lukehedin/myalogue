@@ -28,16 +28,16 @@ export default class AppHeader extends Component {
 							to: Util.route.home()
 						}, {
 							label: 'Play',
-							to: Util.route.play()
+							to: Util.context.isAuthenticated() ? Util.route.play() : Util.route.register()
+						}, {
+							label: 'How to play',
+							to: Util.route.howToPlay()
 						}, {
 							label: 'Top comics',
 							to: Util.route.topComics()
 						}, {
 							label: 'Templates',
 							to: Util.route.template()
-						}, {
-							label: 'How to play',
-							to: Util.route.howToPlay()
 						}, {
 							label: 'About',
 							to: Util.route.about()

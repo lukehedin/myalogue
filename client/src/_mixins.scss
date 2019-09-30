@@ -82,3 +82,12 @@
 		@content;
 	}
 }
+
+// other mixins 
+
+@mixin comicWrapperStyle {
+	border: 1px solid $colour-grey-b;
+	background-color: $colour-white;
+	@include borderRadius(4px);
+	@include boxShadow(6px, 6px, 6px, #00000016);
+}

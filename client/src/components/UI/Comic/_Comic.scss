@@ -1,14 +1,12 @@
 .comic {
 	position: relative;
-	overflow: hidden;
+	overflow: visible;
 
 	.comic-content {
 		cursor: pointer;
-		border: 1px solid $colour-grey-b;
-		background-color: $colour-white;
-		@include borderRadius(4px);
 		position: relative;
 		display: inline-block;
+		@include comicWrapperStyle;
 
 		&.for-image-capture {
 			position: absolute;

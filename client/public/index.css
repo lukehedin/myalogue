@@ -99,18 +99,21 @@ body {
           color: #969696; }
       body .app-container .app .comic {
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         -webkit-animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
         body .app-container .app .comic .comic-content {
           cursor: pointer;
+          position: relative;
+          display: inline-block;
           border: 1px solid #c8c8c8;
           background-color: #fff;
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px;
-          position: relative;
-          display: inline-block; }
+          box-shadow: 6px 6px 6px #00000016;
+          -webkit-box-shadow: 6px 6px 6px #00000016;
+          -moz-box-shadow: 6px 6px 6px #00000016; }
           body .app-container .app .comic .comic-content.for-image-capture {
             position: absolute;
             z-index: -1;
@@ -794,6 +797,15 @@ body {
         align-items: center; }
         body .app-container .app .page-play .play-area .timer {
           margin: 4px 0; }
+        body .app-container .app .page-play .play-area .comic-panel-pair {
+          border: 1px solid #c8c8c8;
+          background-color: #fff;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          box-shadow: 6px 6px 6px #00000016;
+          -webkit-box-shadow: 6px 6px 6px #00000016;
+          -moz-box-shadow: 6px 6px 6px #00000016; }
         body .app-container .app .page-play .play-area .button-container {
           margin-top: 8px; }
         body .app-container .app .page-play .play-area .start-help {
