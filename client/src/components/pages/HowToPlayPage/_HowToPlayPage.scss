@@ -6,6 +6,16 @@
 		max-width: 80vw;
 	}
 
+	.demo-pair {
+		display: flex;
+		justify-content: center;
+		flex-direction: row;
+		
+		.comic-panel-pair {
+			@include comicWrapperStyle;
+		}
+	}
+
 	.comic-wrapper {
 		display: flex;
 		flex-direction: column;

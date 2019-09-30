@@ -26,6 +26,7 @@ export default class TemplateNavigation extends Component {
 				/>
 			</div>
 			<div className="template-info">
+				<h5>Template</h5>
 				<h2>{templateId}</h2>
 			</div>
 			<div className="button-container">

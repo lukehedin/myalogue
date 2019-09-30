@@ -532,7 +532,7 @@ body {
         align-items: center;
         max-width: 500px;
         margin: 0 auto; }
-        body .app-container .app .template-navigation .template-info > * {
+        body .app-container .app .template-navigation .template-info h2 {
           color: #ff0052; }
         body .app-container .app .template-navigation .button-container {
           flex: 1; }
@@ -770,15 +770,13 @@ body {
               border-top: 1px solid #c8c8c8; }
           body .app-container .app .notification-menu .notification-content > .empty-text {
             padding: 16px; }
-      body .app-container .app .page-comic .comic-highlight-inner {
+      body .app-container .app .page-comic .comic-featured {
         position: relative;
         min-height: 60vh;
         display: flex;
         flex-direction: column; }
-        body .app-container .app .page-comic .comic-highlight-inner .comic {
+        body .app-container .app .page-comic .comic-featured .comic {
           margin: 0 auto; }
-        body .app-container .app .page-comic .comic-highlight-inner .play-message {
-          margin-top: 32px; }
       body .app-container .app .page-home .home-banner {
         margin-bottom: 16px; }
         body .app-container .app .page-home .home-banner .app-logo {
@@ -816,6 +814,8 @@ body {
             list-style-type: none;
             padding: 0;
             font-size: 14px; }
+      body .app-container .app .page-template .template-name {
+        margin: 16px 0; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;
         min-height: 60vh; }
@@ -845,6 +845,19 @@ body {
         border: 1px solid #c8c8c8;
         display: block;
         max-width: 80vw; }
+      body .app-container .app .page-how-to-play .demo-pair {
+        display: flex;
+        justify-content: center;
+        flex-direction: row; }
+        body .app-container .app .page-how-to-play .demo-pair .comic-panel-pair {
+          border: 1px solid #c8c8c8;
+          background-color: #fff;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          box-shadow: 6px 6px 6px #00000016;
+          -webkit-box-shadow: 6px 6px 6px #00000016;
+          -moz-box-shadow: 6px 6px 6px #00000016; }
       body .app-container .app .page-how-to-play .comic-wrapper {
         display: flex;
         flex-direction: column;

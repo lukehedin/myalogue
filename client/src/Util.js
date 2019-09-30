@@ -77,7 +77,6 @@ const Util = {
 		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
 		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
 
-		getActiveComicCount: () => Util.context._referenceData.activeComicCount,
 		getTopComic: () => Util.context._referenceData.topComic
 	},
 

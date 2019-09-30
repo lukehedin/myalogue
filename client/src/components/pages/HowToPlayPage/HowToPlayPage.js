@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import Util from '../../../Util';
 import { Redirect } from 'react-router-dom';
 
-import S4YButton from '../../UI/S4YButton/S4YButton';
-import ComicList from '../../UI/ComicList/ComicList';
-
 import notification_example_img from './notification_example.png';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
@@ -36,10 +33,12 @@ export default class HowToPlayPage extends Component {
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
-						<ComicPanelPair>
-							<ComicPanel comicPanel={demoPanel} />
-							<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
-						</ComicPanelPair>
+						<div className="demo-pair">
+							<ComicPanelPair>
+								<ComicPanel comicPanel={demoPanel} />
+								<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
+							</ComicPanelPair>
+						</div>
 					</div>
 				</div>
 			</div>

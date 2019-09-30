@@ -1,5 +1,5 @@
 .page-comic {
-	.comic-highlight-inner {
+	.comic-featured {
 		position: relative;
 		min-height: 60vh;
 		display: flex;
@@ -8,9 +8,5 @@
 		.comic {
 			margin: 0 auto;
 		}
-
-		.play-message {
-			margin-top: $spacing-md;
-		}
-	}	
+	}
 }

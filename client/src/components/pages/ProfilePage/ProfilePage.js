@@ -45,7 +45,7 @@ export default class ProfilePage extends Component {
 	}
 	render() {
 		return <div className="page-profile">
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<div className="user-info">
@@ -62,7 +62,7 @@ export default class ProfilePage extends Component {
 					</div>
 				</div>
 			</div>
-			<div className="panel-inset">
+			<div className="panel-stanard">
 				<div className="container">
 					<div className="row">
 						{this.state.user

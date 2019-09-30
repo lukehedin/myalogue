@@ -62,32 +62,32 @@ export default class ComicPage extends Component {
 							? <p className="page-subtitle">Panels by <ComicPanelAuthorList comic={this.state.comic} /></p>
 							: null
 						}
-					</div>
-				</div>
-			</div>
-			<div className="panel-inset">
-				<div className="container">
-					<div className="row">
-						<div className="comic-highlight-inner">
+						<div className="comic-featured">
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: !this.state.comic
 									? <p className="empty-text">The bad news is that the requested comic no longer exists. The good news is that you can start a new one right now!</p>
 									: <Comic key={this.state.comic.comicId} comic={this.state.comic} />
 							}
-							{this.state.isLoading
-								? null
-								: <div className="play-message">
-									<p className="center">Did you like this comic, or could you do better? Play along and put your own words into the panels.</p>
-									<div className="button-container justify-center">
-										<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
-									</div>
-								</div>
-							}
 						</div>
 					</div>
 				</div>
 			</div>
+			{this.state.isLoading
+				? null
+				: <div className="panel-inset">
+					<div className="container">
+						<div className="row">
+							<div className="play-message">
+							<p className="center">Did you like this comic, or could you do better?</p>
+							<div className="button-container justify-center">
+								<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			}
 			<div className="panel-standard panel-template-feed">
 				<div className="container">
 					<div className="row">

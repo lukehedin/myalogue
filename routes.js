@@ -160,13 +160,6 @@ const routes = {
 					db.Comic.findAll({
 						where: {
 							CompletedAt: {
-								[db.op.eq]: null
-							}
-						}
-					}),
-					db.Comic.findAll({
-						where: {
-							CompletedAt: {
 								[db.op.ne]: null
 							}
 						},
@@ -177,7 +170,7 @@ const routes = {
 				];
 	
 				Promise.all(referenceDataPromises)
-					.then(([dbTemplates, dbActiveComics, dbTopComics]) => {
+					.then(([dbTemplates, dbTopComics]) => {
 						let result = {
 							referenceData: {
 								templates: dbTemplates
@@ -185,8 +178,7 @@ const routes = {
 									.map(mapper.fromDbTemplate),
 								topComic: dbTopComics && dbTopComics.length === 1 
 									? mapper.fromDbComic(dbTopComics[0]) 
-									: null,
-								activeComicCount: dbActiveComics.length,
+									: null
 							}
 						}
 
@@ -601,6 +593,21 @@ const routes = {
 					? res.json(mapper.fromDbUser(dbUser))
 					: catchError(res, 'User not found.')
 			})
+			.catch(error => catchError(res, error, db));
+		},
+
+		getComicsInProgressCount: (req, res, db) => {
+			db.Comic.findAll({
+				where: {
+					CompletedAt: {
+						[db.op.eq]: null
+					},
+					LastAuthorUserId: {
+						[db.op.ne]: null
+					}
+				}
+			})
+			.then(dbComics => res.json(dbComics.length))
 			.catch(error => catchError(res, error, db));
 		}
 	},

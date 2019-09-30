@@ -7,11 +7,26 @@ import ComicList from '../../UI/ComicList/ComicList';
 import logo from '../../../images/logo_black.png';
 
 export default class HomePage extends Component {
-	render() {
-		let activeComicCount = Util.context.getActiveComicCount();
+	constructor(props){
+		super(props);
 
+		this.state = {
+			comicsInProgressCount: 0
+		};
+	}
+	componentDidMount(){
+		Util.api.post('/api/getComicsInProgressCount')
+			.then(result => {
+				if(!result.error) {
+					this.setState({
+						comicsInProgressCount: result
+					});
+				}
+			});
+	}
+	render() {
 		return <div className="page-home">
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<div className="home-banner">
@@ -21,11 +36,11 @@ export default class HomePage extends Component {
 						<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
-						<h4 className="in-progress-count">{activeComicCount} {Util.format.pluralise(activeComicCount, 'comic')} in progress</h4>
+						<p className={`in-progress-count ${this.state.comicsInProgressCount ? '' : 'invisible'} sm center`}>{this.state.comicsInProgressCount} {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress</p>
 					</div>
 				</div>
 			</div>
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						<ComicList 
