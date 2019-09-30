@@ -10,7 +10,7 @@ class ForgotPasswordForm extends Component {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('emailUsername')}
 			<div className="button-container justify-center">
-				<Button colour="pink" label="Submit" type="submit" />
+				<Button size="lg" colour="pink" label="Submit" type="submit" />
 			</div>
 		</form>
 	}

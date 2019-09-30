@@ -2,9 +2,11 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
 
 	.template-info {
-		h3 {
+		> * {
 			color: $colour-pink;
 		}
 	}
@@ -19,7 +21,7 @@
 		.button {
 			.button-label {
 				display: none;
-				@include overlg {
+				@include oversm {
 					display: initial;
 				}
 			}

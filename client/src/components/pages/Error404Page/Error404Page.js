@@ -12,8 +12,8 @@ export default class Error404Page extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1>Page not found</h1>
-						<p className="center">Sorry, the page requested wasn't found. The link may be old or broken.</p>
+						<h1 className="page-title">Page not found</h1>
+						<p className="page-subtitle">Sorry, the page requested wasn't found. The link may be old or broken.</p>
 						<div className="button-container justify-center">
 							<Button to={Util.route.home()} size="lg" colour="pink" label="Back to home" />
 						</div>

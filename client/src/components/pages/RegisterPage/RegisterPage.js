@@ -17,7 +17,7 @@ export default class RegisterPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1>Create an account</h1>
+						<h1 className="page-title">Create an account</h1>
 						{this.state.isSubmitted
 							? <p className="center">Please verify your email address. You will receive an email with a verification link.</p>
 							: <RegisterForm onSubmit={(form, formData) => {

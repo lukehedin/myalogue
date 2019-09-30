@@ -53,7 +53,7 @@ export default class ProfilePage extends Component {
 								? <div className="loader"></div>
 								: this.state.user
 									? <div className="user-info-inner">
-										<h1>{this.state.user.username}</h1>
+										<h1 className="page-title">{this.state.user.username}</h1>
 										<p className="page-subtitle">Joined {moment(this.state.user.createdAt).fromNow()}</p>
 									</div>
 									: <p className="empty-text">User not found.</p>

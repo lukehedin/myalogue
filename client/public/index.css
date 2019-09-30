@@ -526,8 +526,10 @@ body {
       body .app-container .app .template-navigation {
         display: flex;
         flex-direction: row;
-        align-items: center; }
-        body .app-container .app .template-navigation .template-info h3 {
+        align-items: center;
+        max-width: 500px;
+        margin: 0 auto; }
+        body .app-container .app .template-navigation .template-info > * {
           color: #ff0052; }
         body .app-container .app .template-navigation .button-container {
           flex: 1; }
@@ -535,7 +537,7 @@ body {
             justify-content: flex-end; }
           body .app-container .app .template-navigation .button-container .button .button-label {
             display: none; }
-            @media (min-width: 992px) {
+            @media (min-width: 576px) {
               body .app-container .app .template-navigation .button-container .button .button-label {
                 display: initial; } }
       body .app-container .app .s4y-button .button-icon {
@@ -779,6 +781,7 @@ body {
         body .app-container .app .page-home .home-banner .app-logo {
           margin: 0 auto;
           width: 200px;
+          min-height: 100px;
           display: block; }
       body .app-container .app .page-home .in-progress-count {
         color: #ff0052;
@@ -841,6 +844,7 @@ body {
         body .app-container .app .app-inner [class^="page-"] {
           position: relative; }
           body .app-container .app .app-inner [class^="page-"] .page-title {
+            text-align: center;
             margin-bottom: 8px; }
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             text-align: center;

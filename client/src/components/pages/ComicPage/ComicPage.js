@@ -53,13 +53,13 @@ export default class ComicPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1>Comic #{this.props.comicId}</h1>
+						<h1 className="page-title">Comic #{this.props.comicId}</h1>
 						{this.state.comic
-							? <p className="page-subtitle center">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
+							? <p className="page-subtitle">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
 							: null
 						}
 						{this.state.comic
-							? <p className="page-subtitle center">Panels by <ComicPanelAuthorList comic={this.state.comic} /></p>
+							? <p className="page-subtitle">Panels by <ComicPanelAuthorList comic={this.state.comic} /></p>
 							: null
 						}
 					</div>

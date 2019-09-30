@@ -87,8 +87,8 @@ class App extends Component {
 		let getSorryPanel = (title, subtitle) => {
 			return <div className="sorry-panel">
 				<img alt="" src={loaderFace} />
-				<h1>{title}</h1>
-				<p>{subtitle}</p>
+				<h1 className="page-title">{title}</h1>
+				<p className="page-subtitle">{subtitle}</p>
 			</div>;
 		};
 

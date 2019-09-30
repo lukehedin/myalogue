@@ -156,14 +156,14 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				{this.state.isSubmitted 
 					 ?<div>
-						<h1>Panel created!</h1>
+						<h1 className="page-title">Panel created!</h1>
 						<p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
 						<div className="button-container justify-center">
 							<S4YButton label="Play again" onClick={() => this.playNew()} size="lg" />
 						</div>
 					</div>				
 					: <div>
-						<h1>Sorry, you ran out of time!</h1>
+						<h1 className="page-title">Sorry, you ran out of time!</h1>
 						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
 						<p className="center">Why not try again?</p>
 						<div className="button-container justify-center">

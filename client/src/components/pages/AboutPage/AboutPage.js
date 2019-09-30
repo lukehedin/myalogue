@@ -8,7 +8,7 @@ export default class AboutPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1>About</h1>
+						<h1 className="page-title">About</h1>
 						<p>Speak 4 Yourself is a game where players take turns creating panels in a comic. Each player can use the previous panel to get an idea of where the comic was going, but the rest is hidden until it is completed.</p>
 						<p>Players can rate the comics that are submitted, with the top comic for each template getting a place in the top comics page.</p>
 						<p>If you have questions, suggestions or problems with this service, you can send an email to <a rel="noopener noreferrer" href="mailto:contact@s4ycomic.com">contact@s4ycomic.com</a>.</p>
