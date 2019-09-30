@@ -158,17 +158,23 @@ const routes = {
 						order: [[ 'TemplateId', 'DESC' ]]
 					}),
 					db.Comic.findAll({
-						where: {
-							CompletedAt: {
-								[db.op.eq]: null
-							},
-							LastAuthorUserId: {
-								[db.op.or]: {
-									[db.op.ne]: userId, //even if null this becomes !== null or === null
-									[db.op.eq]: null
+						where: !!userId 
+							? {
+								CompletedAt: {
+									[db.op.ne]: null
+								},
+								LastAuthorUserId: {
+									[db.op.or]: {
+										[db.op.ne]: userId,
+										[db.op.eq]: null
+									}
 								}
 							}
-						}
+							: {
+								CompletedAt: {
+									[db.op.ne]: null
+								}
+							}
 					})
 				];
 	

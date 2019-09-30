@@ -63,16 +63,16 @@ body {
 						@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
 					}
 				}
+			}
 
-				.container {
+			.container {
+				position: relative;
+				margin: 0 auto;
+				max-width: 900px;
+		
+				.row {
 					position: relative;
-					margin: 0 auto;
-					max-width: 900px;
-			
-					.row {
-						position: relative;
-						padding: 0 $spacing-sm;
-					}
+					padding: 0 $spacing-sm;
 				}
 			}
 		}

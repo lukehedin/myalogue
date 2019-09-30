@@ -11,7 +11,7 @@ class LoginForm extends Component {
 			{this.props.getField('emailUsername')}
 			{this.props.getField('password')}
 			<div className="button-container justify-center">
-				<Button type="submit" label="Login" />
+				<Button type="submit" colour="pink" size="lg" label="Login" />
 			</div>
 		</form>
 	}

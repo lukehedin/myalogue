@@ -115,22 +115,12 @@
 	}
 
 	&.button-md {
-		padding: $spacing-xxs $spacing-xs;
-		@include scaleButton(14px); //same as small on small devices
-
-		@include oversm {
-			padding: $spacing-xs $spacing-sm;
-			@include scaleButton(16px);
-		}
+		padding: $spacing-xs $spacing-sm;
+		@include scaleButton(16px);
 	}
 
 	&.button-lg {
-		padding: $spacing-xs $spacing-sm;
-		@include scaleButton(16px);
-
-		@include oversm {
-			padding: $spacing-sm $spacing-md;
-			@include scaleButton(18px);
-		}
+		padding: $spacing-sm $spacing-md;
+		@include scaleButton(18px);
 	}
 }

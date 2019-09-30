@@ -77,8 +77,11 @@ export default class ComicPage extends Component {
 							}
 							{this.state.isLoading
 								? null
-								: <div className="button-container justify-center">
-									<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+								: <div className="play-message">
+									<p className="center">Did you like this comic, or could you do better? Play along and put your own words into the panels.</p>
+									<div className="button-container justify-center">
+										<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+									</div>
 								</div>
 							}
 						</div>
