@@ -809,6 +809,8 @@ body {
           margin-bottom: 8px; }
         body .app-container .app .page-play .play-area .progress-bar {
           width: 200px; }
+          body .app-container .app .page-play .play-area .progress-bar.with-dialogue .progress-bar-inner {
+            background-color: #ff0052; }
         body .app-container .app .page-play .play-area .comic-panel-pair {
           border: 1px solid #c8c8c8;
           background-color: #fff;

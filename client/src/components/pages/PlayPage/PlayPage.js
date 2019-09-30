@@ -139,8 +139,11 @@ export default class PlayPage extends Component {
 							? `End` 
 							: `Continue`
 						: `Begin`} the comic</p>
-					<ProgressBar total={this.state.totalPanelCount} amount={this.state.completedPanelCount}
-						label={`panel ${this.state.completedPanelCount + 1} of ${this.state.totalPanelCount}`}
+					<ProgressBar 
+						className={this.state.dialogue ? `with-dialogue` : ``}
+						total={this.state.totalPanelCount} 
+						amount={this.state.completedPanelCount + (this.state.dialogue ? 1 : 0)}
+						label={`${this.state.completedPanelCount + (this.state.dialogue ? 1 : 0)} of ${this.state.totalPanelCount} panels completed`}
 					/>
 				</div>
 				<ComicPanelPair>

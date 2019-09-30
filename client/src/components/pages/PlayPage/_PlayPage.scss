@@ -12,6 +12,12 @@
 
 		.progress-bar {
 			width: 200px;
+
+			&.with-dialogue {
+				.progress-bar-inner {
+					background-color: $colour-pink;
+				}
+			}
 		}
 
 		.comic-panel-pair {
