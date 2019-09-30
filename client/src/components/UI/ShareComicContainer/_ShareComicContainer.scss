@@ -29,7 +29,7 @@
 		.image-fade-overlay {
 			@include absoluteCover;
 			$fade-gradient: transparent 80%, $colour-white 90%;
-			@include gradient(top, $fade-gradient);
+			@include gradient(to bottom, $fade-gradient);
 		}
 
 		.image-thumbnail {

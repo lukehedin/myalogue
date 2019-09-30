@@ -8,7 +8,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
-    "watch-scss": "\"node-sass --watch client/src/index.scss -o client/public\"",
+    "watch-scss": "\"node-sass --watch client/src/index.scss -o client/src\"",
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run watch-scss\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },

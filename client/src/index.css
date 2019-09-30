@@ -67,7 +67,7 @@ body {
           align-items: center;
           text-align: right; }
           body .app-container .app .app-footer .app-footer-inner .app-logo {
-            height: 24px; }
+            height: 30px; }
           body .app-container .app .app-footer .app-footer-inner h6 {
             text-align: right; }
       body .app-container .app .comic-list {
@@ -740,10 +740,10 @@ body {
             width: 100%;
             left: 0;
             top: 0;
-            background: -webkit-linear-gradient(top, transparent 80%, #fff 90%);
-            background: -moz-linear-gradient(top, transparent 80%, #fff 90%);
-            background: -o-linear-gradient(top, transparent 80%, #fff 90%);
-            background: linear-gradient(top, transparent 80%, #fff 90%); }
+            background: -webkit-linear-gradient(to bottom, transparent 80%, #fff 90%);
+            background: -moz-linear-gradient(to bottom, transparent 80%, #fff 90%);
+            background: -o-linear-gradient(to bottom, transparent 80%, #fff 90%);
+            background: linear-gradient(to bottom, transparent 80%, #fff 90%); }
           body .app-container .app .share-comic-container .comic-image .image-thumbnail {
             height: 100%;
             width: 100%; }
