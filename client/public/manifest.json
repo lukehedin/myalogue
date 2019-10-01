@@ -1,6 +1,6 @@
 {
-  "short_name": "Speak 4 Yourself",
-  "name": "Speak 4 Yourself",
+  "short_name": "Speak4Yourself",
+  "name": "Speak4Yourself",
   "start_url": "./",
   "display": "standalone",
   "theme_color": "#080808",

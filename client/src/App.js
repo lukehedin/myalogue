@@ -148,9 +148,9 @@ class App extends Component {
 		let content = this.state.isLoading
 			? <div className="loader image-loader"><img alt="" src={loaderFace} /></div>
 			: this.state.isUnderMaintenance
-				? getSorryPanel(`Sorry, we are experiencing some technical difficulties.`, `Speak 4 Yourself is currently undergoing maintenance, but should be back online momentarily.`) 
+				? getSorryPanel(`Sorry, we are experiencing some technical difficulties.`, `Speak4Yourself is currently undergoing maintenance, but should be back online momentarily.`) 
 				: detectBrowser().name === "ie"
-					? getSorryPanel(`Sorry, your browser isn't supported.`, `Speak 4 Yourself can't run on this browser. Please switch to a different browser if possible.`)
+					? getSorryPanel(`Sorry, your browser isn't supported.`, `Speak4Yourself can't run on this browser. Please switch to a different browser if possible.`)
 					: getApp();
 
 		return <Div100vh className={`app-container ${Util.array.any(this.props.modals) ? 'no-scroll' : ''}`}>

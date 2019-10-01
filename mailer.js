@@ -13,10 +13,10 @@ mailer = {
 			sgMail.send({
 				to: toEmail,
 				from: 'noreply@s4ycomic.com',
-				subject: `${subject} - Speak 4 Yourself`,
+				subject: `${subject} - Speak4Yourself`,
 				html: `<div style="max-width:500px; margin: 0 auto;">
 					<div style="padding:8px; background-color:#ff1f67; color:#fff; text-align: center;">
-						Speak 4 Yourself
+						Speak4Yourself
 					</div>
 					<div style="padding: 8px; background-color: #efefef;">
 						${html}

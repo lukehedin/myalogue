@@ -24,7 +24,7 @@ export default class HowToPlayPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">How to play</h1>
-						<p className="center">Speak 4 Yourself is simple: Read the comic's previous panel, and add your own dialogue to the next.</p>
+						<p className="center">Speak4Yourself is simple: Read the comic's previous panel, and add your own dialogue to the next.</p>
 						<p className="center">If you are adding dialogue to the <b>first</b> panel, you can start off however you like.</p>
 						<p className="center">If you are adding dialogue to the <b>last</b> panel, you'll get to see the completed comic as soon as you're done.</p>
 					</div>
