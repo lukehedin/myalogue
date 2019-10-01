@@ -15,8 +15,8 @@ export default class ComicInfoLabel extends Component {
 			}
 		});
 
-		return <span>Completed by {authors.map((author, idx) => {
+		return <span>Completed {moment(this.props.comic.completedAt).fromNow()} by {authors.map((author, idx) => {
 			return <span key={idx}><Link to={Util.route.profile(author.userId)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
-		})} {moment(this.props.comic.completedAt).fromNow()}.</span>
+		})}.</span>
 	}
 }
