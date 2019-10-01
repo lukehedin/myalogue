@@ -22,7 +22,7 @@ mailer = {
 						${html}
 					</div>
 					<div style="padding:8px; background-color:#ff1f67; color:#fff; text-align: center;">
-						<a style="color: #fff;" href="https://${mailer.host}">${mailer._host}</a>
+						<a style="color: #fff;" href="http://${mailer.host}">${mailer._host}</a>
 					</div>
 				</div>`
 			});
@@ -34,7 +34,7 @@ mailer = {
 	sendVerificationEmail: (toEmail, username, verificationToken) => {
 		mailer._send(toEmail, 'Verify your email address', 
 		`<h2>Hi ${username},</h2>
-		<p><a href="https://${mailer._host}/verify/${verificationToken}">Click here to verify your email address</a>.</p>`
+		<p><a href="http://${mailer._host}/verify/${verificationToken}">Click here to verify your email address</a>.</p>`
 		);
 	},
 
@@ -42,7 +42,7 @@ mailer = {
 		mailer._send(toEmail, 'Forgot password',
 			`<h2>Hi ${username},</h2>
 			<p>Someone requested a password reset for this email address.</p>
-			<p><a href="https://${mailer._host}/set-password/${passwordResetToken}">Click here to reset your password</a>.</p>
+			<p><a href="http://${mailer._host}/set-password/${passwordResetToken}">Click here to reset your password</a>.</p>
 			<p>If you did not make this request, you can simply ignore this email.</p>`)
 	},
 
