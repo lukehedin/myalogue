@@ -314,7 +314,7 @@ const routes = {
 				})
 				.catch(error => catchError(res, error, db));
 			} else {
-				catchError(res, 'Invalid email or username supplied.', db);
+				catchError(res, 'Invalid email or username supplied.');
 			}
 		},
 
