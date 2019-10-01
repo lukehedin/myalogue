@@ -24,7 +24,7 @@ export default class HowToPlayPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">How to play</h1>
-						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game of improvisation where players take turns writing dialogue for panels in a comic without having full knowledge of the overall story.</p>
+						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 						<p className="center">When you hit the play button, you will be shown two comic panels; one will have some dialogue in it, and the other won’t have any at all.</p>
 					</div>
 				</div>
