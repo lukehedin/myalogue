@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
-export default class ComicPanelAuthorList extends Component {
+export default class ComicInfoLabel extends Component {
 	render() {
 		let authors = [];
 		this.props.comic.comicPanels.forEach(comicPanel => {
@@ -14,8 +15,8 @@ export default class ComicPanelAuthorList extends Component {
 			}
 		});
 
-		return <span>{authors.map((author, idx) => {
+		return <span>Completed by {authors.map((author, idx) => {
 			return <span key={idx}><Link to={Util.route.profile(author.userId)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
-		})}</span>
+		})} {moment(this.props.comic.completedAt).fromNow()}.</span>
 	}
 }

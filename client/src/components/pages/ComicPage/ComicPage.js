@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Util from '../../../Util';
-import moment from 'moment';
 
 import Comic from '../../UI/Comic/Comic';
 import ComicList from '../../UI/ComicList/ComicList';
 import Button from '../../UI/Button/Button';
-import ComicPanelAuthorList from '../../UI/ComicPanelAuthorList/ComicPanelAuthorList';
+import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
 
 //this.props.comicId
 export default class ComicPage extends Component {
@@ -16,8 +16,6 @@ export default class ComicPage extends Component {
 			isLoading: true,
 			comic: null
 		};
-
-		this.setComic = this.setComic.bind(this);
 	}
 	componentDidMount() {
 		this.fetchData();
@@ -28,11 +26,6 @@ export default class ComicPage extends Component {
 	componentDidUpdate(prevProps, prevState, isNewComicId) {
 		if(isNewComicId) this.fetchData();
 	}
-	setComic(comic) {
-		this.setState({
-			comic: comic
-		});
-	}
 	fetchData() {
 		Util.api.post('/api/getComicById', {
 			comicId: this.props.comicId
@@ -40,7 +33,8 @@ export default class ComicPage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					comic: result
+					comic: result,
+					template: Util.context.getTemplateById(result.templateId)
 				});
 			}
 			this.setState({
@@ -55,11 +49,7 @@ export default class ComicPage extends Component {
 					<div className="row">
 						<h1 className="page-title">Comic #{this.props.comicId}</h1>
 						{this.state.comic
-							? <p className="page-subtitle">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
-							: null
-						}
-						{this.state.comic
-							? <p className="page-subtitle">Panels by <ComicPanelAuthorList comic={this.state.comic} /></p>
+							? <p className="page-subtitle"><ComicInfoLabel comic={this.state.comic} /></p>
 							: null
 						}
 						<div className="comic-featured">
@@ -70,6 +60,10 @@ export default class ComicPage extends Component {
 									: <Comic key={this.state.comic.comicId} comic={this.state.comic} />
 							}
 						</div>
+						{this.state.template
+							? <p className="center">Template: <Link to={Util.route.template(this.state.template.templateId)}>{this.state.template.name}</Link></p>
+							: null
+						}
 					</div>
 				</div>
 			</div>

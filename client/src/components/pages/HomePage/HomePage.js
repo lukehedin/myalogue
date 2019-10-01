@@ -6,7 +6,6 @@ import S4YButton from '../../UI/S4YButton/S4YButton';
 import ComicList from '../../UI/ComicList/ComicList';
 
 import logo from '../../../images/logo_black.png';
-import Button from '../../UI/Button/Button';
 
 export default class HomePage extends Component {
 	constructor(props){

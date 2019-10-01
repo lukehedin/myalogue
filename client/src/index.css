@@ -745,28 +745,6 @@ body {
           margin-top: 8px; }
         body .app-container .app .share-comic-container .input-link {
           width: 240px; }
-        body .app-container .app .share-comic-container .comic-image {
-          position: relative;
-          max-width: 140px;
-          max-height: 50vh;
-          overflow: hidden; }
-          body .app-container .app .share-comic-container .comic-image .image-download {
-            position: absolute;
-            pointer-events: all;
-            opacity: 0.000001; }
-          body .app-container .app .share-comic-container .comic-image .image-fade-overlay {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0;
-            background: -webkit-linear-gradient(to bottom, transparent 80%, #fff 90%);
-            background: -moz-linear-gradient(to bottom, transparent 80%, #fff 90%);
-            background: -o-linear-gradient(to bottom, transparent 80%, #fff 90%);
-            background: linear-gradient(to bottom, transparent 80%, #fff 90%); }
-          body .app-container .app .share-comic-container .comic-image .image-thumbnail {
-            height: 100%;
-            width: 100%; }
       body .app-container .app .timer.urgent {
         color: #f02100; }
       body .app-container .app .notification-menu {
@@ -804,9 +782,10 @@ body {
             padding: 16px; }
       body .app-container .app .page-comic .comic-featured {
         position: relative;
-        min-height: 60vh;
+        min-height: 40vh;
         display: flex;
-        flex-direction: column; }
+        flex-direction: column;
+        margin-top: 32px; }
         body .app-container .app .page-comic .comic-featured .comic {
           margin: 0 auto; }
       body .app-container .app .page-home .home-banner {
@@ -849,8 +828,8 @@ body {
             list-style-type: none;
             padding: 0;
             font-size: 14px; }
-      body .app-container .app .page-template .template-name {
-        margin: 16px 0; }
+      body .app-container .app .page-template .template-feed {
+        margin-top: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;
         min-height: 60vh; }

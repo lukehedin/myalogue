@@ -44,10 +44,11 @@ export default class TemplatePage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
+						<h1 className="page-title">{this.state.template.name}</h1>
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
-						<h3 className="template-name">{this.state.template.name}</h3>
 						<div className="template-feed">
 							<ComicList
+								title='Comics using this template'
 								emptyText={`No comics have been completed using this template yet.`}
 								noMoreText={`Phew! That's all the comics that have been completed using this template.`}
 								fetchDelay={700} //Prevent fast nav spamming

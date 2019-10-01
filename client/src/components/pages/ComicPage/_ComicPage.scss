@@ -1,9 +1,10 @@
 .page-comic {
 	.comic-featured {
 		position: relative;
-		min-height: 60vh;
+		min-height: 40vh;
 		display: flex;
 		flex-direction: column;
+		margin-top: $spacing-md;
 
 		.comic {
 			margin: 0 auto;

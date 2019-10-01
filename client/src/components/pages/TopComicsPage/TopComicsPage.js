@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Util from '../../../Util';
 
 import Button from '../../UI/Button/Button';
-import ComicPanelAuthorList from '../../UI/ComicPanelAuthorList/ComicPanelAuthorList';
+import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
 
 export default class TopComicsPage extends Component {
 	constructor(props){
@@ -52,7 +52,7 @@ export default class TopComicsPage extends Component {
 													<td>
 														<p className="sm"><b>Template {template.templateId}</b></p>
 														<p className="sm">{template.name}</p>
-														{topComic ? <p className="sm">Comic #{topComic.comicId} (Rating: {topComic.rating}) by <ComicPanelAuthorList comic={topComic} />.</p> : null}
+														{topComic ? <p className="sm">Comic #{topComic.comicId} (Rating: {topComic.rating}) - <ComicInfoLabel comic={topComic} /></p> : null}
 													</td>
 													{topComic
 														? <td className="cell-button">

@@ -3,7 +3,7 @@
 	flex-direction: column;
 	align-items: center;
 
-	> * {
+	>*{
 		&:not(:first-child) {
 			margin-top: $spacing-xs;
 		}
@@ -11,30 +11,5 @@
 
 	.input-link {
 		width: 240px;
-	}
-
-	.comic-image {
-
-		position: relative;		
-		max-width: 140px;
-		max-height: 50vh;
-		overflow: hidden;
-
-		.image-download {
-			position: absolute;
-			pointer-events: all;
-			opacity: 0.000001;
-		}
-
-		.image-fade-overlay {
-			@include absoluteCover;
-			$fade-gradient: transparent 80%, $colour-white 90%;
-			@include gradient(to bottom, $fade-gradient);
-		}
-
-		.image-thumbnail {
-			height: 100%;
-			width: 100%;
-		}
 	}
 }
