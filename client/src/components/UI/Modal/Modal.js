@@ -55,7 +55,7 @@ class Modal extends Component {
 			case Util.enum.ModalType.ShareComicModal:
 				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
-				modalContent = <ShareComicContainer comic={modal.comic} comicDataUrl={modal.comicDataUrl} />
+				modalContent = <ShareComicContainer comic={modal.comic} />
 				break;
 			default:
 				break;

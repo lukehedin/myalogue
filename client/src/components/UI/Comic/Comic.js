@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
-import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
 
 import ComicPanel from '../ComicPanel/ComicPanel';
@@ -41,41 +39,11 @@ class Comic extends Component {
 
 		Util.selector.getRootScrollElement().removeEventListener('scroll', this.cancelShareTimeout);
 	}
-	openShareComicModal(callback){
-		if(this.state.isLoading) return;
-		console.log('opening');
-		
-		this.setState({
-			isLoading: true
+	openShareComicModal(){
+		this.props.openModal({
+			type: Util.enum.ModalType.ShareComicModal,
+			comic: this.state.comic
 		});
-
-		let comicContent = this.comicContentRef.current;
-		let clone = comicContent.cloneNode(true);
-		clone.classList.add('for-image-capture');
-		comicContent.appendChild(clone);
-
-		//Might be paranoid, but lets give the dom time to update
-		setTimeout(() => {
-			htmlToImage.toJpeg(clone)
-				.then(dataUrl => {
-					comicContent.removeChild(clone);
-
-					this.setState({
-						isLoading: false
-					});
-
-					this.props.openModal({
-						type: Util.enum.ModalType.ShareComicModal,
-						comicDataUrl: dataUrl,
-						comic: this.state.comic
-					});
-
-					if(callback) callback();
-				})
-				.catch((error) => {
-					console.error('Could not generate comic image', error);
-				});
-		}, 100);
 	}
 	render() {
 		//Put comic panels into pairs

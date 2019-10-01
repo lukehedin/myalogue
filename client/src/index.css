@@ -545,9 +545,7 @@ body {
           body .app-container .app .modal.modal-prompt .modal-content .button-container {
             justify-content: flex-end; }
         body .app-container .app .modal.modal-share-comic {
-          max-width: 500px; }
-        body .app-container .app .modal.modal-submit-comic {
-          max-width: 500px; }
+          max-width: 300px; }
       body .app-container .app .template-navigation {
         display: flex;
         flex-direction: row;
