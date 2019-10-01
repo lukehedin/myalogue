@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Util from '../../../Util';
 import { Redirect } from 'react-router-dom';
 
-import notification_example_img from './notification_example.png';
+import notification_example_img from './notifications_example.png';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
 import Button from '../../UI/Button/Button';
@@ -20,16 +20,16 @@ export default class HowToPlayPage extends Component {
 		}
 
 		return <div className="page-how-to-play">
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">How to play</h1>
-						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game about making comics with random people.</p>
-						<p className="center">Read the comic's current panel shown to you, and add your own dialogue to the next.</p>
+						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game about trying to make funny comics with random people. You will be shown two comic panels; one will have some dialogue in it, and the other won’t have any at all.</p>
+						<p className="center">Your goal is to <b>add dialogue to the empty panel</b>, continuing the story in the comic as best you can. If you're in charge of the very first panel, you can start the story off however you like!</p>
 					</div>
 				</div>
 			</div>
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						<div className="demo-pair">
@@ -41,29 +41,17 @@ export default class HowToPlayPage extends Component {
 					</div>
 				</div>
 			</div>
-			<div className="panel-standard">
-				<div className="container">
-					<div className="row">
-						<p className="center">If you're writing the <b>first</b> panel, you can start off however you like. If you're writing the <b>last</b> panel, you'll get to see the completed comic as soon as you're done.</p>
-						<p className="center">You can keep making dialogue for different comics for as long as you want. When you check back later you'll have notifications for any completed comics that you contributed to.</p>
-					</div>
-				</div>
-			</div>
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
+						<p className="center"><b>Every comic is different</b>. There are many different templates featuring unique situations for your dialogue, and most of the panels in a comic are ordered at random.</p>
+						<p className="center">Keep making dialogue for different comics for as long as you want. When you check back later you'll have notifications for any completed comics that you contributed to.</p>
 						<img className="how-to-play-image" src={notification_example_img} alt="Example notifications" />
+						<p className="center">The completed comic might be amusing, confusing or bamboozling, depending on how everyone interpreted their panels.</p>
 					</div>
 				</div>
 			</div>
 			<div className="panel-standard">
-				<div className="container">
-					<div className="row">
-						<p className="center">The completed comic's story might be amusing and/or confusing, depending on how everyone interpreted their panels.</p>
-					</div>
-				</div>
-			</div>
-			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<div className="comic-wrapper">
@@ -72,13 +60,14 @@ export default class HowToPlayPage extends Component {
 					</div>
 				</div>
 			</div>
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						{Util.context.isAuthenticated()
 							? <div>
+								<p className="center">They say the best way to learn is through experience. Have a go!</p>
 								<div className="button-container justify-center">
-									<Button to={Util.route.play()} colour="pink" size="lg" label="Get started" />
+									<Button to={Util.route.play()} colour="pink" size="lg" label="Play now" />
 								</div>
 							</div>
 							: <div>
