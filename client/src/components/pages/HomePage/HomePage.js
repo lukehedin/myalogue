@@ -34,7 +34,7 @@ export default class HomePage extends Component {
 					<div className="row">
 						<div className="home-banner">
 							<img src={logo} className="app-logo" alt="logo" />
-							<p className="page-subtitle center">A game where players take turns writing dialogue for panels in a comic, without having full knowledge of what happened in the previous panels.</p>
+							<p className="page-subtitle center">A game of improvisation where players take turns writing dialogue for panels in a comic without having full knowledge of the overall story.</p>
 						</div>
 						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress</p>
 						<div className="button-container justify-center">
