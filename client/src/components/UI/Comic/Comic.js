@@ -23,21 +23,8 @@ class Comic extends Component {
 		}
 
 		this.comicContentRef = React.createRef();
-		this.touchTimer = null;
 
 		this.openShareComicModal  = this.openShareComicModal.bind(this);
-
-		this.startShareTimeout = this.startShareTimeout.bind(this);
-		this.cancelShareTimeout = this.cancelShareTimeout.bind(this);
-	}
-	startShareTimeout(e) {
-		if(!this.isLoading) this.touchTimer = setTimeout(() => this.openShareComicModal(), 500);
-		Util.selector.getRootScrollElement().addEventListener('scroll', this.cancelShareTimeout);
-	}
-	cancelShareTimeout() {
-		if(this.touchTimer) clearTimeout(this.touchTimer);
-
-		Util.selector.getRootScrollElement().removeEventListener('scroll', this.cancelShareTimeout);
 	}
 	openShareComicModal(){
 		this.props.openModal({
@@ -64,9 +51,7 @@ class Comic extends Component {
 		return <div className="comic">
 			<div className="comic-content no-select"
 				ref={this.comicContentRef}
-				onTouchStart={() => this.startShareTimeout()}
-				onTouchEnd={() => this.cancelShareTimeout()}
-				onMouseDown={() => this.openShareComicModal()}
+				onClick={() => this.openShareComicModal()}
 			>
 				{comicPanelsPairs.map(comicPanelPair => comicPanelPair)}
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
