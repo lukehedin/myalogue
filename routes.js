@@ -821,7 +821,6 @@ const routes = {
 							dbComic.LockedAt = null;
 							dbComic.LockedByUserId = null;
 							dbComic.LastAuthorUserId = userId;
-							dbComic.Token = auth.getHexToken();
 							dbComic.save()
 								.then(() => {
 									res.json({ 
