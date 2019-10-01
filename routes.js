@@ -260,12 +260,14 @@ const routes = {
 		},
 	
 		register: (req, res, db) => {
+			const forbiddenUsernames = ['admin', 'administrator', 'root', 'owner'];
+
 			let email = req.body.email.trim().toLowerCase();
 			let username = req.body.username.trim().toLowerCase();
 			let password = req.body.password;
 	
 			let isValidEmail = validator.isEmail(email);
-			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username);
+			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username) && !forbiddenUsernames.includes(username);
 	
 			// Basic validation
 			if(isValidEmail && isValidUsername) {
