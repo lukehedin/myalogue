@@ -24,9 +24,8 @@ export default class HowToPlayPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">How to play</h1>
-						<p className="center">Speak4Yourself is simple: Read the comic's previous panel, and add your own dialogue to the next.</p>
-						<p className="center">If you are adding dialogue to the <b>first</b> panel, you can start off however you like.</p>
-						<p className="center">If you are adding dialogue to the <b>last</b> panel, you'll get to see the completed comic as soon as you're done.</p>
+						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game about making comics with random people.</p>
+						<p className="center">Read the comic's current panel shown to you, and add your own dialogue to the next.</p>
 					</div>
 				</div>
 			</div>
@@ -45,8 +44,8 @@ export default class HowToPlayPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<p className="center">You can keep making dialogue for different comics for as long as you want.</p>
-						<p className="center">When you check back later, you'll have notifications for any completed comics that you added dialogue to.</p>
+						<p className="center">If you're writing the <b>first</b> panel, you can start off however you like. If you're writing the <b>last</b> panel, you'll get to see the completed comic as soon as you're done.</p>
+						<p className="center">You can keep making dialogue for different comics for as long as you want. When you check back later you'll have notifications for any completed comics that you contributed to.</p>
 					</div>
 				</div>
 			</div>
@@ -60,8 +59,7 @@ export default class HowToPlayPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<p className="center">The completed comic's story might be amusing and/or confusing, depending on how everyone interprets their panels.</p>
-						<p className="center">You'll get a better sense of how to steer the story the more you play.</p>
+						<p className="center">The completed comic's story might be amusing and/or confusing, depending on how everyone interpreted their panels.</p>
 					</div>
 				</div>
 			</div>
@@ -79,7 +77,6 @@ export default class HowToPlayPage extends Component {
 					<div className="row">
 						{Util.context.isAuthenticated()
 							? <div>
-								<p className="center">What are you waiting for? Let's get creative!</p>
 								<div className="button-container justify-center">
 									<Button to={Util.route.play()} colour="pink" size="lg" label="Get started" />
 								</div>

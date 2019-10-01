@@ -9,10 +9,10 @@
 	$panel-author-line-height: 18px;
 	$panel-author-font-size: 16px;
 
-	$panel-scale-xs: 0.38;
-	$panel-scale-sm: 0.48;
-	$panel-scale-md: 0.64;
-	$panel-scale-lg: 0.68;
+	$panel-scale-xs: 0.44;
+	$panel-scale-sm: 0.46;
+	$panel-scale-md: 0.48;
+	$panel-scale-lg: 0.5;
 
 	@mixin scaleComicPanel ($scale) {
 		width: calc(#{$panel-width} * #{$scale});

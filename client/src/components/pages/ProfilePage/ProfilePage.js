@@ -68,8 +68,8 @@ export default class ProfilePage extends Component {
 						{this.state.user
 							? <ComicList 
 								sortBy={Util.enum.ComicSortBy.Newest}
-								emptyText={`${this.state.user.username} hasn't made any comic panels yet. What a slacker!`}
-								noMoreText={`That's all the comics ${this.state.user.username} has made panels for.`}
+								emptyText={`${this.state.user.username} hasn't contributed to  any comics yet. What a slacker!`}
+								noMoreText={`That's all the comics ${this.state.user.username} has contributed to.`}
 								title={`Comics featuring ${this.state.user.username}`} 
 								authorUserId={this.props.userId} 
 							/>

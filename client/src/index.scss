@@ -56,6 +56,16 @@ body {
 					@include oversm {
 						padding: $spacing-md 0;
 					}
+
+					&:first-child {
+						padding-top: $spacing-xs;
+						@include oversm {
+							padding-top: $spacing-sm;
+						}
+						@include overmd {
+							padding-top: $spacing-md;
+						}
+					}
 					
 					&.panel-inset {
 						//Hide side boxshadows
@@ -66,6 +76,15 @@ body {
 		
 						background-color: $colour-white;
 						@include boxShadowInset(0, 0, 8px, $colour-transparent-grey);
+					}
+				}
+
+				hr {
+					border: none;
+					border-bottom: 1px solid $colour-grey-b;
+					margin: $spacing-md 0;
+					@include oversm {
+						margin: $spacing-md 0;
 					}
 				}
 			}
@@ -214,6 +233,12 @@ body {
 
 			&.center {
 				text-align: center;
+			}
+		}
+
+		span, p {
+			&.pink {
+				color: $colour-pink;
 			}
 		}
 

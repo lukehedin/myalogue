@@ -85,6 +85,10 @@
 		@include colourizeButton($colour-pink);
 	}
 
+	&.button-transparent {
+		@include colourizeButton(transparent);
+	}
+
 	&.button-white {
 		@include colourizeButton($colour-white);
 		

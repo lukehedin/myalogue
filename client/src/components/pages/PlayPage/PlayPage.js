@@ -182,7 +182,7 @@ export default class PlayPage extends Component {
 		}
 
 		return <div className="page-play">
-			<div className="panel-standard">
+			<div className="panel-standard responsive-padding">
 				<div className="container">
 					<div className="row">
 						{content}

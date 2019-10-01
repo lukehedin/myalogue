@@ -33,7 +33,13 @@
 		.comic-lower-inner {
 			display: flex;
 			flex-direction: row;
-			align-items: flex-start;
+			align-items: center;
+			padding: 0 $spacing-xs;
+
+			.comic-completed-at {
+				margin: 0;
+				color: $colour-grey-d;
+			}
 		}
 
 		&:empty {

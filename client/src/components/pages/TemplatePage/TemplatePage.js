@@ -48,8 +48,8 @@ export default class TemplatePage extends Component {
 						<h3 className="template-name">{this.state.template.name}</h3>
 						<div className="template-feed">
 							<ComicList
-								emptyText={`No other comics have been made using this template.`}
-								noMoreText={`Phew! That's all the comics that have been made using this template.`}
+								emptyText={`No comics have been completed using this template yet.`}
+								noMoreText={`Phew! That's all the comics that have been completed using this template.`}
 								fetchDelay={700} //Prevent fast nav spamming
 								templateId={this.state.template.templateId}
 							/>

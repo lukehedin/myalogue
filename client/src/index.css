@@ -22,10 +22,8 @@ body {
         color: #fff;
         box-shadow: 0px 4px 4px #00000022;
         -webkit-box-shadow: 0px 4px 4px #00000022;
-        -moz-box-shadow: 0px 4px 4px #00000022; }
-        @media (min-width: 576px) {
-          body .app-container .app .app-header {
-            padding: 4px 0; } }
+        -moz-box-shadow: 0px 4px 4px #00000022;
+        padding: 4px 0; }
         body .app-container .app .app-header .app-header-inner {
           display: flex;
           flex-direction: row;
@@ -39,8 +37,8 @@ body {
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon:hover path {
               fill: #ff0052; }
           body .app-container .app .app-header .app-header-inner .app-logo {
-            height: 32px;
-            margin-left: 8px; }
+            margin-left: 8px;
+            height: 32px; }
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
@@ -131,7 +129,11 @@ body {
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
-            align-items: flex-start; }
+            align-items: center;
+            padding: 0 8px; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner .comic-completed-at {
+              margin: 0;
+              color: #777777; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
 
@@ -149,15 +151,25 @@ body {
       body .app-container .app .comic-panel {
         position: relative;
         border: 1px solid #c8c8c8;
-        width: calc(540px * 0.38);
-        height: calc(450px * 0.38); }
+        width: calc(540px * 0.44);
+        height: calc(450px * 0.44); }
         body .app-container .app .comic-panel .dialogue > * {
-          line-height: calc(40px * 0.38);
-          font-size: calc(36px * 0.38); }
+          line-height: calc(40px * 0.44);
+          font-size: calc(36px * 0.44); }
         body .app-container .app .comic-panel .comic-panel-subtle {
-          line-height: calc(18px * 0.38);
-          font-size: calc(16px * 0.38); }
+          line-height: calc(18px * 0.44);
+          font-size: calc(16px * 0.44); }
         @media (min-height: 660px) {
+          body .app-container .app .comic-panel {
+            width: calc(540px * 0.46);
+            height: calc(450px * 0.46); }
+            body .app-container .app .comic-panel .dialogue > * {
+              line-height: calc(40px * 0.46);
+              font-size: calc(36px * 0.46); }
+            body .app-container .app .comic-panel .comic-panel-subtle {
+              line-height: calc(18px * 0.46);
+              font-size: calc(16px * 0.46); } }
+        @media (min-height: 800px) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.48);
             height: calc(450px * 0.48); }
@@ -167,37 +179,37 @@ body {
             body .app-container .app .comic-panel .comic-panel-subtle {
               line-height: calc(18px * 0.48);
               font-size: calc(16px * 0.48); } }
-        @media (min-height: 800px) {
-          body .app-container .app .comic-panel {
-            width: calc(540px * 0.64);
-            height: calc(450px * 0.64); }
-            body .app-container .app .comic-panel .dialogue > * {
-              line-height: calc(40px * 0.64);
-              font-size: calc(36px * 0.64); }
-            body .app-container .app .comic-panel .comic-panel-subtle {
-              line-height: calc(18px * 0.64);
-              font-size: calc(16px * 0.64); } }
         @media (min-height: 996px) {
           body .app-container .app .comic-panel {
-            width: calc(540px * 0.68);
-            height: calc(450px * 0.68); }
+            width: calc(540px * 0.5);
+            height: calc(450px * 0.5); }
             body .app-container .app .comic-panel .dialogue > * {
-              line-height: calc(40px * 0.68);
-              font-size: calc(36px * 0.68); }
+              line-height: calc(40px * 0.5);
+              font-size: calc(36px * 0.5); }
             body .app-container .app .comic-panel .comic-panel-subtle {
-              line-height: calc(18px * 0.68);
-              font-size: calc(16px * 0.68); } }
+              line-height: calc(18px * 0.5);
+              font-size: calc(16px * 0.5); } }
         @media screen and (orientation: landscape) {
           body .app-container .app .comic-panel {
-            width: calc(540px * 0.38);
-            height: calc(450px * 0.38); }
+            width: calc(540px * 0.44);
+            height: calc(450px * 0.44); }
             body .app-container .app .comic-panel .dialogue > * {
-              line-height: calc(40px * 0.38);
-              font-size: calc(36px * 0.38); }
+              line-height: calc(40px * 0.44);
+              font-size: calc(36px * 0.44); }
             body .app-container .app .comic-panel .comic-panel-subtle {
-              line-height: calc(18px * 0.38);
-              font-size: calc(16px * 0.38); } }
+              line-height: calc(18px * 0.44);
+              font-size: calc(16px * 0.44); } }
   @media screen and (orientation: landscape) and (min-height: 516px) {
+    body .app-container .app .comic-panel {
+      width: calc(540px * 0.46);
+      height: calc(450px * 0.46); }
+      body .app-container .app .comic-panel .dialogue > * {
+        line-height: calc(40px * 0.46);
+        font-size: calc(36px * 0.46); }
+      body .app-container .app .comic-panel .comic-panel-subtle {
+        line-height: calc(18px * 0.46);
+        font-size: calc(16px * 0.46); } }
+  @media screen and (orientation: landscape) and (min-height: 680px) {
     body .app-container .app .comic-panel {
       width: calc(540px * 0.48);
       height: calc(450px * 0.48); }
@@ -207,26 +219,16 @@ body {
       body .app-container .app .comic-panel .comic-panel-subtle {
         line-height: calc(18px * 0.48);
         font-size: calc(16px * 0.48); } }
-  @media screen and (orientation: landscape) and (min-height: 680px) {
-    body .app-container .app .comic-panel {
-      width: calc(540px * 0.64);
-      height: calc(450px * 0.64); }
-      body .app-container .app .comic-panel .dialogue > * {
-        line-height: calc(40px * 0.64);
-        font-size: calc(36px * 0.64); }
-      body .app-container .app .comic-panel .comic-panel-subtle {
-        line-height: calc(18px * 0.64);
-        font-size: calc(16px * 0.64); } }
   @media screen and (orientation: landscape) and (min-height: 800px) {
     body .app-container .app .comic-panel {
-      width: calc(540px * 0.68);
-      height: calc(450px * 0.68); }
+      width: calc(540px * 0.5);
+      height: calc(450px * 0.5); }
       body .app-container .app .comic-panel .dialogue > * {
-        line-height: calc(40px * 0.68);
-        font-size: calc(36px * 0.68); }
+        line-height: calc(40px * 0.5);
+        font-size: calc(36px * 0.5); }
       body .app-container .app .comic-panel .comic-panel-subtle {
-        line-height: calc(18px * 0.68);
-        font-size: calc(16px * 0.68); } }
+        line-height: calc(18px * 0.5);
+        font-size: calc(16px * 0.5); } }
         body .app-container .app .comic-panel > img {
           width: 100%;
           height: 100%; }
@@ -449,6 +451,26 @@ body {
           body .app-container .app .button.button-pink.button-solid:hover {
             border-color: #ff1f67;
             background: #ff1f67; }
+        body .app-container .app .button.button-transparent.button-hollow {
+          color: transparent;
+          border-color: transparent;
+          background-color: transparent; }
+          body .app-container .app .button.button-transparent.button-hollow .button-icon path {
+            fill: transparent; }
+          body .app-container .app .button.button-transparent.button-hollow:hover {
+            border-color: rgba(0, 0, 0, 0);
+            color: rgba(0, 0, 0, 0); }
+            body .app-container .app .button.button-transparent.button-hollow:hover .button-icon path {
+              fill: rgba(0, 0, 0, 0); }
+        body .app-container .app .button.button-transparent.button-solid {
+          color: #fff;
+          border-color: transparent;
+          background: transparent; }
+          body .app-container .app .button.button-transparent.button-solid .button-icon path {
+            fill: #fff; }
+          body .app-container .app .button.button-transparent.button-solid:hover {
+            border-color: rgba(15, 15, 15, 0);
+            background: rgba(15, 15, 15, 0); }
         body .app-container .app .button.button-white.button-hollow {
           color: #fff;
           border-color: #fff;
@@ -796,9 +818,8 @@ body {
           width: 200px;
           min-height: 100px;
           display: block; }
-      body .app-container .app .page-home .in-progress-count {
-        color: #ff0052;
-        margin-top: 8px; }
+      body .app-container .app .page-home .play-info {
+        color: #525252; }
       body .app-container .app .page-play .play-area {
         position: relative;
         min-height: 60vh;
@@ -897,6 +918,14 @@ body {
           @media (min-width: 576px) {
             body .app-container .app .app-inner [class^="panel-"] {
               padding: 32px 0; } }
+          body .app-container .app .app-inner [class^="panel-"]:first-child {
+            padding-top: 8px; }
+            @media (min-width: 576px) {
+              body .app-container .app .app-inner [class^="panel-"]:first-child {
+                padding-top: 16px; } }
+            @media (min-width: 768px) {
+              body .app-container .app .app-inner [class^="panel-"]:first-child {
+                padding-top: 32px; } }
           body .app-container .app .app-inner [class^="panel-"].panel-inset {
             margin-left: -16px;
             margin-right: -16px;
@@ -906,6 +935,13 @@ body {
             box-shadow: inset 0 0 8px #00000044;
             -webkit-box-shadow: inset 0 0 8px #00000044;
             -moz-box-shadow: inset 0 0 8px #00000044; }
+        body .app-container .app .app-inner hr {
+          border: none;
+          border-bottom: 1px solid #c8c8c8;
+          margin: 32px 0; }
+          @media (min-width: 576px) {
+            body .app-container .app .app-inner hr {
+              margin: 32px 0; } }
       body .app-container .app .container {
         position: relative;
         margin: 0 auto;
@@ -1010,6 +1046,8 @@ body {
         margin-bottom: 0; }
       body .app-container p.center {
         text-align: center; }
+    body .app-container span.pink, body .app-container p.pink {
+      color: #ff0052; }
     body .app-container a, body .app-container .faux-link {
       text-decoration: none; }
       body .app-container a:not(.link-no-style), body .app-container .faux-link:not(.link-no-style) {

@@ -95,8 +95,8 @@ export default class ComicPage extends Component {
 							? <div className="template-feed">
 								<ComicList
 									title="Other comics using this template"
-									emptyText={`No other comics have been made with this template.`}
-									noMoreText={`Phew! That's all the comics that have been made using this template.`}
+									emptyText={`No other comics have been completed with this template.`}
+									noMoreText={`Phew! That's all the comics that have been completed using this template.`}
 									fetchDelay={700} //Prevent fast nav spamming
 									sortBy={Util.enum.ComicSortBy.Random}
 									templateId={this.state.comic.templateId}

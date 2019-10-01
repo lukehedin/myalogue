@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 import htmlToImage from 'html-to-image';
 import Util from '../../../Util';
 
@@ -103,6 +105,7 @@ class Comic extends Component {
 			</div>
 			<div className="comic-lower">
 				<div className="comic-lower-inner">
+					<p className="comic-completed-at sm">{moment(this.state.comic.completedAt).fromNow()}</p>
 					<div className="flex-spacer"></div>
 					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 				</div>
