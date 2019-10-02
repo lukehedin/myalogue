@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import Timer from '../../UI/Timer/Timer';
@@ -35,7 +35,7 @@ export default class PlayPage extends Component {
 		this.resetPlayData = this.resetPlayData.bind(this);
 	}
 	componentDidMount() {
-		this.playNew();
+		this.playNew(null, this.props.templateId, this.props.token);
 	}
 	onDialogueChange(value) {
 		this.setState({
@@ -52,15 +52,17 @@ export default class PlayPage extends Component {
 			totalPanelCount: null
 		});
 	}
-	playNew(skippedComicId) {
+	playNew(skippedComicId, templateId, token) {
 		this.resetPlayData();
 		this.setState({
 			isLoading: true
 		});
 
 		Util.api.post('/api/play', {
-			skippedComicId: skippedComicId, //optional
-			token: this.props.token //optional
+			// all optional
+			skippedComicId: skippedComicId,
+			templateId: templateId,
+			token: token
 		})
 		.then(result => {
 			if(!result.error) {
@@ -153,7 +155,7 @@ export default class PlayPage extends Component {
 					}
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
 				</ComicPanelPair> 
-				<div className="button-container justify-center">
+				<div className="play-actions button-container justify-center">
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
 				</div>
@@ -165,19 +167,31 @@ export default class PlayPage extends Component {
 					 ?<div>
 						<h1 className="page-title">Panel created!</h1>
 						<p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
-						<div className="button-container justify-center">
-							<S4YButton label="Play again" onClick={() => this.playNew()} size="lg" />
-						</div>
 					</div>				
 					: <div>
 						<h1 className="page-title">Sorry, you ran out of time!</h1>
 						<p className="center">Each time you play, you only have <b>{playTimerMins} minutes</b> to complete your panel.</p>
 						<p className="center">Why not try again?</p>
-						<div className="button-container justify-center">
-							<S4YButton label="Try again" onClick={() => this.playNew()} size="lg" />				
-						</div>
 					</div>
 				}
+				{Util.context.isAuthenticated()
+					? null 
+					: <div className="anon-message">
+						<h3>Reminder: You're playing anonymously!</h3>
+						<p className="center sm">Which is totally fine, but if you <Link>create an account</Link> you'll be able to:</p>
+						<ul>
+							<li>Get accurate notifications no matter where you're logged in</li>
+							<li>Play the latest template as soon as it's available</li>
+							<li>Play using any specific template of your choosing</li>
+							<li>Have your username appear on your comic panels</li>
+							<li>Contribute to comics featuring only logged-in users</li>
+							<li>Rate comics</li>
+						</ul>
+					</div>
+				}
+				<div className="play-again-button button-container justify-center">
+					<S4YButton label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} size="lg" />
+				</div>
 			</div>
 		}
 

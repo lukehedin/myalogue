@@ -5,6 +5,14 @@ const crypto = require('crypto');
 const saltRounds = 10;
 
 const auth = {
+	_getJwtToken: (tokenContent, callback) => {
+		jwt.sign(tokenContent, process.env.JWT_SECRET_KEY, {
+			expiresIn: 604800 //1 week
+		}, (err, token) => {
+			callback("Bearer " + token);
+		});
+	},
+	
 	hashPassword: (password, callback) => {
 		let isValidPassword = validator.isLength(password, {min:8, max: 127});
 
@@ -17,13 +25,27 @@ const auth = {
 		}
 	},
 	
-	getJwtToken: (userId, callback) => {
-		jwt.sign({
-			userId
-		}, process.env.JWT_SECRET_KEY, {
-			expiresIn: 604800 //1 week
-		}, (err, token) => {
-			callback("Bearer " + token);
+	getUserJwtResult: (dbUser, callback) => {
+		auth._getJwtToken({ userId: dbUser.UserId }, (token) => {
+			//The object sent to a successfully authenticated user
+			let result = {
+				username: dbUser.Username,
+				userId: dbUser.UserId,
+				token
+			};
+	
+			callback(result);
+		});
+	},
+
+	getAnonJwtResult: (anonId, callback) => {
+		auth._getJwtToken({ anonId: anonId }, (token) => {
+			//The object sent to a successfully authenticated user
+			let result = {
+				token
+			};
+	
+			callback(result);
 		});
 	},
 

@@ -21,6 +21,7 @@ const mapper = {
 			title: dbComic.Title || "Untitled",
 			templateId: dbComic.TemplateId,
 			rating: dbComic.Rating || 0,
+			hasAnonymous: dbComic.HasAnonymous,
 			completedAt: dbComic.CompletedAt,
 			comicPanels: (dbComic.ComicPanels || [])
 				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)

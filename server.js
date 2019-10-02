@@ -42,6 +42,7 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 			jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
 				if(decodedToken) {
 					req.userId = decodedToken.userId;
+					req.anonId = decodedToken.anonId;
 				}
 				next();
 			});

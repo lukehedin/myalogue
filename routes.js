@@ -42,19 +42,6 @@ const isEmailAcceptable = (email, callback) => {
 	});
 };
 
-//The object sent to a successfully authenticated user
-const getAuthResult = (dbUser, callback) => {
-	auth.getJwtToken(dbUser.UserId, (token) => {
-		let result = {
-			username: dbUser.Username,
-			userId: dbUser.UserId,
-			token
-		};
-
-		callback(result);
-	})
-};
-
 //Common functions
 const createNotifications = (db, userIds, title, message, comicId) => {
 	//Unique userids
@@ -114,13 +101,16 @@ const getIncludeForComic = (db, userId, includeUsers = false) => {
 };
 
 //Common WHERES
-const getWhereForUnlockedTemplates = (db) => {
-	return {
+const getWhereForUnlockedTemplates = (db, templateId = null) => {
+	let unlockedTemplateWhere = {
 		UnlockedAt: {
 			[db.op.ne]: null,
 			[db.op.lte]: new Date()
 		}
 	};
+
+	if(templateId) unlockedTemplateWhere.TemplateId = templateId;
+	return unlockedTemplateWhere;
 };
 const getWhereForEmailUsernameMatch = (db, email, username) => {
 	//This should already be done, but just to be sure
@@ -139,7 +129,8 @@ const routes = {
 
 	public: {
 		authenticate: (req, res, db) => {
-			let userId = req.userId; // May be null
+			let userId = req.userId;
+			let anonId = req.anonId;
 			
 			if(process.env.IS_UNDER_MAINTENANCE === 'true') {
 				res.json({ isUnderMaintenance: true });
@@ -191,25 +182,31 @@ const routes = {
 							}
 						})
 						.then(dbUser => {
-							if(dbUser) {
-								//Record the lastloginat - no need to await
-								dbUser.LastLoginAt = new Date();
-								dbUser.save();
-
-								//Refresh the token after a successful authenticate
-								getAuthResult(dbUser, authResult => {
-									res.json({
-										...result,
-										...authResult
-									});
-								});
-							} else {
+							if(!dbUser) {
 								catchError(res, 'Invalid userId in token', db);
+								return;
 							}
+							
+							//Record the lastloginat - no need to await
+							dbUser.LastLoginAt = new Date();
+							dbUser.save();
+
+							//Refresh the token after a successful authenticate
+							auth.getUserJwtResult(dbUser, userResult => {
+								res.json({
+									...result,
+									...userResult
+								});
+							});
 						});
 					} else {
-						res.json({
-							...result
+						//Refresh existing anonId if one supplied, otherwise generate new
+						if(!anonId) anonId = auth.getHexToken();
+						auth.getAnonJwtResult(anonId, anonResult => {
+							res.json({
+								...result,
+								...anonResult
+							});
 						});
 					}
 				})
@@ -244,7 +241,7 @@ const routes = {
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
-								getAuthResult(dbUser, authResult => res.json(authResult));
+								auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
 							} else {
 								//Invalid password
 								catchError(res, 'Invalid email or password.');
@@ -259,7 +256,7 @@ const routes = {
 		},
 	
 		register: (req, res, db) => {
-			const forbiddenUsernames = ['admin', 'administrator', 'root', 'owner'];
+			const forbiddenUsernames = ['admin', 'administrator', 'mod', 'moderator', 'help', 'contact', 'anonymous', 'anon', 'root', 'owner'];
 
 			let email = req.body.email.trim().toLowerCase();
 			let username = req.body.username.trim().toLowerCase();
@@ -337,7 +334,7 @@ const routes = {
 				dbUser.VerificationToken = null;
 				dbUser.save()
 					.then(() => {
-						getAuthResult(dbUser, authResult => res.json(authResult));
+						auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
 					})
 					.catch(error => catchError(res, error, db));
 
@@ -436,7 +433,7 @@ const routes = {
 					dbUser.save()
 						.then(() => {
 							//Wait for this save in case it fails
-							getAuthResult(dbUser, authResult => res.json(authResult));
+							auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
 						})
 						.catch(error => catchError(res, error, db));
 				});
@@ -475,6 +472,7 @@ const routes = {
 
 			let ignoreComicIds = req.body.ignoreComicIds || [];
 			let completedAtBefore = req.body.completedAtBefore || new Date();
+			let includeAnonymous = req.body.includeAnonymous;
 			let sortBy = req.body.sortBy || 1;
 			let offset = req.body.offset || 0;
 			let limit = req.body.limit || 5;
@@ -504,6 +502,7 @@ const routes = {
 				}
 			};
 			if(templateId) comicWhere.TemplateId = templateId;
+			if(!includeAnonymous) comicWhere.HasAnonymous = false;
 			
 			if(authorUserId) {
 				db.ComicPanel.findAll({
@@ -616,26 +615,24 @@ const routes = {
 			})
 			.then(dbComics => res.json(dbComics.length))
 			.catch(error => catchError(res, error, db));
-		}
-	},
+		},
 
-	private: {
 		//Gets a comic in progress or starts new
 		play: (req, res, db) => {
 			let userId = req.userId;
+			let anonId = req.anonId;
+
+			if(!userId && !anonId) {
+				catchError(res, 'No userId supplied');
+				return;
+			}
 
 			let skippedComicId = req.body.skippedComicId;
-			let templateId = req.body.templateId;
-	
+			let templateId = userId ? req.body.templateId : null; //Anon users can't target a template
+		
 			let comicWhere = {
 				CompletedAt: {
 					[db.op.eq]: null //Incomplete comics
-				},
-				LastAuthorUserId: { //Where I wasn't the last author
-					[db.op.or]: {
-						[db.op.ne]: userId,
-						[db.op.eq]: null
-					}
 				},
 				LockedAt: { //That aren't in the lock window (currently being edited)
 					[db.op.or]: {
@@ -644,25 +641,47 @@ const routes = {
 					}
 				}
 			};
-	
-			if(templateId) comicWhere.TemplateId = template;
+
+			//Where I wasn't the last author
+			if(userId) {
+				comicWhere.LastAuthorUserId = {
+					[db.op.or]: {
+						[db.op.ne]: userId,
+						[db.op.eq]: null
+					}
+				}
+			} else {
+				comicWhere.HasAnonymous = true;
+				comicWhere.LastAuthorAnonId = {
+					[db.op.or]: {
+						[db.op.ne]: anonId,
+						[db.op.eq]: null
+					}
+				}
+			}
+		
+			if(templateId) comicWhere.TemplateId = templateId;
 			if(skippedComicId) {
 				//Don't bring back the same comic we just skipped
 				comicWhere.ComicId = {
 					[db.op.ne]: skippedComicId
 				};
 			}
-	
+
+			let comicOrder = [];
+			if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
+			comicOrder.push(db.fn('RANDOM'));
+		
 			//Get random incomplete comic
 			db.Comic.findAll({
 				limit: 1,
 				where: comicWhere,
 				include: getIncludeForComic(db),
-				order: [db.fn('RANDOM')]
+				order: comicOrder
 			})
 			.then(dbComics => {
 				let dbComic = dbComics[0];
-	
+		
 				//Function used below for an existing or new comic
 				const prepareComicForPlay = (dbComic) => {
 					return new Promise((resolve, reject) => {
@@ -676,16 +695,16 @@ const routes = {
 						let templatePanelWhere = {
 							TemplateId: dbComic.TemplateId
 						};
-	
+		
 						//Certain panels only show up in the first or last position
 						isFirst
 							? templatePanelWhere.IsNeverFirst = false
 							: templatePanelWhere.IsOnlyFirst = false;
-	
+		
 						isLast
 							? templatePanelWhere.IsNeverLast = false
 							: templatePanelWhere.IsOnlyLast = false;
-	
+		
 						db.TemplatePanel.findAll({
 							limit: 1,
 							order: [db.fn('RANDOM')],
@@ -693,48 +712,56 @@ const routes = {
 						})
 						.then(dbTemplatePanels => {
 							let dbTemplatePanel = dbTemplatePanels[0];
-	
-							dbComic.LockedAt = new Date();
-							dbComic.LockedByUserId = userId; //Might be null!
+		
 							dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
-	
+
+							//Lock the comic
+							dbComic.LockedAt = new Date();
+							if(userId) {
+								dbComic.LockedByUserId = userId;
+							} else {
+								dbComic.LockedByAnonId = anonId;
+							}
+		
 							dbComic.save()
 								.then(() => resolve({
 									comicId: dbComic.ComicId,
 									templatePanelId: dbTemplatePanel.TemplatePanelId,
-	
+		
 									totalPanelCount: dbComic.PanelCount,
 									completedPanelCount: currentComicPanels.length,
-	
+		
 									currentComicPanel: currentComicPanel 
 										? mapper.fromDbComicPanel(currentComicPanel) 
 										: null
 								}))
 								.catch(error => reject(error));
-	
+		
 						})
 						.catch(err => reject(err));
 					});
 				};
-	
+		
 				if(dbComic) {
 					prepareComicForPlay(dbComic)
 						.then(result => res.json(result))
 						.catch(error => catchError(res, error, db));
 				} else {
-					//Find latest 4 templates
 					db.Template.findAll({
 						limit: 4,
-						where: getWhereForUnlockedTemplates(db),
+						//If a templateId is supplied, only 1 will be returned and the random below will select it
+						where: getWhereForUnlockedTemplates(db, templateId),
 						order: [[ 'UnlockedAt', 'DESC' ]]
 					})
 					.then((dbLatestTemplates) => {
-						let dbTemplate = dbLatestTemplates[getRandomInt(0, dbLatestTemplates.length - 1)];
-	
+						//Anonymous users can't access the latest template right away
+						let dbTemplate = dbLatestTemplates[getRandomInt((userId ? 0 : 1), dbLatestTemplates.length - 1)];
+		
 						//Create a new comic with this template
 						db.Comic.create({
 							TemplateId: dbTemplate.TemplateId,
-							PanelCount: getRandomPanelCount()
+							PanelCount: getRandomPanelCount(),
+							HasAnonymous: !userId
 						})
 						.then(dbNewComic => {
 							prepareComicForPlay(dbNewComic)
@@ -745,40 +772,59 @@ const routes = {
 					})
 					.catch(error => catchError(res, error, db));
 				}
-	
+		
 				//Clear the lock on a skipped comic (needs to happen after the query above)
 				if(skippedComicId) {
+					skippedComicWhere = {
+						where: {
+							ComicId: skippedComicId
+						}
+					}
+
+					//Important! without this anyone can clear any lock
+					if(userId) {
+						skippedComicWhere.LockedByUserId = userId
+					} else {
+						skippedComicWhere.LockedByAnonId = anonId;
+					}
+					
+					//Clear lock on skipped comic
 					db.Comic.update({
 						LockedAt: null,
 						LockedByUserId: null,
+						LockedByAnonId: null,
 						NextTemplatePanelId: null
-					}, {
-						where: {
-							ComicId: skippedComicId,
-							LockedByUserId: userId //Important! without this anyone can clear any lock
-						}
-					});
+					}, skippedComicWhere);
 				}
 			})
 			.catch(error => catchError(res, error, db));
 		},
-	
+		
 		submitComicPanel: (req, res, db) => {
-			let userId = req.userId; // May be null
+			let userId = req.userId;
+			let anonId = req.anonId;
+
 			let comicId = req.body.comicId;
 			let dialogue = req.body.dialogue;
-	
-			db.Comic.findOne({
-				where: {
-					ComicId: comicId, //Find the comic
-					CompletedAt: {
-						[db.op.eq]: null // that is incomplete
-					},
-					LockedByUserId: userId, //and the lock is held by me
-					LockedAt: {
-						[db.op.gte]: getComicLockWindow() //and the lock is still valid
-					}
+
+			let comicWhere = {
+				ComicId: comicId, //Find the comic
+				CompletedAt: {
+					[db.op.eq]: null // that is incomplete
 				},
+				LockedAt: {
+					[db.op.gte]: getComicLockWindow() //and the lock is still valid
+				}
+			};
+			//and the lock is held by me
+			if(userId) {
+				comicWhere.LockedByUserId = userId;
+			} else {
+				comicWhere.LockedByAnonId = anonId;
+			}
+		
+			db.Comic.findOne({
+				where: comicWhere,
 				include: getIncludeForComic(db)
 			})
 			.then(dbComic => {
@@ -786,10 +832,10 @@ const routes = {
 					catchError(res, 'Invalid comic submitted.');
 					return;
 				}
-
+	
 				let isDialogueValid = validator.isLength(dialogue, { min: 1, max: 255 });
 				let isComicValid = dbComic.CompletedAt === null && dbComic.ComicPanels.length < dbComic.PanelCount;
-	
+		
 				if(!isComicValid || !isDialogueValid) {
 					catchError(res, 'Invalid dialogue supplied.');
 					return;
@@ -800,7 +846,7 @@ const routes = {
 					ComicId: dbComic.ComicId,
 					Value: dialogue,
 					Ordinal: dbComic.ComicPanels.length + 1,
-					UserId: userId
+					UserId: userId //Might be null if anon
 				})
 				.then(() => {
 					let completedPanelCount = (dbComic.ComicPanels.length + 1);
@@ -817,15 +863,26 @@ const routes = {
 								ComicId: dbComic.ComicId
 							}
 						});
-
+	
 						//Notify other panel creators, but not this one.
-						let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
+						let notifyUserIds = dbComic.ComicPanels.filter(cp => !!cp.UserId).map(cp => cp.UserId).filter(uId => uId !== userId);
 						createNotifications(db, notifyUserIds, `Comic #${dbComic.ComicId} completed!`, `A comic you made a panel for has been completed. Click here to view the comic.`, dbComic.ComicId);
 					}
-
+	
+					//Remove the lock
 					dbComic.LockedAt = null;
 					dbComic.LockedByUserId = null;
-					dbComic.LastAuthorUserId = userId;
+					dbComic.LockedByAnonId = null;
+
+					//Record me as last author
+					if(userId) {
+						dbComic.LastAuthorUserId = userId;
+						dbComic.LastAuthorAnonId = null;
+					} else {
+						dbComic.LastAuthorAnonId = anonId;
+						dbComic.LastAuthorUserId = null;
+					}
+
 					dbComic.save()
 						.then(() => {
 							res.json({ 
@@ -839,6 +896,9 @@ const routes = {
 			})
 			.catch(error => catchError(res, error, db));
 		},
+	},
+
+	private: {
 
 		voteComic: (req, res, db) => {
 			let userId = req.userId;

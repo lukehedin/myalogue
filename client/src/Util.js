@@ -66,7 +66,8 @@ const Util = {
 		},
 
 		isDev: () => Util.context._isDev,
-		isAuthenticated: () => !!Util.context._getToken(),
+		isAuthenticated: () => !!Util.context.getUserId(), // Cannot use token, as anons also use this
+		
 		getUserId: () => Util.context._userId,
 		getUsername: () => Util.context._username,
 
@@ -77,7 +78,30 @@ const Util = {
 		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
 		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
 
-		getTopComic: () => Util.context._referenceData.topComic
+		getTopComic: () => Util.context._referenceData.topComic,
+
+		// Temporary context for anonymous players. Unreliable and temporary.
+		// anon: {
+		// 	_playedComicIdsKey: 'played-comic-ids',
+
+		// 	setPlayedComicIds: (playedComicIds) => localStorage.setItem(Util.anonContext._playedComicIdsKey, playedComicIds),
+		// 	getPlayedComicIds: () => {
+		// 		let stringPlayedComicIds = localStorage.getItem(Util.anonContext._playedComicIdsKey);
+		// 		return stringPlayedComicIds
+		// 			? stringPlayedComicIds.split(',').map(stringId => parseInt(stringId))
+		// 			: [];
+		// 	},
+
+		// 	addPlayedComicId: (comicId) => {
+		// 		let playedComicIds = Util.anonContext.getPlayedComicIds();
+		// 		playedComicIds.push(comicId);
+		// 		Util.anonContext.setPlayedComicIds(playedComicIds);
+		// 	},
+		// 	removePlayedComicId: (comicId) => {
+		// 		let playedComicIds = Util.anonContext.getPlayedComicIds();
+		// 		Util.anonContext.setPlayedComicIds(playedComicIds.filter(playedComicIds => playedComicId !== comicId));
+		// 	}
+		// },
 	},
 
 	analytics: {
@@ -157,6 +181,11 @@ const Util = {
 			Alert: 1,
 			Confirm: 2,
 			ShareComicModal: 3
+		},
+
+		NotificationType: {
+			General: 1,
+			ComicComplete: 2,
 		},
 
 		ComicSortBy: {
@@ -248,7 +277,7 @@ const Util = {
 		about: () => `/about`,
 		termsOfService: () => `/terms-of-service`,
 		privacyPolicy: () => `/privacy-policy`,
-		play: (templateId) => templateId ? `play/${templateId}` : `/play`
+		play: (templateId) => templateId ? `/play/${templateId}` : `/play`
 	},
 
 	selector: {

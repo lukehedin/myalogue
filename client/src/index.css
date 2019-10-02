@@ -78,6 +78,8 @@ body {
           flex-direction: row;
           align-items: center;
           justify-content: center; }
+          body .app-container .app .comic-list .filters > *:not(:first-child) {
+            margin-left: 8px; }
         body .app-container .app .comic-list .comic-list-inner {
           display: flex;
           flex-direction: column;
@@ -822,7 +824,7 @@ body {
           box-shadow: 6px 6px 6px #00000016;
           -webkit-box-shadow: 6px 6px 6px #00000016;
           -moz-box-shadow: 6px 6px 6px #00000016; }
-        body .app-container .app .page-play .play-area .button-container {
+        body .app-container .app .page-play .play-area .play-actions {
           margin-top: 8px; }
         body .app-container .app .page-play .play-area .start-help {
           margin-top: 64px;
@@ -832,7 +834,26 @@ body {
             list-style-type: none;
             padding: 0;
             font-size: 14px; }
-      body .app-container .app .page-template .template-feed {
+        body .app-container .app .page-play .play-area .play-again-button {
+          margin-top: 16px; }
+        body .app-container .app .page-play .play-area .anon-message {
+          background-color: #080808;
+          max-width: 400px;
+          margin: 16px auto;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          color: #fff;
+          padding: 8px; }
+          body .app-container .app .page-play .play-area .anon-message h1, body .app-container .app .page-play .play-area .anon-message h2, body .app-container .app .page-play .play-area .anon-message h3, body .app-container .app .page-play .play-area .anon-message h4, body .app-container .app .page-play .play-area .anon-message h5, body .app-container .app .page-play .play-area .anon-message h6 {
+            color: #fff; }
+          @media (min-width: 576px) {
+            body .app-container .app .page-play .play-area .anon-message {
+              padding: 16px; } }
+          body .app-container .app .page-play .play-area .anon-message ul {
+            text-align: left;
+            font-size: 12px; }
+      body .app-container .app .page-template .play-template {
         margin-top: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;

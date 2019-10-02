@@ -128,10 +128,15 @@ let db = {
 	
 	Comic: defineTable('Comic', {
 		CompletedAt: Sequelize.DATE,
-		LockedAt: Sequelize.DATE, // locked while editing (1 min)
 		Token: Sequelize.STRING, //If present, the comic is private
 		PanelCount: Sequelize.INTEGER,
 		Rating: getIntegerNotNull(),
+		LockedAt: Sequelize.DATE, // locked while editing (1 min)
+
+		//Anonymous fields
+		HasAnonymous: getBoooleanNotNull(),
+		LockedByAnonId: Sequelize.STRING,
+		LastAuthorAnonId: Sequelize.STRING,
 		
 		//Used for display
 		Title: Sequelize.STRING //First line of dialogue?

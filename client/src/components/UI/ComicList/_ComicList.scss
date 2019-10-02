@@ -11,6 +11,12 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
+
+		> * {
+			&:not(:first-child) {
+				margin-left: $spacing-xs;
+			}
+		}
 	}
 
 	.comic-list-inner {

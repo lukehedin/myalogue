@@ -75,7 +75,7 @@ class App extends Component {
 		let ifAuthenticated = (component) => {
 			return Util.context.isAuthenticated()
 				? component
-				: <Redirect to={Util.route.howToPlay()} />;
+				: <Redirect to={Util.route.register()} />;
 		};
 
 		let ifNotAuthenticated = (component) => {
@@ -108,8 +108,8 @@ class App extends Component {
 
 						<Route exact path="/" render={() => <HomePage />} />
 						
-						<Route exact path="/play" render={() => ifAuthenticated(<PlayPage />) } />
-						<Route exact path="/play/:templateId" render={({ match }) => ifAuthenticated(<PlayPage templateId={match.params.templateId} />) } />
+						<Route exact path="/play" render={() => <PlayPage />} />
+						<Route exact path="/play/:templateId" render={({ match }) => <PlayPage templateId={match.params.templateId} />} />
 
 						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />

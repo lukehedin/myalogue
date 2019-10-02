@@ -4,6 +4,7 @@ import Util from '../../../Util';
 import Comic from '../../UI/Comic/Comic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
+import Checkbox from '../Checkbox/Checkbox';
 
 export default class ComicList extends Component {
 	constructor(props) {
@@ -12,6 +13,7 @@ export default class ComicList extends Component {
 		this.state = {
 			isLoading: true,
 			
+			includeAnonymous: true,
 			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
@@ -23,6 +25,8 @@ export default class ComicList extends Component {
 
 		this.fetchTimeout = null;
 
+		this.setSortBy = this.setSortBy.bind(this);
+		this.setIncludeAnonymous = this.setIncludeAnonymous.bind(this);
 		this.fetchData = this.fetchData.bind(this);
 	}
 	componentDidMount() {
@@ -41,13 +45,17 @@ export default class ComicList extends Component {
 			completedAtBefore: new Date(),
 			offset: 0,
 			isNoMore: false,
-			comics: []
+			comics: [] //Otherwise random will use these to filter out
 		}, () => this.fetchData(fetchDelay));
 	}
 	setSortBy(sortBy) {
 		this.setState({
-			comics: [], //Otherwise random will use these to filter out
 			sortBy: sortBy
+		}, this.resetFetch);
+	}
+	setIncludeAnonymous(includeAnonymous) {
+		this.setState({
+			includeAnonymous: includeAnonymous
 		}, this.resetFetch);
 	}
 	fetchData(fetchDelay) {
@@ -66,6 +74,7 @@ export default class ComicList extends Component {
 
 				completedAtBefore: this.state.completedAtBefore,
 				sortBy: this.state.sortBy,
+				includeAnonymous: this.state.includeAnonymous,
 				limit: this.state.limit,
 				offset: isRandomSort ? 0 : this.state.offset,
 				ignoreComicIds: [
@@ -116,6 +125,7 @@ export default class ComicList extends Component {
 							}
 						]} 
 					/>
+					<Checkbox isSwitch={true} value={this.state.includeAnonymous} label="Include anonymous" onChange={this.setIncludeAnonymous} />
 				</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {

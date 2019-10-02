@@ -24,7 +24,7 @@
 			@include comicWrapperStyle;
 		}
 
-		.button-container {
+		.play-actions {
 			margin-top: $spacing-xs;
 		}
 
@@ -37,6 +37,30 @@
 				list-style-type: none;
 				padding: 0;
 				font-size: 14px;
+			}
+		}
+
+		.play-again-button {
+			margin-top: $spacing-sm;
+		}
+
+		.anon-message {
+			background-color: $colour-black;
+			max-width: 400px;
+			margin: $spacing-sm auto;
+			@include borderRadius(4px);
+			@include allHeadings {
+				color: $colour-white;
+			}
+			color: $colour-white;
+			padding: $spacing-xs;
+			@include oversm {
+				padding: $spacing-sm;
+			}
+
+			ul {
+				text-align: left;
+				font-size: 12px;
 			}
 		}
 	}

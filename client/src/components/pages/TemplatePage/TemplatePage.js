@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import ComicList from '../../UI/ComicList/ComicList';
+import Button from '../../UI/Button/Button';
 
 export default class TemplatePage extends Component {
 	constructor(props) {
@@ -41,20 +42,30 @@ export default class TemplatePage extends Component {
 		if(!this.state.template) return <Redirect to={Util.route.home()} />;
 		
 		return <div className="page-template">
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">{this.state.template.name}</h1>
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
-						<div className="template-feed">
-							<ComicList
-								title='Comics using this template'
-								emptyText={`No comics have been completed using this template yet.`}
-								noMoreText={`Phew! That's all the comics that have been completed using this template.`}
-								fetchDelay={700} //Prevent fast nav spamming
-								templateId={this.state.template.templateId}
-							/>
-						</div>
+						{Util.context.isAuthenticated()
+							? <div className="play-template button-container justify-center">
+								<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
+							</div>
+							: null
+						}
+					</div>
+				</div>
+			</div>
+			<div className="panel-standard">
+				<div className="container">
+					<div className="row">
+						<ComicList
+							title='Comics with this template'
+							emptyText={`No comics have been completed using this template yet.`}
+							noMoreText={`Phew! That's all the comics that have been completed using this template.`}
+							fetchDelay={700} //Prevent fast nav spamming
+							templateId={this.state.template.templateId}
+						/>
 					</div>
 				</div>
 			</div>
