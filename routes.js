@@ -850,9 +850,9 @@ const routes = {
 				})
 				.then(() => {
 					let completedPanelCount = (dbComic.ComicPanels.length + 1);
-					let isCompletedComic = completedPanelCount === dbComic.PanelCount;
+					let isComicCompleted = completedPanelCount === dbComic.PanelCount;
 					
-					if(isCompletedComic) {
+					if(isComicCompleted) {
 						let now = new Date();
 						dbComic.CompletedAt = now;
 						//No need to await
@@ -887,7 +887,7 @@ const routes = {
 						.then(() => {
 							res.json({ 
 								success: true, 
-								completedComicId: isCompletedComic ? dbComic.ComicId : null
+								isComicCompleted: isComicCompleted
 							});
 						})
 						.catch(error => catchError(res, error, db));

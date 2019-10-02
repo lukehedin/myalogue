@@ -37,11 +37,14 @@ export default class HomePage extends Component {
 							<img src={logo} className="app-logo" alt="logo" />
 							<p className="page-subtitle center">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 						</div>
-						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress</p>
 						<div className="button-container justify-center">
 							<S4YButton size="lg" />
 						</div>
+						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress</p>
 						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
+						<div className="button-container justify-center">
+							<Button className="how-to-play-button" label="How to play" to={Util.route.howToPlay()} colour="black" isHollow={true} size="sm" />
+						</div>
 					</div>
 				</div>
 			</div>

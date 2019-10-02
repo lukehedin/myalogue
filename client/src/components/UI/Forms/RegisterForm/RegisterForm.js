@@ -11,7 +11,7 @@ class RegisterForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('email')}
-			<p className="form-message">Your email is <b>only used to verify your account</b>.</p>
+			<p className="form-message">Your email is only used to verify your account.</p>
 			{this.props.getField('username')}
 			{this.props.getField('password')} 
 			{this.props.getField('confirmPassword')}

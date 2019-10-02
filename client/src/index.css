@@ -801,6 +801,8 @@ body {
           width: 200px;
           min-height: 100px;
           display: block; }
+      body .app-container .app .page-home .how-to-play-button {
+        margin-top: 8px; }
       body .app-container .app .page-home .play-info {
         color: #525252; }
       body .app-container .app .page-play .play-area {
@@ -837,7 +839,7 @@ body {
         body .app-container .app .page-play .play-area .play-again-button {
           margin-top: 16px; }
         body .app-container .app .page-play .play-area .anon-message {
-          background-color: #080808;
+          background-color: #525252;
           max-width: 400px;
           margin: 16px auto;
           border-radius: 4px;
@@ -850,6 +852,9 @@ body {
           @media (min-width: 576px) {
             body .app-container .app .page-play .play-area .anon-message {
               padding: 16px; } }
+          body .app-container .app .page-play .play-area .anon-message a {
+            color: #fff;
+            text-decoration: underline; }
           body .app-container .app .page-play .play-area .anon-message ul {
             text-align: left;
             font-size: 12px; }

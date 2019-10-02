@@ -18,8 +18,9 @@ export default class PlayPage extends Component {
 		this.state = {
 			isLoading: true,
 			error: null,
+			isPlaying: false,
 			isSubmitted: false,
-			completedComicId: null,
+			redirectToComicId: null,
 
 			// Play data
 			comicId: null,
@@ -44,6 +45,7 @@ export default class PlayPage extends Component {
 	}
 	resetPlayData() {
 		this.setState({
+			isPlaying: false,
 			comicId: null,
 			templatePanelId: null,
 			currentComicPanel: null,
@@ -67,6 +69,7 @@ export default class PlayPage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
+					isPlaying: true,
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
 					currentComicPanel: result.currentComicPanel, //May be null
@@ -86,9 +89,9 @@ export default class PlayPage extends Component {
 		});
 	}
 	submitComicPanel() {
-		this.resetPlayData();
 		this.setState({
-			isLoading: true
+			isLoading: true,
+			isPlaying: false
 		});
 		
 		let dialogue = this.state.dialogue;
@@ -101,7 +104,7 @@ export default class PlayPage extends Component {
 			if(!result.error) {
 				this.setState({
 					isSubmitted: true,
-					completedComicId: result.completedComicId
+					redirectToComicId: result.isComicCompleted ? this.state.comicId : null
 				});
 			} else {
 				this.setState({
@@ -115,7 +118,7 @@ export default class PlayPage extends Component {
 		});
 	}
 	render() {
-		if(this.state.completedComicId) return <Redirect to={Util.route.comic(this.state.completedComicId)} />;
+		if(this.state.redirectToComicId) return <Redirect to={Util.route.comic(this.state.redirectToComicId)} />;
 		let content = null;
 
 		if(this.state.isLoading) {
@@ -131,7 +134,7 @@ export default class PlayPage extends Component {
 					<Button label="Back to home" to={Util.route.home()} colour="pink" size="lg" />
 				</div>
 			</div>
-		} else if(this.state.templatePanelId) {
+		} else if(this.state.isPlaying) {
 			//In progress
 			content = <div className="play-area">
 				<div className="play-area-top">
@@ -166,7 +169,10 @@ export default class PlayPage extends Component {
 				{this.state.isSubmitted 
 					 ?<div>
 						<h1 className="page-title">Panel created!</h1>
-						<p className="center">Your panel was created. You'll get a notification when the completed comic is ready.</p>
+						{Util.context.isAuthenticated()
+							? <p className="center">Your created a panel for <b>comic #{this.state.comicId}</b>. You'll get a notification when your comic is completed.</p>
+							: <p className="center">Your created a panel for <b>comic #{this.state.comicId}</b>. Check back later to see how your comic turned out.</p>
+						}
 					</div>				
 					: <div>
 						<h1 className="page-title">Sorry, you ran out of time!</h1>
@@ -177,10 +183,10 @@ export default class PlayPage extends Component {
 				{Util.context.isAuthenticated()
 					? null 
 					: <div className="anon-message">
-						<h3>Reminder: You're playing anonymously!</h3>
-						<p className="center sm">Which is totally fine, but if you <Link>create an account</Link> you'll be able to:</p>
+						<h4>Reminder: You're playing anonymously!</h4>
+						<p className="center sm">Which is totally fine, but if you <Link to={Util.route.register()}>create an account</Link> you'll be able to:</p>
 						<ul>
-							<li>Get accurate notifications no matter where you're logged in</li>
+							<li>Get notifications when your comic is completed</li>
 							<li>Play the latest template as soon as it's available</li>
 							<li>Play using any specific template of your choosing</li>
 							<li>Have your username appear on your comic panels</li>

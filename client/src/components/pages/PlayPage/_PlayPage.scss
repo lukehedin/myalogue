@@ -45,7 +45,7 @@
 		}
 
 		.anon-message {
-			background-color: $colour-black;
+			background-color: $colour-grey-e;
 			max-width: 400px;
 			margin: $spacing-sm auto;
 			@include borderRadius(4px);
@@ -56,6 +56,11 @@
 			padding: $spacing-xs;
 			@include oversm {
 				padding: $spacing-sm;
+			}
+
+			a {
+				color: $colour-white;
+				text-decoration: underline;
 			}
 
 			ul {
