@@ -10,9 +10,9 @@
 	$panel-author-font-size: 16px;
 
 	$panel-scale-xs: 0.44;
-	$panel-scale-sm: 0.46;
-	$panel-scale-md: 0.48;
-	$panel-scale-lg: 0.5;
+	$panel-scale-sm: 0.48;
+	$panel-scale-md: 0.52;
+	$panel-scale-lg: 0.56;
 
 	@mixin scaleComicPanel ($scale) {
 		width: calc(#{$panel-width} * #{$scale});
@@ -99,6 +99,12 @@
 		&.comic-panel-author {
 			bottom: 0;
 			right: 0;
+
+			&.me {
+				background-color: $colour-pink;
+				color: $colour-white;
+				font-weight: bold;
+			}
 		}
 	}
 
