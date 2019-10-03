@@ -447,16 +447,24 @@ const routes = {
 
 			db.Comic.findOne({
 				where: {
-					CompletedAt: {
-						[db.op.ne]: null
-					},
 					ComicId: comicId
 				},
 				include: getIncludeForComic(db, userId, true)
 			})
 			.then(dbComic => {
 				if(dbComic) {
-					res.json(mapper.fromDbComic(dbComic));
+					if(dbComic.CompletedAt) {
+						res.json({
+							isComicCompleted: true,
+							comic: mapper.fromDbComic(dbComic)
+						});
+					} else {
+						res.json({
+							isComicCompleted: false,
+							totalPanelCount: dbComic.PanelCount,
+							completedPanelCount: (dbComic.ComicPanels || []).length
+						});
+					}
 				} else {
 					catchError(res, 'Comic not found.', db);
 				}
@@ -685,12 +693,12 @@ const routes = {
 				//Function used below for an existing or new comic
 				const prepareComicForPlay = (dbComic) => {
 					return new Promise((resolve, reject) => {
-						let currentComicPanels = dbComic.ComicPanels || [];
-						let currentComicPanel = currentComicPanels.length > 0
-							? currentComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[currentComicPanels.length - 1]
+						let completedComicPanels = dbComic.ComicPanels || [];
+						let currentComicPanel = completedComicPanels.length > 0
+							? completedComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[completedComicPanels.length - 1]
 							: null;
 						let isFirst = !currentComicPanel;
-						let isLast = currentComicPanels.length + 1 === dbComic.PanelCount;
+						let isLast = completedComicPanels.length + 1 === dbComic.PanelCount;
 							
 						let templatePanelWhere = {
 							TemplateId: dbComic.TemplateId
@@ -729,7 +737,7 @@ const routes = {
 									templatePanelId: dbTemplatePanel.TemplatePanelId,
 		
 									totalPanelCount: dbComic.PanelCount,
-									completedPanelCount: currentComicPanels.length,
+									completedPanelCount: completedComicPanels.length,
 		
 									currentComicPanel: currentComicPanel 
 										? mapper.fromDbComicPanel(currentComicPanel) 

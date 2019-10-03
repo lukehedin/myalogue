@@ -1,13 +1,18 @@
 .page-comic {
-	.comic-featured {
+	.comic-area {
 		position: relative;
-		min-height: 40vh;
+		min-height: 100px;
 		display: flex;
 		flex-direction: column;
-		margin-top: $spacing-md;
+		margin-top: $spacing-sm;
 
-		.comic {
+		.comic-wrapper {
+			margin-bottom: $spacing-lg;
+		}
+
+		.progress-bar {
 			margin: 0 auto;
+			width: 240px;
 		}
 	}
 }

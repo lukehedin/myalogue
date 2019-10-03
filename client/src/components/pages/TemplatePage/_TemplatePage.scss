@@ -1,5 +1,9 @@
 .page-template {
+	.template-navigation {
+		margin-bottom: $spacing-sm;
+	}
+
 	.play-template {
-		margin-top: $spacing-sm;
+		margin-bottom: $spacing-sm;
 	}
 }

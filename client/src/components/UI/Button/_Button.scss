@@ -66,7 +66,7 @@
 
 	//colours
 	&.button-grey {
-		@include colourizeButton($colour-grey-b);
+		@include colourizeButton($colour-grey-d);
 	}
 
 	&.button-black {

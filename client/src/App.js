@@ -43,6 +43,7 @@ class App extends Component {
 	}
 	componentDidMount() {
 		Util.analytics.init();
+		Util.event.window.init();
 		
 		this.unlisten = this.props.history.listen((location, action) => {
 			this.props.closeAllModals();
@@ -130,7 +131,6 @@ class App extends Component {
 						{/* No other route match, 404 */}
 						<Route render={({ match }) => <Error404Page />} />
 					</Switch>
-					<div className="flex-spacer"></div>
 				</div>
 				<AppFooter />
 				{Util.array.any(this.props.modals)

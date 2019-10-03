@@ -20,10 +20,11 @@ export default class ShareComicPanel extends Component {
 		let template = Util.context.getTemplateById(this.props.comic.templateId);
 
 		return <div className="share-comic-container">
-			<p className="center sm"><ComicInfoLabel comic={this.props.comic} /></p>
 			<input className="input-link" onClick={this.onInputClick} readOnly={true} defaultValue={comicLink}></input>
 			<CopyButton toCopy={comicLink} />
 			<Button colour="black" label="View comic page" to={Util.route.comic(this.props.comic.comicId)} />
+			<p className="center sm"><ComicInfoLabel comic={this.props.comic} /></p>
+			<p className="center sm">Template: <Link to={Util.route.template(template.templateId)}>{template.name}</Link></p>
 		</div>;
 	}
 }

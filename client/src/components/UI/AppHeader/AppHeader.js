@@ -28,7 +28,7 @@ export default class AppHeader extends Component {
 							to: Util.route.home()
 						}, {
 							label: 'Play',
-							to: Util.context.isAuthenticated() ? Util.route.play() : Util.route.register()
+							to: Util.route.play()
 						}, {
 							label: 'How to play',
 							to: Util.route.howToPlay()

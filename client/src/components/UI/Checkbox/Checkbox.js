@@ -20,7 +20,7 @@ export default class Checkbox extends Component {
 		if(this.props.onChange) this.props.onChange(value);
 	}
 	render() {
-		return <div className={`checkbox ${this.props.isSwitch ? 'switch' : ''} ${this.state.value ? 'checked' : ''}`}>
+		return <div className={`checkbox ${this.props.isSwitch ? 'switch' : ''} ${this.state.value ? 'checked' : ''} ${this.props.className || ''}`}>
 			<label className="checkbox-inner">
 				{this.props.label ? <span className="checkbox-label">{this.props.label}</span> : null}
 				<input value={this.state.value} type="checkbox" onChange={this.onChange} />

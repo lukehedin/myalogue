@@ -34,11 +34,14 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			padding: 0 $spacing-xs;
+			padding: 0 $spacing-xxs;
 
-			.comic-completed-at {
-				margin: 0;
+			.comic-lower-details {
 				color: $colour-grey-d;
+
+				> * {
+					margin: 0;
+				}
 			}
 		}
 

@@ -20,46 +20,38 @@ export default class HowToPlayPage extends Component {
 		}
 
 		return <div className="page-how-to-play">
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
-					<div className="row">
+					<div className="row">.
 						<h1 className="page-title">How to play</h1>
-						<p className="center"><b>Speak<span className="pink">4</span>Yourself</b> is a game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 					</div>
 				</div>
 			</div>
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<p className="center">When you hit the play button, you will be shown two comic panels; one will have some dialogue in it, and the other won’t have any at all.</p>
 						<p className="center">Your goal is to <b>add dialogue to the empty panel</b> and continue the comic's story as best you can.</p>
-						<div className="demo-pair">
-							<ComicPanelPair>
-								<ComicPanel comicPanel={demoPanel} />
-								<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
-							</ComicPanelPair>
-						</div>
-						<p className="center"><b>Every comic is different</b>. There are many different templates featuring unique situations for your dialogue, and most of the panels in a comic are ordered at random.</p>
-						<p className="center">Your completed comic might be amusing, confusing or utterly bamboozling depending on how everyone interpreted their panels.</p>
+						<ComicPanelPair>
+							<ComicPanel comicPanel={demoPanel} />
+							<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
+						</ComicPanelPair>
+						<p className="center">Another player will see your panel and have to write dialogue for the next. This process is repeated until the comic is complete.</p>
+						<p className="center">The final comic might be amusing, confusing or utterly bamboozling depending on how everyone interpreted their panel.</p>
 						<div className="comic-wrapper">
 							<Comic comic={topComic} />
 						</div>
-					</div>
-				</div>
-			</div>
-
-			<div className="panel-inset">
-				<div className="container">
-					<div className="row">
-						<p className="center">You can keep making dialogue for different comics for as long as you want.</p>
-						{Util.context.isAuthenticated()
-							? <p className="center">When you check back later you'll have notifications for any completed comics you contributed to.</p>
-							: <p className="center">If you <Link to={Util.route.register()}>create an account</Link>, you'll get notifications for any completed comics that you contributed to.</p>
-						}
+						<p className="center"><b>Every comic is different</b>. There are many different templates featuring unique situations for your dialogue, and most of the panels are ordered at random.</p>
+						<p className="center">You can make dialogue for as many comics as you want.
+							{Util.context.isAuthenticated()
+								? <span> When you check back later you'll have notifications for any completed comics you contributed to.</span>
+								: <span> If you <Link to={Util.route.register()}>create an account</Link>, you'll get notifications for any completed comics that you contributed to.</span>
+							}
+						</p>
 						<img className="how-to-play-image" src={notification_example_img} alt="Example notifications" />
 						{Util.context.isAuthenticated()
 							? <p className="center">What are you waiting for?</p>
-							: <p className="center">There are many other benefits to playing with an account, but there is nothing stopping you from playing anonymously if you wish!</p>
+							: <p className="center">There are many other benefits for players who have an account, but there's nothing stopping you from playing anonymously if you wish!</p>
 						}
 						<div className="button-container justify-center">
 							<Button to={Util.route.play()} colour="pink" size="lg" label="Play now" />

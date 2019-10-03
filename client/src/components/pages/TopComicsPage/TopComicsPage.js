@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import Button from '../../UI/Button/Button';
@@ -50,14 +51,16 @@ export default class TopComicsPage extends Component {
 												let topComic = this.state.topComics.find(comic => comic.templateId === template.templateId);
 												return <tr key={template.templateId} className="top-comics-list-item">
 													<td>
-														<p className="sm"><b>Template {template.templateId}</b></p>
-														<p className="sm">{template.name}</p>
-														{topComic ? <p className="sm">Comic #{topComic.comicId} (Rating: {topComic.rating}) - <ComicInfoLabel comic={topComic} /></p> : null}
+														<p className="sm"><b>Template {template.templateId}</b>: <Link to={Util.route.template(template.templateId)}>{template.name}</Link></p>
+														{topComic 
+															? <p className="sm"><Link to={Util.route.comic(topComic.comicId)}>Comic #{topComic.comicId}</Link> (Rating: {topComic.rating}) - <ComicInfoLabel comic={topComic} /></p> 
+															: null
+														}
 													</td>
 													{topComic
 														? <td className="cell-button">
 															<div className="button-container">
-																<Button to={Util.route.comic(topComic.comicId)} label="View comic" colour="pink" />
+																<Button to={Util.route.comic(topComic.comicId)} label="View comic" colour="pink" size="sm" />
 															</div>
 														</td>
 														: <td></td>

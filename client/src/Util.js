@@ -18,6 +18,7 @@ import iconNext from './icons/next.svg';
 import iconNotification from './icons/notification.svg';
 import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
+import moment from 'moment';
 
 const Util = {
 	context: {
@@ -75,7 +76,6 @@ const Util = {
 		getTemplates: () => Util.context._referenceData.templates,
 		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
 		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
-		getLatestTemplateId: () => Util.context.getLatestTemplate().templateId,
 		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
 
 		getTopComic: () => Util.context._referenceData.topComic,
@@ -203,6 +203,26 @@ const Util = {
 			e.cancelBubble = true;
 			e.returnValue = false;
 			return false;
+		},
+
+		window: {
+			_blurredAt: null,
+
+			init: () => {
+				window.addEventListener('blur', () => {
+					Util.event.window._blurredAt = new Date();
+					Util.analytics.event('Window', 'WindowBlur');
+				});
+				window.addEventListener('focus', () => {
+					//Refresh if it's been more than 15 minutes of inactivity
+					if(Util.event.window._blurredAt && moment(Util.event.window._blurredAt).add(15, 'minutes').toDate() < new Date()) {
+						window.location.reload();
+					}
+					Util.event.window._blurredAt = null;
+					Util.analytics.event('Window', 'WindowFocus');
+				});
+			}
+
 		}
 	},
 

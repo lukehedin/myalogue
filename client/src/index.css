@@ -71,7 +71,7 @@ body {
       body .app-container .app .comic-list {
         position: relative; }
         body .app-container .app .comic-list .comic-list-title {
-          margin-bottom: 8px; }
+          margin-bottom: 16px; }
         body .app-container .app .comic-list .filters {
           margin-bottom: 16px;
           display: flex;
@@ -79,7 +79,11 @@ body {
           align-items: center;
           justify-content: center; }
           body .app-container .app .comic-list .filters > *:not(:first-child) {
-            margin-left: 8px; }
+            margin-left: 16px; }
+          body .app-container .app .comic-list .filters .anonymous-switch .checkmark {
+            top: 6px; }
+          body .app-container .app .comic-list .filters .anonymous-switch .checkbox-label {
+            width: 110px; }
         body .app-container .app .comic-list .comic-list-inner {
           display: flex;
           flex-direction: column;
@@ -132,10 +136,11 @@ body {
             display: flex;
             flex-direction: row;
             align-items: center;
-            padding: 0 8px; }
-            body .app-container .app .comic .comic-lower .comic-lower-inner .comic-completed-at {
-              margin: 0;
+            padding: 0 4px; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner .comic-lower-details {
               color: #777777; }
+              body .app-container .app .comic .comic-lower .comic-lower-inner .comic-lower-details > * {
+                margin: 0; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
 
@@ -358,25 +363,25 @@ body {
         body .app-container .app .button .button-label:not(:last-child) {
           margin-right: 8px; }
         body .app-container .app .button.button-grey.button-hollow {
-          color: #c8c8c8;
-          border-color: #c8c8c8;
+          color: #777777;
+          border-color: #777777;
           background-color: transparent; }
           body .app-container .app .button.button-grey.button-hollow .button-icon path {
-            fill: #c8c8c8; }
+            fill: #777777; }
           body .app-container .app .button.button-grey.button-hollow:hover {
-            border-color: #afafaf;
-            color: #afafaf; }
+            border-color: #5e5e5e;
+            color: #5e5e5e; }
             body .app-container .app .button.button-grey.button-hollow:hover .button-icon path {
-              fill: #afafaf; }
+              fill: #5e5e5e; }
         body .app-container .app .button.button-grey.button-solid {
           color: #fff;
-          border-color: #c8c8c8;
-          background: #c8c8c8; }
+          border-color: #777777;
+          background: #777777; }
           body .app-container .app .button.button-grey.button-solid .button-icon path {
             fill: #fff; }
           body .app-container .app .button.button-grey.button-solid:hover {
-            border-color: #d7d7d7;
-            background: #d7d7d7; }
+            border-color: #868686;
+            background: #868686; }
         body .app-container .app .button.button-black.button-hollow {
           color: #080808;
           border-color: #080808;
@@ -786,14 +791,17 @@ body {
               border-top: 1px solid #c8c8c8; }
           body .app-container .app .notification-menu .notification-content > .empty-text {
             padding: 16px; }
-      body .app-container .app .page-comic .comic-featured {
+      body .app-container .app .page-comic .comic-area {
         position: relative;
-        min-height: 40vh;
+        min-height: 100px;
         display: flex;
         flex-direction: column;
-        margin-top: 32px; }
-        body .app-container .app .page-comic .comic-featured .comic {
-          margin: 0 auto; }
+        margin-top: 16px; }
+        body .app-container .app .page-comic .comic-area .comic-wrapper {
+          margin-bottom: 64px; }
+        body .app-container .app .page-comic .comic-area .progress-bar {
+          margin: 0 auto;
+          width: 240px; }
       body .app-container .app .page-home .home-banner {
         margin-bottom: 16px; }
         body .app-container .app .page-home .home-banner .app-logo {
@@ -814,7 +822,7 @@ body {
         body .app-container .app .page-play .play-area .play-area-top {
           margin-bottom: 8px; }
         body .app-container .app .page-play .play-area .progress-bar {
-          width: 200px; }
+          width: 240px; }
           body .app-container .app .page-play .play-area .progress-bar.with-dialogue .progress-bar-inner {
             background-color: #ff0052; }
         body .app-container .app .page-play .play-area .comic-panel-pair {
@@ -858,8 +866,10 @@ body {
           body .app-container .app .page-play .play-area .anon-message ul {
             text-align: left;
             font-size: 12px; }
+      body .app-container .app .page-template .template-navigation {
+        margin-bottom: 16px; }
       body .app-container .app .page-template .play-template {
-        margin-top: 16px; }
+        margin-bottom: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;
         min-height: 60vh; }
@@ -873,7 +883,7 @@ body {
             padding: 16px 0; }
             body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
               text-align: right;
-              min-width: 120px; }
+              min-width: 100px; }
               @media (min-width: 576px) {
                 body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
                   min-width: 160px; } }
@@ -902,15 +912,14 @@ body {
           box-shadow: 6px 6px 6px #00000016;
           -webkit-box-shadow: 6px 6px 6px #00000016;
           -moz-box-shadow: 6px 6px 6px #00000016; }
-      body .app-container .app .page-how-to-play .comic-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center; }
       body .app-container .app .app-inner {
         display: flex;
         flex-direction: column;
         min-height: 100vh; }
         body .app-container .app .app-inner [class^="page-"] {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
           position: relative; }
           body .app-container .app .app-inner [class^="page-"] .page-title {
             text-align: center;
@@ -919,6 +928,8 @@ body {
             text-align: center;
             margin: 8px auto;
             color: #525252; }
+          body .app-container .app .app-inner [class^="page-"] > :last-child {
+            flex: 1; }
         body .app-container .app .app-inner [class^="panel-"] {
           padding: 32px 0; }
           @media (min-width: 576px) {
@@ -1016,6 +1027,10 @@ body {
         justify-content: center; }
       body .app-container .button-container > *:not(:first-child) {
         margin-left: 8px; }
+    body .app-container .comic-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
     body .app-container .modal-overlay {
       position: absolute;
       height: 100%;

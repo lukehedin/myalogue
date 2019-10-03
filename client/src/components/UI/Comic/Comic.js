@@ -58,7 +58,10 @@ class Comic extends Component {
 			</div>
 			<div className="comic-lower">
 				<div className="comic-lower-inner">
-					<p className="comic-completed-at sm">{moment(this.state.comic.completedAt).fromNow()}</p>
+					<div className="comic-lower-details">
+						<p className="sm"><b>Comic #{this.state.comic.comicId}</b></p>
+						<p className="sm">Completed {moment(this.state.comic.completedAt).fromNow()}</p>
+					</div>
 					<div className="flex-spacer"></div>
 					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 				</div>

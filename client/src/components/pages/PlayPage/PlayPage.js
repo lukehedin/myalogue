@@ -131,7 +131,7 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				<p className="empty-text center">{this.state.error}</p>
 				<div className="button-container justify-center">
-					<Button label="Back to home" to={Util.route.home()} colour="pink" size="lg" />
+					<Button label="Back to home" to={Util.route.home()} colour="black" size="lg" />
 				</div>
 			</div>
 		} else if(this.state.isPlaying) {
@@ -170,8 +170,8 @@ export default class PlayPage extends Component {
 					 ?<div>
 						<h1 className="page-title">Panel created!</h1>
 						{Util.context.isAuthenticated()
-							? <p className="center">Your created a panel for <b>comic #{this.state.comicId}</b>. You'll get a notification when your comic is completed.</p>
-							: <p className="center">Your created a panel for <b>comic #{this.state.comicId}</b>. Check back later to see how your comic turned out.</p>
+							? <p className="center">Your created a panel for <Link to={Util.route.comic(this.state.comicId)}>comic #{this.state.comicId}</Link>. You'll get a notification when your comic is completed.</p>
+							: <p className="center">Your created a panel for <Link to={Util.route.comic(this.state.comicId)}>comic #{this.state.comicId}</Link>. Check back later to see how your comic turned out.</p>
 						}
 					</div>				
 					: <div>
@@ -184,12 +184,12 @@ export default class PlayPage extends Component {
 					? null 
 					: <div className="anon-message">
 						<h4>Reminder: You're playing anonymously!</h4>
-						<p className="center sm">Which is totally fine, but if you <Link to={Util.route.register()}>create an account</Link> you'll be able to:</p>
+						<p className="center sm">If you <Link to={Util.route.register()}>create an account</Link> you'll be able to:</p>
 						<ul>
-							<li>Get notifications when your comic is completed</li>
+							<li>Get a notification when your comic is completed</li>
+							<li>Have your username appear on your comic panels</li>
 							<li>Play the latest template as soon as it's available</li>
 							<li>Play using any specific template of your choosing</li>
-							<li>Have your username appear on your comic panels</li>
 							<li>Contribute to comics featuring only logged-in users</li>
 							<li>Rate comics</li>
 						</ul>

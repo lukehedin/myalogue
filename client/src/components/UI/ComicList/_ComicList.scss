@@ -2,7 +2,7 @@
 	position: relative;
 
 	.comic-list-title {
-		margin-bottom: $spacing-xs;
+		margin-bottom: $spacing-sm;
 	}
 
 	.filters {
@@ -14,7 +14,17 @@
 
 		> * {
 			&:not(:first-child) {
-				margin-left: $spacing-xs;
+				margin-left: $spacing-sm;
+			}
+		}
+
+		.anonymous-switch {
+			.checkmark {
+				top: 6px;
+			}
+
+			.checkbox-label {
+				width: 110px;
 			}
 		}
 	}
