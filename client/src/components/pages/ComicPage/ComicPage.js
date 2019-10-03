@@ -83,7 +83,7 @@ export default class ComicPage extends Component {
 			content = <div className="loader"></div>
 		} else if(this.state.isErrored) {
 			content = <div>
-				<p className="center">The bad news is that the requested comic no longer exists.</p>
+				<p className="center">The bad news is that the requested comic no longer exists (or doesn't exist yet).</p>
 				<p className="center">The good news is that you can help make another one right now!</p>
 				<div className="button-container justify-center">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
