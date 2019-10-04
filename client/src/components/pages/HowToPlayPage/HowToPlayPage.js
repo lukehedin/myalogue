@@ -22,7 +22,7 @@ export default class HowToPlayPage extends Component {
 		return <div className="page-how-to-play">
 			<div className="panel-standard">
 				<div className="container">
-					<div className="row">.
+					<div className="row">
 						<h1 className="page-title">How to play</h1>
 					</div>
 				</div>
