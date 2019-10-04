@@ -13,7 +13,7 @@ export default class ComicList extends Component {
 		this.state = {
 			isLoading: true,
 			
-			includeAnonymous: true,
+			includeAnonymous: false,
 			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
