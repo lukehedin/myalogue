@@ -677,7 +677,7 @@ const routes = {
 			}
 
 			let comicOrder = [];
-			if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
+			// if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
 			comicOrder.push(db.fn('RANDOM'));
 		
 			//Get random incomplete comic
