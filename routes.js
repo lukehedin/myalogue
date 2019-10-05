@@ -652,6 +652,7 @@ const routes = {
 
 			//Where I wasn't the last author
 			if(userId) {
+				comicWhere.HasAnonymous = false;
 				comicWhere.LastAuthorUserId = {
 					[db.op.or]: {
 						[db.op.ne]: userId,
@@ -677,7 +678,7 @@ const routes = {
 			}
 
 			let comicOrder = [];
-			if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
+			// if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
 			comicOrder.push(db.fn('RANDOM'));
 		
 			//Get random incomplete comic
