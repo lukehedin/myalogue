@@ -261,7 +261,8 @@ body {
             overflow: hidden;
             text-align: center;
             background-color: transparent;
-            overflow-wrap: break-word; }
+            overflow-wrap: break-word;
+            white-space: pre-line; }
           body .app-container .app .comic-panel .dialogue div {
             -webkit-touch-callout: none;
             -webkit-user-select: none;

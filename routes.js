@@ -9,7 +9,9 @@ const mapper = require('./mapper');
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
 
-const TOKEN_RESET_HOURS = 3;
+const ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS = process.env.ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS || 3;
+const COMIC_LOCK_WINDOW_MINS = process.env.COMIC_LOCK_WINDOW_MINS || 3;
+const COMIC_PANEL_SKIP_LIMIT = process.env.COMIC_PANEL_SKIP_LIMIT || 8;
 
 const catchError = (res, error, db = null) => {
 	// If db param specified, the error is treated as a serious error
@@ -24,11 +26,13 @@ const catchError = (res, error, db = null) => {
 		});
 	}
 
-	res.json({ 
-		error: db 
-			? 'Sorry, something went wrong. Please try again later.' 
-			: error
-	});
+	if(!res.headersSent) {
+		res.json({ 
+			error: db 
+				? 'Sorry, something went wrong. Please try again later.' 
+				: error
+		});
+	}
 };
 
 const isEmailAcceptable = (email, callback) => {
@@ -45,25 +49,27 @@ const isEmailAcceptable = (email, callback) => {
 //Common functions
 const createNotifications = (db, userIds, title, message, comicId) => {
 	//Unique userids
-	userIds = [...new Set(userIds)];
+	userIds = [...new Set(userIds)].filter(userId => !!userId && !isNaN(userId)); //Unique-ify and filter any null, undefined, 0 etc
 
-	db.Notification.create({
-		Title: title,
-		Message: message,
-		ComicId: comicId
-	})
-	.then(dbNotification => {
-		db.UserNotification.bulkCreate(userIds.map(userId => {
-			return {
-				NotificationId: dbNotification.NotificationId,
-				UserId: userId
-			};
-		}));
-	});
+	if(userIds && userIds.length > 0) {
+		db.Notification.create({
+			Title: title,
+			Message: message,
+			ComicId: comicId
+		})
+		.then(dbNotification => {
+			db.UserNotification.bulkCreate(userIds.map(userId => {
+				return {
+					NotificationId: dbNotification.NotificationId,
+					UserId: userId
+				};
+			}));
+		});
+	}
 }
 const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
-	return moment(new Date()).subtract(3, 'minutes').toDate();
+	return moment(new Date()).subtract(COMIC_LOCK_WINDOW_MINS, 'minutes').toDate();
 };
 const getRandomInt = (min, max) => {
 	max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
@@ -227,7 +233,7 @@ const routes = {
 					if(!!dbUser.VerificationToken) {
 						let now = new Date();
 
-						if(dbUser.VerificationTokenSetAt < moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate()) {
+						if(dbUser.VerificationTokenSetAt < moment(now).subtract(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate()) {
 							let newVerificationToken = auth.getHexToken();
 							dbUser.VerificationToken = newVerificationToken;
 							dbUser.VerificationTokenSetAt = now;
@@ -371,7 +377,7 @@ const routes = {
 					},
 					PasswordResetAt: { //Don't let someone request a password if a request is already in progress
 						[db.op.or]: {
-							[db.op.lte]: moment(now).subtract(TOKEN_RESET_HOURS, 'hours').toDate(),
+							[db.op.lte]: moment(now).subtract(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate(),
 							[db.op.eq]: null
 						}
 					}
@@ -409,7 +415,7 @@ const routes = {
 			db.User.findOne({
 				where:{
 					PasswordResetAt: {
-						[db.op.lte]: moment(now).add(TOKEN_RESET_HOURS, 'hours').toDate()
+						[db.op.lte]: moment(now).add(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate()
 					},
 					PasswordResetToken: token
 				}
@@ -782,28 +788,77 @@ const routes = {
 					.catch(error => catchError(res, error, db));
 				}
 		
-				//Clear the lock on a skipped comic (needs to happen after the query above)
+				//Process skipped comic (needs to happen after the query above)
 				if(skippedComicId) {
 					skippedComicWhere = {
-						where: {
-							ComicId: skippedComicId
-						}
+						ComicId: skippedComicId
 					}
 
-					//Important! without this anyone can clear any lock
+					//Important! without this anyone can clear any lock and PRETEND to skip a whole bunch
 					if(userId) {
 						skippedComicWhere.LockedByUserId = userId
 					} else {
 						skippedComicWhere.LockedByAnonId = anonId;
 					}
-					
-					//Clear lock on skipped comic
+
+					//Remove the lock on the comic
 					db.Comic.update({
 						LockedAt: null,
 						LockedByUserId: null,
 						LockedByAnonId: null,
 						NextTemplatePanelId: null
-					}, skippedComicWhere);
+					}, {
+						where: skippedComicWhere
+					})
+					.then(([affectedRows]) => {
+						//Should never be > 1: comicId alone should assure that, but in the case of 0 affected rows....
+						if(affectedRows !== 1) {
+							//Invalid lock/id. Bail right out here.
+							catchError(res, `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`, db);
+							return;
+						}
+						
+						if(userId) {
+							//Find the current comic panel
+							db.ComicPanel.findAll({
+								where: {
+									ComicId: skippedComicId
+								},
+								limit: 1,
+								order: [['Ordinal', 'DESC']]
+							})
+							.then(dbComicPanels => {
+								//There may be no panels (if the user skipped at the BEGIN COMIC stage)
+								if(dbComicPanels && dbComicPanels.length === 1) {
+									let currentComicPanel = dbComicPanels[0];
+
+									//Record a panelskip. if this is created (not found) we need to increase skipcount
+									db.ComicPanelSkip.findOrCreate({
+										where: {
+											UserId: userId,
+											ComicPanelId: currentComicPanel.ComicPanelId
+										}
+									})
+									.then(([dbComicPanelSkip, wasCreated]) => {
+										if(wasCreated) {
+											//If this was my first skip of this comic panel, increase skipcount
+											let newSkipCount = currentComicPanel.SkipCount + 1;
+											if(newSkipCount > COMIC_PANEL_SKIP_LIMIT) {
+												//No need to update skip count, the archived state indicates the total count is limit + 1;
+												if(currentComicPanel.UserId) createNotifications(db, [currentComicPanel.UserId], 'Panel removed...', `Sorry, a panel you added to comic #${currentComicPanel.ComicId} was skipped by too many users and has been removed. Your dialogue was: "${currentComicPanel.Value}"`);
+												currentComicPanel.destroy();
+											} else {
+												currentComicPanel.SkipCount = newSkipCount;
+												currentComicPanel.save();
+											}
+										}
+									})
+									.catch(error => catchError(res, error, db));
+								}
+							})
+							.catch(error => catchError(res, error, db));
+						}
+					});
 				}
 			})
 			.catch(error => catchError(res, error, db));

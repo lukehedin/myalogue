@@ -20,7 +20,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	}
 });
 
-const defineTable = (name, attributes, isParanoid = false) => {
+const defineTable = (name, attributes = {}, isParanoid = false) => {
 	let options = isParanoid
 		? {
 			deletedAt: 'ArchivedAt',
@@ -147,8 +147,10 @@ let db = {
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
 		ComicCompletedAt: Sequelize.DATE, //For queryability
-		// SkipCount: getIntegerNotNull() //currently won't work as players can skip the same repeatedly
-	}),
+		SkipCount: getIntegerNotNull()
+	}, true),
+
+	ComicPanelSkip: defineTable('ComicPanelSkip'),
 
 	ComicVote: defineTable('ComicVote', {
 		Value: Sequelize.INTEGER
@@ -176,6 +178,8 @@ createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
 createOneToMany('Comic', 'Notification');
 
+createOneToMany('ComicPanel', 'ComicPanelSkip');
+
 createOneToMany('Template', 'TemplatePanel');
 createOneToMany('Template', 'Comic');
 
@@ -190,5 +194,6 @@ createOneToMany('User', 'ComicVote');
 createOneToMany('User', 'ComicComment');
 createOneToMany('User', 'UserNotification');
 createOneToMany('User', 'ComicPanel');
+createOneToMany('User', 'ComicPanelSkip');
 
 module.exports = db;
