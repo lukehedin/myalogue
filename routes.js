@@ -845,7 +845,7 @@ const routes = {
 											let newSkipCount = currentComicPanel.SkipCount + 1;
 											if(newSkipCount > COMIC_PANEL_SKIP_LIMIT) {
 												//No need to update skip count, the archived state indicates the total count is limit + 1;
-												if(currentComicPanel.UserId) createNotifications(db, [currentComicPanel.UserId], 'Panel removed...', `Sorry, a panel you added to comic #${currentComicPanel.ComicId} was skipped by too many users and has been removed. Your dialogue was: "${currentComicPanel.Value}"`);
+												if(currentComicPanel.UserId) createNotifications(db, [currentComicPanel.UserId], 'Panel removed...', `Sorry, a panel you made for comic #${currentComicPanel.ComicId} was skipped by too many users and has been removed. Your dialogue was: "${currentComicPanel.Value}"`);
 												currentComicPanel.destroy();
 											} else {
 												currentComicPanel.SkipCount = newSkipCount;
