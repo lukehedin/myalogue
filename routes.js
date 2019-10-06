@@ -76,8 +76,8 @@ const getRandomInt = (min, max) => {
 	return Math.floor(Math.random() * (max - min)) + min;
 };
 const getRandomPanelCount = () => {
-	//Returns 4 or 6 (change the getRandomInt second param to make it 8,10,12 etc)
-	return 4 + (getRandomInt(0,1) * 2);
+	//Returns 4,6 or 8
+	return 4 + (getRandomInt(0,2) * 2);
 };
 
 //Common INCLUDES
