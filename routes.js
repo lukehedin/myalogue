@@ -76,8 +76,8 @@ const getRandomInt = (min, max) => {
 	return Math.floor(Math.random() * (max - min)) + min;
 };
 const getRandomPanelCount = () => {
-	//Returns 4,6, or 8
-	return 4 + (getRandomInt(0,2) * 2);
+	//Returns 4 or 6 (change the getRandomInt second param to make it 8,10,12 etc)
+	return 4 + (getRandomInt(0,1) * 2);
 };
 
 //Common INCLUDES
@@ -763,7 +763,7 @@ const routes = {
 						.catch(error => catchError(res, error, db));
 				} else {
 					db.Template.findAll({
-						limit: 4,
+						limit: 10, //10 keeps the latest templates in circulation, while still having variety
 						//If a templateId is supplied, only 1 will be returned and the random below will select it
 						where: getWhereForUnlockedTemplates(db, templateId),
 						order: [[ 'UnlockedAt', 'DESC' ]]
