@@ -38,13 +38,6 @@
 			}
 		}
 
-		.form-message {
-			color: $colour-grey-c;
-			text-align: center;
-			font-size: 12px;
-			margin: $spacing-xs 0;
-		}
-
 		.button-container {
 			margin-top: $spacing-xs;
 			@include oversm {
@@ -62,5 +55,12 @@
 		&.overall-error {
 			text-align: center;
 		}
+	}
+
+	.form-message {
+		color: $colour-grey-d;
+		text-align: center;
+		font-size: 12px;
+		margin: $spacing-xs 0;
 	}
 }

@@ -28,6 +28,7 @@ import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage/PrivacyPolic
 import TemplatePage from './components/pages/TemplatePage/TemplatePage';
 import ComicPage from './components/pages/ComicPage/ComicPage';
 import PlayPage from './components/pages/PlayPage/PlayPage';
+import SettingsPage from './components/pages/SettingsPage/SettingsPage';
 
 class App extends Component {
 	constructor(props){
@@ -115,14 +116,16 @@ class App extends Component {
 						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 
-						<Route exact path="/template" render={() => <TemplatePage /> } />
+						<Route exact path="/template" render={() => <TemplatePage />} />
 						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 
-						<Route exact path="/top-comics" render={() => <TopComicsPage /> } />
+						<Route exact path="/top-comics" render={() => <TopComicsPage />} />
 						
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
 						<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
 						
+						<Route exact path="/settings" render={() => ifAuthenticated(<SettingsPage />)} />
+
 						<Route exact path="/how-to-play" render={() => <HowToPlayPage />} />
 						<Route exact path="/about" render={() => <AboutPage />}/>
 						<Route exact path="/privacy-policy" render={() => <PrivacyPolicyPage />}/>

@@ -31,7 +31,7 @@ body {
           body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon {
             height: 24px;
             width: 24px;
-            padding: 4px; }
+            padding: 4px 0; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon path {
               fill: #fff; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon:hover path {
@@ -44,14 +44,10 @@ body {
             margin: 0; }
           body .app-container .app .app-header .app-header-inner .notification-button {
             margin-right: 4px; }
-          body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            max-width: 110px;
-            white-space: nowrap; }
-            @media (min-width: 768px) {
-              body .app-container .app .app-header .app-header-inner .user-name-button .button-label {
-                max-width: none; } }
+          body .app-container .app .app-header .app-header-inner .avatar {
+            transition: transform 0.1s; }
+            body .app-container .app .app-header .app-header-inner .avatar:hover {
+              transform: rotate(15deg); }
       body .app-container .app .app-footer {
         background: #080808;
         padding: 4px 0;
@@ -321,11 +317,6 @@ body {
               margin-bottom: 4px; }
             body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
               border-color: #f02100; }
-          body .app-container .app .form-wrapper form .form-message {
-            color: #969696;
-            text-align: center;
-            font-size: 12px;
-            margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
             margin-top: 8px; }
             @media (min-width: 576px) {
@@ -338,6 +329,11 @@ body {
           text-align: left; }
           body .app-container .app .form-wrapper .field-error.overall-error {
             text-align: center; }
+        body .app-container .app .form-wrapper .form-message {
+          color: #777777;
+          text-align: center;
+          font-size: 12px;
+          margin: 8px 0; }
       body .app-container .app .button {
         background: none;
         cursor: pointer;
@@ -792,6 +788,27 @@ body {
               border-top: 1px solid #c8c8c8; }
           body .app-container .app .notification-menu .notification-content > .empty-text {
             padding: 16px; }
+      body .app-container .app .avatar {
+        overflow: hidden;
+        border-radius: 50%;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%; }
+      body .app-container .app .avatar-selector > * {
+        margin: 0 auto; }
+      body .app-container .app .avatar-selector .avatar {
+        margin-bottom: 8px; }
+      body .app-container .app .avatar-selector .avatar-settings {
+        margin: 16px 0; }
+        body .app-container .app .avatar-selector .avatar-settings .avatar-setting {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 8px; }
+          body .app-container .app .avatar-selector .avatar-settings .avatar-setting > * {
+            margin: 0 8px; }
+          body .app-container .app .avatar-selector .avatar-settings .avatar-setting .setting-label {
+            width: 80px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;
@@ -868,7 +885,7 @@ body {
             text-align: left;
             font-size: 12px; }
       body .app-container .app .page-template .template-navigation {
-        margin-bottom: 16px; }
+        margin: 16px 0; }
       body .app-container .app .page-template .play-template {
         margin-bottom: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
@@ -892,6 +909,8 @@ body {
                 justify-content: flex-end; }
                 body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {
                   margin-top: 8px; }
+      body .app-container .app .page-profile .avatar {
+        margin: 0 auto 8px auto; }
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
@@ -913,6 +932,15 @@ body {
           box-shadow: 6px 6px 6px #00000016;
           -webkit-box-shadow: 6px 6px 6px #00000016;
           -moz-box-shadow: 6px 6px 6px #00000016; }
+      body .app-container .app .page-settings .settings-row {
+        position: relative;
+        min-height: 100px;
+        padding-top: 32px; }
+        body .app-container .app .page-settings .settings-row:not(:last-child) {
+          padding-bottom: 32px;
+          border-bottom: 1px solid #c8c8c8; }
+        body .app-container .app .page-settings .settings-row > h2 {
+          margin-bottom: 16px; }
       body .app-container .app .app-inner {
         display: flex;
         flex-direction: column;
@@ -923,8 +951,7 @@ body {
           flex-direction: column;
           position: relative; }
           body .app-container .app .app-inner [class^="page-"] .page-title {
-            text-align: center;
-            margin-bottom: 8px; }
+            text-align: center; }
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             text-align: center;
             margin: 8px auto;
@@ -933,14 +960,8 @@ body {
             flex: 1; }
         body .app-container .app .app-inner [class^="panel-"] {
           padding: 32px 0; }
-          @media (min-width: 576px) {
-            body .app-container .app .app-inner [class^="panel-"] {
-              padding: 32px 0; } }
           body .app-container .app .app-inner [class^="panel-"]:first-child {
-            padding-top: 8px; }
-            @media (min-width: 576px) {
-              body .app-container .app .app-inner [class^="panel-"]:first-child {
-                padding-top: 16px; } }
+            padding-top: 16px; }
             @media (min-width: 768px) {
               body .app-container .app .app-inner [class^="panel-"]:first-child {
                 padding-top: 32px; } }

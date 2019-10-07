@@ -19,6 +19,7 @@ export default function asForm(WrappedForm, formConfig) {
 				isLoading: false,
 				
 				formData: formData,
+				formOverallMessage: null,
 				formErrors: {},
 				formOverallError: null
 			};
@@ -75,13 +76,27 @@ export default function asForm(WrappedForm, formConfig) {
 
 			if(formConfig.getOverallError) formOverallError = formConfig.getOverallError(this.state.formData);
 
-			this.setState({ formErrors, formOverallError });
+			this.setState({ 
+				formErrors, 
+				formOverallError, 
+				formOverallMessage: null //Hide any overall message on a new submit attempt
+			});
 
 			return formOverallError || !Util.array.any(Object.keys(formErrors));
+		}
+		setOverallMessage(message) {
+			this.setState({
+				formOverallMessage: message
+			});
 		}
 		setOverallError(error) {
 			this.setState({
 				formOverallError: error
+			});
+		}
+		setFormData(formData) {
+			this.setState({
+				formData: formData
 			});
 		}
 		updateFormData(fieldName, value) {
@@ -140,9 +155,10 @@ export default function asForm(WrappedForm, formConfig) {
 					getField={this.getField}
 					submitForm={this.submitForm}
 					{...this.props} />
-				{this.state.formOverallError 
+				{this.state.formOverallError || this.state.formOverallMessage
 					? <div className="field-container">
 						<div className="overall-error field-error">{this.state.formOverallError}</div> 
+						<div className="form-message">{this.state.formOverallMessage}</div>
 					</div>
 					: null
 				}

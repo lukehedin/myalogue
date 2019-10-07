@@ -1,0 +1,17 @@
+.page-settings {
+	.settings-row {
+		position: relative;
+		min-height: 100px;
+
+		padding-top: $spacing-md;
+
+		&:not(:last-child) {
+			padding-bottom: $spacing-md;
+			border-bottom: 1px solid $colour-grey-b;
+		}
+
+		> h2 {
+			margin-bottom: $spacing-sm;
+		}
+	}
+}

@@ -27,6 +27,8 @@ const Util = {
 
 		_userId: null,
 		_username: null,
+		_avatar: null,
+
 		_isDev: null,
 		_referenceData: null,
 
@@ -47,6 +49,7 @@ const Util = {
 
 			Util.context._userId = authResult.userId;
 			Util.context._username = authResult.username;
+			Util.context._avatar = authResult.avatar;
 			Util.context._isDev = authResult.isDev;
 			Util.context._referenceData = authResult.referenceData;
 
@@ -71,6 +74,7 @@ const Util = {
 		
 		getUserId: () => Util.context._userId,
 		getUsername: () => Util.context._username,
+		getUserAvatar: () => Util.context._avatar || Util.avatar.getPseudoAvatar(Util.context.getUserId()),
 
 		//Refdata
 		getTemplates: () => Util.context._referenceData.templates,
@@ -164,7 +168,29 @@ const Util = {
 	array: {
 		any: arr => arr && arr.length > 0,
 		none: arr => !Util.array.any(arr),
-		random: arr => arr[Math.floor(Math.random()*arr.length)]
+		random: arr => arr[Util.random.getRandomInt(0, arr.length - 1)]
+	},
+
+	avatar: {
+		getExpressionCount: () => 10,
+		getCharacterCount: () => 6,
+		getColourCount: () => Object.keys(Util.avatar.colourLookup).length,
+
+		getPseudoAvatar: (userId) => {
+			return {
+				expression: (userId % Util.avatar.getExpressionCount()) + 1,
+				character: (userId % Util.avatar.getCharacterCount()) + 1,
+				colour: (userId % Util.avatar.getColourCount()) + 1
+			}
+		},
+
+		colourLookup: {
+			1: `f26522`, //orange
+			2: `f0ba00`, //yellow
+			3: `00d131`, //green
+			4: `00b6e7`, //blue
+			5: `8e00f2`, //purple
+		}
 	},
 
 	enum: {
@@ -283,6 +309,7 @@ const Util = {
 		isCurrently: (route) => Util.route.getCurrent() === route,
 
 		home: () => `/`,
+		settings: () => `/settings`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,
 		topComics: () => `/top-comics`,
@@ -298,6 +325,13 @@ const Util = {
 		termsOfService: () => `/terms-of-service`,
 		privacyPolicy: () => `/privacy-policy`,
 		play: (templateId) => templateId ? `/play/${templateId}` : `/play`
+	},
+
+	random: {
+		getRandomInt: (min, max) => {
+			max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
+			return Math.floor(Math.random() * (max - min)) + min;
+		}
 	},
 
 	selector: {

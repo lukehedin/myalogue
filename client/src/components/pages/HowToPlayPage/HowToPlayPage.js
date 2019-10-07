@@ -20,16 +20,10 @@ export default class HowToPlayPage extends Component {
 		}
 
 		return <div className="page-how-to-play">
-			<div className="panel-standard">
-				<div className="container">
-					<div className="row">
-						<h1 className="page-title">How to play</h1>
-					</div>
-				</div>
-			</div>
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
+						<h1 className="page-title">How to play</h1>
 						<p className="center">When you hit the play button, you will be shown two comic panels; one will have some dialogue in it, and the other won’t have any at all.</p>
 						<p className="center">Your goal is to <b>add dialogue to the empty panel</b> and continue the comic's story as best you can.</p>
 						<ComicPanelPair>

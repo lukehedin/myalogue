@@ -43,7 +43,6 @@ body {
 
 					.page-title {
 						text-align: center;
-						margin-bottom: $spacing-xs;
 					}
 	
 					.page-subtitle {
@@ -60,15 +59,9 @@ body {
 		
 				[class^="panel-"] {
 					padding: $spacing-md 0;
-					@include oversm {
-						padding: $spacing-md 0;
-					}
 
 					&:first-child {
-						padding-top: $spacing-xs;
-						@include oversm {
-							padding-top: $spacing-sm;
-						}
+						padding-top: $spacing-sm;
 						@include overmd {
 							padding-top: $spacing-md;
 						}

@@ -1,0 +1,30 @@
+.avatar-selector {
+	> * {
+		margin: 0 auto;
+	}
+
+	.avatar {
+		margin-bottom: $spacing-xs;
+	}
+
+	.avatar-settings {
+		margin: $spacing-sm 0;
+	
+		.avatar-setting {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: $spacing-xs;
+	
+			> * {
+				margin: 0 $spacing-xs;
+			}
+	
+			.setting-label {
+				width: 80px;
+			}
+		}
+
+	}
+}

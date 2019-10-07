@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const saltRounds = 10;
 
+const mapper = require('./mapper');
+
 const auth = {
 	_getJwtToken: (tokenContent, callback) => {
 		jwt.sign(tokenContent, process.env.JWT_SECRET_KEY, {
@@ -29,10 +31,9 @@ const auth = {
 		auth._getJwtToken({ userId: dbUser.UserId }, (token) => {
 			//The object sent to a successfully authenticated user
 			let result = {
-				username: dbUser.Username,
-				userId: dbUser.UserId,
+				...mapper.fromDbUser(dbUser), //userid, username, avatar etc
 				token
-			};
+			}
 	
 			callback(result);
 		});

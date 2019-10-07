@@ -49,10 +49,10 @@ const getBoooleanNotNull = () => {
 		defaultValue: false
 	};
 };
-const getIntegerNotNull = () => {
+const getIntegerNotNull = (defaultValue = 0) => {
 	return {
 		type: Sequelize.INTEGER,
-		defaultValue: 0,
+		defaultValue: defaultValue,
 		allowNull: false
 	}
 };
@@ -91,7 +91,10 @@ let db = {
 		PasswordResetToken: Sequelize.STRING,
 		PasswordResetAt: Sequelize.DATE,
 		LastLoginAt: Sequelize.DATE,
-		IsAdmin: getBoooleanNotNull()
+		IsAdmin: getBoooleanNotNull(),
+		AvatarCharacter: Sequelize.INTEGER,
+		AvatarExpression: Sequelize.INTEGER,
+		AvatarColour: Sequelize.INTEGER
 	}, true),
 	
 	Notification: defineTable('Notification', {
@@ -109,7 +112,8 @@ let db = {
 	Template: defineTable('Template', {
 		UnlockedAt: Sequelize.DATE,
 		Name: Sequelize.STRING,
-		Ordinal: Sequelize.INTEGER
+		Ordinal: Sequelize.INTEGER,
+		MaxPanelCount: getIntegerNotNull(8)
 	}, true),
 
 	TemplatePanel: defineTable('TemplatePanel', {
@@ -146,7 +150,7 @@ let db = {
 		Ordinal: Sequelize.INTEGER,
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
-		ComicCompletedAt: Sequelize.DATE, //For queryability
+		ComicCompletedAt: Sequelize.DATE, //For queryability TODO REMOVE
 		SkipCount: getIntegerNotNull()
 	}, true),
 

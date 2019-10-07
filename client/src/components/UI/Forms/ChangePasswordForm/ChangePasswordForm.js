@@ -5,11 +5,12 @@ import asForm from '../asForm';
 
 import Button from '../../Button/Button';
 
-class SetPasswordForm extends Component {
+class ChangePasswordForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>
-			{this.props.getField('password')}
-			{this.props.getField('confirmPassword')}
+			{this.props.getField('currentPassword')}
+			{this.props.getField('newPassword')}
+			{this.props.getField('confirmNewPassword')}
 			<div className="button-container justify-center">
 				<Button size="lg" colour="pink" label="Save password" type="submit" />
 			</div>
@@ -17,21 +18,25 @@ class SetPasswordForm extends Component {
 	}
 }
 
-export default asForm(SetPasswordForm, {
+export default asForm(ChangePasswordForm, {
 	fields: {
-		password: {
-			label: 'Password',
+		currentPassword: {
+			label: 'Current password',
+			isPassword: true
+		},
+		newPassword: {
+			label: 'New password',
 			isPassword: true,
 			getError: (val) => {
 				if(!validator.isLength(val, { min: 8 })) return 'Password too short (minimum 8 characters)';
 				if(!validator.isLength(val, { max: 127 })) return 'Password too long (maximum 127 characters)';
 			}
 		},
-		confirmPassword: {
-			label: 'Confirm password',
+		confirmNewPassword: {
+			label: 'Confirm new password',
 			isPassword: true,
 			getError: (val, formData) => {
-				if(val !== formData.password) return 'Passwords do not match';
+				if(val !== formData.newPassword) return 'Passwords do not match';
 			}
 		}
 	}

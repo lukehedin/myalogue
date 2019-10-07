@@ -13,7 +13,7 @@
 			.app-menu-icon {
 				height: 24px;
 				width: 24px;
-				padding: $spacing-xxs;
+				padding: $spacing-xxs 0;
 				@include svgColourStroke($colour-white);
 
 				&:hover {
@@ -36,15 +36,11 @@
 			margin-right: $spacing-xxs;
 		}
 
-		.user-name-button {
-			.button-label {
-				text-overflow: ellipsis;
-				overflow: hidden;
-				max-width: 110px;
-				white-space: nowrap;
-				@include overmd {
-					max-width: none;
-				}
+		.avatar {
+			transition: transform 0.1s;
+			
+			&:hover {
+				transform: rotate(15deg);
 			}
 		}
 	}

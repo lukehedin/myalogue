@@ -1,0 +1,4 @@
+.avatar {
+	overflow: hidden;
+	@include borderRadius(50%);
+}

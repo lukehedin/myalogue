@@ -7,7 +7,6 @@
     "detect-browser": "^4.7.0",
     "html-to-image": "^0.1.1",
     "moment": "^2.24.0",
-    "random-words": "^1.1.0",
     "react": "^16.2.0",
     "react-div-100vh": "^0.3.4",
     "react-dom": "^16.2.0",

@@ -5,6 +5,7 @@ import Util from '../../../Util';
 
 import logo from '../../../images/logo_white.png';
 
+import Avatar from '../Avatar/Avatar';
 import Button from '../Button/Button';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
@@ -55,10 +56,13 @@ export default class AppHeader extends Component {
 								label: 'Profile',
 								to: Util.route.profile()
 							}, {
+								label: 'Settings',
+								to: Util.route.settings()
+							}, {
 								label: 'Log out',
 								onClick: this.onLogout
 							}]}>
-								<Button size="sm" className="user-name-button" label={Util.context.getUsername()} isHollow={true} colour="white" />
+								<Avatar size={32} />
 							</ContextMenu>
 							: <div className="button-container">
 								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />

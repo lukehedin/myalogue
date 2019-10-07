@@ -20,6 +20,7 @@ export default class NotificationButton extends Component {
 		this.fetchNewNotifications = this.fetchNewNotifications.bind(this);
 		this.seenNotifications = this.seenNotifications.bind(this);
 		this.actionedNotification = this.actionedNotification.bind(this);
+		this.setNotifications = this.setNotifications.bind(this);
 	}
 	componentDidMount() {
 		this.fetchNewNotifications();
@@ -27,6 +28,23 @@ export default class NotificationButton extends Component {
 	}
 	componentWillUnmount() {
 		clearInterval(this.notificationInterval);
+	}
+	setNotifications(notifications) {
+		//Sets state AND updates window/tab title with (3) 
+		this.setState({
+			notifications
+		});
+
+		let unseenNotifications = notifications.filter(notification => !notification.isSeen);
+
+		//Cleans existing notifications in title if any
+		let baseTitle = document.title.includes('(')
+			? document.title.substring(0, document.title.indexOf('(') - 1)
+			: document.title;
+
+		Util.array.any(unseenNotifications)
+			? document.title = baseTitle + ` (${unseenNotifications.length})`
+			: document.title = baseTitle;
 	}
 	fetchNewNotifications() {
 		if(Util.context.isAuthenticated()) {
@@ -36,12 +54,18 @@ export default class NotificationButton extends Component {
 			.then(result => {
 				if(!result.error) {
 					this.setState({
-						lastCheckedAt: new Date(),
-						notifications: [
-							...result,
-							...this.state.notifications
-						]
+						lastCheckedAt: new Date()
 					});
+
+					//Small chance we did our first fetch, returned a notification created in the last window
+					//And then on the update fetch got it again. This filters out any repeats.
+					let existingUserNotificationIds = this.state.notifications.map(n => n.userNotificationId);
+					let newNotifications = result.filter(newNotification => !existingUserNotificationIds.includes(newNotification.userNotificationId));
+
+					this.setNotifications([
+						...newNotifications,
+						...this.state.notifications
+					]);
 				}
 			});
 		}
@@ -57,14 +81,12 @@ export default class NotificationButton extends Component {
 				userNotificationIds: unseenUserNotificationIds
 			});
 			//Client update
-			this.setState({
-				notifications: this.state.notifications.map(notification => {
-					return {
-						...notification,
-						isSeen: true
-					};
-				})
-			})
+			this.setNotifications(this.state.notifications.map(notification => {
+				return {
+					...notification,
+					isSeen: true
+				};
+			}));
 		}
 	}
 	actionedNotification(actionedNotification) {
@@ -74,16 +96,14 @@ export default class NotificationButton extends Component {
 				userNotificationId: actionedNotification.userNotificationId
 			});
 			//Client update
-			this.setState({
-				notifications: this.state.notifications.map(notification => {
-					return notification.userNotificationId === actionedNotification.userNotificationId
-						? {
-							...notification,
-							isActionable: false
-						}
-						: notification;
-				})
-			})
+			this.setNotifications(this.state.notifications.map(notification => {
+				return notification.userNotificationId === actionedNotification.userNotificationId
+					? {
+						...notification,
+						isActionable: false
+					}
+					: notification;
+			}));
 		}
 	}
 	render() {

@@ -4,6 +4,11 @@ const mapper = {
 			userId: dbUser.UserId,
 			username: dbUser.Username,
 			createdAt: dbUser.CreatedAt,
+			avatar: {
+				character: dbUser.AvatarCharacter,
+				expression: dbUser.AvatarExpression,
+				colour: dbUser.AvatarColour
+			}
 			// bio: dbUser.Bio
 		};
 

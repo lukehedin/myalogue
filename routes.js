@@ -75,9 +75,18 @@ const getRandomInt = (min, max) => {
 	max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
 	return Math.floor(Math.random() * (max - min)) + min;
 };
-const getRandomPanelCount = () => {
-	//Returns 4,6 or 8
-	return 4 + (getRandomInt(0,2) * 2);
+const getRandomPanelCount = (maxPanelCount = 8) => {
+	if(maxPanelCount % 2 === 1) maxPanelCount = maxPanelCount + 1; //No odd numbers allowed.
+	let panelCount = 4;
+
+	//Adds additional panel pairs
+	if(maxPanelCount > panelCount) {
+		let maxAdditionalPanelPairs = ((maxPanelCount - panelCount) / 2);
+		let additionalPanels = (getRandomInt(0, maxAdditionalPanelPairs) * 2);
+		panelCount = panelCount + additionalPanels;
+	}
+
+	return panelCount;
 };
 
 //Common INCLUDES
@@ -437,10 +446,7 @@ const routes = {
 					dbUser.PasswordResetAt = null;
 					dbUser.PasswordResetToken = null;
 					dbUser.save()
-						.then(() => {
-							//Wait for this save in case it fails
-							auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
-						})
+						.then(() => auth.getUserJwtResult(dbUser, userResult => res.json(userResult))) //Wait for this save in case it fails
 						.catch(error => catchError(res, error, db));
 				});
 			})
@@ -521,11 +527,7 @@ const routes = {
 			if(authorUserId) {
 				db.ComicPanel.findAll({
 					where: {
-						UserId: authorUserId,
-						ComicCompletedAt: {
-							[db.op.ne]: null,
-							[db.op.lte]: completedAtBefore
-						}
+						UserId: authorUserId
 					}
 				})
 				.then(dbComicPanels => {
@@ -609,9 +611,45 @@ const routes = {
 				}
 			})
 			.then(dbUser => {
-				dbUser
-					? res.json(mapper.fromDbUser(dbUser))
-					: catchError(res, 'User not found.')
+				if(!dbUser) {
+					catchError(res, 'User not found.');
+					return false;
+				}
+
+				//Calculate their panel points TODO make a worker service and set points on user row
+				//That way we can have leaderboards etc
+				db.ComicPanel.findAll({
+					where: {
+						UserId: requestedUserId
+					}
+				})
+				.then(dbComicPanels => {
+					let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
+
+					db.Comic.findAll({
+						where: {
+							ComicId: {
+								[db.op.in]: comicIds
+							},
+							CompletedAt: {
+								[db.op.ne]: null
+							}
+						}
+					})
+					.then(dbComics => {
+						let comicTotalRating = dbComics.reduce((total, item) => total + item.Rating, 0);
+						res.json({
+							user: mapper.fromDbUser(dbUser),
+							userStats: {
+								panelCount: dbComicPanels.length,
+								comicCount: dbComics.length,
+								comicTotalRating: comicTotalRating,
+							}
+						});
+					})
+					.catch(error => catchError(res, error, db));
+				})
+				.catch(error => catchError(res, error, db));
 			})
 			.catch(error => catchError(res, error, db));
 		},
@@ -775,7 +813,7 @@ const routes = {
 						//Create a new comic with this template
 						db.Comic.create({
 							TemplateId: dbTemplate.TemplateId,
-							PanelCount: getRandomPanelCount(),
+							PanelCount: getRandomPanelCount(dbTemplate.MaxPanelCount),
 							HasAnonymous: !userId
 						})
 						.then(dbNewComic => {
@@ -919,14 +957,6 @@ const routes = {
 					if(isComicCompleted) {
 						let now = new Date();
 						dbComic.CompletedAt = now;
-						//No need to await
-						db.ComicPanel.update({
-							ComicCompletedAt: now
-						}, {
-							where: {
-								ComicId: dbComic.ComicId
-							}
-						});
 	
 						//Notify other panel creators, but not this one.
 						let notifyUserIds = dbComic.ComicPanels.filter(cp => !!cp.UserId).map(cp => cp.UserId).filter(uId => uId !== userId);
@@ -1116,7 +1146,67 @@ const routes = {
 			});
 
 			res.json({ success: true });
-		}
+		},
+
+		saveAvatar: (req, res, db) => {
+			let userId = req.userId;
+			
+			let avatar = req.body.avatar;
+
+			//If someone sends up bad values for these it doesn't do anything breaky
+			db.User.update({
+				AvatarExpression: avatar.expression,
+				AvatarCharacter: avatar.character,
+				AvatarColour: avatar.colour
+			}, {
+				where: {
+					UserId: userId
+				}
+			})
+			.then(() => res.json({ success: true }))
+			.catch(error => catchError(res, error, db));
+		},
+
+		changePassword: (req, res, db) => {
+			//Must be logged in
+			let userId = req.userId;
+
+			let currentPassword = req.body.currentPassword;
+			let newPassword = req.body.newPassword;
+			
+			db.User.findOne({
+				where: {
+					UserId: userId
+				}
+			})
+			.then(dbUser => {
+				if(!dbUser) {
+					catchError(res, 'User not found.');
+					return;
+				}
+
+				bcrypt.compare(currentPassword, dbUser.Password).then(isMatch => {
+					if(isMatch) {
+						auth.hashPassword(newPassword, (error, hashedPassword) => {
+							if(error || !hashedPassword) {
+								//don't give password error details
+							   catchError(res, 'Invalid password supplied.', db);
+							   return;
+							}
+		
+							dbUser.Password = hashedPassword;
+							dbUser.save()
+								.then(() => res.json({ success: true})) //Wait for this save in case it fails
+								.catch(error => catchError(res, error, db));
+						});
+					} else {
+						//Invalid password
+						catchError(res, 'Invalid current password.');
+					}
+				});
+			})
+			.catch(error => catchError(res, error, db));
+		},
 	
 		// commentComic: (req, res, db) => {
 		// 	let userId = req.userId;
@@ -1178,12 +1268,6 @@ const routes = {
 		// 	} else {
 		// 		catchError(res, 'Invalid username supplied.', db);
 		// 	}
-		// },
-
-		// setPassword: (req, res, db) => {
-		// 	//Must be logged in
-		// 	let userId = req.userId;
-
 		// },
 	}
 };

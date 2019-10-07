@@ -3,6 +3,8 @@ import Util from '../../../Util';
 import moment from 'moment';
 
 import ComicList from '../../UI/ComicList/ComicList';
+import Button from '../../UI/Button/Button';
+import Avatar from '../../UI/Avatar/Avatar';
 
 //this.props.userId
 export default class ProfilePage extends Component {
@@ -34,7 +36,8 @@ export default class ProfilePage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					user: result
+					user: result.user,
+					userStats: result.userStats
 				});
 			}
 
@@ -53,8 +56,19 @@ export default class ProfilePage extends Component {
 								? <div className="loader"></div>
 								: this.state.user
 									? <div className="user-info-inner">
+										<Avatar user={this.state.user} />
 										<h1 className="page-title">{this.state.user.username}</h1>
-										<p className="page-subtitle">Joined {moment(this.state.user.createdAt).fromNow()}</p>
+										<p className="center sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
+										{this.state.userStats.panelCount
+											? <p className="center sm">{this.state.user.username} has made <b>{this.state.userStats.panelCount} </b>{Util.format.pluralise(this.state.panelCount, 'panel')} for <b>{this.state.userStats.comicCount}</b> {Util.format.pluralise(this.state.userStats.comicCount, 'comic')} with a total rating of <b>{this.state.userStats.comicTotalRating}</b>!</p>
+											: null
+										}
+										{this.state.user.userId === Util.context.getUserId() 
+											? <div className="button-container justify-center">
+												<Button to={Util.route.settings()} label={'Edit profile'} colour="black" isHollow={true} leftIcon={Util.icon.avatar} />
+											</div>
+											: null
+										}
 									</div>
 									: <p className="empty-text">User not found.</p>
 							}
@@ -67,7 +81,7 @@ export default class ProfilePage extends Component {
 					<div className="row">
 						{this.state.user
 							? <ComicList 
-								sortBy={Util.enum.ComicSortBy.Newest}
+								sortBy={Util.enum.ComicSortBy.TopRated}
 								emptyText={`${this.state.user.username} hasn't contributed to  any comics yet. What a slacker!`}
 								noMoreText={`That's all the comics ${this.state.user.username} has contributed to.`}
 								title={`Comics featuring ${this.state.user.username}`} 
