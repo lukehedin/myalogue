@@ -30,7 +30,7 @@ export default class Avatar extends Component {
 				backgroundImage: `url('${avatars}')`, 
 				backgroundPositionX: backgroundX, 
 				backgroundPositionY: backgroundY,
-				backgroundColor: `#${Util.avatar.colourLookup[avatar.colour]}`
+				backgroundColor: `#${Util.avatar.colourLookup[avatar.colour] || Util.avatar.colourLookup[1]}`
 			}}>
 		</div>
 	}

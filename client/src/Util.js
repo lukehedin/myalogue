@@ -74,7 +74,9 @@ const Util = {
 		
 		getUserId: () => Util.context._userId,
 		getUsername: () => Util.context._username,
-		getUserAvatar: () => Util.context._avatar || Util.avatar.getPseudoAvatar(Util.context.getUserId()),
+		getUserAvatar: () => Util.context._avatar && Util.context._avatar.character && Util.context._avatar.expression && Util.context._avatar.colour
+			? Util.context._avatar
+			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
 
 		//Refdata
 		getTemplates: () => Util.context._referenceData.templates,
