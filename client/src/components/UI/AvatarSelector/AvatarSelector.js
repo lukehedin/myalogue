@@ -45,9 +45,9 @@ export default class AvatarSelector extends Component {
 	}
 	randomize() {
 		this.setState({
-			colour: Util.random.getRandomInt(0, Util.avatar.getColourCount() - 1),
-			expression: Util.random.getRandomInt(0, Util.avatar.getExpressionCount() - 1),
-			character: Util.random.getRandomInt(0, Util.avatar.getCharacterCount() - 1)
+			colour: Util.random.getRandomInt(1, Util.avatar.getColourCount()),
+			expression: Util.random.getRandomInt(1, Util.avatar.getExpressionCount()),
+			character: Util.random.getRandomInt(1, Util.avatar.getCharacterCount())
 		});
 	}
 	save() {
