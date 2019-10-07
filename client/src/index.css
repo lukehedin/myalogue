@@ -935,10 +935,9 @@ body {
       body .app-container .app .page-settings .settings-row {
         position: relative;
         min-height: 100px;
+        margin-top: 32px;
+        border-top: 1px solid #c8c8c8;
         padding-top: 32px; }
-        body .app-container .app .page-settings .settings-row:not(:last-child) {
-          padding-bottom: 32px;
-          border-bottom: 1px solid #c8c8c8; }
         body .app-container .app .page-settings .settings-row > h2 {
           margin-bottom: 16px; }
       body .app-container .app .app-inner {

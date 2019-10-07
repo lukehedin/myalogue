@@ -177,7 +177,7 @@ const Util = {
 			2: `f0ba00`, //yellow
 			3: `00d131`, //green
 			4: `00b6e7`, //blue
-			5: `8e00f2`, //purple
+			5: `6600f2`, //purple
 		}
 	},
 
