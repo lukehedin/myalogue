@@ -47,6 +47,8 @@ export default class ProfilePage extends Component {
 		});
 	}
 	render() {
+		let isMe = this.state.user && this.state.user.userId === Util.context.getUserId();
+
 		return <div className="page-profile">
 			<div className="panel-inset">
 				<div className="container">
@@ -56,15 +58,15 @@ export default class ProfilePage extends Component {
 								? <div className="loader"></div>
 								: this.state.user
 									? <div className="user-info-inner">
-										<Avatar user={this.state.user} />
+										<Avatar user={this.state.user} to={isMe ? Util.route.settings() : null} />
 										<h1 className="page-title">{this.state.user.username}</h1>
 										<p className="center sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
 										{this.state.userStats.panelCount
 											? <p className="center sm">{this.state.user.username} has made <b>{this.state.userStats.panelCount} </b>{Util.format.pluralise(this.state.panelCount, 'panel')} for <b>{this.state.userStats.comicCount}</b> {Util.format.pluralise(this.state.userStats.comicCount, 'comic')} with a total rating of <b>{this.state.userStats.comicTotalRating}</b>!</p>
 											: null
 										}
-										{this.state.user.userId === Util.context.getUserId() 
-											? <div className="button-container justify-center">
+										{
+											isMe ? <div className="button-container justify-center">
 												<Button to={Util.route.settings()} label={'Edit profile'} colour="black" isHollow={true} leftIcon={Util.icon.avatar} />
 											</div>
 											: null
