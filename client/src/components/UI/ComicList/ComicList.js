@@ -13,7 +13,7 @@ export default class ComicList extends Component {
 		this.state = {
 			isLoading: true,
 			
-			includeAnonymous: false,
+			includeAnonymous: Util.context.setting.getShowAnonymousComics(),
 			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
@@ -54,6 +54,7 @@ export default class ComicList extends Component {
 		}, this.resetFetch);
 	}
 	setIncludeAnonymous(includeAnonymous) {
+		Util.context.setting.setShowAnonymousComics(includeAnonymous);
 		this.setState({
 			includeAnonymous: includeAnonymous
 		}, this.resetFetch);

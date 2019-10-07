@@ -84,28 +84,16 @@ const Util = {
 
 		getTopComic: () => Util.context._referenceData.topComic,
 
-		// Temporary context for anonymous players. Unreliable and temporary.
-		// anon: {
-		// 	_playedComicIdsKey: 'played-comic-ids',
+		//localstored, device only settings (the ones that do not matter if cleared)
+		setting: {
+			_showAnonymousComicsKey: 'setting-show-anonymous-comics',
 
-		// 	setPlayedComicIds: (playedComicIds) => localStorage.setItem(Util.anonContext._playedComicIdsKey, playedComicIds),
-		// 	getPlayedComicIds: () => {
-		// 		let stringPlayedComicIds = localStorage.getItem(Util.anonContext._playedComicIdsKey);
-		// 		return stringPlayedComicIds
-		// 			? stringPlayedComicIds.split(',').map(stringId => parseInt(stringId))
-		// 			: [];
-		// 	},
-
-		// 	addPlayedComicId: (comicId) => {
-		// 		let playedComicIds = Util.anonContext.getPlayedComicIds();
-		// 		playedComicIds.push(comicId);
-		// 		Util.anonContext.setPlayedComicIds(playedComicIds);
-		// 	},
-		// 	removePlayedComicId: (comicId) => {
-		// 		let playedComicIds = Util.anonContext.getPlayedComicIds();
-		// 		Util.anonContext.setPlayedComicIds(playedComicIds.filter(playedComicIds => playedComicId !== comicId));
-		// 	}
-		// },
+			getShowAnonymousComics: () => {
+				let setting = localStorage.getItem(Util.context.setting._showAnonymousComicsKey);
+				return setting === "true";
+			},
+			setShowAnonymousComics: (showAnonymousComics) => localStorage.setItem(Util.context.setting._showAnonymousComicsKey, showAnonymousComics)
+		}
 	},
 
 	analytics: {
