@@ -67,7 +67,7 @@ export default class ProfilePage extends Component {
 										}
 										{
 											isMe ? <div className="button-container justify-center">
-												<Button to={Util.route.settings()} label={'Edit profile'} colour="black" isHollow={true} leftIcon={Util.icon.avatar} />
+												<Button to={Util.route.settings()} label={'Edit profile'} colour="black" isHollow={true} />
 											</div>
 											: null
 										}

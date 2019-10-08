@@ -86,7 +86,8 @@
 	}
 
 	&.button-transparent {
-		@include colourizeButton(transparent);
+		@include colourizeButton($colour-grey-e);
+		border: none;
 	}
 
 	&.button-white {

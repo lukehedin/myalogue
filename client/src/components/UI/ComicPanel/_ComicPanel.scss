@@ -9,7 +9,7 @@
 	$panel-author-line-height: 18px;
 	$panel-author-font-size: 16px;
 
-	$panel-scale-xs: 0.44;
+	$panel-scale-xs: 0.48; // was 0.44
 	$panel-scale-sm: 0.48;
 	$panel-scale-md: 0.52;
 	$panel-scale-lg: 0.56;
@@ -70,7 +70,7 @@
 			margin: 0;
 			padding: 0;
 			border: none;
-			font-family: Arial, Helvetica, sans-serif;
+			font-family: $font-family-default;
 			overflow: hidden;
 			text-align: center;
 			background-color: transparent;

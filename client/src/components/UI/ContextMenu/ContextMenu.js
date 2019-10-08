@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Button from '../Button/Button';
+import Util from '../../../Util';
 
 export default class ContextMenu extends Component {
 	constructor(props) {
@@ -10,6 +12,9 @@ export default class ContextMenu extends Component {
 		};
 
 		this.toggleIsMenuVisible = this.toggleIsMenuVisible.bind(this);
+	}
+	componentWillUnmount() {
+		window.removeEventListener('click', this.toggleIsMenuVisible);
 	}
 	toggleIsMenuVisible(e) {
 		let isMenuVisible = !this.state.isMenuVisible;
@@ -32,7 +37,7 @@ export default class ContextMenu extends Component {
 	render() {
 		return <div className={`context-menu ${this.props.className || ''}`}>
 			<div className="menu-toggle" onClick={this.toggleIsMenuVisible}>
-				{this.props.children}
+				{this.props.children || <Button leftIcon={Util.icon.contextMenu} size="sm" colour="transparent" isHollow={true} />}
 			</div>
 			<div className={`context-menu-content ${this.props.align || 'left'} ${this.state.isMenuVisible ? 'open' : ''}`}>
 				{this.props.content}

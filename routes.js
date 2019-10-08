@@ -90,14 +90,21 @@ const getRandomPanelCount = (maxPanelCount = 8) => {
 };
 
 //Common INCLUDES
-const getIncludeForComic = (db, userId, includeUsers = false) => {
+const getIncludeForComic = (db, userId) => {
 	let include = [{
 		model: db.ComicPanel,
 		as: 'ComicPanels',
-		include: includeUsers ? [{
+		include: [{
 			model: db.User,
 			as: 'User'
-		}] : []
+		}]
+	}, {
+		model: db.ComicComment,
+		as: 'ComicComments',
+		include: [{
+			model: db.User,
+			as: 'User'
+		}]
 	}];
 	
 	if(userId) {
@@ -169,7 +176,7 @@ const routes = {
 							[db.op.ne]: null
 						}
 					},
-					include: getIncludeForComic(db, userId, true),
+					include: getIncludeForComic(db, userId),
 					order: [[ 'Rating', 'DESC' ]],
 					limit: 1
 				})
@@ -461,7 +468,7 @@ const routes = {
 				where: {
 					ComicId: comicId
 				},
-				include: getIncludeForComic(db, userId, true)
+				include: getIncludeForComic(db, userId)
 			})
 			.then(dbComic => {
 				if(dbComic) {
@@ -524,41 +531,41 @@ const routes = {
 			if(templateId) comicWhere.TemplateId = templateId;
 			if(!includeAnonymous) comicWhere.HasAnonymous = false;
 			
-			if(authorUserId) {
-				db.ComicPanel.findAll({
-					where: {
-						UserId: authorUserId
-					}
-				})
-				.then(dbComicPanels => {
-					let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
-					
-					comicWhere.ComicId = {
-						...comicWhere.ComicId,
-						[db.op.in]: comicIds
-					};
-					
-					db.Comic.findAll({
-						where: comicWhere,
-						order: comicOrder,
-						offset: offset,
-						limit: limit,
-						include: getIncludeForComic(db, userId, true)
+			new Promise((resolve, reject) => {
+				if(!authorUserId) {
+					resolve();
+				} else {
+					//If we have an authoruserid, find their panels and their comicids
+					db.ComicPanel.findAll({
+						where: {
+							UserId: authorUserId
+						}
 					})
-					.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
-					.catch(error => catchError(res, error, db));;
-				})
-			} else {
+					.then(dbComicPanels => {
+						let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
+						
+						comicWhere.ComicId = {
+							...comicWhere.ComicId,
+							[db.op.in]: comicIds
+						};
+
+						resolve();
+					})
+					.catch(error => reject(error));
+				}
+			})
+			.then(() => {
 				db.Comic.findAll({
 					where: comicWhere,
 					order: comicOrder,
 					offset: offset,
 					limit: limit,
-					include: getIncludeForComic(db, userId, true)
+					include: getIncludeForComic(db, userId)
 				})
 				.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
 				.catch(error => catchError(res, error, db));
-			}
+			})
+			.catch(error => catchError(res, error, db));
 		},
 
 		getTopComics: (req, res, db) => {
@@ -639,7 +646,7 @@ const routes = {
 					.then(dbComics => {
 						let comicTotalRating = dbComics.reduce((total, item) => total + item.Rating, 0);
 						res.json({
-							user: mapper.fromDbUser(dbUser),
+							user: mapper.fromDbUser(dbUser, true),
 							userStats: {
 								panelCount: dbComicPanels.length,
 								comicCount: dbComics.length,
@@ -729,7 +736,10 @@ const routes = {
 			db.Comic.findAll({
 				limit: 1,
 				where: comicWhere,
-				include: getIncludeForComic(db),
+				include: [{ //Don't return comments, ratings, etc for this one, just panels
+					model: db.ComicPanel,
+					as: 'ComicPanels'
+				}],
 				order: comicOrder
 			})
 			.then(dbComics => {
@@ -1063,6 +1073,51 @@ const routes = {
 				res.json({ success: true });
 			})
 			.catch(error => catchError(res, error, db));
+		},
+
+		postComicComment: (req, res, db) => {
+			let userId = req.userId;
+
+			let comicId = req.body.comicId;
+			let value = req.body.value;
+
+			db.Comic.findOne({
+				where: {
+					ComicId: comicId,
+					CompletedAt: {
+						[db.op.ne]: null
+					}
+				}
+			})
+			.then(dbComic => {
+				if(!dbComic) {
+					catchError(res, 'Invalid comic to comment on', db);
+					return;
+				}
+
+				db.ComicComment.create({
+					UserId: userId,
+					ComicId: comicId,
+					Value: value
+				})
+				.then(dbCreatedComicComment => res.json(mapper.fromDbComicComment(dbCreatedComicComment)))
+				.catch(error => catchError(res, error, db));
+			});
+		},
+
+		deleteComicComment: (req, res, db) => {
+			let userId = req.userId;
+
+			let comicCommentId = req.body.comicCommentId;
+
+			db.ComicComment.destroy({
+				where: {
+					UserId: userId, //Validation
+					ComicCommentId: comicCommentId
+				}
+			});
+
+			res.json({ success: true });
 		},
 
 		getNotifications: (req, res, db) => {

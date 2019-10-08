@@ -57,7 +57,7 @@ export default class ComicVote extends Component {
 		
 		return <div className="comic-vote">
 			{getVoteButton(-1)}
-			<h4 className={`rating ${this.state.value !== 0 ? 'rated' : ''}`}>{this.state.rating}</h4>
+			<p className={`rating ${this.state.value !== 0 ? 'rated' : ''}`}>{this.state.rating}</p>
 			{getVoteButton(1)}
 		</div>
 	}

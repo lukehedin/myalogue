@@ -3,7 +3,8 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-color: #efefef;
-  color: #080808; }
+  color: #080808;
+  font-family: Arial, Helvetica, sans-serif; }
   body .app-container {
     position: relative;
     display: flex;
@@ -94,7 +95,7 @@ body {
         flex-direction: row;
         align-items: center; }
         body .app-container .app .comic-vote .rating {
-          font-weight: bold;
+          text-align: center;
           width: 26px;
           color: #969696; }
       body .app-container .app .comic {
@@ -126,8 +127,6 @@ body {
           justify-content: stretch; }
           body .app-container .app .comic .comic-lower > * {
             flex: 1; }
-            body .app-container .app .comic .comic-lower > *:not(:first-child) {
-              margin-top: 16px; }
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
@@ -137,6 +136,10 @@ body {
               color: #777777; }
               body .app-container .app .comic .comic-lower .comic-lower-inner .comic-lower-details > * {
                 margin: 0; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner .comic-vote {
+              margin-left: 4px; }
+          body .app-container .app .comic .comic-lower .comment-thread {
+            margin-bottom: 16px; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
 
@@ -154,14 +157,14 @@ body {
       body .app-container .app .comic-panel {
         position: relative;
         border: 1px solid #c8c8c8;
-        width: calc(540px * 0.44);
-        height: calc(450px * 0.44); }
+        width: calc(540px * 0.48);
+        height: calc(450px * 0.48); }
         body .app-container .app .comic-panel .dialogue > * {
-          line-height: calc(40px * 0.44);
-          font-size: calc(36px * 0.44); }
+          line-height: calc(40px * 0.48);
+          font-size: calc(36px * 0.48); }
         body .app-container .app .comic-panel .comic-panel-subtle {
-          line-height: calc(18px * 0.44);
-          font-size: calc(16px * 0.44); }
+          line-height: calc(18px * 0.48);
+          font-size: calc(16px * 0.48); }
         @media (min-height: 660px) {
           body .app-container .app .comic-panel {
             width: calc(540px * 0.48);
@@ -194,14 +197,14 @@ body {
               font-size: calc(16px * 0.56); } }
         @media screen and (orientation: landscape) {
           body .app-container .app .comic-panel {
-            width: calc(540px * 0.44);
-            height: calc(450px * 0.44); }
+            width: calc(540px * 0.48);
+            height: calc(450px * 0.48); }
             body .app-container .app .comic-panel .dialogue > * {
-              line-height: calc(40px * 0.44);
-              font-size: calc(36px * 0.44); }
+              line-height: calc(40px * 0.48);
+              font-size: calc(36px * 0.48); }
             body .app-container .app .comic-panel .comic-panel-subtle {
-              line-height: calc(18px * 0.44);
-              font-size: calc(16px * 0.44); } }
+              line-height: calc(18px * 0.48);
+              font-size: calc(16px * 0.48); } }
   @media screen and (orientation: landscape) and (min-height: 516px) {
     body .app-container .app .comic-panel {
       width: calc(540px * 0.48);
@@ -459,26 +462,28 @@ body {
           body .app-container .app .button.button-pink.button-solid:hover {
             border-color: #ff1f67;
             background: #ff1f67; }
-        body .app-container .app .button.button-transparent.button-hollow {
-          color: transparent;
-          border-color: transparent;
-          background-color: transparent; }
-          body .app-container .app .button.button-transparent.button-hollow .button-icon path {
-            fill: transparent; }
-          body .app-container .app .button.button-transparent.button-hollow:hover {
-            border-color: rgba(0, 0, 0, 0);
-            color: rgba(0, 0, 0, 0); }
-            body .app-container .app .button.button-transparent.button-hollow:hover .button-icon path {
-              fill: rgba(0, 0, 0, 0); }
-        body .app-container .app .button.button-transparent.button-solid {
-          color: #fff;
-          border-color: transparent;
-          background: transparent; }
-          body .app-container .app .button.button-transparent.button-solid .button-icon path {
-            fill: #fff; }
-          body .app-container .app .button.button-transparent.button-solid:hover {
-            border-color: rgba(15, 15, 15, 0);
-            background: rgba(15, 15, 15, 0); }
+        body .app-container .app .button.button-transparent {
+          border: none; }
+          body .app-container .app .button.button-transparent.button-hollow {
+            color: #525252;
+            border-color: #525252;
+            background-color: transparent; }
+            body .app-container .app .button.button-transparent.button-hollow .button-icon path {
+              fill: #525252; }
+            body .app-container .app .button.button-transparent.button-hollow:hover {
+              border-color: #393939;
+              color: #393939; }
+              body .app-container .app .button.button-transparent.button-hollow:hover .button-icon path {
+                fill: #393939; }
+          body .app-container .app .button.button-transparent.button-solid {
+            color: #fff;
+            border-color: #525252;
+            background: #525252; }
+            body .app-container .app .button.button-transparent.button-solid .button-icon path {
+              fill: #fff; }
+            body .app-container .app .button.button-transparent.button-solid:hover {
+              border-color: #616161;
+              background: #616161; }
         body .app-container .app .button.button-white.button-hollow {
           color: #fff;
           border-color: #fff;
@@ -540,8 +545,9 @@ body {
               fill: #fff; }
           body .app-container .app .modal .modal-header .modal-close-icon {
             cursor: pointer;
-            height: 24px;
-            width: 24px; }
+            height: 16px;
+            width: 16px;
+            padding: 4px 0; }
             body .app-container .app .modal .modal-header .modal-close-icon path {
               fill: #fff; }
             body .app-container .app .modal .modal-header .modal-close-icon:hover path {
@@ -810,6 +816,50 @@ body {
             margin: 0 8px; }
           body .app-container .app .avatar-selector .avatar-settings .avatar-setting .setting-label {
             width: 80px; }
+      body .app-container .app .comment-thread .comments {
+        padding: 4px 0;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-top: 1px solid #c8c8c8;
+        border-bottom: 1px solid #c8c8c8; }
+        body .app-container .app .comment-thread .comments .comment {
+          margin: 8px 0; }
+      body .app-container .app .comment-thread .new-comment {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        margin-top: 8px; }
+        body .app-container .app .comment-thread .new-comment .new-comment-inner {
+          flex: 1;
+          display: flex;
+          flex-direction: column; }
+          body .app-container .app .comment-thread .new-comment .new-comment-inner textarea {
+            align-self: stretch;
+            margin-left: 8px;
+            resize: vertical; }
+          body .app-container .app .comment-thread .new-comment .new-comment-inner .button {
+            align-self: flex-end;
+            margin-top: 4px; }
+      body .app-container .app .comment .comment-upper {
+        display: flex;
+        flex-direction: row;
+        align-items: center; }
+        body .app-container .app .comment .comment-upper .avatar {
+          margin-right: 8px; }
+        body .app-container .app .comment .comment-upper .user-date {
+          font-size: 12px;
+          color: #969696; }
+      body .app-container .app .comment .comment-lower {
+        margin-left: calc(32px + 8px); }
+        body .app-container .app .comment .comment-lower .comment-value {
+          font-size: 14px;
+          overflow-wrap: break-word;
+          white-space: pre-line; }
+        body .app-container .app .comment .comment-lower .comment-actions {
+          margin-top: 4px; }
+          body .app-container .app .comment .comment-lower .comment-actions a {
+            font-size: 12px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;
@@ -840,6 +890,8 @@ body {
         align-items: center; }
         body .app-container .app .page-play .play-area .play-area-top {
           margin-bottom: 8px; }
+        body .app-container .app .page-play .play-area .instruction {
+          margin: 4px 0 8px 0; }
         body .app-container .app .page-play .play-area .progress-bar {
           width: 240px; }
           body .app-container .app .page-play .play-area .progress-bar.with-dialogue .progress-bar-inner {
@@ -1105,6 +1157,7 @@ body {
       -webkit-border-radius: 4px;
       -moz-border-radius: 4px;
       font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
       border: 1px solid #c8c8c8;
       outline: none;
       -webkit-box-shadow: none;

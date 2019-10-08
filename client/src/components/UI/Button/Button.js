@@ -15,7 +15,8 @@ export default class Button extends Component {
 		let className = `button ${this.props.className || ''} 
 			button-${this.props.size || 'md'} 
 			button-${this.props.colour || 'black'} 
-			button-${this.props.isHollow ? 'hollow' : 'solid'}`;
+			button-${this.props.isHollow ? 'hollow' : 'solid'}
+			${this.props.isDisabled ? 'disabled' : ''}`;
 
 		let getIcon = (path) => {
 			if(!path) return null;

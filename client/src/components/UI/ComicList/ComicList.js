@@ -149,7 +149,7 @@ export default class ComicList extends Component {
 								<Button label="Back to top" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
 								{this.state.isNoMore
 									? null
-									: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} leftIcon={Util.icon.download} />
+									: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} />
 								}
 							</div>
 						</div>

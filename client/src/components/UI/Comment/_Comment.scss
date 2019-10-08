@@ -1,0 +1,33 @@
+.comment {
+	.comment-upper {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		
+		.avatar {
+			margin-right: $spacing-xs;
+		}
+
+		.user-date {
+			font-size: 12px;
+			color: $colour-grey-c;
+		}
+	}
+
+	.comment-lower {
+		margin-left: calc(#{$spacing-md} + #{$spacing-xs});
+
+		.comment-value {
+			font-size: 14px;
+			overflow-wrap: break-word;
+			white-space: pre-line;
+		}
+
+		.comment-actions {
+			margin-top: $spacing-xxs;
+			a {
+				font-size: 12px;
+			}
+		}
+	}
+}

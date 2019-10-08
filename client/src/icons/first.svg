@@ -1,68 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   id="Capa_1"
-   x="0px"
-   y="0px"
-   viewBox="0 0 477.175 477.175"
-   style="enable-background:new 0 0 477.175 477.175;"
-   xml:space="preserve"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="first.svg"><metadata
-     id="metadata41"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
-     id="defs39" /><sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="852"
-     inkscape:window-height="480"
-     id="namedview37"
-     showgrid="false"
-     inkscape:zoom="0.49457747"
-     inkscape:cx="238.58749"
-     inkscape:cy="238.58749"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Capa_1" /><g
-     id="g3"
-     transform="translate(-80,0)"><path
-       d="m 145.188,238.575 215.5,-215.5 c 5.3,-5.3 5.3,-13.8 0,-19.1 -5.3,-5.3 -13.8,-5.3 -19.1,0 l -225.1,225.1 c -5.3,5.3 -5.3,13.8 0,19.1 l 225.1,225 c 2.6,2.6 6.1,4 9.5,4 3.4,0 6.9,-1.3 9.5,-4 5.3,-5.3 5.3,-13.8 0,-19.1 l -215.4,-215.5 z"
-       id="path5"
-       inkscape:connector-curvature="0" /></g><g
-     id="g7" /><g
-     id="g9" /><g
-     id="g11" /><g
-     id="g13" /><g
-     id="g15" /><g
-     id="g17" /><g
-     id="g19" /><g
-     id="g21" /><g
-     id="g23" /><g
-     id="g25" /><g
-     id="g27" /><g
-     id="g29" /><g
-     id="g31" /><g
-     id="g33" /><g
-     id="g35" /><g
-     id="g4169"
-     transform="translate(80,0)"><path
-       id="path4171"
-       d="m 145.188,238.575 215.5,-215.5 c 5.3,-5.3 5.3,-13.8 0,-19.1 -5.3,-5.3 -13.8,-5.3 -19.1,0 l -225.1,225.1 c -5.3,5.3 -5.3,13.8 0,19.1 l 225.1,225 c 2.6,2.6 6.1,4 9.5,4 3.4,0 6.9,-1.3 9.5,-4 5.3,-5.3 5.3,-13.8 0,-19.1 l -215.4,-215.5 z"
-       inkscape:connector-curvature="0" /></g></svg>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 439.362 439.362" style="enable-background:new 0 0 439.362 439.362;"
+	 xml:space="preserve">
+<g>
+	<path d="M362.146,0.412c-2.471-1.143-5.517,0.094-9.138,3.709L150.308,206.828c-1.718,1.524-2.955,3.333-3.715,5.424V18.679
+		c0-4.952-1.809-9.234-5.424-12.85c-3.617-3.617-7.9-5.426-12.847-5.426H91.775c-4.952,0-9.233,1.809-12.85,5.426
+		C75.308,9.448,73.5,13.73,73.5,18.679v401.986c0,4.948,1.807,9.236,5.424,12.847c3.621,3.62,7.902,5.428,12.85,5.428h36.543
+		c4.947,0,9.229-1.808,12.847-5.428c3.615-3.61,5.424-7.898,5.424-12.847V227.097c0.763,1.903,2,3.717,3.715,5.425l202.705,202.712
+		c3.621,3.617,6.667,4.859,9.138,3.72c2.478-1.144,3.716-4.189,3.716-9.138V9.547C365.862,4.599,364.624,1.553,362.146,0.412z"/>
+</g>
+</svg>

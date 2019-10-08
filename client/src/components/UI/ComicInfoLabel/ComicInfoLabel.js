@@ -8,12 +8,9 @@ export default class ComicInfoLabel extends Component {
 		let authors = [];
 		let anonCount = 0;
 		this.props.comic.comicPanels.forEach(comicPanel => {
-			if(comicPanel.userId) {
-				if(!authors.find(author => author.userId === comicPanel.userId)) {
-					authors.push({
-						userId: comicPanel.userId,
-						username: comicPanel.username
-					});
+			if(comicPanel.user) {
+				if(!authors.find(author => author.userId === comicPanel.user.userId)) {
+					authors.push(comicPanel.user);
 				}
 			} else {
 				anonCount++;

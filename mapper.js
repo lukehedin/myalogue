@@ -1,21 +1,22 @@
 const mapper = {
-	fromDbUser: (dbUser, includeSensitiveData = false) => {
+	fromDbUser: (dbUser, includeProfileData = false) => {
 		let user = {
 			userId: dbUser.UserId,
 			username: dbUser.Username,
-			createdAt: dbUser.CreatedAt,
 			avatar: {
 				character: dbUser.AvatarCharacter,
 				expression: dbUser.AvatarExpression,
 				colour: dbUser.AvatarColour
 			}
-			// bio: dbUser.Bio
 		};
 
-		if(includeSensitiveData) {
-			user.email = dbUser.Email;
-			user.lastLoginAt = dbUser.LastLoginAt;
+		if(includeProfileData) {
+			user.createdAt = dbUser.CreatedAt;
+			// bio: dbUser.Bio
 		}
+
+		//I can't see a use case we'd need to MAP email or other sensitive data
+		//Could just use the dbUser
 
 		return user;
 	},
@@ -28,6 +29,9 @@ const mapper = {
 			rating: dbComic.Rating || 0,
 			hasAnonymous: dbComic.HasAnonymous,
 			completedAt: dbComic.CompletedAt,
+			comicComments: (dbComic.ComicComments || [])
+				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
+				.map(mapper.fromDbComicComment),
 			comicPanels: (dbComic.ComicPanels || [])
 				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)
 				.map(mapper.fromDbComicPanel),
@@ -43,16 +47,26 @@ const mapper = {
 			comicPanelId: dbComicPanel.ComicPanelId,
 			templatePanelId: dbComicPanel.TemplatePanelId,
 			value: dbComicPanel.Value,
-			userId: dbComicPanel.UserId,
-			username: !dbComicPanel.User ? null : dbComicPanel.User.Username
+			user: dbComicPanel.User ? mapper.fromDbUser(dbComicPanel.User) : null
 		};
 		
+	},
+
+	fromDbComicComment: (dbComicComment) => {
+		return {
+			comicCommentId: dbComicComment.ComicCommentId,
+			value: dbComicComment.Value,
+			createdAt: dbComicComment.CreatedAt,
+			updatedAt: dbComicComment.UpdatedAt,
+			user: dbComicComment.User ? mapper.fromDbUser(dbComicComment.User) : null
+		}
 	},
 
 	fromDbTemplate: (dbTemplate) => {
 		return {
 			templateId: dbTemplate.TemplateId,
 			name: dbTemplate.Name,
+			descriptionHtml: dbTemplate.DescriptionHtml,
 			unlockedAt: dbTemplate.UnlockedAt,
 			templatePanels: (dbTemplate.TemplatePanels || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)

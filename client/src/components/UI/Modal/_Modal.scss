@@ -19,8 +19,9 @@
 
 		.modal-close-icon {
 			cursor: pointer;
-			height: 24px;
-			width: 24px;
+			height: 16px;
+			width: 16px;
+			padding: $spacing-xxs 0;
 			@include svgColourStroke($colour-white);
 
 			&:hover {

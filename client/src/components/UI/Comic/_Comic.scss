@@ -24,10 +24,6 @@
 
 		> * {
 			flex: 1;
-
-			&:not(:first-child) {
-				margin-top: $spacing-sm;
-			}
 		}
 
 		.comic-lower-inner {
@@ -43,6 +39,14 @@
 					margin: 0;
 				}
 			}
+
+			.comic-vote {
+				margin-left: $spacing-xxs;
+			}
+		}
+
+		.comment-thread {
+			margin-bottom: $spacing-sm;
 		}
 
 		&:empty {

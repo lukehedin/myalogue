@@ -131,7 +131,7 @@ export default class NotificationButton extends Component {
 			<Button className="notification-button" 
 			size="sm"
 			label={Util.array.any(unseenNotifications) ? unseenNotifications.length.toString() : null} 
-			leftIcon={Util.icon.notification}
+			leftIcon={Util.icon.bell}
 			isHollow={Util.array.none(unseenNotifications)} 
 			colour={Util.array.none(unseenNotifications) ? 'white' : 'pink'}
 		/>

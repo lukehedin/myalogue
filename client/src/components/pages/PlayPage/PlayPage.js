@@ -139,7 +139,7 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				<div className="play-area-top">
 					<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
-					<p className="center sm">{this.state.currentComicPanel
+					<p className="instruction center sm">{this.state.currentComicPanel
 						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
 							? `End` 
 							: `Continue`

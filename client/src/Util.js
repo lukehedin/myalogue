@@ -1,24 +1,32 @@
 import axios from 'axios';
 import ReactGA from 'react-ga';
+import moment from 'moment';
 
-import iconAvatar from './icons/avatar.svg';
 import iconBack from './icons/back.svg';
+import iconBell from './icons/bell.svg';
+import iconBin from './icons/bin.svg';
 import iconCancel from './icons/cancel.svg';
-import iconChat from './icons/chat.svg';
+import iconCog from './icons/cog.svg';
+import iconComment from './icons/comment.svg';
+import iconContextMenu from './icons/contextmenu.svg';
 import iconCopy from './icons/copy.svg';
 import iconDislike from './icons/dislike.svg';
 import iconDownload from './icons/download.svg';
-import iconEnvelope from './icons/envelope.svg';
 import iconFirst from './icons/first.svg';
-import iconGarbage from './icons/garbage.svg';
+import iconGit from './icons/git.svg';
+import iconHeart from './icons/heart.svg';
+import iconHome from './icons/home.svg';
+import iconInstagram from './icons/instagram.svg'
 import iconLast from './icons/last.svg';
 import iconLike from './icons/like.svg';
+import iconMail from './icons/mail.svg';
 import iconMenu from './icons/menu.svg';
 import iconNext from './icons/next.svg';
-import iconNotification from './icons/notification.svg';
+import iconPanels from './icons/panels.svg';
+import iconQuestion from './icons/question.svg';
 import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
-import moment from 'moment';
+import iconUser from './icons/user.svg';
 
 const Util = {
 	context: {
@@ -274,23 +282,31 @@ const Util = {
 	},
 
 	icon: {
-		avatar: iconAvatar,
 		back: iconBack,
+		bell: iconBell,
+		bin: iconBin,
 		cancel: iconCancel,
-		chat: iconChat,
+		cog: iconCog,
+		comment: iconComment,
+		contextMenu: iconContextMenu,
 		copy: iconCopy,
 		dislike: iconDislike,
 		download: iconDownload,
-		envelope: iconEnvelope,
 		first: iconFirst,
-		garbage: iconGarbage,
+		git: iconGit,
+		heart: iconHeart,
+		home: iconHome,
+		instagram: iconInstagram,
 		last: iconLast,
 		like: iconLike,
+		mail: iconMail,
 		menu: iconMenu,
 		next: iconNext,
-		notification: iconNotification,
+		panels: iconPanels,
+		question: iconQuestion,
 		share: iconShare,
-		star: iconStar
+		star: iconStar,
+		user: iconUser
 	},
 
 	route: {

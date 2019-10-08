@@ -97,7 +97,7 @@ export default class ComicPage extends Component {
 					: null
 				}
 				<div className="comic-wrapper">
-					<Comic key={this.state.comic.comicId} comic={this.state.comic} />
+					<Comic isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
 				<div className="button-container justify-center">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />

@@ -113,7 +113,8 @@ let db = {
 		UnlockedAt: Sequelize.DATE,
 		Name: Sequelize.STRING,
 		Ordinal: Sequelize.INTEGER,
-		MaxPanelCount: getIntegerNotNull(8)
+		MaxPanelCount: getIntegerNotNull(8),
+		// DescriptionHtml: Sequelize.TEXT
 	}, true),
 
 	TemplatePanel: defineTable('TemplatePanel', {
