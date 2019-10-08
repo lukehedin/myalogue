@@ -18,7 +18,7 @@ export default class Avatar extends Component {
 		let imageWidth = avatarImageSize * Util.avatar.getExpressionCount();
 		let imageHeight = avatarImageSize * Util.avatar.getCharacterCount();
 		
-		let size = this.props.size || avatarImageSize;
+		let size = this.props.size || 64;
 		let backgroundX = -((avatar.expression - 1) % (Util.avatar.getExpressionCount())) * size;
 		let backgroundY = -((avatar.character - 1) % (Util.avatar.getCharacterCount())) * size;
 

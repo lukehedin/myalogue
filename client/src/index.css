@@ -886,7 +886,7 @@ body {
             text-align: left;
             font-size: 12px; }
       body .app-container .app .page-template .template-navigation {
-        margin: 16px 0; }
+        margin: 16px auto; }
       body .app-container .app .page-template .play-template {
         margin-bottom: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
