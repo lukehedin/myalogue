@@ -950,7 +950,7 @@ body {
           padding: 32px 0; }
           body .app-container .app .app-inner [class^="panel-"]:first-child {
             padding-top: 16px; }
-            @media (min-width: 768px) {
+            @media (min-width: 992px) {
               body .app-container .app .app-inner [class^="panel-"]:first-child {
                 padding-top: 32px; } }
           body .app-container .app .app-inner [class^="panel-"].panel-inset {
@@ -1110,34 +1110,19 @@ body {
       text-align: center;
       margin-top: 32px; }
     body .app-container .comic-panel {
-      height: calc(450px * 0.44);
-      width: calc(540px * 0.44); }
+      height: calc(450px * 0.48);
+      width: calc(540px * 0.48); }
       body .app-container .comic-panel .dialogue > * {
-        line-height: calc(40px * 0.44);
-        font-size: calc(36px * 0.44); }
+        line-height: calc(40px * 0.48);
+        font-size: calc(36px * 0.48); }
       body .app-container .comic-panel .comic-panel-subtle {
-        line-height: calc(18px * 0.44);
-        font-size: calc(16px * 0.44); }
+        line-height: calc(18px * 0.48);
+        font-size: calc(16px * 0.48); }
     body .app-container .comic-lower {
-      width: calc(540px * 0.44); }
+      width: calc(540px * 0.48); }
       @media screen and (orientation: landscape) {
         body .app-container .comic-lower {
-          width: calc(540px * 0.88); } }
-    @media (min-height: 660px) {
-      body .app-container .comic-panel {
-        height: calc(450px * 0.48);
-        width: calc(540px * 0.48); }
-        body .app-container .comic-panel .dialogue > * {
-          line-height: calc(40px * 0.48);
-          font-size: calc(36px * 0.48); }
-        body .app-container .comic-panel .comic-panel-subtle {
-          line-height: calc(18px * 0.48);
-          font-size: calc(16px * 0.48); }
-      body .app-container .comic-lower {
-        width: calc(540px * 0.48); } }
-  @media screen and (min-height: 660px) and (orientation: landscape) {
-    body .app-container .comic-lower {
-      width: calc(540px * 0.96); } }
+          width: calc(540px * 0.96); } }
     @media (min-height: 800px) {
       body .app-container .comic-panel {
         height: calc(450px * 0.52);
@@ -1170,33 +1155,17 @@ body {
       width: calc(540px * 1.12); } }
     @media screen and (orientation: landscape) {
       body .app-container .comic-panel {
-        height: calc(450px * 0.44);
-        width: calc(540px * 0.44); }
+        height: calc(450px * 0.48);
+        width: calc(540px * 0.48); }
         body .app-container .comic-panel .dialogue > * {
-          line-height: calc(40px * 0.44);
-          font-size: calc(36px * 0.44); }
+          line-height: calc(40px * 0.48);
+          font-size: calc(36px * 0.48); }
         body .app-container .comic-panel .comic-panel-subtle {
-          line-height: calc(18px * 0.44);
-          font-size: calc(16px * 0.44); }
+          line-height: calc(18px * 0.48);
+          font-size: calc(16px * 0.48); }
       body .app-container .comic-lower {
-        width: calc(540px * 0.44); } }
+        width: calc(540px * 0.48); } }
   @media screen and (orientation: landscape) and (orientation: landscape) {
-    body .app-container .comic-lower {
-      width: calc(540px * 0.88); } }
-
-@media screen and (orientation: landscape) and (min-height: 516px) {
-  body .app-container .comic-panel {
-    height: calc(450px * 0.48);
-    width: calc(540px * 0.48); }
-    body .app-container .comic-panel .dialogue > * {
-      line-height: calc(40px * 0.48);
-      font-size: calc(36px * 0.48); }
-    body .app-container .comic-panel .comic-panel-subtle {
-      line-height: calc(18px * 0.48);
-      font-size: calc(16px * 0.48); }
-  body .app-container .comic-lower {
-    width: calc(540px * 0.48); } }
-  @media screen and (orientation: landscape) and (min-height: 516px) and (orientation: landscape) {
     body .app-container .comic-lower {
       width: calc(540px * 0.96); } }
 

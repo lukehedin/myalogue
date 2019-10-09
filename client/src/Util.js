@@ -340,6 +340,10 @@ const Util = {
 			return document.getElementsByClassName('app')[0];
 		},
 
+		getAppInner: () => {
+			return document.getElementsByClassName('app-inner')[0];
+		},
+
 		getRootScrollElement: () => {
 			return document.getElementsByClassName('app-container')[0]; 
 		}

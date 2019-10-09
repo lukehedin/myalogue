@@ -63,7 +63,7 @@ body {
 
 					&:first-child {
 						padding-top: $spacing-sm;
-						@include overmd {
+						@include overlg {
 							padding-top: $spacing-md;
 						}
 					}
@@ -318,10 +318,7 @@ body {
 			}
 		}
 		//Portrait
-		@include scaleComicPanel($comic-panel-scale-xs);
-		@media (min-height: 660px) { 
-			@include scaleComicPanel($comic-panel-scale-sm);
-		}
+		@include scaleComicPanel($comic-panel-scale-sm);
 		@media (min-height: 800px) {
 			@include scaleComicPanel($comic-panel-scale-md);
 		}
@@ -330,10 +327,7 @@ body {
 		}
 		//Landscape
 		@include isLandscape {
-			@include scaleComicPanel($comic-panel-scale-xs);
-			@media (min-height: 516px) {
-				@include scaleComicPanel($comic-panel-scale-sm);
-			}
+			@include scaleComicPanel($comic-panel-scale-sm);
 			@media (min-height: 680px) {
 				@include scaleComicPanel($comic-panel-scale-md);
 			}

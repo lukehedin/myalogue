@@ -76,7 +76,7 @@ export default class PlayPage extends Component {
 
 					completedPanelCount: result.completedPanelCount,
 					totalPanelCount: result.totalPanelCount
-				});
+				}, Util.selector.getRootScrollElement().scrollTo(0, Util.selector.getAppInner().offsetTop));
 			} else {
 				this.setState({
 					error: result.error
@@ -202,7 +202,7 @@ export default class PlayPage extends Component {
 		}
 
 		return <div className="page-play">
-			<div className="panel-standard responsive-padding">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						{content}
