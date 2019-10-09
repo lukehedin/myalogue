@@ -70,22 +70,25 @@ export default class PlayPage extends Component {
 			if(!result.error) {
 				this.setState({
 					isPlaying: true,
+					isLoading: false,
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
 					currentComicPanel: result.currentComicPanel, //May be null
 
 					completedPanelCount: result.completedPanelCount,
 					totalPanelCount: result.totalPanelCount
-				}, Util.selector.getRootScrollElement().scrollTo(0, Util.selector.getAppInner().offsetTop));
+				}, () => {
+					//Scroll down to play area, so long as the footer won't be visible
+					let scrollEl = Util.selector.getRootScrollElement();
+					let appInner = Util.selector.getAppInner();
+					if(appInner.offsetHeight > window.innerHeight) scrollEl.scrollTo(0, appInner.offsetTop);
+				});
 			} else {
 				this.setState({
-					error: result.error
+					error: result.error,
+					isLoading: false
 				});
 			}
-
-			this.setState({
-				isLoading: false
-			});
 		});
 	}
 	submitComicPanel() {

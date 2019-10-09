@@ -96,7 +96,7 @@ body {
             margin-bottom: 32px; }
           body .app-container .app .comic-list .comic-list-inner .comic-list-bottom {
             position: relative;
-            min-height: 40vh; }
+            min-height: 100px; }
       body .app-container .app .comic-vote {
         display: flex;
         flex-direction: row;
@@ -932,7 +932,7 @@ body {
       body .app-container .app .app-inner {
         display: flex;
         flex-direction: column;
-        min-height: 100vh; }
+        min-height: 100%; }
         body .app-container .app .app-inner [class^="page-"] {
           flex: 1;
           display: flex;

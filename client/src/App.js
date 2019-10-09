@@ -134,8 +134,8 @@ class App extends Component {
 						{/* No other route match, 404 */}
 						<Route render={({ match }) => <Error404Page />} />
 					</Switch>
-					<AppFooter />
 				</div>
+				<AppFooter />
 				{Util.array.any(this.props.modals)
 					? <div className="modal-overlay" onMouseDown={(e) => {
 						e.stopPropagation();

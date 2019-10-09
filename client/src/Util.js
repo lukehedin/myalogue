@@ -343,7 +343,7 @@ const Util = {
 		getAppInner: () => {
 			return document.getElementsByClassName('app-inner')[0];
 		},
-
+		
 		getRootScrollElement: () => {
 			return document.getElementsByClassName('app-container')[0]; 
 		}

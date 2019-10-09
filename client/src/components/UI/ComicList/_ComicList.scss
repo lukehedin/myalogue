@@ -40,7 +40,7 @@
 
 		.comic-list-bottom {
 			position: relative;
-			min-height: 40vh;
+			min-height: 100px; //this was 40vh, seemed excessive?
 		}
 	}
 }
