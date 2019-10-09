@@ -52,7 +52,7 @@ export default class PlayPage extends Component {
 			dialogue: '',
 			completedPanelCount: null,
 			totalPanelCount: null
-		});
+		}, Util.selector.getRootScrollElement().scrollTo(0, 0));
 	}
 	playNew(skippedComicId, templateId, token) {
 		this.resetPlayData();
@@ -92,7 +92,7 @@ export default class PlayPage extends Component {
 		this.setState({
 			isLoading: true,
 			isPlaying: false
-		});
+		}, Util.selector.getRootScrollElement().scrollTo(0, 0));
 		
 		let dialogue = this.state.dialogue;
 
@@ -159,8 +159,8 @@ export default class PlayPage extends Component {
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
 				</ComicPanelPair> 
 				<div className="play-actions button-container justify-center">
-					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="lg" />
-					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="lg" />
+					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="md" />
+					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="md" />
 				</div>
 			</div>;
 		} else {
@@ -191,7 +191,7 @@ export default class PlayPage extends Component {
 							<li>Play the latest template as soon as it's available</li>
 							<li>Play using any specific template of your choosing</li>
 							<li>Contribute to comics featuring only logged-in users</li>
-							<li>Rate comics</li>
+							<li>Rate and comment on comics</li>
 						</ul>
 					</div>
 				}

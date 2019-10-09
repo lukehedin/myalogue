@@ -289,5 +289,57 @@ body {
 			text-align: center;
 			margin-top: $spacing-md;
 		}
+
+
+		//Comic scaling - as the scale of comics affects other elements (eg. comic-footer-lower)
+		//We do this here in the one place instead of on individual elements repeatedly
+		@mixin scaleComicPanel ($scale) {
+			.comic-panel {
+				@include applyComicPanelHeight($scale);
+				@include applyComicPanelWidth($scale);
+				
+				.dialogue {
+					> * {
+						line-height: calc(#{$comic-panel-base-dialogue-line-height} * #{$scale});
+						font-size: calc(#{$comic-panel-base-dialogue-font-size} * #{$scale});
+					}
+				}
+				.comic-panel-subtle {
+					line-height: calc(#{$comic-panel-base-author-line-height} * #{$scale});
+					font-size: calc(#{$comic-panel-base-author-font-size} * #{$scale});
+				}
+			}
+
+			.comic-lower {
+				@include applyComicPanelWidth($scale);
+				@include isLandscape {
+					@include applyComicPanelWidth($scale * 2);
+				}
+			}
+		}
+		//Portrait
+		@include scaleComicPanel($comic-panel-scale-xs);
+		@media (min-height: 660px) { 
+			@include scaleComicPanel($comic-panel-scale-sm);
+		}
+		@media (min-height: 800px) {
+			@include scaleComicPanel($comic-panel-scale-md);
+		}
+		@media (min-height: 996px) {
+			@include scaleComicPanel($comic-panel-scale-lg);
+		}
+		//Landscape
+		@include isLandscape {
+			@include scaleComicPanel($comic-panel-scale-xs);
+			@media (min-height: 516px) {
+				@include scaleComicPanel($comic-panel-scale-sm);
+			}
+			@media (min-height: 680px) {
+				@include scaleComicPanel($comic-panel-scale-md);
+			}
+			@media (min-height: 800px) {
+				@include scaleComicPanel($comic-panel-scale-lg);
+			}
+		}
 	}
 }

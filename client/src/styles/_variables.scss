@@ -33,3 +33,16 @@ $screen-height-md-min: 800px;
 $screen-height-lg-min: 992px;
 
 $font-family-default: Arial, Helvetica, sans-serif;
+
+//Comic variables
+$comic-panel-base-width: 540px;
+$comic-panel-base-height: 450px;
+$comic-panel-base-dialogue-line-height: 40px;
+$comic-panel-base-dialogue-font-size: 36px;
+$comic-panel-base-author-line-height: 18px;
+$comic-panel-base-author-font-size: 16px;
+
+$comic-panel-scale-xs: 0.44; // was 0.44
+$comic-panel-scale-sm: 0.48;
+$comic-panel-scale-md: 0.52;
+$comic-panel-scale-lg: 0.56;

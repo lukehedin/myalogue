@@ -83,11 +83,19 @@
 	}
 }
 
-// other mixins 
+//Comic mixins
 
 @mixin comicWrapperStyle {
+	//The wrapper around a collection of comic panels, makes the border consistent width and gives curve
 	border: 1px solid $colour-grey-b;
 	background-color: $colour-white;
 	@include borderRadius(4px);
 	@include boxShadow(6px, 6px, 6px, #00000016);
+}
+
+@mixin applyComicPanelWidth ($scale) {
+	width: calc(#{$comic-panel-base-width} * #{$scale});
+}
+@mixin applyComicPanelHeight ($scale) {
+	height: calc(#{$comic-panel-base-height} * #{$scale});
 }

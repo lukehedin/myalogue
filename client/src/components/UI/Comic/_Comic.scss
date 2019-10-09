@@ -17,11 +17,11 @@
 	}
 
 	.comic-lower {
-		padding: $spacing-xxs 0;
+		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
 		justify-content: stretch;
-
+		
 		> * {
 			flex: 1;
 		}
@@ -30,7 +30,6 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			padding: 0 $spacing-xxs;
 
 			.comic-lower-details {
 				color: $colour-grey-d;
