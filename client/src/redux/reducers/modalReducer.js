@@ -10,7 +10,7 @@ export default function(state = initialState, action) {
 		case OPEN_MODAL: {
 			const modal = action.payload;
 
-			Util.analytics.modal(Util.enum.toString(Util.enum.ModalType, modal.type));
+			Util.analytics.modal(Util.enums.toString(Util.enums.ModalType, modal.type));
 
 			return {
 				...state,

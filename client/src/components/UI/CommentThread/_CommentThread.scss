@@ -9,7 +9,10 @@
 		border-bottom: 1px solid $colour-grey-b;
 
 		.comment {
-			margin: $spacing-xs 0;
+			margin: $spacing-sm 0;
+			&:not(:first-child) {
+				padding-top: $spacing-xs;
+			}
 		}
 	}
 

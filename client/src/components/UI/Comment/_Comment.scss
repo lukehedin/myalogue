@@ -1,32 +1,40 @@
 .comment {
-	.comment-upper {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		
-		.avatar {
-			margin-right: $spacing-xs;
-		}
-
-		.user-date {
-			font-size: 12px;
-			color: $colour-grey-c;
-		}
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+			
+	.avatar {
+		margin-right: $spacing-xs;
 	}
 
-	.comment-lower {
-		margin-left: calc(#{$spacing-md} + #{$spacing-xs});
+	.comment-inner {
+		flex: 1;
 
-		.comment-value {
-			font-size: 14px;
-			overflow-wrap: break-word;
-			white-space: pre-line;
-		}
-
-		.comment-actions {
-			margin-top: $spacing-xxs;
-			a {
+		.comment-upper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+	
+			.user-date {
 				font-size: 12px;
+				color: $colour-grey-c;
+			}
+		}
+	
+		.comment-lower {
+			margin-top: $spacing-xs;
+	
+			.comment-value {
+				font-size: 14px;
+				overflow-wrap: break-word;
+				white-space: pre-line;
+			}
+	
+			.comment-actions {
+				margin-top: $spacing-xxs;
+				a {
+					font-size: 12px;
+				}
 			}
 		}
 	}

@@ -1,3 +1,5 @@
+const enums = require('./enums');
+
 const mapper = {
 	fromDbUser: (dbUser, includeProfileData = false) => {
 		let user = {
@@ -89,6 +91,42 @@ const mapper = {
 	},
 
 	fromDbUserNotification: (dbUserNotification) => {
+		//A user notification always requires the Notification object with it. These two layers form a user notification.
+		//The UserNotification holds additional data that may be specific to the user. Eg. the amount of additional comments
+
+		let title = '';
+		let message = '';
+
+		let valueInt = dbUserNotification.ValueInteger;
+		let valueString = dbUserNotification.ValueString;
+
+		let dbRelatedComicId = dbUserNotification.Notification.ComicId;
+
+		switch(dbUserNotification.Notification.Type) {
+			case enums.NotificationType.Welcome:
+				title = `Welcome!`;
+				message = `This is where your notifications appear. You'll get a notification each time a comic you've made a panel for is complete.`;
+				break;
+			case enums.NotificationType.ComicComment:
+				//Might be for a panel creator, or for someone else who commented on a random comic
+				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} commented on comic #${dbRelatedComicId}.`;
+				break;
+			case enums.NotificationType.ComicCompleted:
+				title = `Comic #${dbRelatedComicId} completed!`
+				message = `A comic you made a panel for has been completed. Click here to view the comic.`;
+				break;
+			case enums.NotificationType.PanelRemoved:
+				title = `Panel removed...`;
+				message = `Sorry, a panel you made for comic #${dbRelatedComicId} was skipped by too many users and has been removed. Your dialogue was: "${valueString}"`;
+				break;
+			case enums.NotificationType.General:
+			default:
+				title = dbUserNotification.Notification.Title;
+				message = dbUserNotification.Notification.Message;
+				break;
+		}
+
+		///Actionable if the notification links to a FK item
 		let isActionable = !dbUserNotification.ActionedAt 
 			&& !!dbUserNotification.Notification.ComicId;
 
@@ -96,9 +134,10 @@ const mapper = {
 			userNotificationId: dbUserNotification.UserNotificationId,
 			isSeen: !!dbUserNotification.SeenAt,
 			isActionable: isActionable,
-			createdAt: dbUserNotification.CreatedAt,
-			title: dbUserNotification.Notification.Title,
-			message: dbUserNotification.Notification.Message,
+			updatedAt: dbUserNotification.UpdatedAt, //Notifications can be updated with more recent data
+			title: (title || dbUserNotification.Notification.Title || ''),
+			message: (message || dbUserNotification.Notification.Message || ''),
+			//For actionable links
 			comicId: dbUserNotification.Notification.ComicId
 		}
 	}

@@ -98,15 +98,17 @@ let db = {
 	}, true),
 	
 	Notification: defineTable('Notification', {
-		Type: Sequelize.INTEGER,
+		Type: getIntegerNotNull(1),
 		Title: Sequelize.STRING,
 		Message: Sequelize.TEXT,
-		IsWelcomeNotification: getBoooleanNotNull()
+		IsWelcomeNotification: getBoooleanNotNull() //SCHEMA-TODO REMOVE
 	}),
 
 	UserNotification: defineTable('UserNotification', {
 		SeenAt: Sequelize.DATE,
-		ActionedAt: Sequelize.DATE
+		ActionedAt: Sequelize.DATE,
+		ValueInteger: Sequelize.INTEGER, //A value that can be used for incrementing purposes (eg. "and 34 others") - not to be used as a FK!
+		ValueString: Sequelize.TEXT //A value that can be used for description purposes (eg. your text was "i hate eggs")
 	}),
 
 	Template: defineTable('Template', {
@@ -151,7 +153,7 @@ let db = {
 		Ordinal: Sequelize.INTEGER,
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
-		ComicCompletedAt: Sequelize.DATE, //For queryability TODO REMOVE
+		ComicCompletedAt: Sequelize.DATE, //For queryability SCHEMA-TODO REMOVE
 		SkipCount: getIntegerNotNull()
 	}, true),
 
@@ -181,7 +183,6 @@ let createOneToMany = (belongsToTableName, hasManyTableName, belongsToAlias, has
 createOneToMany('Comic', 'ComicPanel');
 createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
-createOneToMany('Comic', 'Notification');
 
 createOneToMany('ComicPanel', 'ComicPanelSkip');
 
@@ -200,5 +201,9 @@ createOneToMany('User', 'ComicComment');
 createOneToMany('User', 'UserNotification');
 createOneToMany('User', 'ComicPanel');
 createOneToMany('User', 'ComicPanelSkip');
+
+//Notification item FKS
+createOneToMany('Comic', 'Notification'); // Will link to comicid
+createOneToMany('User', 'Notification'); // Will link to user profile
 
 module.exports = db;

@@ -121,8 +121,8 @@ class App extends Component {
 
 						<Route exact path="/top-comics" render={() => <TopComicsPage />} />
 						
-						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUserId())} />)} />
-						<Route exact path="/profile/:userId" render={({ match }) => <ProfilePage userId={match.params.userId} />} />
+						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUsername())} />)} />
+						<Route exact path="/profile/:userIdOrUserName" render={({ match }) => <ProfilePage userIdOrUserName={match.params.userIdOrUserName} />} />
 						
 						<Route exact path="/settings" render={() => ifAuthenticated(<SettingsPage />)} />
 

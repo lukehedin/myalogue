@@ -52,7 +52,9 @@ export default class AppHeader extends Component {
 							: null
 						}
 						{Util.context.isAuthenticated()
-							? <ContextMenu align="right" className="app-menu" menuItems={[{
+							? <ContextMenu align="right" className="profile-menu" 
+							content={<p className="username sm center">{Util.context.getUsername()}</p>}
+							menuItems={[{
 								label: 'Profile',
 								to: Util.route.profile()
 							}, {

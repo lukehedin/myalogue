@@ -18,14 +18,15 @@
 				background-color: $colour-light-pink;
 			}
 
-			.title {
+			> p {
 				margin: 0;
-				font-weight: bold;
+				&:not(:first-child) {
+					margin-top: $spacing-xs;
+				}
 			}
 
-			.message, .date {
-				margin: 0;
-				margin-top: $spacing-xs;
+			.title {
+				font-weight: bold;
 			}
 
 			.link {

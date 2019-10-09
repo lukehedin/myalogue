@@ -57,14 +57,22 @@ export default class NotificationButton extends Component {
 						lastCheckedAt: new Date()
 					});
 
-					//Small chance we did our first fetch, returned a notification created in the last window
-					//And then on the update fetch got it again. This filters out any repeats.
-					let existingUserNotificationIds = this.state.notifications.map(n => n.userNotificationId);
-					let newNotifications = result.filter(newNotification => !existingUserNotificationIds.includes(newNotification.userNotificationId));
+					//Sometimes the same a notification with an existing usernotificationid will be returned. eg. a new comment. we need to replace it.
+					let newNotifications = result;
+					let updatedNotifications = this.state.notifications.map(existingNotification => {
+						let matchingNewNotification = newNotifications.find(newNotification => newNotification.userNotificationId === existingNotification.userNotificationId);
+						if(matchingNewNotification) {
+							//A new notification matches an existing one's id. Remove it from new notifications and put it into existing.
+							newNotifications = newNotifications.filter(newNotification => newNotification.userNotificationId !== matchingNewNotification.userNotificationId);
+							return matchingNewNotification;
+						} else {
+							return existingNotification;
+						}
+					});
 
 					this.setNotifications([
 						...newNotifications,
-						...this.state.notifications
+						...updatedNotifications
 					]);
 				}
 			});
@@ -107,7 +115,7 @@ export default class NotificationButton extends Component {
 		}
 	}
 	render() {
-		let notifications = this.state.notifications.sort((n1, n2) => new Date(n2.createdAt) - new Date(n1.createdAt));
+		let notifications = this.state.notifications.sort((n1, n2) => new Date(n2.updatedAt) - new Date(n1.updatedAt));
 		let unseenNotifications = notifications.filter(notification => !notification.isSeen);
 
 		let content = <div className="notification-content">
@@ -118,10 +126,10 @@ export default class NotificationButton extends Component {
 					let className = `notification ${notification.isActionable ? 'actionable' : ''} ${link ? 'linked' : ''}`;
 					
 					return <div key={notification.userNotificationId} onClick={() => this.actionedNotification(notification)} className={className}>
-						{link ? <Link className="link" to={link}></Link> : null}
-						<p className="title">{notification.title}</p>
+						{notification.title ? <p className="title">{notification.title}</p> : null}
 						<p className="message">{notification.message}</p>
-						<p className="date">{moment(notification.createdAt).fromNow()}</p>
+						<p className="date">{moment(notification.updatedAt).fromNow()}</p>
+						{link ? <Link className="link" to={link}></Link> : null}
 					</div>
 				})
 				: <p className="empty-text align-center">You have no notifications.</p>}

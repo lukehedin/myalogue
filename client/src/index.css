@@ -37,6 +37,13 @@ body {
               fill: #fff; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon:hover path {
               fill: #ff0052; }
+          body .app-container .app .app-header .app-header-inner .profile-menu .username {
+            margin: 0;
+            padding: 8px 4px;
+            background-color: #efefef;
+            border-bottom: 1px solid #c8c8c8;
+            text-overflow: ellipsis;
+            overflow: hidden; }
           body .app-container .app .app-header .app-header-inner .app-logo {
             margin-left: 8px;
             height: 32px; }
@@ -774,12 +781,12 @@ body {
             position: relative; }
             body .app-container .app .notification-menu .notification-content .notification.actionable {
               background-color: #ffedf3; }
+            body .app-container .app .notification-menu .notification-content .notification > p {
+              margin: 0; }
+              body .app-container .app .notification-menu .notification-content .notification > p:not(:first-child) {
+                margin-top: 8px; }
             body .app-container .app .notification-menu .notification-content .notification .title {
-              margin: 0;
               font-weight: bold; }
-            body .app-container .app .notification-menu .notification-content .notification .message, body .app-container .app .notification-menu .notification-content .notification .date {
-              margin: 0;
-              margin-top: 8px; }
             body .app-container .app .notification-menu .notification-content .notification .link {
               position: absolute;
               height: 100%;
@@ -824,7 +831,9 @@ body {
         border-top: 1px solid #c8c8c8;
         border-bottom: 1px solid #c8c8c8; }
         body .app-container .app .comment-thread .comments .comment {
-          margin: 8px 0; }
+          margin: 16px 0; }
+          body .app-container .app .comment-thread .comments .comment:not(:first-child) {
+            padding-top: 8px; }
       body .app-container .app .comment-thread .new-comment {
         display: flex;
         flex-direction: row;
@@ -841,25 +850,31 @@ body {
           body .app-container .app .comment-thread .new-comment .new-comment-inner .button {
             align-self: flex-end;
             margin-top: 4px; }
-      body .app-container .app .comment .comment-upper {
+      body .app-container .app .comment {
         display: flex;
         flex-direction: row;
-        align-items: center; }
-        body .app-container .app .comment .comment-upper .avatar {
+        align-items: flex-start; }
+        body .app-container .app .comment .avatar {
           margin-right: 8px; }
-        body .app-container .app .comment .comment-upper .user-date {
-          font-size: 12px;
-          color: #969696; }
-      body .app-container .app .comment .comment-lower {
-        margin-left: calc(32px + 8px); }
-        body .app-container .app .comment .comment-lower .comment-value {
-          font-size: 14px;
-          overflow-wrap: break-word;
-          white-space: pre-line; }
-        body .app-container .app .comment .comment-lower .comment-actions {
-          margin-top: 4px; }
-          body .app-container .app .comment .comment-lower .comment-actions a {
-            font-size: 12px; }
+        body .app-container .app .comment .comment-inner {
+          flex: 1; }
+          body .app-container .app .comment .comment-inner .comment-upper {
+            display: flex;
+            flex-direction: row;
+            align-items: center; }
+            body .app-container .app .comment .comment-inner .comment-upper .user-date {
+              font-size: 12px;
+              color: #969696; }
+          body .app-container .app .comment .comment-inner .comment-lower {
+            margin-top: 8px; }
+            body .app-container .app .comment .comment-inner .comment-lower .comment-value {
+              font-size: 14px;
+              overflow-wrap: break-word;
+              white-space: pre-line; }
+            body .app-container .app .comment .comment-inner .comment-lower .comment-actions {
+              margin-top: 4px; }
+              body .app-container .app .comment .comment-inner .comment-lower .comment-actions a {
+                font-size: 12px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;

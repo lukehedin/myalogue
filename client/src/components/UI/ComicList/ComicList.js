@@ -14,7 +14,7 @@ export default class ComicList extends Component {
 			isLoading: true,
 			
 			includeAnonymous: Util.context.setting.getShowAnonymousComics(),
-			sortBy: this.props.sortBy || Util.enum.ComicSortBy.TopRated,
+			sortBy: this.props.sortBy || Util.enums.ComicSortBy.TopRated,
 			limit: 5,
 			offset: 0,
 			completedAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!
@@ -65,7 +65,7 @@ export default class ComicList extends Component {
 		});
 		
 		this.fetchTimeout = setTimeout(() => {
-			let isRandomSort = this.state.sortBy === Util.enum.ComicSortBy.Random;
+			let isRandomSort = this.state.sortBy === Util.enums.ComicSortBy.Random;
 			let templateId = this.props.templateId;
 
 			Util.api.post('/api/getComics', {
@@ -115,13 +115,13 @@ export default class ComicList extends Component {
 						valueProp='type' 
 						options={[
 							{
-								type: Util.enum.ComicSortBy.TopRated,
+								type: Util.enums.ComicSortBy.TopRated,
 								label: 'Top Rated'
 							}, {
-								type: Util.enum.ComicSortBy.Newest,
+								type: Util.enums.ComicSortBy.Newest,
 								label: 'Newest'
 							}, {
-								type: Util.enum.ComicSortBy.Random,
+								type: Util.enums.ComicSortBy.Random,
 								label: 'Random'
 							}
 						]} 

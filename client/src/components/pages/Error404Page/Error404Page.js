@@ -4,9 +4,6 @@ import Util from '../../../Util';
 import Button from '../../UI/Button/Button';
 
 export default class Error404Page extends Component {
-	componentDidMount() {
-		//TODO Analytics track
-	}
 	render() {
 		return <div className="page-error-404">
 			<div className="panel-standard">

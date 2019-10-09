@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
+import Textarea from 'react-textarea-autosize';
 import Util from '../../../Util';
 
 import Checkbox from '../Checkbox/Checkbox';
@@ -12,7 +13,7 @@ export default function asForm(WrappedForm, formConfig) {
 			let formData = this.props.formData || {};
 			Object.keys(formConfig.fields).forEach(fieldName => {
 				//TODO get values from querystring if possible
-				if(!formData[fieldName]) formData[fieldName] = formConfig.fields[fieldName].type === Util.enum.FieldType.Checkbox ? false : '';
+				if(!formData[fieldName]) formData[fieldName] = formConfig.fields[fieldName].type === Util.enums.FieldType.Checkbox ? false : '';
 			});
 
 			this.state = {
@@ -61,7 +62,7 @@ export default function asForm(WrappedForm, formConfig) {
 					: null;
 
 				// Required msg overwrites any custom ones
-				const alwaysOptionalFieldTypes = [Util.enum.FieldType.Checkbox];
+				const alwaysOptionalFieldTypes = [Util.enums.FieldType.Checkbox];
 				if(!alwaysOptionalFieldTypes.includes(fieldConfig.type) && !fieldConfig.isOptional && !validator.isLength(fieldValue, { min: 1 })) {
 					error = 'This field is required'
 				};
@@ -118,10 +119,15 @@ export default function asForm(WrappedForm, formConfig) {
 			let hideContainerLabel = false;
 
 			switch(fieldConfig.type) {
-				case Util.enum.FieldType.Textarea:
-					field = <div>textarea todo</div>;
+				case Util.enums.FieldType.Textarea:
+					field = <Textarea
+						className={`${fieldConfig.isAutoFocus ? 'auto-focus' : ''}`}
+						placeholder={fieldConfig.placeholder || null}
+						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
+						value={this.state.formData[fieldName]}
+					/>;
 					break;
-				case Util.enum.FieldType.Checkbox:
+				case Util.enums.FieldType.Checkbox:
 						hideContainerLabel = true;
 					field = <Checkbox 
 						label={fieldConfig.label}
@@ -135,7 +141,8 @@ export default function asForm(WrappedForm, formConfig) {
 						placeholder={fieldConfig.placeholder || null}
 						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
 						type={fieldConfig.isPassword ? "password" : "text"} 
-						value={this.state.formData[fieldName]} />;
+						value={this.state.formData[fieldName]}
+					/>;
 					break;
 			}
 

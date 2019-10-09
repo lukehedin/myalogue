@@ -34,6 +34,7 @@ export default asForm(RegisterForm, {
 		username: {
 			label: 'Username',
 			getError: (val) => {
+				if(!isNaN(val)) return 'Username must contain at least one letter';
 				if(!validator.isLength(val, { min: 3 })) return 'Please enter a longer username (minimum 3 characters)';
 				if(!validator.isAlphanumeric(val)) return 'Username can only contain letters and numbers';
 				if(!validator.isLength(val, { max: 20 })) return 'Please enter a shorter username (maximum 20 characters)';

@@ -22,6 +22,17 @@
 			}
 		}
 
+		.profile-menu {
+			.username {
+				margin: 0;
+				padding: $spacing-xs $spacing-xxs;
+				background-color: $colour-grey-a;
+				border-bottom: 1px solid $colour-grey-b;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+		}
+
 		.app-logo {
 			margin-left: $spacing-xs;
 			height: 32px;

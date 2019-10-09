@@ -25,7 +25,7 @@ class Modal extends Component {
 		let modalContent = modal.content;
 
 		switch(modal.type){
-			case Util.enum.ModalType.Alert:
+			case Util.enums.ModalType.Alert:
 				modalClass = "modal-prompt";
 				modalContent = <div>
 					{modalContent}
@@ -36,7 +36,7 @@ class Modal extends Component {
 					</div>
 				</div>
 				break;
-			case Util.enum.ModalType.Confirm:
+			case Util.enums.ModalType.Confirm:
 				modalClass = "modal-prompt";
 				modalContent = <div>
 					{modalContent}
@@ -52,7 +52,7 @@ class Modal extends Component {
 					</div>
 				</div>
 				break;
-			case Util.enum.ModalType.ShareComicModal:
+			case Util.enums.ModalType.ShareComicModal:
 				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
 				modalContent = <ShareComicContainer comic={modal.comic} />

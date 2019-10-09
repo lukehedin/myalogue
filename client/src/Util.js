@@ -191,7 +191,7 @@ const Util = {
 		}
 	},
 
-	enum: {
+	enums: {
 		toString: (enumObj, enumValue) => Object.keys(enumObj).find(key => enumObj[key] === enumValue),
 
 		FieldType: {
@@ -205,11 +205,6 @@ const Util = {
 			Alert: 1,
 			Confirm: 2,
 			ShareComicModal: 3
-		},
-
-		NotificationType: {
-			General: 1,
-			ComicComplete: 2,
 		},
 
 		ComicSortBy: {

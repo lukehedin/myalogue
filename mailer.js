@@ -1,7 +1,9 @@
+const https = require('https');
+
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-mailer = {
+const mailer = {
 	_host: 's4ycomic.com',
 
 	_send: (toEmail, subject, html) => {
@@ -29,6 +31,17 @@ mailer = {
 
 			console.log('Mail send success');
 		}
+	},
+
+	isEmailAddressAcceptable: (email, callback) => {
+		https.get(`https://open.kickbox.com/v1/disposable/${email}`, (response) => {
+			let responseBody  = '';
+			response.on('data', (chunk) => { responseBody += chunk; });
+			response.on('end', () => {
+				let responseJson = JSON.parse(responseBody);
+				callback(responseJson && responseJson.hasOwnProperty('disposable') && !responseJson.disposable)
+			});
+		});
 	},
 
 	sendVerificationEmail: (toEmail, username, verificationToken) => {

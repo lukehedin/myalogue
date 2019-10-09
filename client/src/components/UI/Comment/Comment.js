@@ -15,7 +15,7 @@ class Comment extends Component {
 	}
 	deleteComment() {
 		this.props.openModal({
-			type: Util.enum.ModalType.Confirm,
+			type: Util.enums.ModalType.Confirm,
 			title: 'Delete comment',
 			content: <p>Are you sure you want to delete this comment?</p>,
 			yesLabel: 'Delete',
@@ -32,19 +32,21 @@ class Comment extends Component {
 		let user = this.props.comment.user;
 
 		return <div className="comment">
-			<div className="comment-upper">
-				<Avatar size={32} to={Util.route.profile(user.userId)} user={user} />
-				<div className="user-date"><Link to={Util.route.profile(user.userId)}>{user.username}</Link> {moment(this.props.comment.createdAt).fromNow()}</div>
-				<div className="flex-spacer"></div>
-			</div>
-			<div className="comment-lower">
-				<div className="comment-value">{this.props.comment.value}</div>
-				{user.userId === Util.context.getUserId()
-					? <div className="comment-actions">
-						<a onClick={this.deleteComment}>Delete</a>
-					</div>
-					: null
-				}
+			<Avatar size={32} to={Util.route.profile(user.username)} user={user} />
+			<div className="comment-inner">
+				<div className="comment-upper">
+					<div className="user-date"><Link to={Util.route.profile(user.username)}>{user.username}</Link> {moment(this.props.comment.createdAt).fromNow()}</div>
+					<div className="flex-spacer"></div>
+				</div>
+				<div className="comment-lower">
+					<div className="comment-value">{this.props.comment.value}</div>
+					{user.userId === Util.context.getUserId()
+						? <div className="comment-actions">
+							<a onClick={this.deleteComment}>Delete</a>
+						</div>
+						: null
+					}
+				</div>
 			</div>
 		</div>
 	}

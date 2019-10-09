@@ -1,9 +1,11 @@
 const validator = require('validator');
-const https = require('https');
 const moment = require('moment');
 
-const mailer = require('./mailer');
+const enums = require('./enums');
+const error = require('./error');
 const mapper = require('./mapper');
+const mailer = require('./mailer');
+const notifier = require('./notifier');
 
 //Authentication
 const auth = require('./auth');
@@ -13,60 +15,7 @@ const ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS = process.env.ACCOUNT_VERIFICATION_
 const COMIC_LOCK_WINDOW_MINS = process.env.COMIC_LOCK_WINDOW_MINS || 3;
 const COMIC_PANEL_SKIP_LIMIT = process.env.COMIC_PANEL_SKIP_LIMIT || 8;
 
-const catchError = (res, error, db = null) => {
-	// If db param specified, the error is treated as a serious error
-	// It will be logged, and the error to the client will be generic
-
-	console.log(error);
-
-	if(db) {
-		db.Log.create({
-			Type: '500 ERROR',
-			Message: error.toString()
-		});
-	}
-
-	if(!res.headersSent) {
-		res.json({ 
-			error: db 
-				? 'Sorry, something went wrong. Please try again later.' 
-				: error
-		});
-	}
-};
-
-const isEmailAcceptable = (email, callback) => {
-	https.get(`https://open.kickbox.com/v1/disposable/${email}`, (response) => {
-		let responseBody  = '';
-		response.on('data', (chunk) => { responseBody += chunk; });
-		response.on('end', () => {
-			let responseJson = JSON.parse(responseBody);
-			callback(responseJson && responseJson.hasOwnProperty('disposable') && !responseJson.disposable)
-		});
-	});
-};
-
 //Common functions
-const createNotifications = (db, userIds, title, message, comicId) => {
-	//Unique userids
-	userIds = [...new Set(userIds)].filter(userId => !!userId && !isNaN(userId)); //Unique-ify and filter any null, undefined, 0 etc
-
-	if(userIds && userIds.length > 0) {
-		db.Notification.create({
-			Title: title,
-			Message: message,
-			ComicId: comicId
-		})
-		.then(dbNotification => {
-			db.UserNotification.bulkCreate(userIds.map(userId => {
-				return {
-					NotificationId: dbNotification.NotificationId,
-					UserId: userId
-				};
-			}));
-		});
-	}
-}
 const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
 	return moment(new Date()).subtract(COMIC_LOCK_WINDOW_MINS, 'minutes').toDate();
@@ -205,7 +154,7 @@ const routes = {
 						})
 						.then(dbUser => {
 							if(!dbUser) {
-								catchError(res, 'Invalid userId in token', db);
+								error.resError(res, 'Invalid userId in token', db);
 								return;
 							}
 							
@@ -232,7 +181,7 @@ const routes = {
 						});
 					}
 				})
-				.catch(error => catchError(res, error, db));
+				.catch(err => error.resError(res, err, db));
 		},
 	
 		login: (req, res, db) => {
@@ -256,9 +205,9 @@ const routes = {
 							dbUser.save();
 
 							mailer.sendVerificationEmail(dbUser.Email, dbUser.Username, newVerificationToken);
-							catchError(res, 'Please verify your email address. A new verification email has been sent.');
+							error.resError(res, 'Please verify your email address. A new verification email has been sent.');
 						} else {
-							catchError(res, 'Please verify your email address.');
+							error.resError(res, 'Please verify your email address.');
 						}
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
@@ -266,13 +215,13 @@ const routes = {
 								auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
 							} else {
 								//Invalid password
-								catchError(res, 'Invalid email or password.');
+								error.resError(res, 'Invalid email or password.');
 							}
 						});
 					}
 				} else {
 					//Invalid email
-					catchError(res, 'Invalid email or password.');
+					error.resError(res, 'Invalid email or password.');
 				}
 			})
 		},
@@ -285,10 +234,13 @@ const routes = {
 			let password = req.body.password;
 	
 			let isValidEmail = validator.isEmail(email);
-			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) && validator.isAlphanumeric(username) && !forbiddenUsernames.includes(username);
+			let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) 
+				&& validator.isAlphanumeric(username) 
+				&& !forbiddenUsernames.includes(username)
+				&& isNaN(username); //Can't have a username with just numbers, confuses profile page
 	
 			if(!isValidEmail || !isValidUsername) {
-				catchError(res, 'Invalid email or username supplied.');
+				error.resError(res, 'Invalid email or username supplied.');
 				return;
 			}
 
@@ -298,16 +250,16 @@ const routes = {
 			})
 			.then(dbExistingUser => {
 				if(dbExistingUser) {
-					catchError(res, dbExistingUser.Email === email
+					error.resError(res, dbExistingUser.Email === email
 						? 'Email is already in use. Please log in with your existing account or reset your password.'
 						: 'Username is already in use. Please choose another username.');
 					return;
 				}
 
 				//Check for disposable email
-				isEmailAcceptable(email, (isAcceptable) => {
+				mailer.isEmailAddressAcceptable(email, (isAcceptable) => {
 					if(!isAcceptable) {
-						catchError(res, 'Disposable emails are not allowed. Please enter another email address.');
+						error.resError(res, 'Disposable emails are not allowed. Please enter another email address.');
 						return;
 					}
 
@@ -315,7 +267,7 @@ const routes = {
 					auth.hashPassword(password, (error, hashedPassword) => {
 						if(error || !hashedPassword) {
 							//don't give password error details
-							catchError(res, 'Invalid password supplied.', db);
+							error.resError(res, 'Invalid password supplied.', db);
 							return;
 						}
 
@@ -332,11 +284,11 @@ const routes = {
 							mailer.sendVerificationEmail(email, username, verificationToken);
 							res.json({ success: true });
 						})
-						.catch(error => catchError(res, error, db));
+						.catch(err => error.resError(res, err, db));
 					});
 				});
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		verifyAccount: (req, res, db) => {
@@ -349,32 +301,17 @@ const routes = {
 			})
 			.then((dbUser) => {
 				if(!dbUser) {
-					catchError(res, 'Account verification failed.');
+					error.resError(res, 'Account verification failed.');
 					return;
 				}
 				
 				dbUser.VerificationToken = null;
 				dbUser.save()
-					.then(() => {
-						auth.getUserJwtResult(dbUser, userResult => res.json(userResult));
-					})
-					.catch(error => catchError(res, error, db));
+					.then(() => auth.getUserJwtResult(dbUser, userResult => res.json(userResult)))
+					.catch(err => error.resError(res, err, db));
 
 				//Also add a welcome notification
-				db.Notification.findOne({
-					where: {
-						IsWelcomeNotification: true
-					}
-				})
-				.then(dbWelcomeNotificaton => {
-					if(dbWelcomeNotificaton) {
-						db.UserNotification.create({
-							NotificationId: dbWelcomeNotificaton.NotificationId,
-							UserId: dbUser.UserId
-						});
-					}
-				})
-				.catch(error => catchError(res, error, db));
+				notifier.sendWelcomeNotification(db, dbUser.UserId);
 			});
 		},
 	
@@ -411,7 +348,7 @@ const routes = {
 					// mailer.sendForgotPasswordNoAccountEmail(dbUser.Email);
 				}
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 
 			//Always say the same thing, even if it didn't work
 			res.json({ success: true });
@@ -424,7 +361,7 @@ const routes = {
 			let now = new Date();
 
 			if(!token) {
-				catchError(res, 'This password reset request is invalid or has expired.');
+				error.resError(res, 'This password reset request is invalid or has expired.');
 				return;
 			}
 			
@@ -438,14 +375,14 @@ const routes = {
 			})
 			.then(dbUser => {
 				if(!dbUser) {
-					catchError(res, 'This password reset request is invalid or has expired.');
+					error.resError(res, 'This password reset request is invalid or has expired.');
 					return;
 				}
 
 				auth.hashPassword(password, (error, hashedPassword) => {
 					if(error || !hashedPassword) {
 						//don't give password error details
-					   catchError(res, 'Invalid password supplied.', db);
+						error.resError(res, 'Invalid password supplied.', db);
 					   return;
 					}
 
@@ -454,10 +391,10 @@ const routes = {
 					dbUser.PasswordResetToken = null;
 					dbUser.save()
 						.then(() => auth.getUserJwtResult(dbUser, userResult => res.json(userResult))) //Wait for this save in case it fails
-						.catch(error => catchError(res, error, db));
+						.catch(err => error.resError(res, err, db));
 				});
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		getComicById: (req, res, db) => {
@@ -485,10 +422,10 @@ const routes = {
 						});
 					}
 				} else {
-					catchError(res, 'Comic not found.', db);
+					error.resError(res, 'Comic not found.', db);
 				}
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 		
 		getComics: (req, res, db) => {
@@ -551,7 +488,7 @@ const routes = {
 
 						resolve();
 					})
-					.catch(error => reject(error));
+					.catch(err => reject(err));
 				}
 			})
 			.then(() => {
@@ -563,9 +500,9 @@ const routes = {
 					include: getIncludeForComic(db, userId)
 				})
 				.then(dbComics => res.json(dbComics.map(dbComic => mapper.fromDbComic(dbComic))))
-				.catch(error => catchError(res, error, db));
+				.catch(err => error.resError(res, err, db));
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		getTopComics: (req, res, db) => {
@@ -601,25 +538,33 @@ const routes = {
 					include: getIncludeForComic(db, userId, true)
 				})
 				.then(dbComicsWithInclude => res.json(dbComicsWithInclude.map(mapper.fromDbComic)))
-				.catch(error => catchError(res, error, db));
+				.catch(err => error.resError(res, err, db));
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		getUser: (req, res, db) => {
 			let requestedUserId = req.body.requestedUserId; //do not confuse
+			let requestedUsername = req.body.requestedUsername;
+
+			let userWhere = requestedUserId
+				? {
+					UserId: requestedUserId
+				}
+				: {
+					Username: requestedUsername
+				};
+
+			userWhere.VerificationToken =  {
+				[db.op.eq]: null  //unverified users cant be viewed
+			}
 
 			db.User.findOne({
-				where: {
-					UserId: requestedUserId,
-					VerificationToken: {
-						[db.op.eq]: null  //unverified users cant be viewed
-					}
-				}
+				where: userWhere
 			})
 			.then(dbUser => {
 				if(!dbUser) {
-					catchError(res, 'User not found.');
+					error.resError(res, 'User not found.');
 					return false;
 				}
 
@@ -627,7 +572,7 @@ const routes = {
 				//That way we can have leaderboards etc
 				db.ComicPanel.findAll({
 					where: {
-						UserId: requestedUserId
+						UserId: dbUser.UserId
 					}
 				})
 				.then(dbComicPanels => {
@@ -644,7 +589,7 @@ const routes = {
 						}
 					})
 					.then(dbComics => {
-						let comicTotalRating = dbComics.reduce((total, item) => total + item.Rating, 0);
+						let comicTotalRating = dbComics.reduce((total, dbComic) => total + dbComic.Rating, 0);
 						res.json({
 							user: mapper.fromDbUser(dbUser, true),
 							userStats: {
@@ -654,11 +599,11 @@ const routes = {
 							}
 						});
 					})
-					.catch(error => catchError(res, error, db));
+					.catch(err => error.resError(res, err, db));
 				})
-				.catch(error => catchError(res, error, db));
+				.catch(err => error.resError(res, err, db));
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		getComicsInProgressCount: (req, res, db) => {
@@ -673,7 +618,7 @@ const routes = {
 				}
 			})
 			.then(dbComics => res.json(dbComics.length))
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		//Gets a comic in progress or starts new
@@ -682,7 +627,7 @@ const routes = {
 			let anonId = req.anonId;
 
 			if(!userId && !anonId) {
-				catchError(res, 'No userId supplied');
+				error.resError(res, 'No userId supplied');
 				return;
 			}
 
@@ -798,7 +743,7 @@ const routes = {
 										? mapper.fromDbComicPanel(currentComicPanel) 
 										: null
 								}))
-								.catch(error => reject(error));
+								.catch(err => reject(err));
 		
 						})
 						.catch(err => reject(err));
@@ -808,7 +753,7 @@ const routes = {
 				if(dbComic) {
 					prepareComicForPlay(dbComic)
 						.then(result => res.json(result))
-						.catch(error => catchError(res, error, db));
+						.catch(err => error.resError(res, err, db));
 				} else {
 					db.Template.findAll({
 						limit: 10, //10 keeps the latest templates in circulation, while still having variety
@@ -829,11 +774,11 @@ const routes = {
 						.then(dbNewComic => {
 							prepareComicForPlay(dbNewComic)
 								.then(result => res.json(result))
-								.catch(error => catchError(res, error, db));
+								.catch(err => error.resError(res, err, db));
 						})
-						.catch(error => catchError(res, error, db));
+						.catch(err => error.resError(res, err, db));
 					})
-					.catch(error => catchError(res, error, db));
+					.catch(err => error.resError(res, err, db));
 				}
 		
 				//Process skipped comic (needs to happen after the query above)
@@ -862,7 +807,7 @@ const routes = {
 						//Should never be > 1: comicId alone should assure that, but in the case of 0 affected rows....
 						if(affectedRows !== 1) {
 							//Invalid lock/id. Bail right out here.
-							catchError(res, `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`, db);
+							error.resError(res, `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`, db);
 							return;
 						}
 						
@@ -878,38 +823,38 @@ const routes = {
 							.then(dbComicPanels => {
 								//There may be no panels (if the user skipped at the BEGIN COMIC stage)
 								if(dbComicPanels && dbComicPanels.length === 1) {
-									let currentComicPanel = dbComicPanels[0];
+									let dbCurrentComicPanel = dbComicPanels[0];
 
 									//Record a panelskip. if this is created (not found) we need to increase skipcount
 									db.ComicPanelSkip.findOrCreate({
 										where: {
 											UserId: userId,
-											ComicPanelId: currentComicPanel.ComicPanelId
+											ComicPanelId: dbCurrentComicPanel.ComicPanelId
 										}
 									})
 									.then(([dbComicPanelSkip, wasCreated]) => {
 										if(wasCreated) {
 											//If this was my first skip of this comic panel, increase skipcount
-											let newSkipCount = currentComicPanel.SkipCount + 1;
+											let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
 											if(newSkipCount > COMIC_PANEL_SKIP_LIMIT) {
 												//No need to update skip count, the archived state indicates the total count is limit + 1;
-												if(currentComicPanel.UserId) createNotifications(db, [currentComicPanel.UserId], 'Panel removed...', `Sorry, a panel you made for comic #${currentComicPanel.ComicId} was skipped by too many users and has been removed. Your dialogue was: "${currentComicPanel.Value}"`);
-												currentComicPanel.destroy();
+												dbCurrentComicPanel.destroy();
+												if(dbCurrentComicPanel.UserId) notifier.sendPanelRemovedNotification(db, dbCurrentComicPanel);
 											} else {
-												currentComicPanel.SkipCount = newSkipCount;
-												currentComicPanel.save();
+												dbCurrentComicPanel.SkipCount = newSkipCount;
+												dbCurrentComicPanel.save();
 											}
 										}
 									})
-									.catch(error => catchError(res, error, db));
+									.catch(err => error.resError(res, err, db));
 								}
 							})
-							.catch(error => catchError(res, error, db));
+							.catch(err => error.resError(res, err, db));
 						}
 					});
 				}
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 		
 		submitComicPanel: (req, res, db) => {
@@ -941,7 +886,7 @@ const routes = {
 			})
 			.then(dbComic => {
 				if(!dbComic) {
-					catchError(res, 'Invalid comic submitted.');
+					error.resError(res, 'Invalid comic submitted.');
 					return;
 				}
 	
@@ -949,7 +894,7 @@ const routes = {
 				let isComicValid = dbComic.CompletedAt === null && dbComic.ComicPanels.length < dbComic.PanelCount;
 		
 				if(!isComicValid || !isDialogueValid) {
-					catchError(res, 'Invalid dialogue supplied.');
+					error.resError(res, 'Invalid dialogue supplied.');
 					return;
 				}
 				
@@ -969,8 +914,8 @@ const routes = {
 						dbComic.CompletedAt = now;
 	
 						//Notify other panel creators, but not this one.
-						let notifyUserIds = dbComic.ComicPanels.filter(cp => !!cp.UserId).map(cp => cp.UserId).filter(uId => uId !== userId);
-						createNotifications(db, notifyUserIds, `Comic #${dbComic.ComicId} completed!`, `A comic you made a panel for has been completed. Click here to view the comic.`, dbComic.ComicId);
+						let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
+						notifier.sendComicCompletedNotification(db, notifyUserIds, dbComic.ComicId);
 					}
 	
 					//Remove the lock
@@ -994,11 +939,11 @@ const routes = {
 								isComicCompleted: isComicCompleted
 							});
 						})
-						.catch(error => catchError(res, error, db));
+						.catch(err => error.resError(res, err, db));
 				})
-				.catch(error => catchError(res, error, db));
+				.catch(err => error.resError(res, err, db));
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 	},
 
@@ -1011,7 +956,7 @@ const routes = {
 
 			//Value can only be 1, 0, -1
 			if(value > 1 || value < -1) {
-				catchError(res, 'Invalid vote value supplied.', db);
+				error.resError(res, 'Invalid vote value supplied.', db);
 				return;
 			}
 
@@ -1031,7 +976,7 @@ const routes = {
 			})
 			.then(dbComic => {
 				if(!dbComic) {
-					catchError(res, 'Invalid comic ID supplied.', db);
+					error.resError(res, 'Invalid comic ID supplied.', db);
 					return;
 				}
 
@@ -1072,7 +1017,7 @@ const routes = {
 	
 				res.json({ success: true });
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		postComicComment: (req, res, db) => {
@@ -1087,11 +1032,18 @@ const routes = {
 					CompletedAt: {
 						[db.op.ne]: null
 					}
-				}
+				},
+				include: [{
+					model: db.ComicPanel,
+					as: 'ComicPanels'
+				}, {
+					model: db.ComicComment,
+					as: 'ComicComments'
+				}]
 			})
 			.then(dbComic => {
 				if(!dbComic) {
-					catchError(res, 'Invalid comic to comment on', db);
+					error.resError(res, 'Invalid comic to comment on', db);
 					return;
 				}
 
@@ -1100,8 +1052,12 @@ const routes = {
 					ComicId: comicId,
 					Value: value
 				})
-				.then(dbCreatedComicComment => res.json(mapper.fromDbComicComment(dbCreatedComicComment)))
-				.catch(error => catchError(res, error, db));
+				.then(dbCreatedComicComment => {
+					notifier.sendComicCommentNotification(db, dbCreatedComicComment, dbComic);
+
+					res.json(mapper.fromDbComicComment(dbCreatedComicComment));
+				})
+				.catch(err => error.resError(res, err, db));
 			});
 		},
 
@@ -1125,24 +1081,27 @@ const routes = {
 
 			let lastCheckedAt = req.body.lastCheckedAt;
 
-			let notificationWhere = {
+			let userNotificationWhere = {
 				UserId: userId
 			};
 
 			if(lastCheckedAt) {
-				notificationWhere = {
-					...notificationWhere,
-					CreatedAt: {
+				userNotificationWhere = {
+					...userNotificationWhere,
+					UpdatedAt: {
 						[db.op.gte]: lastCheckedAt
 					}
 				};
 			} else {
 				//First request
-				notificationWhere = {
-					...notificationWhere,
+				userNotificationWhere = {
+					...userNotificationWhere,
 					[db.op.or]: [{
-						CreatedAt: {
-							[db.op.gte]: moment().subtract(2, 'days').toDate()
+						// ActionedAt: {
+						// 	[db.op.eq]: null //Never return actioned notifications ?
+						// },
+						UpdatedAt: {
+							[db.op.gte]: moment().subtract(1, 'day').toDate()
 						}
 					}, {
 						SeenAt: {
@@ -1153,14 +1112,14 @@ const routes = {
 			}
 
 			db.UserNotification.findAll({
-				where: notificationWhere,
+				where: userNotificationWhere,
 				include: [{
 					model: db.Notification,
 					as: 'Notification'
 				}]
 			})
 			.then(dbUserNotifications => res.json(dbUserNotifications.map(mapper.fromDbUserNotification)))
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		seenNotifications: (req, res, db) => {
@@ -1219,7 +1178,7 @@ const routes = {
 				}
 			})
 			.then(() => res.json({ success: true }))
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 
 		changePassword: (req, res, db) => {
@@ -1236,7 +1195,7 @@ const routes = {
 			})
 			.then(dbUser => {
 				if(!dbUser) {
-					catchError(res, 'User not found.');
+					error.resError(res, 'User not found.');
 					return;
 				}
 
@@ -1245,22 +1204,22 @@ const routes = {
 						auth.hashPassword(newPassword, (error, hashedPassword) => {
 							if(error || !hashedPassword) {
 								//don't give password error details
-							   catchError(res, 'Invalid password supplied.', db);
+							   error.resError(res, 'Invalid password supplied.', db);
 							   return;
 							}
 		
 							dbUser.Password = hashedPassword;
 							dbUser.save()
 								.then(() => res.json({ success: true})) //Wait for this save in case it fails
-								.catch(error => catchError(res, error, db));
+								.catch(err => error.resError(res, err, db));
 						});
 					} else {
 						//Invalid password
-						catchError(res, 'Invalid current password.');
+						error.resError(res, 'Invalid current password.');
 					}
 				});
 			})
-			.catch(error => catchError(res, error, db));
+			.catch(err => error.resError(res, err, db));
 		},
 	
 		// commentComic: (req, res, db) => {
@@ -1321,7 +1280,7 @@ const routes = {
 		// 			}
 		// 		});
 		// 	} else {
-		// 		catchError(res, 'Invalid username supplied.', db);
+		// 		error.resError(res, 'Invalid username supplied.', db);
 		// 	}
 		// },
 	}

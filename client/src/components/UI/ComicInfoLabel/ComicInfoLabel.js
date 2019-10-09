@@ -26,7 +26,7 @@ export default class ComicInfoLabel extends Component {
 		return <span>Completed {moment(this.props.comic.completedAt).fromNow()} by {authors.map((author, idx) => {
 			return author.anonCount
 				? <span key={idx}>{Util.format.pluralise(author.anonCount, 'an anonymous user', 'anonymous users')}</span>
-				: <span key={idx}><Link to={Util.route.profile(author.userId)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
+				: <span key={idx}><Link to={Util.route.profile(author.username)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
 		})}.</span>
 	}
 }

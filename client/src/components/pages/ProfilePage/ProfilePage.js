@@ -6,7 +6,7 @@ import ComicList from '../../UI/ComicList/ComicList';
 import Button from '../../UI/Button/Button';
 import Avatar from '../../UI/Avatar/Avatar';
 
-//this.props.userId
+//this.props.userIdOrUserName
 export default class ProfilePage extends Component {
 	constructor(props) {
 		super(props);
@@ -20,19 +20,20 @@ export default class ProfilePage extends Component {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.userId !== prevProps.userId;
+		return this.props.userIdOrUserName !== prevProps.userIdOrUserName;
 	}
-	componentDidUpdate(prevProps, prevState, isNewUserId) {
-		if(isNewUserId) this.fetchData();
+	componentDidUpdate(prevProps, prevState, isNewUserIdOrUsername) {
+		if(isNewUserIdOrUsername) this.fetchData();
 	}
 	fetchData() {
 		this.setState({
 			isLoading: true
 		});
 		
-		Util.api.post('/api/getUser', {
-			requestedUserId: this.props.userId
-		})
+		Util.api.post('/api/getUser', isNaN(this.props.userIdOrUserName)
+			? { requestedUsername: this.props.userIdOrUserName }
+			: { requestedUserId: this.props.userIdOrUserName }
+		)
 		.then(result => {
 			if(!result.error) {
 				this.setState({
@@ -81,13 +82,13 @@ export default class ProfilePage extends Component {
 			<div className="panel-stanard">
 				<div className="container">
 					<div className="row">
-						{this.state.user
+						{this.state.user && !this.state.isLoading
 							? <ComicList 
-								sortBy={Util.enum.ComicSortBy.TopRated}
+								sortBy={Util.enums.ComicSortBy.TopRated}
 								emptyText={`${this.state.user.username} hasn't contributed to  any comics yet. What a slacker!`}
 								noMoreText={`That's all the comics ${this.state.user.username} has contributed to.`}
 								title={`Comics featuring ${this.state.user.username}`} 
-								authorUserId={this.props.userId} 
+								authorUserId={this.state.user.userId} 
 							/>
 							: null
 						}

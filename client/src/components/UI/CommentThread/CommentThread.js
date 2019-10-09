@@ -18,15 +18,12 @@ export default class CommentThread extends Component {
 
 		this.commentsContainerRef = React.createRef();
 
+		this.scrollToBottom = this.scrollToBottom.bind(this);
 		this.onNewCommentChange = this.onNewCommentChange.bind(this);
 		this.postComment = this.postComment.bind(this);
 	}
 	componentDidMount() {
-		let commentsContainer = this.commentsContainerRef.current;
-
-		if(commentsContainer) {
-			commentsContainer.scrollTo(0, commentsContainer.scrollHeight);
-		}
+		this.scrollToBottom();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
 		return this.props.comments !== prevProps.comments;
@@ -35,8 +32,12 @@ export default class CommentThread extends Component {
 		if(isNewProps) {
 			this.setState({
 				comments: this.props.comments
-			});
+			}, this.scrollToBottom);
 		}
+	}
+	scrollToBottom() {
+		let commentsContainer = this.commentsContainerRef.current;
+		if(commentsContainer) commentsContainer.scrollTo(0, commentsContainer.scrollHeight);
 	}
 	onNewCommentChange(e) {
 		this.setState({

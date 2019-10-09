@@ -40,7 +40,7 @@ class Comic extends Component {
 	}
 	openShareComicModal(){
 		this.props.openModal({
-			type: Util.enum.ModalType.ShareComicModal,
+			type: Util.enums.ModalType.ShareComicModal,
 			comic: this.props.comic
 		});
 	}
