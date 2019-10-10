@@ -755,6 +755,8 @@ body {
           margin: 16px 0; }
           body .app-container .app .comment-thread .comments .comment:not(:first-child) {
             padding-top: 8px; }
+        body .app-container .app .comment-thread .comments .posting-message {
+          margin: 8px; }
       body .app-container .app .comment-thread .new-comment {
         display: flex;
         flex-direction: row;
