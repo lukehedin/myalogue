@@ -79,7 +79,9 @@
 
 @mixin textInputs {
 	input, select, textarea {
-		@content;
+		&:not([type=checkbox]), &:not([type=radio]) {
+			@content;
+		}
 	}
 }
 

@@ -11,14 +11,18 @@
 
 		.app-menu {
 			.app-menu-icon {
-				height: 24px;
-				width: 24px;
-				padding: $spacing-xxs 0;
+				padding: $spacing-xs 0;
+				height: 20px;
+				width: 20px;
 				@include svgColourStroke($colour-white);
 
 				&:hover {
 					@include svgColourStroke($colour-pink);
 				}
+			}
+
+			.context-menu-content {
+				top: 100%;
 			}
 		}
 
@@ -44,7 +48,7 @@
 		}
 
 		.notification-button {
-			margin-right: $spacing-xxs;
+			margin-right: $spacing-xs;
 		}
 
 		.avatar {

@@ -53,17 +53,18 @@ export default class AppHeader extends Component {
 						}
 						{Util.context.isAuthenticated()
 							? <ContextMenu align="right" className="profile-menu" 
-							content={<p className="username sm center">{Util.context.getUsername()}</p>}
-							menuItems={[{
-								label: 'Profile',
-								to: Util.route.profile()
-							}, {
-								label: 'Settings',
-								to: Util.route.settings()
-							}, {
-								label: 'Log out',
-								onClick: this.onLogout
-							}]}>
+								content={<p className="username sm center">{Util.context.getUsername()}</p>}
+								menuItems={[{
+									label: 'Profile',
+									to: Util.route.profile()
+								}, {
+									label: 'Settings',
+									to: Util.route.settings()
+								}, {
+									label: 'Log out',
+									onClick: this.onLogout
+								}]}
+							>
 								<Avatar size={32} />
 							</ContextMenu>
 							: <div className="button-container">

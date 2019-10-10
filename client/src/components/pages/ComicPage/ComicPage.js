@@ -32,6 +32,7 @@ export default class ComicPage extends Component {
 		this.fetchData();
 	}
 	getSnapshotBeforeUpdate(prevProps) {
+		//This is refreshed even if the same id is supplied (Eg. a notification for a new comment)
 		return this.props.comicId !== prevProps.comicId;
 	}
 	componentDidUpdate(prevProps, prevState, isNewComicId) {

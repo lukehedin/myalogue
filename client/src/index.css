@@ -30,13 +30,15 @@ body {
           flex-direction: row;
           align-items: center; }
           body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon {
-            height: 24px;
-            width: 24px;
-            padding: 4px 0; }
+            padding: 8px 0;
+            height: 20px;
+            width: 20px; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon path {
               fill: #fff; }
             body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon:hover path {
               fill: #ff0052; }
+          body .app-container .app .app-header .app-header-inner .app-menu .context-menu-content {
+            top: 100%; }
           body .app-container .app .app-header .app-header-inner .profile-menu .username {
             margin: 0;
             padding: 8px 4px;
@@ -51,7 +53,7 @@ body {
             font-size: 1.5em;
             margin: 0; }
           body .app-container .app .app-header .app-header-inner .notification-button {
-            margin-right: 4px; }
+            margin-right: 8px; }
           body .app-container .app .app-header .app-header-inner .avatar {
             transition: transform 0.1s; }
             body .app-container .app .app-header .app-header-inner .avatar:hover {
@@ -74,19 +76,17 @@ body {
             text-align: right; }
       body .app-container .app .comic-list {
         position: relative; }
-        body .app-container .app .comic-list .comic-list-title {
-          margin-bottom: 16px; }
-        body .app-container .app .comic-list .filters {
-          margin-bottom: 16px;
+        body .app-container .app .comic-list .comic-list-filters {
+          margin: 16px auto;
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: center; }
-          body .app-container .app .comic-list .filters > *:not(:first-child) {
+          body .app-container .app .comic-list .comic-list-filters > *:not(:first-child) {
             margin-left: 16px; }
-          body .app-container .app .comic-list .filters .anonymous-switch .checkmark {
+          body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkmark {
             top: 6px; }
-          body .app-container .app .comic-list .filters .anonymous-switch .checkbox-label {
+          body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkbox-label {
             width: 110px; }
         body .app-container .app .comic-list .comic-list-inner {
           display: flex;
@@ -246,7 +246,7 @@ body {
             body .app-container .app .form-wrapper form .field-container > label {
               font-size: 12px;
               margin-bottom: 4px; }
-            body .app-container .app .form-wrapper form .field-container.error input, body .app-container .app .form-wrapper form .field-container.error select, body .app-container .app .form-wrapper form .field-container.error textarea {
+            body .app-container .app .form-wrapper form .field-container.error input:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error input:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error select:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error select:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=radio]) {
               border-color: #f02100; }
           body .app-container .app .form-wrapper form .button-container {
             margin-top: 8px; }
@@ -1088,11 +1088,11 @@ body {
           text-decoration: underline; }
     body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
       background-color: #fff;
-      padding: 8px 16px;
+      padding: 8px;
       border-radius: 4px;
       -webkit-border-radius: 4px;
       -moz-border-radius: 4px;
-      font-size: 16px;
+      font-size: 14px;
       font-family: Arial, Helvetica, sans-serif;
       border: 1px solid #c8c8c8;
       outline: none;
@@ -1118,10 +1118,10 @@ body {
       body .app-container .comic-panel .comic-panel-subtle {
         line-height: calc(18px * 0.48);
         font-size: calc(16px * 0.48); }
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 0.48); }
       @media screen and (orientation: landscape) {
-        body .app-container .comic-lower {
+        body .app-container .comic-lower, body .app-container .comic-list-filters {
           width: calc(540px * 0.96); } }
     @media (min-height: 800px) {
       body .app-container .comic-panel {
@@ -1133,10 +1133,10 @@ body {
         body .app-container .comic-panel .comic-panel-subtle {
           line-height: calc(18px * 0.52);
           font-size: calc(16px * 0.52); }
-      body .app-container .comic-lower {
+      body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.52); } }
   @media screen and (min-height: 800px) and (orientation: landscape) {
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 1.04); } }
     @media (min-height: 996px) {
       body .app-container .comic-panel {
@@ -1148,10 +1148,10 @@ body {
         body .app-container .comic-panel .comic-panel-subtle {
           line-height: calc(18px * 0.56);
           font-size: calc(16px * 0.56); }
-      body .app-container .comic-lower {
+      body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.56); } }
   @media screen and (min-height: 996px) and (orientation: landscape) {
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 1.12); } }
     @media screen and (orientation: landscape) {
       body .app-container .comic-panel {
@@ -1163,10 +1163,10 @@ body {
         body .app-container .comic-panel .comic-panel-subtle {
           line-height: calc(18px * 0.48);
           font-size: calc(16px * 0.48); }
-      body .app-container .comic-lower {
+      body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.48); } }
   @media screen and (orientation: landscape) and (orientation: landscape) {
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 0.96); } }
 
 @media screen and (orientation: landscape) and (min-height: 680px) {
@@ -1179,10 +1179,10 @@ body {
     body .app-container .comic-panel .comic-panel-subtle {
       line-height: calc(18px * 0.52);
       font-size: calc(16px * 0.52); }
-  body .app-container .comic-lower {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
     width: calc(540px * 0.52); } }
   @media screen and (orientation: landscape) and (min-height: 680px) and (orientation: landscape) {
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 1.04); } }
 
 @media screen and (orientation: landscape) and (min-height: 800px) {
@@ -1195,8 +1195,8 @@ body {
     body .app-container .comic-panel .comic-panel-subtle {
       line-height: calc(18px * 0.56);
       font-size: calc(16px * 0.56); }
-  body .app-container .comic-lower {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
     width: calc(540px * 0.56); } }
   @media screen and (orientation: landscape) and (min-height: 800px) and (orientation: landscape) {
-    body .app-container .comic-lower {
+    body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 1.12); } }

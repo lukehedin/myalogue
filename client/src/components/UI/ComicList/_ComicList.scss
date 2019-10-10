@@ -1,12 +1,8 @@
 .comic-list {
 	position: relative;
 
-	.comic-list-title {
-		margin-bottom: $spacing-sm;
-	}
-
-	.filters {
-		margin-bottom: $spacing-sm;
+	.comic-list-filters {
+		margin: $spacing-sm auto;
 		display: flex;
 		flex-direction: row;
 		align-items: center;

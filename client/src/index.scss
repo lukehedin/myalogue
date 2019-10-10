@@ -261,22 +261,20 @@ body {
 		}
 
 		@include textInputs {
-			&:not([type=checkbox]), &:not([type=radio]) {
-				background-color: $colour-white;
-				padding: $spacing-xs $spacing-sm;
-				@include borderRadius(4px);
-				font-size: 16px;
-				font-family: $font-family-default;
+			background-color: $colour-white;
+			padding: $spacing-xs;
+			@include borderRadius(4px);
+			font-size: 14px;
+			font-family: $font-family-default;
 
-				border: 1px solid $colour-grey-b;
-				outline: none;
-				-webkit-box-shadow: none;
-				-moz-box-shadow: none;
-				box-shadow: none;
-			
-				&:focus {
-					border-color: $colour-grey-c;
-				}
+			border: 1px solid $colour-grey-b;
+			outline: none;
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+		
+			&:focus {
+				border-color: $colour-grey-c;
 			}
 		}
 
@@ -310,7 +308,8 @@ body {
 				}
 			}
 
-			.comic-lower {
+			//Elements that need to match the width of a comic
+			.comic-lower, .comic-list-filters {
 				@include applyComicPanelWidth($scale);
 				@include isLandscape {
 					@include applyComicPanelWidth($scale * 2);

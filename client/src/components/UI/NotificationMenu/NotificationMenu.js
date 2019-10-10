@@ -115,7 +115,7 @@ export default class NotificationButton extends Component {
 		}
 	}
 	render() {
-		let notifications = this.state.notifications.sort((n1, n2) => new Date(n2.updatedAt) - new Date(n1.updatedAt));
+		let notifications = this.state.notifications.sort((n1, n2) => new Date(n2.createdAt) - new Date(n1.createdAt));
 		let unseenNotifications = notifications.filter(notification => !notification.isSeen);
 
 		let content = <div className="notification-content">
@@ -128,7 +128,7 @@ export default class NotificationButton extends Component {
 					return <div key={notification.userNotificationId} onClick={() => this.actionedNotification(notification)} className={className}>
 						{notification.title ? <p className="title">{notification.title}</p> : null}
 						<p className="message">{notification.message}</p>
-						<p className="date">{moment(notification.updatedAt).fromNow()}</p>
+						<p className="date">{moment(notification.createdAt).fromNow()}</p>
 						{link ? <Link className="link" to={link}></Link> : null}
 					</div>
 				})

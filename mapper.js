@@ -116,8 +116,8 @@ const mapper = {
 				message = `A comic you made a panel for has been completed. Click here to view the comic.`;
 				break;
 			case enums.NotificationType.PanelRemoved:
-				title = `Panel removed...`;
-				message = `Sorry, a panel you made for comic #${dbRelatedComicId} was skipped by too many users and has been removed. Your dialogue was: "${valueString}"`;
+				//This uses valueInt/valueString because it is not actionable and does not need other FK data
+				message = `Sorry, a panel you made for comic #${valueInt} was skipped by too many users and has been removed. Your dialogue was: "${valueString}"`;
 				break;
 			case enums.NotificationType.General:
 			default:
@@ -128,13 +128,15 @@ const mapper = {
 
 		///Actionable if the notification links to a FK item
 		let isActionable = !dbUserNotification.ActionedAt 
-			&& !!dbUserNotification.Notification.ComicId;
+			&& dbUserNotification.Notification.ComicId;
 
 		return {
 			userNotificationId: dbUserNotification.UserNotificationId,
 			isSeen: !!dbUserNotification.SeenAt,
 			isActionable: isActionable,
-			updatedAt: dbUserNotification.UpdatedAt, //Notifications can be updated with more recent data
+			createdAt: dbUserNotification.RenewedAt
+				? dbUserNotification.RenewedAt //Notifications can be updated with more recent data
+				: dbUserNotification.CreatedAt,
 			title: (title || dbUserNotification.Notification.Title || ''),
 			message: (message || dbUserNotification.Notification.Message || ''),
 			//For actionable links

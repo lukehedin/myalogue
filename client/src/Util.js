@@ -1,6 +1,8 @@
 import axios from 'axios';
 import ReactGA from 'react-ga';
 import moment from 'moment';
+import linkify from 'linkifyjs';
+import linkifyHtml  from 'linkifyjs/html';
 
 import iconBack from './icons/back.svg';
 import iconBell from './icons/bell.svg';
@@ -183,11 +185,13 @@ const Util = {
 		},
 
 		colourLookup: {
-			1: `f26522`, //orange
+			1: `e87e00`, //orange
 			2: `f0ba00`, //yellow
 			3: `00d131`, //green
 			4: `00b6e7`, //blue
 			5: `6600f2`, //purple
+			6: `c400b8`, //pink
+			7: `ff3600` //red
 		}
 	},
 
@@ -273,6 +277,25 @@ const Util = {
 			if(!plural) plural = singular + 's';
 			let count = Array.isArray(arrayOrCount) ? arrayOrCount.length : arrayOrCount;
 			return count === 1 ? singular : plural;
+		},
+
+		userTextToSafeHtml: (text = "") => {
+			return linkifyHtml(text, {
+				target: (href) => Util.route.isLinkInternal(href) ? '_self' : '_blank',
+				attributes: (href) =>  Util.route.isLinkInternal(href) ? {} : { rel: 'noopener nofollow' },
+				
+				//If you figure out how to make them work with router
+				// formatHref: (href) => Util.route.isLinkInternal(href) ? ''  : href,
+				// events: (href) => {
+				// 	return Util.route.isLinkInternal(href)
+				// 		? {
+				// 			click: function (e) {
+				// 				alert('Link clicked!');
+				// 			}
+				// 		}
+				// 		: {}
+				// },
+			});
 		}
 	},
 
@@ -308,7 +331,11 @@ const Util = {
 		getHost: () =>  window.location.host,
 		getCurrent: () => window.location.pathname,
 		isCurrently: (route) => Util.route.getCurrent() === route,
-
+		
+		isLinkInternal: (link) => {
+			let urlLink = new URL(link);
+			return urlLink.host === window.location.host;
+		},
 		home: () => `/`,
 		settings: () => `/settings`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,

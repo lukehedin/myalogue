@@ -107,7 +107,7 @@ export default class ComicList extends Component {
 					? <h3 className="comic-list-title">{this.props.title}</h3> 
 					: null
 				}
-				<div className="filters">
+				<div className="comic-list-filters">
 					<Dropdown 
 						value={this.state.sortBy}
 						onChange={value => this.setSortBy(value)}

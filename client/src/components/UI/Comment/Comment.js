@@ -39,7 +39,7 @@ class Comment extends Component {
 					<div className="flex-spacer"></div>
 				</div>
 				<div className="comment-lower">
-					<div className="comment-value">{this.props.comment.value}</div>
+					<div className="comment-value" dangerouslySetInnerHTML={{ __html: Util.format.userTextToSafeHtml(this.props.comment.value)}}></div>
 					{user.userId === Util.context.getUserId()
 						? <div className="comment-actions">
 							<a onClick={this.deleteComment}>Delete</a>

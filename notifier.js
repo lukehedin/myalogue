@@ -64,7 +64,7 @@ const notifier = {
 	},
 
 	sendPanelRemovedNotification: (db, dbComicPanel) => {
-		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelRemoved, null, dbComicPanel.Value);
+		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelRemoved, dbComicPanel.ComicId, dbComicPanel.Value);
 	},
 
 	sendComicCompletedNotification: (db, notifyUserIds, comicId) => {
@@ -123,6 +123,7 @@ const notifier = {
 				})
 				.then(dbUserNotifications => {
 					let userNotificationsToCreate = [];
+					let now = new Date();
 					
 					//For each user we're notifying
 					notifyUserIds.forEach(notifyUserId => {
@@ -169,6 +170,8 @@ const notifier = {
 								userNotificationsToCreate.push({
 									//Including THIS makes it an update
 									UserNotificationId: latestDbUserNotificationForUser.UserNotificationId,
+									
+									RenewedAt: now,
 									ValueString: dbNewCommenterUser.Username,
 									ValueInteger: [...new Set(dbOtherComicComments.map(dbComicComment => dbComicComment.UserId))].length
 								});
@@ -187,7 +190,7 @@ const notifier = {
 					});
 
 					db.UserNotification.bulkCreate(userNotificationsToCreate, {
-						updateOnDuplicate: ['ValueString', 'ValueInteger', 'UpdatedAt']
+						updateOnDuplicate: ['ValueString', 'ValueInteger', 'RenewedAt', 'UpdatedAt']
 					});
 				})
 				.catch(err => error.logError(err, db));

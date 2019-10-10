@@ -6,6 +6,7 @@
     "axios": "^0.19.0",
     "detect-browser": "^4.7.0",
     "html-to-image": "^0.1.1",
+    "linkifyjs": "^2.1.8",
     "moment": "^2.24.0",
     "react": "^16.2.0",
     "react-div-100vh": "^0.3.4",
