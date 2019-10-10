@@ -43,7 +43,6 @@ class App extends Component {
 		this.unlisten();
 	}
 	componentDidMount() {
-		Util.analytics.init();
 		Util.event.window.init();
 		
 		this.unlisten = this.props.history.listen((location, action) => {
@@ -57,7 +56,6 @@ class App extends Component {
 				//An error also triggers maintenance mode
 				if(!result.error && !result.isUnderMaintenance) {
 					Util.context.set(result);
-					Util.analytics.page();
 				} else {
 					//A failed authenticate should clear context
 					if(result.error) Util.context.clear(true);
@@ -67,6 +65,9 @@ class App extends Component {
 						isUnderMaintenance: true
 					});
 				}
+
+				Util.analytics.init();
+				Util.analytics.page();
 
 				this.setState({
 					isLoading: false

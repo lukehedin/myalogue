@@ -110,39 +110,50 @@ const Util = {
 
 	analytics: {
 		init: () => {
-			ReactGA.initialize('UA-92026212-3');
-
-			//This won't happen because isDev aint set yet
-			if(Util.context.isDev()) console.log(`GA:INIT`);
+			if(Util.context.isDev()) {
+				console.log(`GA:INIT`);
+			} else {
+				ReactGA.initialize('UA-92026212-3');
+			}
 		},
 
 		set: (property, value) => {
-			ReactGA.set({ [property]: value });
-			
-			if(Util.context.isDev()) console.log(`GA:SET - ${property}:${value}`);
+			if(Util.context.isDev()) {
+				console.log(`GA:SET - ${property}:${value}`);
+			} else {
+				ReactGA.set({ [property]: value });
+			}
 		},
 
 		event: (eventCategory, eventAction, value = null, nonInteraction = false) => {
-			ReactGA.event({
-				category: eventCategory,
-				action: eventAction,
-				nonInteraction: nonInteraction,
-				value: value
-			});
-
-			if(Util.context.isDev()) console.log(`GA:EVENT - ${eventCategory}:${eventAction}`);
+			if(Util.context.isDev()) {
+				console.log(`GA:EVENT - ${eventCategory}:${eventAction}`);
+			} else {
+				ReactGA.event({
+					category: eventCategory,
+					action: eventAction,
+					nonInteraction: nonInteraction,
+					value: value
+				});
+			}
 		},
 		
 		page: () => {
 			let path = Util.route.getCurrent();
 
-			ReactGA.pageview(path);
-			if(Util.context.isDev()) console.log(`GA:PAGE - ${path}`);
+			if(Util.context.isDev()) {
+				console.log(`GA:PAGE - ${path}`);
+			} else {
+				ReactGA.pageview(path);
+			}
 		},
 
 		modal: (modalName) => {
-			ReactGA.modalview(modalName);
-			if(Util.context.isDev()) console.log(`GA:MODAL - ${modalName}`);
+			if(Util.context.isDev()) {
+				console.log(`GA:MODAL - ${modalName}`);
+			} else {
+				ReactGA.modalview(modalName);
+			}
 		}
 	},
 

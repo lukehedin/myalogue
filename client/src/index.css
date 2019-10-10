@@ -900,11 +900,11 @@ body {
                 justify-content: flex-end; }
                 body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {
                   margin-top: 8px; }
-      body .app-container .app .page-profile .avatar {
-        margin: 0 auto 8px auto; }
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
+        body .app-container .app .page-profile .user-info .user-info-inner .avatar {
+          margin: 0 auto 8px auto; }
       body .app-container .app .page-how-to-play .how-to-play-image {
         margin: 0 auto;
         border: 1px solid #c8c8c8;

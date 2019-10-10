@@ -20,6 +20,7 @@ export default class CommentThread extends Component {
 
 		this.commentsContainerRef = React.createRef();
 
+		this.onNewCommentFocus = this.onNewCommentFocus.bind(this);
 		this.scrollToBottom = this.scrollToBottom.bind(this);
 		this.onNewCommentChange = this.onNewCommentChange.bind(this);
 		this.postComment = this.postComment.bind(this);
@@ -55,6 +56,13 @@ export default class CommentThread extends Component {
 			newCommentValue: ''
 		}, this.scrollToBottom);
 	}
+	onNewCommentFocus(e) {
+		let textarea = e.target;
+		setTimeout(() => {
+			//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
+			if(textarea) textarea.scrollIntoViewIfNeeded();
+		}, 500);
+	}
 	render() {
 		return <div className="comment-thread">
 			{Util.array.any(this.state.comments)
@@ -71,7 +79,7 @@ export default class CommentThread extends Component {
 				? <div className="new-comment">
 					<Avatar size={32} />
 					<div className="new-comment-inner">
-						<Textarea placeholder="Add a comment" className="new-comment-field" onChange={this.onNewCommentChange} value={this.state.newCommentValue}  />
+						<Textarea placeholder="Add a comment" className="new-comment-field" onChange={this.onNewCommentChange} value={this.state.newCommentValue} onFocus={this.onNewCommentFocus} />
 						<Button onClick={this.postComment} colour="pink" size="sm" label="Post" isDisabled={this.state.isLoadingNewComment || !this.state.newCommentValue} />
 					</div>
 				</div>
