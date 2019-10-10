@@ -8,13 +8,10 @@ body {
 	font-family: sans-serif;
 	background-color: $colour-grey-a;
 	color: $colour-black;
-	font-family: $font-family-default;
-
+	text-align: left;
 
 	.app-container {
 		position: relative;
-		display: flex;
-		flex-direction: column;
 		overflow-y: scroll;
 		overflow-x: hidden;
 
@@ -25,11 +22,7 @@ body {
 		.app {
 			@import './components/UI/_UI.scss';
 			@import './components/Pages/_pages.scss';
-	
-			flex: 1;
-			text-align: left;
-			display: flex;
-			flex-direction: column;
+			height: 100%;
 
 			.app-inner {
 				display: flex;
