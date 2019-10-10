@@ -81,7 +81,7 @@ export default class PlayPage extends Component {
 					//Scroll down to play area, so long as the footer won't be visible
 					let scrollEl = Util.selector.getRootScrollElement();
 					let appInner = Util.selector.getAppInner();
-					if(appInner.offsetHeight > window.innerHeight) scrollEl.scrollTo(0, appInner.offsetTop);
+					if(appInner.offsetHeight > window.innerHeight) scrollEl.scrollTo(0, appInner.offsetTop + 16);
 				});
 			} else {
 				this.setState({
