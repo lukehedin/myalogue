@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Textarea from 'react-textarea-autosize';
+import Util from '../../../Util';
 
 import Button from '../Button/Button';
 import Comment from '../Comment/Comment';
-import Util from '../../../Util';
 import Avatar from '../Avatar/Avatar';
 
 export default class CommentThread extends Component {
@@ -58,10 +58,14 @@ export default class CommentThread extends Component {
 	}
 	onNewCommentFocus(e) {
 		let textarea = e.target;
+
+		//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
+		let scrollEl = Util.selector.getRootScrollElement();
+		scrollEl.style.overflowY = 'hidden';
 		setTimeout(() => {
-			//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
-			if(textarea) textarea.scrollIntoViewIfNeeded();
-		}, 500);
+			scrollEl.style.overflowY = 'auto';
+			if(textarea && document.activeElement === textarea) textarea.scrollIntoViewIfNeeded();
+		}, 400); // 400 gives enough time for the keyboard to pop up.
 	}
 	render() {
 		return <div className="comment-thread">
