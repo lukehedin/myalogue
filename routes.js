@@ -450,10 +450,10 @@ const routes = {
 					[db.op.notIn]: ignoreComicIds
 				}
 			};
-			
+
 			if(templateId) comicWhere.TemplateId = templateId;
 			if(!includeAnonymous) comicWhere.HasAnonymous = false;
-			if(sortBy === 4) comicWhere.CompletedAt[db.op.gte] = moment().subtract(1, 'days');
+			if(sortBy === 4) comicWhere.CompletedAt[db.op.gte] = moment().subtract(1, 'days').toDate();
 
 			let comicOrder = [];
 
