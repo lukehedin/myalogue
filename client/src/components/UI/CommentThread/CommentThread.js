@@ -21,7 +21,8 @@ export default class CommentThread extends Component {
 
 		this.commentsContainerRef = React.createRef();
 
-		this.onNewCommentFocus = this.onNewCommentFocus.bind(this);
+		this.onNewCommentTouchEnd = this.onNewCommentTouchEnd.bind(this);
+		
 		this.scrollToBottom = this.scrollToBottom.bind(this);
 		this.onNewCommentChange = this.onNewCommentChange.bind(this);
 		this.postComment = this.postComment.bind(this);
@@ -57,16 +58,20 @@ export default class CommentThread extends Component {
 			newCommentValue: ''
 		}, this.scrollToBottom);
 	}
-	onNewCommentFocus(e) {
-		let textarea = e.target;
+	onNewCommentTouchEnd(e) {
+		//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
 		if(isTouchDevice()) {
-			//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
+			let textarea = e.target;
+			
 			let scrollEl = Util.selector.getRootScrollElement();
 			scrollEl.style.overflowY = 'hidden';
+
 			setTimeout(() => {
-				scrollEl.style.overflowY = 'auto';
-				if(textarea && document.activeElement === textarea) textarea.scrollIntoViewIfNeeded();
-			}, 400); // 400 gives enough time for the keyboard to pop up.
+				if(textarea && document.activeElement === textarea) {
+					scrollEl.style.overflowY = 'auto';
+					if(textarea) textarea.scrollIntoViewIfNeeded();
+				}
+			}, 500); // 500 gives enough time for the keyboard to pop up.
 		}
 	}
 	render() {
@@ -85,7 +90,7 @@ export default class CommentThread extends Component {
 				? <div className="new-comment">
 					<Avatar size={32} />
 					<div className="new-comment-inner">
-						<Textarea placeholder="Add a comment" className="new-comment-field" onChange={this.onNewCommentChange} value={this.state.newCommentValue} onFocus={this.onNewCommentFocus} />
+						<Textarea placeholder="Add a comment" className="new-comment-field" onChange={this.onNewCommentChange} value={this.state.newCommentValue} onTouchEnd={this.onNewCommentTouchEnd} />
 						<Button onClick={this.postComment} colour="pink" size="sm" label="Post" isDisabled={this.state.isLoadingNewComment || !this.state.newCommentValue} />
 					</div>
 				</div>
