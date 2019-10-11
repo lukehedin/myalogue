@@ -67,8 +67,8 @@ export default class CommentThread extends Component {
 			scrollEl.style.overflowY = 'hidden';
 
 			setTimeout(() => {
+				scrollEl.style.overflowY = 'auto';
 				if(textarea && document.activeElement === textarea) {
-					scrollEl.style.overflowY = 'auto';
 					if(textarea) textarea.scrollIntoViewIfNeeded();
 				}
 			}, 500); // 500 gives enough time for the keyboard to pop up.
