@@ -78,7 +78,7 @@ body {
           align-items: center;
           justify-content: center; }
           body .app-container .app .comic-list .comic-list-filters > *:not(:first-child) {
-            margin-left: 16px; }
+            margin-left: 8px; }
           body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkmark {
             top: 6px; }
           body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkbox-label {

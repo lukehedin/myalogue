@@ -14,7 +14,7 @@ export default class ComicList extends Component {
 			isLoading: true,
 			
 			includeAnonymous: Util.context.setting.getShowAnonymousComics(),
-			sortBy: this.props.sortBy || Util.enums.ComicSortBy.TopRated,
+			sortBy: this.props.sortBy || Util.enums.ComicSortBy.TopAll,
 			limit: 5,
 			offset: 0,
 			completedAtBefore: new Date(), //if people make comics as we view, we'll get lots of dupes!
@@ -113,10 +113,12 @@ export default class ComicList extends Component {
 						onChange={value => this.setSortBy(value)}
 						displayProp='label' 
 						valueProp='type' 
-						options={[
-							{
-								type: Util.enums.ComicSortBy.TopRated,
-								label: 'Top Rated'
+						options={[{
+								type: Util.enums.ComicSortBy.TopToday,
+								label: 'Top (Today)'
+							}, {
+								type: Util.enums.ComicSortBy.TopAll,
+								label: 'Top (All time)'
 							}, {
 								type: Util.enums.ComicSortBy.Newest,
 								label: 'Newest'

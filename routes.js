@@ -441,6 +441,20 @@ const routes = {
 			let offset = req.body.offset || 0;
 			let limit = req.body.limit || 5;
 
+			let comicWhere = {
+				CompletedAt: { //Code below (sortBy === 4) relies on this being present
+					[db.op.ne]: null,
+					[db.op.lte]: completedAtBefore
+				},
+				ComicId: { //Code below (comicWhere.ComicId = ) relies on this being present
+					[db.op.notIn]: ignoreComicIds
+				}
+			};
+			
+			if(templateId) comicWhere.TemplateId = templateId;
+			if(!includeAnonymous) comicWhere.HasAnonymous = false;
+			if(sortBy === 4) comicWhere.CompletedAt[db.op.gte] = moment().subtract(1, 'days');
+
 			let comicOrder = [];
 
 			switch(sortBy) {
@@ -450,23 +464,13 @@ const routes = {
 				case 2: //newest
 					//Thenby will do this for us
 					break;
-				default: //top rated (1)
+				case 4: //top today
+				case 1: //top all
+				default:
 					comicOrder.push([ 'Rating', 'DESC' ]);
 					break;
 			};
 			comicOrder.push([ 'CompletedAt', 'DESC' ]);//Thenby
-
-			let comicWhere = {
-				CompletedAt: {
-					[db.op.ne]: null,
-					[db.op.lte]: completedAtBefore
-				},
-				ComicId: { //Code below (comicWhere.ComicId = ) relies on this being present
-					[db.op.notIn]: ignoreComicIds
-				}
-			};
-			if(templateId) comicWhere.TemplateId = templateId;
-			if(!includeAnonymous) comicWhere.HasAnonymous = false;
 			
 			new Promise((resolve, reject) => {
 				if(!authorUserId) {

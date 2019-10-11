@@ -106,8 +106,6 @@ export default class ComicPage extends Component {
 				<hr />
 				<ComicList
 					title="Other comics with this template"
-					emptyText={`No other comics have been completed with this template.`}
-					noMoreText={`Phew! That's all the comics that have been completed using this template.`}
 					fetchDelay={700} //Prevent fast nav spamming
 					sortBy={Util.enums.ComicSortBy.Random}
 					templateId={this.state.comic.templateId}

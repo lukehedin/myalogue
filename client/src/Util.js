@@ -223,9 +223,10 @@ const Util = {
 		},
 
 		ComicSortBy: {
-			TopRated: 1,
+			TopAll: 1,
 			Newest: 2,
-			Random: 3
+			Random: 3,
+			TopToday: 4,
 		}
 	},
 
