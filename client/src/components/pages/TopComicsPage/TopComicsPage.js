@@ -47,7 +47,7 @@ export default class TopComicsPage extends Component {
 								: Util.array.any(this.state.topComics)
 									? <table className="top-comics-table">
 										<tbody>
-											{Util.context.getTemplates().sort((t1, t2) => new Date(t2.unlockedAt) - new Date(t1.unlockedAt)).map(template => {
+											{[...Util.context.getTemplates()].sort((t1, t2) => new Date(t2.unlockedAt) - new Date(t1.unlockedAt)).map(template => {
 												let topComic = this.state.topComics.find(comic => comic.templateId === template.templateId);
 												return <tr key={template.templateId} className="top-comics-list-item">
 													<td>
