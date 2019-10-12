@@ -166,7 +166,6 @@ body {
           background-color: transparent;
           display: flex;
           flex-direction: column;
-          justify-content: flex-end;
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px; }
@@ -181,7 +180,6 @@ body {
             border: none;
             font-family: Arial, Helvetica, sans-serif;
             overflow: hidden;
-            text-align: center;
             background-color: transparent;
             overflow-wrap: break-word;
             white-space: pre-line; }
@@ -194,6 +192,18 @@ body {
             user-select: none; }
           body .app-container .app .comic-panel .dialogue textarea {
             resize: none; }
+          body .app-container .app .comic-panel .dialogue.text-align-horizontal-middle > * {
+            text-align: center; }
+          body .app-container .app .comic-panel .dialogue.text-align-horizontal-left > * {
+            text-align: left; }
+          body .app-container .app .comic-panel .dialogue.text-align-horizontal-right > * {
+            text-align: right; }
+          body .app-container .app .comic-panel .dialogue.text-align-vertical-top {
+            justify-content: flex-start; }
+          body .app-container .app .comic-panel .dialogue.text-align-vertical-bottom {
+            justify-content: flex-end; }
+          body .app-container .app .comic-panel .dialogue.text-align-vertical-middle {
+            justify-content: center; }
         body .app-container .app .comic-panel .comic-panel-subtle {
           position: absolute;
           color: #c8c8c8;

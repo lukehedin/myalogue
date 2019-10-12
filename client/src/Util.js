@@ -1,7 +1,6 @@
 import axios from 'axios';
 import ReactGA from 'react-ga';
 import moment from 'moment';
-import linkify from 'linkifyjs';
 import linkifyHtml  from 'linkifyjs/html';
 
 import iconBack from './icons/back.svg';
@@ -227,6 +226,18 @@ const Util = {
 			Newest: 2,
 			Random: 3,
 			TopToday: 4,
+		},
+
+		TextAlignVertical: {
+			Bottom: 1,
+			Top: 2,
+			Middle: 3
+		},
+
+		TextAlignHorizontal: {
+			Middle: 1,
+			Left: 2,
+			Right: 3
 		}
 	},
 

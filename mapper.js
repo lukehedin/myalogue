@@ -86,7 +86,9 @@ const mapper = {
 			sizeX: dbTemplatePanel.SizeX,
 			sizeY: dbTemplatePanel.SizeY,
 			max: dbTemplatePanel.Max,
-			image: dbTemplatePanel.Image
+			image: dbTemplatePanel.Image,
+			textAlignVertical: dbTemplatePanel.TextAlignVertical,
+			textAlignHorizontal: dbTemplatePanel.TextAlignHorizontal
 		};
 	},
 
