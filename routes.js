@@ -11,9 +11,15 @@ const notifier = require('./notifier');
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
 
-const ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS = process.env.ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS || 3;
-const COMIC_LOCK_WINDOW_MINS = process.env.COMIC_LOCK_WINDOW_MINS || 3;
-const COMIC_PANEL_SKIP_LIMIT = process.env.COMIC_PANEL_SKIP_LIMIT || 8;
+const getIntegerEnvSettingOrDefault = (settingKey, defaultVal = 0) => process.env[settingKey] ? parseInt(process.env[settingKey]) : defaultVal;
+//Amount of time to re-request email verification email
+const ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS = getIntegerEnvSettingOrDefault('ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS', 3);
+//The minutes a lock is held on a comic, regardless of client-side timer
+const COMIC_LOCK_WINDOW_MINS = getIntegerEnvSettingOrDefault('COMIC_LOCK_WINDOW_MINS', 3);
+//The max number of unique skips on a panel before removing it
+const COMIC_PANEL_SKIP_LIMIT = getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_LIMIT', 8);
+//The chance a new comic will be started instead of an existing game (1 in X, 0 for never)
+const COMIC_PLAY_NEW_CHANCE = getIntegerEnvSettingOrDefault('COMIC_PLAY_NEW_CHANCE', 0);
 
 //Common functions
 const getComicLockWindow = () => {
@@ -754,7 +760,10 @@ const routes = {
 					});
 				};
 		
-				if(dbComic) {
+				//Random chance to start new comic (TODO could be done before the above query)
+				let startNewComic = !!COMIC_PLAY_NEW_CHANCE && getRandomInt(1, parseInt(COMIC_PLAY_NEW_CHANCE)) === 1;
+
+				if(dbComic && !startNewComic) {
 					prepareComicForPlay(dbComic)
 						.then(result => res.json(result))
 						.catch(err => error.resError(res, err, db));
