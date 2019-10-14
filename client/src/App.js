@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModal, closeAllModals } from './redux/actions';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { detect as detectBrowser } from 'detect-browser';
 import Util from './Util';
 import Div100vh from 'react-div-100vh';
 
@@ -43,8 +42,6 @@ class App extends Component {
 		this.unlisten();
 	}
 	componentDidMount() {
-		Util.event.window.init();
-		
 		this.unlisten = this.props.history.listen((location, action) => {
 			this.props.closeAllModals();
 			Util.analytics.page();
@@ -153,11 +150,11 @@ class App extends Component {
 			? <div className="loader image-loader"><img alt="" src={loaderFace} /></div>
 			: this.state.isUnderMaintenance
 				? getSorryPanel(`Sorry, we are experiencing some technical difficulties.`, `Speak4Yourself is currently undergoing maintenance, but should be back online momentarily.`) 
-				: detectBrowser().name === "ie"
-					? getSorryPanel(`Sorry, your browser isn't supported.`, `Speak4Yourself can't run on this browser. Please switch to a different browser if possible.`)
-					: getApp();
+				: Util.context.isBrowserSupported()
+					? getApp()
+					: getSorryPanel(`Sorry, your browser isn't supported.`, `Speak4Yourself can't run on this browser. Please switch to a different browser if possible.`);
 
-		return <Div100vh className={`app-container ${Util.array.any(this.props.modals) ? 'no-scroll' : ''}`}>
+		return <Div100vh className={`app-container ${Util.array.any(this.props.modals) ? `no-scroll ${Util.context.isTouchDevice() ? '' : 'scrollbar-margin'}` : ''}`}>
 			{content}
 		</Div100vh>;
 	}

@@ -1,11 +1,13 @@
 const Sequelize = require('sequelize');
 
+const settings = require('./settings');
+
 //Heroku requires pg ssl, and will complain if this isn't set
 const pg = require('pg');
 pg.defaults.ssl = true;
 
 // I think some of these configs might be excessive, but trying to be safe
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(settings.DatabaseUrl, {
 	logging: false,
 	ssl: true,
     dialect: 'postgres',
@@ -94,7 +96,11 @@ let db = {
 		IsAdmin: getBoooleanNotNull(),
 		AvatarCharacter: Sequelize.INTEGER,
 		AvatarExpression: Sequelize.INTEGER,
-		AvatarColour: Sequelize.INTEGER
+		AvatarColour: Sequelize.INTEGER,
+		TemporarilyBannedAt: Sequelize.DATE,
+		TemporarilyBannedCount: getIntegerNotNull(),
+		PermanentlyBannedAt: Sequelize.DATE,
+		BannedReason: Sequelize.STRING
 	}, true),
 	
 	Notification: defineTable('Notification', {
@@ -157,10 +163,14 @@ let db = {
 		Value: Sequelize.STRING,
 		Type: Sequelize.INTEGER, // Enum, eg. 1 'regular', 2 'whisper', 3 'yelling'
 		ComicCompletedAt: Sequelize.DATE, //For queryability SCHEMA-TODO REMOVE
-		SkipCount: getIntegerNotNull()
+		SkipCount: getIntegerNotNull(),
+		ReportCount: getIntegerNotNull(),
+		CensoredAt: Sequelize.DATE
 	}, true),
 
 	ComicPanelSkip: defineTable('ComicPanelSkip'),
+
+	ComicPanelReport: defineTable('ComicPanelReport'),
 
 	ComicVote: defineTable('ComicVote', {
 		Value: Sequelize.INTEGER
@@ -188,6 +198,7 @@ createOneToMany('Comic', 'ComicVote');
 createOneToMany('Comic', 'ComicComment');
 
 createOneToMany('ComicPanel', 'ComicPanelSkip');
+createOneToMany('ComicPanel', 'ComicPanelReport');
 
 createOneToMany('Template', 'TemplatePanel');
 createOneToMany('Template', 'Comic');
@@ -204,6 +215,7 @@ createOneToMany('User', 'ComicComment');
 createOneToMany('User', 'UserNotification');
 createOneToMany('User', 'ComicPanel');
 createOneToMany('User', 'ComicPanelSkip');
+createOneToMany('User', 'ComicPanelReport');
 
 //Notification item FKS
 createOneToMany('Comic', 'Notification'); // Will link to comicid

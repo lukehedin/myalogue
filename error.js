@@ -22,6 +22,15 @@ const error = {
 					: err
 			});
 		}
+	},
+
+	resError401: (res, err, db = null) => {
+		error.logError(err, db);
+
+		if(res && !res.headersSent) {
+			//401 Always sends the same error to the user
+			res.status(401).send({ error: 'Authentication failed. Please log in.' });
+		}
 	}
 };
 

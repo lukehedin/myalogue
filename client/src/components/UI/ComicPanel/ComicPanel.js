@@ -44,7 +44,8 @@ export default class ComicPanel extends Component {
 		return <div className={`comic-panel ${isEditing ? 'editing' : ''}`} onClick={isEditing ? this.focusTextarea : null}>
 			<img className="comic-panel-image" alt="" onContextMenu={Util.event.absorb} src={templatePanel.image} />
 			<div className={`dialogue 
-					${isEditing && !this.state.dialogue ? 'edit-empty' : ''} 
+					${this.props.comicPanel && this.props.comicPanel.isCensored ? 'censored' : ''}
+					${isEditing && !this.state.dialogue ? 'edit-empty' : ''}
 					text-align-horizontal-${Util.enums.toString(Util.enums.TextAlignHorizontal, templatePanel.textAlignHorizontal || Util.enums.TextAlignHorizontal.Middle).toLowerCase()}
 					text-align-vertical-${Util.enums.toString(Util.enums.TextAlignVertical, templatePanel.textAlignVertical || Util.enums.TextAlignVertical.Bottom).toLowerCase()}
 				`}

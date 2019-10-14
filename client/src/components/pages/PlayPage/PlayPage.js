@@ -166,6 +166,7 @@ export default class PlayPage extends Component {
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="md" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="md" />
 				</div>
+				<p className="center sm">If you can't think of anything, skip the panel</p>
 			</div>;
 		} else {
 			//Not submitted, not in progress, must have ran out of time

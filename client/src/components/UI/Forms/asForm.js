@@ -3,6 +3,7 @@ import validator from 'validator';
 import Textarea from 'react-textarea-autosize';
 import Util from '../../../Util';
 
+import Dropdown from '../Dropdown/Dropdown';
 import Checkbox from '../Checkbox/Checkbox';
 
 export default function asForm(WrappedForm, formConfig) {
@@ -63,8 +64,12 @@ export default function asForm(WrappedForm, formConfig) {
 
 				// Required msg overwrites any custom ones
 				const alwaysOptionalFieldTypes = [Util.enums.FieldType.Checkbox];
-				if(!alwaysOptionalFieldTypes.includes(fieldConfig.type) && !fieldConfig.isOptional && !validator.isLength(fieldValue, { min: 1 })) {
-					error = 'This field is required'
+				if(!alwaysOptionalFieldTypes.includes(fieldConfig.type) && !fieldConfig.isOptional) {
+					//If the type is a number, allow it even if 0. The validator catches all the falseys
+					let hasValue = typeof(fieldValue) === "number"
+						? true
+						: validator.isLength(fieldValue, { min: 1 });
+					if(!hasValue) error = 'This field is required'
 				};
 
 				if(error) {
@@ -116,7 +121,7 @@ export default function asForm(WrappedForm, formConfig) {
 			let fieldConfig = formConfig.fields[fieldName];
 
 			let field = null;
-			let hideContainerLabel = false;
+			let hideContainerLabel = !fieldConfig.label;
 
 			switch(fieldConfig.type) {
 				case Util.enums.FieldType.Textarea:
@@ -127,14 +132,31 @@ export default function asForm(WrappedForm, formConfig) {
 						value={this.state.formData[fieldName]}
 					/>;
 					break;
+					
+				case Util.enums.FieldType.Dropdown:
+					field = <Dropdown 
+						value={null}
+						onChange={value => this.updateFormData(fieldName, value)}
+						displayProp={fieldConfig.displayProp}
+						displayPropFn={fieldConfig.displayPropFn}
+						valueProp={fieldConfig.valueProp || 'value'}
+						isBlankAllowed={fieldConfig.isBlankAllowed}
+						blankLabel={fieldConfig.blankLabel}
+						options={fieldConfig.getOptions
+							? fieldConfig.getOptions(this.state.formData)
+							: fieldConfig.options}
+					/>;
+					break;
+
 				case Util.enums.FieldType.Checkbox:
-						hideContainerLabel = true;
+					hideContainerLabel = true; //Checkbox makes its own label
 					field = <Checkbox 
 						label={fieldConfig.label}
 						onChange={(value) => this.updateFormData(fieldName, value)}
 						value={this.state.formData[fieldName]}
 					/>;
 					break;
+
 				default:
 					field = <input 
 						className={`${fieldConfig.isAutoFocus ? 'auto-focus' : ''}`}
@@ -161,7 +183,8 @@ export default function asForm(WrappedForm, formConfig) {
 					formData={this.state.formData} 
 					getField={this.getField}
 					submitForm={this.submitForm}
-					{...this.props} />
+					{...this.props}
+				/>
 				{this.state.formOverallError || this.state.formOverallMessage
 					? <div className="field-container">
 						<div className="overall-error field-error">{this.state.formOverallError}</div> 

@@ -1,0 +1,7 @@
+.dropdown {
+	&.blank-value {
+		&:not(:focus) {
+			color: $colour-grey-d;
+		}
+	}
+}

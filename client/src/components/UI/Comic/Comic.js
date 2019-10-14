@@ -30,6 +30,7 @@ class Comic extends Component {
 
 		this.toggleIsCommentsVisible = this.toggleIsCommentsVisible.bind(this);
 		this.openShareComicModal = this.openShareComicModal.bind(this);
+		this.openReportComicPanelModal = this.openReportComicPanelModal.bind(this);
 		this.postComicComment = this.postComicComment.bind(this);
 		this.deleteComicComment = this.deleteComicComment.bind(this);
 	}
@@ -41,6 +42,12 @@ class Comic extends Component {
 	openShareComicModal(){
 		this.props.openModal({
 			type: Util.enums.ModalType.ShareComicModal,
+			comic: this.props.comic
+		});
+	}
+	openReportComicPanelModal() {
+		this.props.openModal({
+			type: Util.enums.ModalType.ReportComicPanelModal,
 			comic: this.props.comic
 		});
 	}
@@ -112,6 +119,7 @@ class Comic extends Component {
 						<p className="sm">{moment(this.state.comic.completedAt).fromNow()}</p>
 					</div>
 					<div className="flex-spacer"></div>
+					{Util.context.isAuthenticated() ? <Button isHollow={true} leftIcon={Util.icon.flag} size="sm" onClick={this.openReportComicPanelModal} colour="grey" /> : null}
 					<Button isHollow={!this.state.isCommentsVisible} size="sm" leftIcon={Util.icon.comment} onClick={this.toggleIsCommentsVisible} label={Util.array.any(this.state.comic.comicComments) ? this.state.comic.comicComments.length : null} colour="grey" />
 					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 				</div>

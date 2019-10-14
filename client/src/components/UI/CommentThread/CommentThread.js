@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Textarea from 'react-textarea-autosize';
-import isTouchDevice from 'is-touch-device';
 import Util from '../../../Util';
 
 import Button from '../Button/Button';
@@ -60,7 +59,7 @@ export default class CommentThread extends Component {
 	}
 	onNewCommentTouchEnd(e) {
 		//Mobile keyboard bug was bumping this out of view on focus, this tries to correct it
-		if(isTouchDevice()) {
+		if(Util.context.isTouchDevice()) {
 			let textarea = e.target;
 			
 			let scrollEl = Util.selector.getRootScrollElement();

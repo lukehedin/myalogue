@@ -13,6 +13,10 @@
 		flex-direction: column;
 		@include borderRadius(4px);
 
+		&.censored {
+			color: $colour-grey-b;
+		}
+
 		&.edit-empty {
 			cursor: text;
 			border: 1px solid $colour-grey-c;

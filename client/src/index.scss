@@ -17,6 +17,10 @@ body {
 
 		&.no-scroll {
 			overflow: hidden;
+
+			&.scrollbar-margin {
+				margin-right: 17px;
+			}
 		}
 
 		.app {

@@ -6,25 +6,16 @@ const error = require('./error');
 const mapper = require('./mapper');
 const mailer = require('./mailer');
 const notifier = require('./notifier');
+const settings = require('./settings');
 
 //Authentication
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
 
-const getIntegerEnvSettingOrDefault = (settingKey, defaultVal = 0) => process.env[settingKey] ? parseInt(process.env[settingKey]) : defaultVal;
-//Amount of time to re-request email verification email
-const ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS = getIntegerEnvSettingOrDefault('ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS', 3);
-//The minutes a lock is held on a comic, regardless of client-side timer
-const COMIC_LOCK_WINDOW_MINS = getIntegerEnvSettingOrDefault('COMIC_LOCK_WINDOW_MINS', 3);
-//The max number of unique skips on a panel before removing it
-const COMIC_PANEL_SKIP_LIMIT = getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_LIMIT', 8);
-//The chance a new comic will be started instead of an existing game (1 in X, 0 for never)
-const COMIC_PLAY_NEW_CHANCE = getIntegerEnvSettingOrDefault('COMIC_PLAY_NEW_CHANCE', 0);
-
 //Common functions
 const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
-	return moment(new Date()).subtract(COMIC_LOCK_WINDOW_MINS, 'minutes').toDate();
+	return moment(new Date()).subtract(settings.ComicLockWindowMins, 'minutes').toDate();
 };
 const getRandomInt = (min, max) => {
 	max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
@@ -109,7 +100,7 @@ const routes = {
 			let userId = req.userId;
 			let anonId = req.anonId;
 			
-			if(process.env.IS_UNDER_MAINTENANCE === 'true') {
+			if(settings.IsUnderMaintenance) {
 				res.json({ isUnderMaintenance: true });
 				return;
 			}
@@ -150,7 +141,7 @@ const routes = {
 						}
 					}
 
-					if(process.env.NODE_ENV === 'development') result.isDev = true;
+					if(settings.IsDev) result.isDev = true;
 
 					if(userId) {
 						db.User.findOne({
@@ -160,7 +151,7 @@ const routes = {
 						})
 						.then(dbUser => {
 							if(!dbUser) {
-								error.resError(res, 'Invalid userId in token', db);
+								error.resError401(res, `Invalid userId ${userId} in token`, db);
 								return;
 							}
 							
@@ -201,10 +192,13 @@ const routes = {
 			})
 			.then(dbUser => {
 				if(dbUser) {
+					let banMistakeMessage = `If you believe this ban was a mistake, contact admin@s4ycomic.com and provide your username.`;
+
 					if(!!dbUser.VerificationToken) {
 						let now = new Date();
 
-						if(dbUser.VerificationTokenSetAt < moment(now).subtract(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate()) {
+						if(dbUser.VerificationTokenSetAt < moment().subtract(settings.AccountEmailResetHours, 'hours').toDate()) {
+							//If the user is trying to access an account they setup but never verified, and it has been past the reset hours buffer, send the verification email again
 							let newVerificationToken = auth.getHexToken();
 							dbUser.VerificationToken = newVerificationToken;
 							dbUser.VerificationTokenSetAt = now;
@@ -215,6 +209,10 @@ const routes = {
 						} else {
 							error.resError(res, 'Please verify your email address.');
 						}
+					} else if (dbUser.PermanentlyBannedAt) {
+						error.resError(res, `Your account has been permanently banned. ${banMistakeMessage}`);
+					} else if (dbUser.TemporarilyBannedAt && dbUser.TemporarilyBannedAt > moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate()) {
+						error.resError(res, `Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(settings.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
@@ -336,7 +334,7 @@ const routes = {
 					},
 					PasswordResetAt: { //Don't let someone request a password if a request is already in progress
 						[db.op.or]: {
-							[db.op.lte]: moment(now).subtract(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate(),
+							[db.op.lte]: moment().subtract(settings.AccountEmailResetHours, 'hours').toDate(),
 							[db.op.eq]: null
 						}
 					}
@@ -374,7 +372,7 @@ const routes = {
 			db.User.findOne({
 				where:{
 					PasswordResetAt: {
-						[db.op.lte]: moment(now).add(ACCOUNT_VERIFICATION_TOKEN_RESET_HOURS, 'hours').toDate()
+						[db.op.lte]: moment().add(settings.AccountEmailResetHours, 'hours').toDate()
 					},
 					PasswordResetToken: token
 				}
@@ -485,7 +483,10 @@ const routes = {
 					//If we have an authoruserid, find their panels and their comicids
 					db.ComicPanel.findAll({
 						where: {
-							UserId: authorUserId
+							UserId: authorUserId,
+							CensoredAt: {
+								[db.op.eq]: null
+							}
 						}
 					})
 					.then(dbComicPanels => {
@@ -582,7 +583,10 @@ const routes = {
 				//That way we can have leaderboards etc
 				db.ComicPanel.findAll({
 					where: {
-						UserId: dbUser.UserId
+						UserId: dbUser.UserId,
+						CensoredAt: {
+							[db.op.eq]: null
+						}
 					}
 				})
 				.then(dbComicPanels => {
@@ -599,11 +603,12 @@ const routes = {
 						}
 					})
 					.then(dbComics => {
-						let comicTotalRating = dbComics.reduce((total, dbComic) => total + dbComic.Rating, 0);
+						let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
+						let comicTotalRating = dbComics.reduce((total, dbComic) => dbComic.Rating > 0 ? total + dbComic.Rating : 0, 0);
 						res.json({
 							user: mapper.fromDbUser(dbUser, true),
 							userStats: {
-								panelCount: dbComicPanels.length,
+								panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
 								comicCount: dbComics.length,
 								comicTotalRating: comicTotalRating,
 							}
@@ -761,7 +766,7 @@ const routes = {
 				};
 		
 				//Random chance to start new comic (TODO could be done before the above query)
-				let startNewComic = !!COMIC_PLAY_NEW_CHANCE && getRandomInt(1, parseInt(COMIC_PLAY_NEW_CHANCE)) === 1;
+				let startNewComic = !!settings.ComicPlayNewChance && getRandomInt(1, settings.ComicPlayNewChance) === 1;
 
 				if(dbComic && !startNewComic) {
 					prepareComicForPlay(dbComic)
@@ -849,7 +854,7 @@ const routes = {
 										if(wasCreated) {
 											//If this was my first skip of this comic panel, increase skipcount
 											let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
-											if(newSkipCount > COMIC_PANEL_SKIP_LIMIT) {
+											if(newSkipCount > settings.ComicPanelSkipLimit) {
 												//No need to update skip count, the archived state indicates the total count is limit + 1;
 												dbCurrentComicPanel.destroy();
 												if(dbCurrentComicPanel.UserId) notifier.sendPanelRemovedNotification(db, dbCurrentComicPanel);
@@ -1031,6 +1036,141 @@ const routes = {
 				res.json({ success: true });
 			})
 			.catch(err => error.resError(res, err, db));
+		},
+
+		reportComicPanel: (req, res, db) => {
+			let userId = req.userId;
+			let isAdmin = req.isAdmin;
+
+			let comicId = req.body.comicId;
+			let comicPanelId = req.body.comicPanelId;
+
+			db.Comic.findOne({
+				where: {
+					ComicId: comicId,
+					CompletedAt: {
+						[db.op.ne]: null
+					}
+				},
+				include: [{
+					model: db.ComicPanel,
+					as: 'ComicPanels'
+				}]
+			})
+			.then(dbComic => {
+				if(!dbComic) {
+					error.logError('Invalid comic to report panel for', db);
+					return;
+				}
+
+				let dbComicPanel = dbComic.ComicPanels.find(dbComicPanel => dbComicPanel.ComicPanelId === comicPanelId);
+
+				if(!dbComicPanel) {
+					error.logError('Invalid comic panel to report', db);
+					return;
+				} else if (dbComicPanel.CensoredAt) {
+					//Panel already censored UI must not have updated yet, bail out.
+					return;
+				}
+
+				//Record a panelreport. if this is created (not found) we need to increase reportcount
+				db.ComicPanelReport.findOrCreate({
+					where: {
+						UserId: userId,
+						ComicPanelId: dbComicPanel.ComicPanelId
+					}
+				})
+				.then(([dbComicPanelReport, wasCreated]) => {
+					if(wasCreated) {
+						//If this was my first report of this comic panel, increase reportcount
+						let newReportCount = dbComicPanel.ReportCount + 1;
+						//Anonymous panels need half the reports to be censored, as there is no follow up punishment
+						let reportLimit = (dbComicPanel.UserId ? settings.ComicPanelReportLimit : (settings.ComicPanelReportLimit / 2));
+						
+						if(isAdmin || (newReportCount > reportLimit)) {
+							//No need to update report count, the CensoredAt state indicates the total count is limit + 1;
+							dbComicPanel.CensoredAt = new Date();
+							dbComicPanel.save()
+								.then(() => {
+									//We can't do anything for anon users beyond this point
+									if(dbComicPanel.UserId) {
+										//Find all censored panels for this user in the x days window
+										db.ComicPanel.findAll({
+											where: {
+												UserId: dbComicPanel.UserId,
+												CensoredAt: {
+													[db.op.ne]: null,
+													[db.op.gte]: moment().subtract(settings.ComicPanelCensorForUserWindowDays, 'days').toDate()
+												}
+											}
+										})
+										.then(dbComicPanelsCensored => {
+											//If the user has has > x panels censored in the report window
+											if(dbComicPanelsCensored.length > settings.ComicPanelCensorForUserLimit) {
+												db.User.findOne({
+													where: {
+														IsAdmin: false, // don't bad admins!
+														UserId: dbComicPanel.UserId,
+														//Don't try to re-ban
+														TemporarilyBannedAt: {
+															[db.op.or]: {
+																[db.op.lte]: moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate(),
+																[db.op.eq]: null
+															}
+														},
+														PermanentlyBannedAt: {
+															[db.op.eq]: null
+														}
+													}
+												})
+												.then(dbUser => {
+													//if we didn't find them, they're probs already banned
+													if(dbUser) {
+														let newBanCount = dbUser.TemporarilyBannedCount + 1;
+														if(newBanCount > settings.UserTemporarilyBannedLimit) {
+															//If they've exceeded the last time they can get a temp ban, perm ban instead
+															dbUser.PermanentlyBannedAt = new Date();
+															dbUser.BannedReason = 'Too many censored panels';
+															db.Log.create({
+																Type: 'PERMANENT BAN',
+																Message: `UserId ${dbUser.UserId} was banned permanently`
+															});
+														} else {
+															//If they can still get a perm ban, do that
+															dbUser.TemporarilyBannedAt = new Date();
+															dbUser.TemporarilyBannedCount = newBanCount;
+															dbUser.BannedReason = 'Too many censored panels, too many temporary bans';
+															db.Log.create({
+																Type: 'PERMANENT BAN',
+																Message: `UserId ${dbUser.UserId} was banned temporarily (${newBanCount} so far)`
+															});
+														}
+
+														dbUser.save();
+													}
+												})
+												.catch(err => error.logError(err, db));
+											} else {
+												//Panel censored, but no censor limit reached
+												notifier.sendPanelCensoredNotification(db, dbComicPanel);
+											}
+										})
+										.catch(err => error.logError(err, db));
+									}
+								})
+								.catch(err => error.resError(res, err, db));
+						} else {
+							dbComicPanel.ReportCount = newReportCount;
+							dbComicPanel.save();
+						}
+					}
+				})
+				.catch(err => error.logError(err, db));
+			})
+			.catch(err => error.logError(err, db));
+			
+			//Immediate response
+			res.json({ success: true});
 		},
 
 		postComicComment: (req, res, db) => {
@@ -1234,37 +1374,6 @@ const routes = {
 			})
 			.catch(err => error.resError(res, err, db));
 		},
-	
-		// commentComic: (req, res, db) => {
-		// 	let userId = req.userId;
-		// 	let comicId = req.body.comicId;
-		// 	let value = req.body.value;
-
-		// 	db.ComicComment.create({
-		// 		UserId: userId,
-		// 		ComicId: comicId,
-		// 		Value: value
-		// 	});
-
-		// 	res.json({ success: true });
-
-		// },
-
-		// deleteComment: (req, res, db) => {
-		// 	let userId = req.userId;
-		// 	let comicCommentId = req.body.comicCommentId;
-
-		// 	db.ComicComment.destroy({
-		// 		where: {
-		// 			UserId: userId, //This ensures only the creator can delete
-		// 			ComicCommentId: comicCommentId
-		// 		}
-		// 	});
-
-		// 	res.json({ success: true });
-
-		// }
-
 		
 		// changeUsername: (req, res, db) => {
 		// 	let userId = req.userId;

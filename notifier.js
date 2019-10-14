@@ -67,6 +67,10 @@ const notifier = {
 		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelRemoved, dbComicPanel.ComicId, dbComicPanel.Value);
 	},
 
+	sendPanelCensoredNotification: (db, dbComicPanel) => {
+		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelCensored, dbComicPanel.ComicId, dbComicPanel.Value);
+	},
+
 	sendComicCompletedNotification: (db, notifyUserIds, comicId) => {
 		notifier._createNotification(db, notifyUserIds, enums.NotificationType.ComicCompleted, { comicId: comicId });
 	},

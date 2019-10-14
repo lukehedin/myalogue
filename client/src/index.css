@@ -11,6 +11,8 @@ body {
     overflow-x: hidden; }
     body .app-container.no-scroll {
       overflow: hidden; }
+      body .app-container.no-scroll.scrollbar-margin {
+        margin-right: 17px; }
     body .app-container .app {
       height: 100%; }
       body .app-container .app .app-header {
@@ -98,8 +100,9 @@ body {
         align-items: center; }
         body .app-container .app .comic-vote .rating {
           text-align: center;
-          width: 26px;
-          color: #969696; }
+          width: 30px;
+          color: #969696;
+          margin: 0; }
       body .app-container .app .comic {
         position: relative;
         overflow: visible;
@@ -132,13 +135,14 @@ body {
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
-            align-items: center; }
+            align-items: center;
+            margin: 8px 0; }
+            body .app-container .app .comic .comic-lower .comic-lower-inner > *:not(:first-child) {
+              margin-left: 4px; }
             body .app-container .app .comic .comic-lower .comic-lower-inner .comic-lower-details {
               color: #777777; }
               body .app-container .app .comic .comic-lower .comic-lower-inner .comic-lower-details > * {
                 margin: 0; }
-            body .app-container .app .comic .comic-lower .comic-lower-inner .comic-vote {
-              margin-left: 4px; }
           body .app-container .app .comic .comic-lower .comment-thread {
             margin-bottom: 16px; }
           body .app-container .app .comic .comic-lower:empty {
@@ -169,6 +173,8 @@ body {
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px; }
+          body .app-container .app .comic-panel .dialogue.censored {
+            color: #c8c8c8; }
           body .app-container .app .comic-panel .dialogue.edit-empty {
             cursor: text;
             border: 1px solid #969696; }
@@ -487,12 +493,33 @@ body {
               fill: #ff0052; }
         body .app-container .app .modal .modal-content {
           padding: 8px; }
-        body .app-container .app .modal.modal-prompt {
+        body .app-container .app .modal.modal-confirm {
           max-width: 500px; }
-          body .app-container .app .modal.modal-prompt .modal-content .button-container {
+          body .app-container .app .modal.modal-confirm .button-container {
             justify-content: flex-end; }
+        body .app-container .app .modal.modal-alert {
+          max-width: 300px; }
+          body .app-container .app .modal.modal-alert .button-container {
+            justify-content: center; }
         body .app-container .app .modal.modal-share-comic {
           max-width: 300px; }
+          body .app-container .app .modal.modal-share-comic .share-comic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; }
+            body .app-container .app .modal.modal-share-comic .share-comic-container > *:not(:first-child) {
+              margin-top: 8px; }
+            body .app-container .app .modal.modal-share-comic .share-comic-container .input-link {
+              width: 240px; }
+        body .app-container .app .modal.modal-report-comic-panel {
+          max-width: 300px;
+          font-size: 14px; }
+          body .app-container .app .modal.modal-report-comic-panel .report-requirements {
+            margin-bottom: 16px; }
+          body .app-container .app .modal.modal-report-comic-panel .button-container {
+            justify-content: flex-end; }
+      body .app-container .app .dropdown.blank-value:not(:focus) {
+        color: #777777; }
       body .app-container .app .template-navigation {
         display: flex;
         flex-direction: row;
@@ -684,14 +711,6 @@ body {
               body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover {
                 color: #ff0052;
                 text-decoration: none; }
-      body .app-container .app .share-comic-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center; }
-        body .app-container .app .share-comic-container > *:not(:first-child) {
-          margin-top: 8px; }
-        body .app-container .app .share-comic-container .input-link {
-          width: 240px; }
       body .app-container .app .timer.urgent {
         color: #f02100; }
       body .app-container .app .notification-menu {
@@ -810,7 +829,7 @@ body {
         flex-direction: column;
         margin-top: 16px; }
         body .app-container .app .page-comic .comic-area .comic-wrapper {
-          margin-bottom: 64px; }
+          margin-bottom: 32px; }
         body .app-container .app .page-comic .comic-area .progress-bar {
           margin: 0 auto;
           width: 240px; }
@@ -1117,19 +1136,19 @@ body {
       text-align: center;
       margin-top: 32px; }
     body .app-container .comic-panel {
-      height: calc(450px * 0.48);
-      width: calc(540px * 0.48); }
+      height: calc(450px * 0.52);
+      width: calc(540px * 0.52); }
       body .app-container .comic-panel .dialogue > * {
-        line-height: calc(40px * 0.48);
-        font-size: calc(36px * 0.48); }
+        line-height: calc(40px * 0.52);
+        font-size: calc(36px * 0.52); }
       body .app-container .comic-panel .comic-panel-subtle {
-        line-height: calc(18px * 0.48);
-        font-size: calc(16px * 0.48); }
+        line-height: calc(18px * 0.52);
+        font-size: calc(16px * 0.52); }
     body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 0.48); }
+      width: calc(540px * 0.52); }
       @media screen and (orientation: landscape) {
         body .app-container .comic-lower, body .app-container .comic-list-filters {
-          width: calc(540px * 0.96); } }
+          width: calc(540px * 1.04); } }
     @media (min-height: 800px) {
       body .app-container .comic-panel {
         height: calc(450px * 0.52);
@@ -1162,19 +1181,19 @@ body {
       width: calc(540px * 1.12); } }
     @media screen and (orientation: landscape) {
       body .app-container .comic-panel {
-        height: calc(450px * 0.48);
-        width: calc(540px * 0.48); }
+        height: calc(450px * 0.52);
+        width: calc(540px * 0.52); }
         body .app-container .comic-panel .dialogue > * {
-          line-height: calc(40px * 0.48);
-          font-size: calc(36px * 0.48); }
+          line-height: calc(40px * 0.52);
+          font-size: calc(36px * 0.52); }
         body .app-container .comic-panel .comic-panel-subtle {
-          line-height: calc(18px * 0.48);
-          font-size: calc(16px * 0.48); }
+          line-height: calc(18px * 0.52);
+          font-size: calc(16px * 0.52); }
       body .app-container .comic-lower, body .app-container .comic-list-filters {
-        width: calc(540px * 0.48); } }
+        width: calc(540px * 0.52); } }
   @media screen and (orientation: landscape) and (orientation: landscape) {
     body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 0.96); } }
+      width: calc(540px * 1.04); } }
 
 @media screen and (orientation: landscape) and (min-height: 680px) {
   body .app-container .comic-panel {

@@ -4,11 +4,12 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const saltRounds = 10;
 
+const settings = require('./settings');
 const mapper = require('./mapper');
 
 const auth = {
 	_getJwtToken: (tokenContent, callback) => {
-		jwt.sign(tokenContent, process.env.JWT_SECRET_KEY, {
+		jwt.sign(tokenContent, settings.JwtSecretKey, {
 			expiresIn: 604800 //1 week
 		}, (err, token) => {
 			callback("Bearer " + token);

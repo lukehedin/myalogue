@@ -1,13 +1,14 @@
 const https = require('https');
+const settings = require('./settings');
 
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(settings.SendgridApiKey);
 
 const mailer = {
 	_host: 's4ycomic.com',
 
 	_send: (toEmail, subject, html) => {
-		if(process.env.NODE_ENV !== 'production' && toEmail !== process.env.DEV_EMAIL) {
+		if(settings.IsDev && toEmail !== settings.DevEmail) {
 			//Do not send
 			console.log(`This email would have sent in prod: ${toEmail}, ${subject}`);
 			console.log(html);

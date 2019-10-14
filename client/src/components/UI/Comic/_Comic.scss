@@ -30,6 +30,13 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+			margin: $spacing-xs 0;
+
+			> * {
+				&:not(:first-child) {
+					margin-left: $spacing-xxs;
+				}
+			}
 
 			.comic-lower-details {
 				color: $colour-grey-d;
@@ -37,10 +44,6 @@
 				> * {
 					margin: 0;
 				}
-			}
-
-			.comic-vote {
-				margin-left: $spacing-xxs;
 			}
 		}
 

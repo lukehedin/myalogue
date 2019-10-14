@@ -1,5 +1,7 @@
 import axios from 'axios';
 import ReactGA from 'react-ga';
+import { detect as detectBrowser } from 'detect-browser';
+import isTouchDevice from 'is-touch-device';
 import moment from 'moment';
 import linkifyHtml  from 'linkifyjs/html';
 
@@ -14,6 +16,7 @@ import iconCopy from './icons/copy.svg';
 import iconDislike from './icons/dislike.svg';
 import iconDownload from './icons/download.svg';
 import iconFirst from './icons/first.svg';
+import iconFlag from './icons/flag.svg';
 import iconGit from './icons/git.svg';
 import iconHeart from './icons/heart.svg';
 import iconHome from './icons/home.svg';
@@ -63,6 +66,10 @@ const Util = {
 			Util.context._referenceData = authResult.referenceData;
 
 			Util.analytics.set('userId', authResult.userId);
+
+			if(Util.context._isDev) {
+				document.title = 'DEV - ' + document.title; 
+			}
 		},
 
 		clear: (noRedirect = false) => {
@@ -104,7 +111,11 @@ const Util = {
 				return setting === "true";
 			},
 			setShowAnonymousComics: (showAnonymousComics) => localStorage.setItem(Util.context.setting._showAnonymousComicsKey, showAnonymousComics)
-		}
+		},
+
+		//Device and browser info
+		isBrowserSupported: () => detectBrowser().name !== "ie",
+		isTouchDevice: () => isTouchDevice()
 	},
 
 	analytics: {
@@ -169,7 +180,12 @@ const Util = {
 				.then(response => resolve(response.data))
 				.catch(err => {
 					console.log(err);
-					reject(err);
+					if(err.response.status === 401) {
+						//Authentication failure, clear cache and refresh
+						Util.context.clear();
+					} else {
+						reject(err);
+					}
 				});
 			});
 		}
@@ -218,7 +234,8 @@ const Util = {
 		ModalType: {
 			Alert: 1,
 			Confirm: 2,
-			ShareComicModal: 3
+			ShareComicModal: 3,
+			ReportComicPanelModal: 4
 		},
 
 		ComicSortBy: {
@@ -249,26 +266,6 @@ const Util = {
 			e.cancelBubble = true;
 			e.returnValue = false;
 			return false;
-		},
-
-		window: {
-			_blurredAt: null,
-
-			init: () => {
-				window.addEventListener('blur', () => {
-					Util.event.window._blurredAt = new Date();
-					Util.analytics.event('Window', 'WindowBlur');
-				});
-				window.addEventListener('focus', () => {
-					//Refresh if it's been more than 15 minutes of inactivity
-					if(Util.event.window._blurredAt && moment(Util.event.window._blurredAt).add(15, 'minutes').toDate() < new Date()) {
-						window.location.reload();
-					}
-					Util.event.window._blurredAt = null;
-					Util.analytics.event('Window', 'WindowFocus');
-				});
-			}
-
 		}
 	},
 
@@ -334,6 +331,7 @@ const Util = {
 		dislike: iconDislike,
 		download: iconDownload,
 		first: iconFirst,
+		flag: iconFlag,
 		git: iconGit,
 		heart: iconHeart,
 		home: iconHome,

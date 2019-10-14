@@ -63,7 +63,7 @@ export default class ProfilePage extends Component {
 										<h1 className="page-title">{this.state.user.username}</h1>
 										<p className="center sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
 										{this.state.userStats.panelCount
-											? <p className="center sm">{this.state.user.username} has made <b>{this.state.userStats.panelCount} </b>{Util.format.pluralise(this.state.panelCount, 'panel')} for <b>{this.state.userStats.comicCount}</b> {Util.format.pluralise(this.state.userStats.comicCount, 'comic')} with a total rating of <b>{this.state.userStats.comicTotalRating}</b>!</p>
+											? <p className="center sm">{this.state.user.username} has made <b>{this.state.userStats.panelCount} </b>{Util.format.pluralise(this.state.userStats.panelCount, 'panel')} for <b>{this.state.userStats.comicCount}</b> {Util.format.pluralise(this.state.userStats.comicCount, 'comic')} with a total rating of <b>{this.state.userStats.comicTotalRating}</b>!</p>
 											: null
 										}
 										{

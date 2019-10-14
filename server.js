@@ -3,14 +3,18 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const enforce = require('express-sslify');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
+
+const error = require('./error');
 
 const app = express();
 app.use(bodyParser.json());
 
+//No imports/requires above should require the settings (process.env), as they are not set until the conditional below.
+
 if(process.env.NODE_ENV === 'production') {
 	//PRODUCTION ENV
-
-	// Use enforce.HTTPS({ trustProtoHeader: true }) because we are behind Heroku (a load balancer)
+	// Use trustProtoHeader because we are behind Heroku (a load balancer)
 	app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 	//Serve static assets if in prod
@@ -24,9 +28,10 @@ if(process.env.NODE_ENV === 'production') {
 	require('dotenv').config();
 }
 
+const settings = require('./settings'); //Must happen before the above
 const db = require('./db');
 
-if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
+if(settings.IsDevelopmentScript) {
 	//Development Script
   	console.log('DEV SCRIPT WILL BEGIN IN 10 SECONDS');
 	setTimeout(() => {
@@ -39,7 +44,7 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 		token = token ? token.slice(7, token.length).trimLeft() : null;
 
 		if(token) {
-			jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
+			jwt.verify(token, settings.JwtSecretKey, (err, decodedToken) => {
 				if(decodedToken) {
 					req.userId = decodedToken.userId;
 					req.anonId = decodedToken.anonId;
@@ -62,16 +67,39 @@ if(process.env.IS_DEVELOPMENT_SCRIPT === "true") {
 
 	Object.keys(routes.private).forEach(route => {
 		app.post(`/api/${route}`, (req, res) => {
+			//The userId comes from the token, so sending up another one isn't an option
 			if(req.userId) {
-				//The userId comes from the token, so sending up another one isn't an option
-				routes.private[route](req, res, db);
+				//Ensure the user hasn't become banned since last private request (can't become unverified or anything else).
+				db.User.findOne({
+					where: {
+						UserId: req.userId,
+						PermanentlyBannedAt: {
+							[db.op.eq]: null
+						},
+						TemporarilyBannedAt: {
+							[db.op.or]: {
+								[db.op.lte]: moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate(),
+								[db.op.eq]: null
+							}
+						}
+					}
+				})
+				.then(dbUser => {
+					if(dbUser) {
+						req.isAdmin = dbUser.IsAdmin; //Add isAdmin setting
+						routes.private[route](req, res, db)
+					} else {
+						error.resError401(res, `UserId ${req.userId} supplied, but no valid db user found.`, db);
+					}
+				})
+				.catch(err => error.resError(res, err, db));
 			} else {
-				res.status(500).send({ error: 'Authentication failed. Please log in.' });
+				error.resError401(res, `Anonymous user tried to access private route`, db);
 			}
 		});
 	});
   
-	const port = process.env.PORT || 5000;
+	const port = settings.Port;
   
 	app.listen(port, () => `Server running on port ${port}`);
 }

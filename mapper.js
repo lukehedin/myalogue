@@ -1,4 +1,5 @@
 const enums = require('./enums');
+const settings = require('./settings');
 
 const mapper = {
 	fromDbUser: (dbUser, includeProfileData = false) => {
@@ -48,8 +49,13 @@ const mapper = {
 			comicId: dbComicPanel.ComicId,
 			comicPanelId: dbComicPanel.ComicPanelId,
 			templatePanelId: dbComicPanel.TemplatePanelId,
-			value: dbComicPanel.Value,
-			user: dbComicPanel.User ? mapper.fromDbUser(dbComicPanel.User) : null
+			isCensored: dbComicPanel.CensoredAt,
+			value: dbComicPanel.CensoredAt 
+				? '[CENSORED]' 
+				: dbComicPanel.Value,
+			user: dbComicPanel.User && !dbComicPanel.CensoredAt
+				? mapper.fromDbUser(dbComicPanel.User) 
+				: null
 		};
 		
 	},
@@ -109,18 +115,26 @@ const mapper = {
 				title = `Welcome!`;
 				message = `This is where your notifications appear. You'll get a notification each time a comic you've made a panel for is complete.`;
 				break;
+
 			case enums.NotificationType.ComicComment:
 				//Might be for a panel creator, or for someone else who commented on a random comic
 				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} commented on comic #${dbRelatedComicId}.`;
 				break;
+
 			case enums.NotificationType.ComicCompleted:
 				title = `Comic #${dbRelatedComicId} completed!`
 				message = `A comic you made a panel for has been completed. Click here to view the comic.`;
 				break;
+				
 			case enums.NotificationType.PanelRemoved:
 				//This uses valueInt/valueString because it is not actionable and does not need other FK data
 				message = `Sorry, a panel you made for comic #${valueInt} was skipped by too many users and has been removed. Your dialogue was: "${valueString}"`;
 				break;
+
+			case enums.NotificationType.PanelCensored:
+				message = `A panel you made for comic #${valueInt} has been censored. Your dialogue was: "${valueString}"`;
+				break;
+
 			case enums.NotificationType.General:
 			default:
 				title = dbUserNotification.Notification.Title;

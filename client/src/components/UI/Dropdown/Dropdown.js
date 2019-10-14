@@ -5,7 +5,7 @@ export default class Dropdown extends Component {
 		super(props);
 
 		this.state = {
-			value: this.props.value
+			value: this.props.value || ''
 		};
 
 		this.onChange = this.onChange.bind(this);
@@ -16,8 +16,11 @@ export default class Dropdown extends Component {
 		
 		//We stringify to match
 		let selectedOption = options.find(option => (option[this.props.valueProp] + "") === stringValue);
+
 		//Then use (possibly non stringified) value from then on
-		let value = selectedOption[this.props.valueProp];
+		let value = selectedOption
+			? selectedOption[this.props.valueProp]
+			: ''; //blank option
 
 		this.setState({
 			value
@@ -28,8 +31,18 @@ export default class Dropdown extends Component {
 	render() {
 		let options = this.props.options || this.props.getOptions();
 
-		return <select onChange={this.onChange} value={this.state.value}>
-			{options.map((option, idx) => <option value={option[this.props.valueProp]} key={idx}>{option[this.props.displayProp]}</option>)}
+		return <select className={`dropdown ${this.state.value === '' ? 'blank-value' : ''}`} onChange={this.onChange} value={this.state.value || ''}>
+			{options.map((option, idx) => {
+				let display = this.props.displayPropFn
+					? this.props.displayPropFn(option)
+					: option[this.props.displayProp];
+
+				return <option value={option[this.props.valueProp]} key={idx}>{display}</option>;
+			})}
+			{this.props.isBlankAllowed
+				? <option value={''}>{this.props.blankLabel || 'Select an option'}</option>
+				: null
+			}
 		</select>
 	}
 }
