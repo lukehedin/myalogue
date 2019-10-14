@@ -28,10 +28,10 @@ if(process.env.NODE_ENV === 'production') {
 	require('dotenv').config();
 }
 
-const settings = require('./settings'); //Must happen before the above
+const common = require('./common'); //Must happen before the above
 const db = require('./db');
 
-if(settings.IsDevelopmentScript) {
+if(common.config.IsDevelopmentScript) {
 	//Development Script
   	console.log('DEV SCRIPT WILL BEGIN IN 10 SECONDS');
 	setTimeout(() => {
@@ -44,7 +44,7 @@ if(settings.IsDevelopmentScript) {
 		token = token ? token.slice(7, token.length).trimLeft() : null;
 
 		if(token) {
-			jwt.verify(token, settings.JwtSecretKey, (err, decodedToken) => {
+			jwt.verify(token, common.config.JwtSecretKey, (err, decodedToken) => {
 				if(decodedToken) {
 					req.userId = decodedToken.userId;
 					req.anonId = decodedToken.anonId;
@@ -78,7 +78,7 @@ if(settings.IsDevelopmentScript) {
 						},
 						TemporarilyBannedAt: {
 							[db.op.or]: {
-								[db.op.lte]: moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate(),
+								[db.op.lte]: moment().subtract(common.config.UserTemporarilyBannedDays, 'days').toDate(),
 								[db.op.eq]: null
 							}
 						}
@@ -99,7 +99,7 @@ if(settings.IsDevelopmentScript) {
 		});
 	});
   
-	const port = settings.Port;
+	const port = common.config.Port;
   
 	app.listen(port, () => `Server running on port ${port}`);
 }

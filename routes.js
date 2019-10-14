@@ -1,12 +1,11 @@
 const validator = require('validator');
 const moment = require('moment');
 
-const enums = require('./enums');
 const error = require('./error');
 const mapper = require('./mapper');
 const mailer = require('./mailer');
 const notifier = require('./notifier');
-const settings = require('./settings');
+const common = require('./common');
 
 //Authentication
 const auth = require('./auth');
@@ -15,11 +14,7 @@ const bcrypt = require('bcrypt');
 //Common functions
 const getComicLockWindow = () => {
 	//2min lock in case of slow data fetching and submitting
-	return moment(new Date()).subtract(settings.ComicLockWindowMins, 'minutes').toDate();
-};
-const getRandomInt = (min, max) => {
-	max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
-	return Math.floor(Math.random() * (max - min)) + min;
+	return moment(new Date()).subtract(common.config.ComicLockWindowMins, 'minutes').toDate();
 };
 const getRandomPanelCount = (maxPanelCount = 8) => {
 	if(maxPanelCount % 2 === 1) maxPanelCount = maxPanelCount + 1; //No odd numbers allowed.
@@ -28,7 +23,7 @@ const getRandomPanelCount = (maxPanelCount = 8) => {
 	//Adds additional panel pairs
 	if(maxPanelCount > panelCount) {
 		let maxAdditionalPanelPairs = ((maxPanelCount - panelCount) / 2);
-		let additionalPanels = (getRandomInt(0, maxAdditionalPanelPairs) * 2);
+		let additionalPanels = (common.getRandomInt(0, maxAdditionalPanelPairs) * 2);
 		panelCount = panelCount + additionalPanels;
 	}
 
@@ -100,7 +95,7 @@ const routes = {
 			let userId = req.userId;
 			let anonId = req.anonId;
 			
-			if(settings.IsUnderMaintenance) {
+			if(common.config.IsUnderMaintenance) {
 				res.json({ isUnderMaintenance: true });
 				return;
 			}
@@ -141,7 +136,7 @@ const routes = {
 						}
 					}
 
-					if(settings.IsDev) result.isDev = true;
+					if(common.config.IsDev) result.isDev = true;
 
 					if(userId) {
 						db.User.findOne({
@@ -197,7 +192,7 @@ const routes = {
 					if(!!dbUser.VerificationToken) {
 						let now = new Date();
 
-						if(dbUser.VerificationTokenSetAt < moment().subtract(settings.AccountEmailResetHours, 'hours').toDate()) {
+						if(dbUser.VerificationTokenSetAt < moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate()) {
 							//If the user is trying to access an account they setup but never verified, and it has been past the reset hours buffer, send the verification email again
 							let newVerificationToken = auth.getHexToken();
 							dbUser.VerificationToken = newVerificationToken;
@@ -211,8 +206,8 @@ const routes = {
 						}
 					} else if (dbUser.PermanentlyBannedAt) {
 						error.resError(res, `Your account has been permanently banned. ${banMistakeMessage}`);
-					} else if (dbUser.TemporarilyBannedAt && dbUser.TemporarilyBannedAt > moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate()) {
-						error.resError(res, `Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(settings.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
+					} else if (dbUser.TemporarilyBannedAt && dbUser.TemporarilyBannedAt > moment().subtract(common.config.UserTemporarilyBannedDays, 'days').toDate()) {
+						error.resError(res, `Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(common.config.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
 					} else {
 						bcrypt.compare(password, dbUser.Password).then(isMatch => {
 							if(isMatch) {
@@ -334,7 +329,7 @@ const routes = {
 					},
 					PasswordResetAt: { //Don't let someone request a password if a request is already in progress
 						[db.op.or]: {
-							[db.op.lte]: moment().subtract(settings.AccountEmailResetHours, 'hours').toDate(),
+							[db.op.lte]: moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate(),
 							[db.op.eq]: null
 						}
 					}
@@ -372,7 +367,7 @@ const routes = {
 			db.User.findOne({
 				where:{
 					PasswordResetAt: {
-						[db.op.lte]: moment().add(settings.AccountEmailResetHours, 'hours').toDate()
+						[db.op.lte]: moment().add(common.config.AccountEmailResetHours, 'hours').toDate()
 					},
 					PasswordResetToken: token
 				}
@@ -766,7 +761,7 @@ const routes = {
 				};
 		
 				//Random chance to start new comic (TODO could be done before the above query)
-				let startNewComic = !!settings.ComicPlayNewChance && getRandomInt(1, settings.ComicPlayNewChance) === 1;
+				let startNewComic = !!common.config.ComicPlayNewChance && common.getRandomInt(1, common.config.ComicPlayNewChance) === 1;
 
 				if(dbComic && !startNewComic) {
 					prepareComicForPlay(dbComic)
@@ -781,7 +776,7 @@ const routes = {
 					})
 					.then((dbLatestTemplates) => {
 						//Anonymous users can't access the latest template right away
-						let dbTemplate = dbLatestTemplates[getRandomInt((userId ? 0 : 1), dbLatestTemplates.length - 1)];
+						let dbTemplate = dbLatestTemplates[common.getRandomInt((userId ? 0 : 1), dbLatestTemplates.length - 1)];
 		
 						//Create a new comic with this template
 						db.Comic.create({
@@ -854,7 +849,7 @@ const routes = {
 										if(wasCreated) {
 											//If this was my first skip of this comic panel, increase skipcount
 											let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
-											if(newSkipCount > settings.ComicPanelSkipLimit) {
+											if(newSkipCount > common.config.ComicPanelSkipLimit) {
 												//No need to update skip count, the archived state indicates the total count is limit + 1;
 												dbCurrentComicPanel.destroy();
 												if(dbCurrentComicPanel.UserId) notifier.sendPanelRemovedNotification(db, dbCurrentComicPanel);
@@ -1085,7 +1080,9 @@ const routes = {
 						//If this was my first report of this comic panel, increase reportcount
 						let newReportCount = dbComicPanel.ReportCount + 1;
 						//Anonymous panels need half the reports to be censored, as there is no follow up punishment
-						let reportLimit = (dbComicPanel.UserId ? settings.ComicPanelReportLimit : (settings.ComicPanelReportLimit / 2));
+						let reportLimit = (dbComicPanel.UserId 
+							? common.config.ComicPanelReportLimit 
+							: (common.config.ComicPanelReportLimit / 2));
 						
 						if(isAdmin || (newReportCount > reportLimit)) {
 							//No need to update report count, the CensoredAt state indicates the total count is limit + 1;
@@ -1100,13 +1097,13 @@ const routes = {
 												UserId: dbComicPanel.UserId,
 												CensoredAt: {
 													[db.op.ne]: null,
-													[db.op.gte]: moment().subtract(settings.ComicPanelCensorForUserWindowDays, 'days').toDate()
+													[db.op.gte]: moment().subtract(common.config.ComicPanelCensorForUserWindowDays, 'days').toDate()
 												}
 											}
 										})
 										.then(dbComicPanelsCensored => {
 											//If the user has has > x panels censored in the report window
-											if(dbComicPanelsCensored.length > settings.ComicPanelCensorForUserLimit) {
+											if(dbComicPanelsCensored.length > common.config.ComicPanelCensorForUserLimit) {
 												db.User.findOne({
 													where: {
 														IsAdmin: false, // don't ban admins!
@@ -1114,7 +1111,7 @@ const routes = {
 														//Don't try to re-ban
 														TemporarilyBannedAt: {
 															[db.op.or]: {
-																[db.op.lte]: moment().subtract(settings.UserTemporarilyBannedDays, 'days').toDate(),
+																[db.op.lte]: moment().subtract(common.config.UserTemporarilyBannedDays, 'days').toDate(),
 																[db.op.eq]: null
 															}
 														},
@@ -1127,7 +1124,7 @@ const routes = {
 													//if we didn't find them, they're probs already banned
 													if(dbUser) {
 														let newBanCount = dbUser.TemporarilyBannedCount + 1;
-														if(newBanCount > settings.UserTemporarilyBannedLimit) {
+														if(newBanCount > common.config.UserTemporarilyBannedLimit) {
 															//If they've exceeded the last time they can get a temp ban, perm ban instead
 															dbUser.PermanentlyBannedAt = new Date();
 															dbUser.BannedReason = 'Too many censored panels';

@@ -1,14 +1,14 @@
 const https = require('https');
-const settings = require('./settings');
+const common = require('./common');
 
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(settings.SendgridApiKey);
+sgMail.setApiKey(common.config.SendgridApiKey);
 
 const mailer = {
 	_host: 's4ycomic.com',
 
 	_send: (toEmail, subject, html) => {
-		if(settings.IsDev && toEmail !== settings.DevEmail) {
+		if(common.config.IsDev && toEmail !== common.config.DevEmail) {
 			//Do not send
 			console.log(`This email would have sent in prod: ${toEmail}, ${subject}`);
 			console.log(html);

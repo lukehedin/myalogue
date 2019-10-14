@@ -2,7 +2,6 @@ import axios from 'axios';
 import ReactGA from 'react-ga';
 import { detect as detectBrowser } from 'detect-browser';
 import isTouchDevice from 'is-touch-device';
-import moment from 'moment';
 import linkifyHtml  from 'linkifyjs/html';
 
 import iconBack from './icons/back.svg';

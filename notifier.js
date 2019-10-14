@@ -1,4 +1,4 @@
-const enums = require('./enums');
+const common = require('./common');
 const error = require('./error');
 
 const notifier = {
@@ -60,19 +60,19 @@ const notifier = {
 	},
 
 	sendWelcomeNotification: (db, userId) => {
-		notifier._createSingletonNotification(db, [userId], enums.NotificationType.Welcome);
+		notifier._createSingletonNotification(db, [userId], common.enums.NotificationType.Welcome);
 	},
 
 	sendPanelRemovedNotification: (db, dbComicPanel) => {
-		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelRemoved, dbComicPanel.ComicId, dbComicPanel.Value);
+		notifier._createSingletonNotification(db, [dbComicPanel.UserId], common.enums.NotificationType.PanelRemoved, dbComicPanel.ComicId, dbComicPanel.Value);
 	},
 
 	sendPanelCensoredNotification: (db, dbComicPanel) => {
-		notifier._createSingletonNotification(db, [dbComicPanel.UserId], enums.NotificationType.PanelCensored, dbComicPanel.ComicId, dbComicPanel.Value);
+		notifier._createSingletonNotification(db, [dbComicPanel.UserId], common.enums.NotificationType.PanelCensored, dbComicPanel.ComicId, dbComicPanel.Value);
 	},
 
 	sendComicCompletedNotification: (db, notifyUserIds, comicId) => {
-		notifier._createNotification(db, notifyUserIds, enums.NotificationType.ComicCompleted, { comicId: comicId });
+		notifier._createNotification(db, notifyUserIds, common.enums.NotificationType.ComicCompleted, { comicId: comicId });
 	},
 
 	sendComicCommentNotification: (db, dbNewComicComment, dbComic) => {
@@ -97,7 +97,7 @@ const notifier = {
 		Promise.all([
 			db.Notification.findOrCreate({
 				where: {
-					Type: enums.NotificationType.ComicComment,
+					Type: common.enums.NotificationType.ComicComment,
 					ComicId: dbComic.ComicId
 				}
 			}),

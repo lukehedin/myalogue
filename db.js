@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 
-const settings = require('./settings');
+const common = require('./common');
 
 //Heroku requires pg ssl, and will complain if this isn't set
 const pg = require('pg');
 pg.defaults.ssl = true;
 
 // I think some of these configs might be excessive, but trying to be safe
-const sequelize = new Sequelize(settings.DatabaseUrl, {
+const sequelize = new Sequelize(common.config.DatabaseUrl, {
 	logging: false,
 	ssl: true,
     dialect: 'postgres',
