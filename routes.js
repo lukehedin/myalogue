@@ -604,7 +604,7 @@ const routes = {
 					})
 					.then(dbComics => {
 						let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
-						let comicTotalRating = dbComics.reduce((total, dbComic) => dbComic.Rating > 0 ? total + dbComic.Rating : 0, 0);
+						let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
 						res.json({
 							user: mapper.fromDbUser(dbUser, true),
 							userStats: {
