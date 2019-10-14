@@ -18,6 +18,10 @@
 				background-color: $colour-light-pink;
 			}
 
+			.message {
+				white-space: pre-wrap;
+			}
+
 			> p {
 				margin: 0;
 				&:not(:first-child) {

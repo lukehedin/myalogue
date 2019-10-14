@@ -128,11 +128,11 @@ const mapper = {
 				
 			case enums.NotificationType.PanelRemoved:
 				//This uses valueInt/valueString because it is not actionable and does not need other FK data
-				message = `Sorry, a panel you made for comic #${valueInt} was skipped by too many users and has been removed. Your dialogue was: "${valueString}"`;
+				message = `Sorry, a panel you made for comic #${valueInt} was skipped by too many users and has been removed.\n\nYour dialogue was: "${valueString}"`;
 				break;
 
 			case enums.NotificationType.PanelCensored:
-				message = `A panel you made for comic #${valueInt} has been censored. Your dialogue was: "${valueString}"`;
+				message = `A panel you made for comic #${valueInt} has been censored. Too many censored panels will result in a ban.\n\nYour dialogue was: "${valueString}"`;
 				break;
 
 			case enums.NotificationType.General:

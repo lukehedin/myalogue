@@ -726,6 +726,8 @@ body {
             position: relative; }
             body .app-container .app .notification-menu .notification-content .notification.actionable {
               background-color: #ffedf3; }
+            body .app-container .app .notification-menu .notification-content .notification .message {
+              white-space: pre-wrap; }
             body .app-container .app .notification-menu .notification-content .notification > p {
               margin: 0; }
               body .app-container .app .notification-menu .notification-content .notification > p:not(:first-child) {
