@@ -19,9 +19,6 @@ export default class AvatarSelector extends Component {
 			colour: avatar.colour
 		};
 
-
-		console.log(this.state);
-
 		this.setCharacter = this.setCharacter.bind(this);
 		this.setColour = this.setColour.bind(this);
 		this.setExpression = this.setExpression.bind(this);
@@ -84,12 +81,6 @@ export default class AvatarSelector extends Component {
 			if(val > max) val = 1;
 			callback(val);
 		};
-
-		console.log({
-			character: this.state.character,
-			expression: this.state.expression,
-			colour: this.state.colour
-		});
 
 		return <div className="avatar-selector">
 			<Avatar user={{ 
