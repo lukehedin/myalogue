@@ -6,7 +6,6 @@ import asForm from '../asForm';
 
 import Button from '../../Button/Button';
 
-//this.props.comic
 class ReportComicPanelForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>

@@ -512,7 +512,7 @@ body {
             body .app-container .app .modal.modal-share-comic .share-comic-container .input-link {
               width: 240px; }
         body .app-container .app .modal.modal-report-comic-panel {
-          max-width: 300px;
+          max-width: 440px;
           font-size: 14px; }
           body .app-container .app .modal.modal-report-comic-panel .report-requirements {
             margin-bottom: 16px; }

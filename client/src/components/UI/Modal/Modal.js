@@ -92,10 +92,15 @@ class Modal extends Component {
 				modalClass = 'modal-report-comic-panel';
 				modalContent = 	<div>
 					<div className="report-requirements">
-						<p className="center">Please only report a panel if it:</p>
+						<p className="center">Please <b>do</b> report a panel if it:</p>
 						<ol>
 							<li>Contains offensive language, hate speech or otherwise inappropriate written content, or:</li>
 							<li><b>Intentionally and significantly</b> derails the story in the comic.</li>
+						</ol>
+						<p className="center"><b>Do not</b> report a panel if it:</p>
+						<ol>
+							<li>Attempts to make a silly or anticlimactic joke, or:</li>
+							<li><b>Accidentally or slightly</b> redirects the story in the comic.</li>
 						</ol>
 						<p className="center">A false report may result in your account being banned.</p>
 					</div>

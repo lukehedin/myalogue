@@ -1109,7 +1109,7 @@ const routes = {
 											if(dbComicPanelsCensored.length > settings.ComicPanelCensorForUserLimit) {
 												db.User.findOne({
 													where: {
-														IsAdmin: false, // don't bad admins!
+														IsAdmin: false, // don't ban admins!
 														UserId: dbComicPanel.UserId,
 														//Don't try to re-ban
 														TemporarilyBannedAt: {
