@@ -146,8 +146,8 @@ const notifier = {
 							.filter(dbComicComment => dbComicComment.UserId !== notifyUserId && dbComicComment.UserId !== dbNewCommenterUser.UserId)
 							.filter(dbComicComment => {
 								return otherCommentsCutoffDate 
-									? new Date(dbComicComment.CreatedAt) > new Date(otherCommentsCutoffDate) 
-									: false;
+									? new Date(dbComicComment.CreatedAt) > new Date(otherCommentsCutoffDate) //if we have a cuttoff date, i only care about comments after it
+									: true; //otherwise i care about all!
 							});
 							
 						//Get all user notifications i've already gotten for this comment thread
