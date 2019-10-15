@@ -37,6 +37,10 @@
 
 		div {
 			@include noSelect;
+			//The spacing of letters in the READONLY div is slightly decreased to prevent wrapping on different browsers and devices.
+			//This is so when users enter text, they actually have slightly less space than what is displayed in the final readonly view.
+			//This value can get FURTHER negative BUT NOT FURTHER positive. It is currently the minimum required for firefox to correctly display.
+			letter-spacing: -0.022em;
 		}
 
 		textarea {

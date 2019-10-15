@@ -195,7 +195,8 @@ body {
             -khtml-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            user-select: none; }
+            user-select: none;
+            letter-spacing: -0.022em; }
           body .app-container .app .comic-panel .dialogue textarea {
             resize: none; }
           body .app-container .app .comic-panel .dialogue.text-align-horizontal-middle > * {
