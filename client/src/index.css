@@ -220,7 +220,8 @@ body {
             left: 0; }
           body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author {
             bottom: 0;
-            right: 0; }
+            right: 0;
+            padding: 0.04em; }
             body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author.me {
               background-color: #ff0052;
               color: #fff;
