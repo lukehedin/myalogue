@@ -138,16 +138,16 @@ const notifier = {
 						let dbCommentsForUser = dbComic.ComicComments
 							.filter(dbComicComment => dbComicComment.UserId === notifyUserId)
 							.sort((c1, c2) => new Date(c2.CreatedAt) - new Date(c1.CreatedAt));
-						//If I made any comments, make sure my notification only counts additional ones
+						//If I made any comments, make sure my notification only counts the ones AFTER my latest comment
 						if(dbCommentsForUser && dbCommentsForUser.length > 0) otherCommentsCutoffDate = dbCommentsForUser[0].CreatedAt;
 
-						//Get all comments but my own and the recent commeneter. Might be 0.
+						//Get all comments but my own and the recent commenter. Might be 0.
 						let dbOtherComicComments = dbComic.ComicComments
 							.filter(dbComicComment => dbComicComment.UserId !== notifyUserId && dbComicComment.UserId !== dbNewCommenterUser.UserId)
 							.filter(dbComicComment => {
 								return otherCommentsCutoffDate 
 									? new Date(dbComicComment.CreatedAt) > new Date(otherCommentsCutoffDate) 
-									: null;
+									: false;
 							});
 							
 						//Get all user notifications i've already gotten for this comment thread
