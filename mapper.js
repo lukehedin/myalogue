@@ -46,12 +46,23 @@ const mapper = {
 	fromDbComicPanel: (dbComicPanel) => {
 		const censorChars = ['#', '*', '!', '@', '%', '$'];
 		let value = dbComicPanel.Value || '';
+		
 		if(dbComicPanel.CensoredAt) {
 			let newValue = '';
+			let lastCensorChar = null;
+
 			for(let i = 0; i < value.length; i++) {
 				let char = value[i];
-				newValue += (char && char.trim()) ? censorChars[common.getRandomInt(0, censorChars.length - 1)] : char;
+				if(char && char.trim()) {
+					let possibleCensorChars = censorChars.filter(cChar => cChar !== lastCensorChar);
+					let censorChar = possibleCensorChars[common.getRandomInt(0, possibleCensorChars.length - 1)];
+					newValue += censorChar;
+					lastCensorChar = censorChar;
+				} else {
+					newValue += char;
+				}
 			}
+
 			value = newValue;
 		}
 
