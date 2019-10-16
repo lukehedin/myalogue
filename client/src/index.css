@@ -173,7 +173,11 @@ body {
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px; }
-          body .app-container .app .comic-panel .dialogue.censored {
+          body .app-container .app .comic-panel .dialogue.text-colour-black > * {
+            color: #080808; }
+          body .app-container .app .comic-panel .dialogue.text-colour-white > * {
+            color: #fff; }
+          body .app-container .app .comic-panel .dialogue.censored > * {
             color: #c8c8c8; }
           body .app-container .app .comic-panel .dialogue.edit-empty {
             cursor: text;

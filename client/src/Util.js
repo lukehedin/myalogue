@@ -254,6 +254,11 @@ const Util = {
 			Middle: 1,
 			Left: 2,
 			Right: 3
+		},
+
+		TextColour: {
+			Black: 1,
+			White: 2
 		}
 	},
 

@@ -46,6 +46,7 @@ export default class ComicPanel extends Component {
 			<div className={`dialogue 
 					${this.props.comicPanel && this.props.comicPanel.isCensored ? 'censored' : ''}
 					${isEditing && !this.state.dialogue ? 'edit-empty' : ''}
+					text-colour-${Util.enums.toString(Util.enums.TextColour, templatePanel.textColour || Util.enums.TextColour.Black).toLowerCase()}
 					text-align-horizontal-${Util.enums.toString(Util.enums.TextAlignHorizontal, templatePanel.textAlignHorizontal || Util.enums.TextAlignHorizontal.Middle).toLowerCase()}
 					text-align-vertical-${Util.enums.toString(Util.enums.TextAlignVertical, templatePanel.textAlignVertical || Util.enums.TextAlignVertical.Bottom).toLowerCase()}
 				`}

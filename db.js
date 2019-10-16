@@ -134,6 +134,7 @@ let db = {
 		Image: Sequelize.STRING,
 		TextAlignVertical: Sequelize.INTEGER, //null = bottom 1.bottom, 2.top, 3.middle
 		TextAlignHorizontal: Sequelize.INTEGER, //null = middle 1.middle, 2.left, 3.right
+		TextColour: Sequelize.INTEGER, //null = black, 1. white
 		Ordinal: Sequelize.INTEGER, //optional
 		Description: Sequelize.TEXT,
 		IsOnlyLast: getBoooleanNotNull(),

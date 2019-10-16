@@ -13,8 +13,23 @@
 		flex-direction: column;
 		@include borderRadius(4px);
 
+		&.text-colour-black {
+			> * {
+				color: $colour-black;
+			}
+		}
+		
+		&.text-colour-white {
+			> * {
+				color: $colour-white;
+			}
+		}
+
+		// Censored works on white or black background!
 		&.censored {
-			color: $colour-grey-b;
+			> * {
+				color: $colour-grey-b;
+			}
 		}
 
 		&.edit-empty {

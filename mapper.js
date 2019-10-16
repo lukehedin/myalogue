@@ -102,7 +102,8 @@ const mapper = {
 			max: dbTemplatePanel.Max,
 			image: dbTemplatePanel.Image,
 			textAlignVertical: dbTemplatePanel.TextAlignVertical,
-			textAlignHorizontal: dbTemplatePanel.TextAlignHorizontal
+			textAlignHorizontal: dbTemplatePanel.TextAlignHorizontal,
+			textColour: dbTemplatePanel.TextColour
 		};
 	},
 
