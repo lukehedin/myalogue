@@ -189,19 +189,20 @@ export default class PlayPage extends Component {
 					? null 
 					: <div className="anon-message">
 						<h4>Reminder: You're playing anonymously!</h4>
-						<p className="center sm">If you <Link to={Util.route.register()}>create an account</Link> you'll be able to:</p>
+						<p className="center sm">If you <Link to={Util.route.register()}>create an account</Link> you'll be able to</p>
 						<ul>
-							<li>Get a notification when your comic is completed</li>
-							<li>Have your username appear on your comic panels</li>
-							<li>Play the latest template as soon as it's available</li>
-							<li>Play using any specific template of your choosing</li>
-							<li>Contribute to comics featuring only logged-in users</li>
-							<li>Rate and comment on comics</li>
+							<li>get a notification when your comic is completed</li>
+							<li>have your username appear on your comic panels</li>
+							<li>play the latest template as soon as it's available</li>
+							<li>play using any specific template of your choosing</li>
+							<li>contribute to comics featuring only logged-in users</li>
+							<li>rate and comment on comics</li>
 						</ul>
 					</div>
 				}
-				<div className="play-again-button button-container justify-center">
+				<div className="end-buttons button-container">
 					<S4YButton label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} size="lg" />
+					<Button colour="black" label="Back to home" size="md" to={Util.route.home()} />
 				</div>
 			</div>
 		}

@@ -44,14 +44,17 @@
 			}
 		}
 
-		.play-again-button {
-			margin-top: $spacing-sm;
+		.end-buttons {
+			flex-direction: column;
+			> * {
+				margin-top: $spacing-sm;
+			}
 		}
 
 		.anon-message {
 			background-color: $colour-grey-e;
 			max-width: 400px;
-			margin: $spacing-sm auto;
+			margin-top: $spacing-sm;
 			@include borderRadius(4px);
 			@include allHeadings {
 				color: $colour-white;

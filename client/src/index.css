@@ -885,12 +885,14 @@ body {
             list-style-type: none;
             padding: 0;
             font-size: 14px; }
-        body .app-container .app .page-play .play-area .play-again-button {
-          margin-top: 16px; }
+        body .app-container .app .page-play .play-area .end-buttons {
+          flex-direction: column; }
+          body .app-container .app .page-play .play-area .end-buttons > * {
+            margin-top: 16px; }
         body .app-container .app .page-play .play-area .anon-message {
           background-color: #525252;
           max-width: 400px;
-          margin: 16px auto;
+          margin-top: 16px;
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px;
