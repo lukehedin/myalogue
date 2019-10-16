@@ -642,8 +642,10 @@ const routes = {
 			}
 
 			let skippedComicId = req.body.skippedComicId;
-			let templateId = userId ? req.body.templateId : null; //Anon users can't target a template
+			let templateId = req.body.templateId;
 		
+			//TODO work out if we're randomly creating a new comic here and split up this where stuff
+
 			let comicWhere = {
 				CompletedAt: {
 					[db.op.eq]: null //Incomplete comics
@@ -665,6 +667,8 @@ const routes = {
 						[db.op.eq]: null
 					}
 				}
+				//Anon users can't target a template
+				if(templateId) comicWhere.TemplateId = templateId;
 			} else {
 				comicWhere.HasAnonymous = true;
 				comicWhere.LastAuthorAnonId = {
@@ -675,17 +679,12 @@ const routes = {
 				}
 			}
 		
-			if(templateId) comicWhere.TemplateId = templateId;
 			if(skippedComicId) {
-				//Don't bring back the same comic we just skipped
+				//Don't bring back the same comic we just skipped TODO: replace with skip window stuff
 				comicWhere.ComicId = {
 					[db.op.ne]: skippedComicId
 				};
 			}
-
-			let comicOrder = [];
-			// if(userId) comicOrder.push([ 'HasAnonymous', 'ASC' ]);
-			comicOrder.push(db.fn('RANDOM'));
 		
 			//Get random incomplete comic
 			db.Comic.findAll({
@@ -695,12 +694,12 @@ const routes = {
 					model: db.ComicPanel,
 					as: 'ComicPanels'
 				}],
-				order: comicOrder
+				order: [db.fn('RANDOM')]
 			})
 			.then(dbComics => {
 				let dbComic = dbComics[0];
 		
-				//Function used below for an existing or new comic
+				// Once a dbComic has been found or created, this function is called to prepare it for play.
 				const prepareComicForPlay = (dbComic) => {
 					return new Promise((resolve, reject) => {
 						let completedComicPanels = dbComic.ComicPanels || [];

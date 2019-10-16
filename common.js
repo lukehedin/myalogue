@@ -38,11 +38,12 @@ const common = {
 	
 		//The minutes a lock is held on a comic, regardless of client-side timer
 		ComicLockWindowMins: getIntegerEnvSettingOrDefault('COMIC_LOCK_WINDOW_MINS', 3),
+		//The minutes a panel won't again be shown to a player after skipping
+		PanelSkipWindowMins: getIntegerEnvSettingOrDefault('PANEL_SKIP_WINDOW_MINS', 60),
 	
-		//The max number of unique skips on a panel BEFORE removing it
+		//The max number of unique skips on a panel before REMOVING it
 		ComicPanelSkipLimit: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_LIMIT', 8),
-		
-		//The max number of unique reports on a panel BEFORE censoring it
+		//The max number of unique reports on a panel before CENSORING it
 		ComicPanelReportLimit: getIntegerEnvSettingOrDefault('COMIC_PANEL_REPORT_LIMIT', 2),
 	
 		//The amount days to find censored panels for when checking max panels before ban
