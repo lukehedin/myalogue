@@ -1,11 +1,19 @@
-//Comon functions, no imports allowed
+
+import dotenv from 'dotenv';
+if(process.env.NODE_ENV !== 'production') dotenv.config();
 
 const getIntegerEnvSettingOrDefault = (settingKey, defaultVal = 0) => process.env[settingKey] ? parseInt(process.env[settingKey]) : defaultVal;
 
-const common = {
+//Comon functions and env config, no imports allowed
+export default {
 	getRandomInt: (min, max) => {
 		max = max + 1; //The max below is EXclusive, so we add one to it here to make it inclusive
 		return Math.floor(Math.random() * (max - min)) + min;
+	},
+
+	//Used for non-serious errors that have UI feedback (often in forms)
+	getErrorResult: (error) => {
+		return { error: error };
 	},
 	
 	enums: {
@@ -20,9 +28,11 @@ const common = {
 	},
 
 	config: {
+		Host: 's4ycomic.com',
 		Port: process.env.PORT || 5000,
 	
 		JwtSecretKey: process.env.JWT_SECRET_KEY,
+		SaltRounds: 10,
 		
 		IsDev: process.env.NODE_ENV === 'development',
 		IsDevelopmentScript: process.env.IS_DEVELOPMENT_SCRIPT === "true",
@@ -32,6 +42,7 @@ const common = {
 	
 		SendgridApiKey: process.env.SENDGRID_API_KEY,
 		DevEmail: process.env.DEV_EMAIL,
+		ForbiddenUserNames: ['admin', 'administrator', 'mod', 'moderator', 'help', 'contact', 'anonymous', 'anon', 'root', 'owner'],
 	
 		//Amount of time to re-request email verification OR password reset
 		AccountEmailResetHours: getIntegerEnvSettingOrDefault('ACCOUNT_EMAIL_RESET_HOURS', 3),
@@ -39,7 +50,7 @@ const common = {
 		//The minutes a lock is held on a comic, regardless of client-side timer
 		ComicLockWindowMins: getIntegerEnvSettingOrDefault('COMIC_LOCK_WINDOW_MINS', 3),
 		//The minutes a panel won't again be shown to a player after skipping
-		PanelSkipWindowMins: getIntegerEnvSettingOrDefault('PANEL_SKIP_WINDOW_MINS', 60),
+		PanelSkipWindowMins: getIntegerEnvSettingOrDefault('PANEL_SKIP_WINDOW_MINS', 30),
 	
 		//The max number of unique skips on a panel before REMOVING it
 		ComicPanelSkipLimit: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_LIMIT', 8),
@@ -60,5 +71,3 @@ const common = {
 		UserTemporarilyBannedLimit: getIntegerEnvSettingOrDefault('USER_TEMPORARILY_BANNED_LIMIT', 2)
 	}
 };
-
-module.exports = common;

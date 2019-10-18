@@ -135,7 +135,7 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				<p className="empty-text center">{this.state.error}</p>
 				<div className="button-container justify-center">
-					<Button label="Back to home" to={Util.route.home()} colour="black" size="lg" />
+					<Button label="Back to home" to={Util.route.home()} colour="black" size="md" />
 				</div>
 			</div>
 		} else if(this.state.isPlaying) {
