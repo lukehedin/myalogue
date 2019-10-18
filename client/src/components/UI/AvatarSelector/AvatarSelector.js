@@ -111,7 +111,7 @@ export default class AvatarSelector extends Component {
 				</div>
 			</div>
 			<div className="button-container justify-center">
-				<Button size="md" colour="pink" label="Save avatar" onClick={this.save} />
+				<Button size="lg" colour="pink" label="Save avatar" onClick={this.save} />
 			</div>
 		</div>
 	}

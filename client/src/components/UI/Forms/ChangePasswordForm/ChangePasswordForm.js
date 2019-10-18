@@ -12,7 +12,7 @@ class ChangePasswordForm extends Component {
 			{this.props.getField('newPassword')}
 			{this.props.getField('confirmNewPassword')}
 			<div className="button-container justify-center">
-				<Button size="md" colour="pink" label="Save password" type="submit" />
+				<Button size="lg" colour="pink" label="Save password" type="submit" />
 			</div>
 		</form>
 	}

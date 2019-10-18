@@ -1,11 +1,10 @@
-import common from './common';
+const common = require('./common');
 
 const mapper = {
-	fromDbUser: (dbUser) => {
+	fromDbUser: (dbUser, includeProfileData = false) => {
 		let user = {
 			userId: dbUser.UserId,
 			username: dbUser.Username,
-			createdAt: dbUser.CreatedAt,
 			avatar: {
 				character: dbUser.AvatarCharacter,
 				expression: dbUser.AvatarExpression,
@@ -13,7 +12,14 @@ const mapper = {
 			}
 		};
 
-		//I can't see a use-case we'd need to MAP email or other sensitive data - just use the dbUser
+		if(includeProfileData) {
+			user.createdAt = dbUser.CreatedAt;
+			// bio: dbUser.Bio
+		}
+
+		//I can't see a use case we'd need to MAP email or other sensitive data
+		//Could just use the dbUser
+
 		return user;
 	},
 
@@ -24,7 +30,6 @@ const mapper = {
 			templateId: dbComic.TemplateId,
 			rating: dbComic.Rating || 0,
 			hasAnonymous: dbComic.HasAnonymous,
-			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
@@ -176,4 +181,4 @@ const mapper = {
 	}
 };
 
-export default mapper;
+module.exports = mapper;
