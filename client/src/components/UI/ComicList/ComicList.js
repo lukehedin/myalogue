@@ -128,7 +128,10 @@ export default class ComicList extends Component {
 							}
 						]} 
 					/>
-					<Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
+					{this.props.authorUserId
+						? null
+						: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
+					}
 				</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {
