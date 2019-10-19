@@ -241,6 +241,7 @@ export default class PlayService extends Service {
 		dbComic.LockedAt = null;
 		dbComic.LockedByUserId = null;
 		dbComic.LockedByAnonId = null;
+		dbComic.NextTemplatePanelId = null;
 
 		//Record me as last author
 		if(userId) {
@@ -288,12 +289,11 @@ export default class PlayService extends Service {
 			where: {
 				ComicId: skippedComicId
 			},
-			limit: 1,
 			order: [['Ordinal', 'DESC']]
 		});
 
 		//There may be no panels (if the user skipped at the BEGIN COMIC stage)
-		if(dbComicPanels && dbComicPanels.length === 1) {
+		if(dbComicPanels && dbComicPanels.length > 1) {
 			let dbCurrentComicPanel = dbComicPanels[0];
 
 			//Record a panelskip. if this is created (not found) we need to increase skipcount
@@ -307,9 +307,34 @@ export default class PlayService extends Service {
 			if(wasCreated) {
 				//If this was my first skip of this comic panel, increase skipcount
 				let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
+
+				//If this comic panel has reached the maximum number of skips,
 				if(newSkipCount > common.config.ComicPanelSkipLimit) {
 					//No need to update skip count, the archived state indicates the total count is limit + 1;
-					dbCurrentComicPanel.destroy();
+
+					//Remove the panel (await this before we do the next update)
+					await dbCurrentComicPanel.destroy();
+
+					//Update the comic's lastauthoruserid to the previous panel, if there is one.
+					let otherDbComicPanels = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
+
+					console.log(otherDbComicPanels.length);
+
+					// We still want to make it NULL if no panel, or anon panel
+					let newLastAuthorUserId = (otherDbComicPanels && otherDbComicPanels.length > 0) 
+						? otherDbComicPanels[0].UserId
+						: null;
+
+					console.log('new author for comic ' + skippedComicId + ': ' + newLastAuthorUserId);
+					
+					this.models.Comic.update({
+						LastAuthorUserId: newLastAuthorUserId
+					}, {
+						where: {
+							ComicId: skippedComicId
+						}
+					});
+
 					if(dbCurrentComicPanel.UserId) this.services.Notification.SendPanelRemovedNotification(dbCurrentComicPanel);
 				} else {
 					dbCurrentComicPanel.SkipCount = newSkipCount;

@@ -5,8 +5,12 @@ import Util from '../../../Util';
 import S4YButton from '../../UI/S4YButton/S4YButton';
 import ComicList from '../../UI/ComicList/ComicList';
 
-import logo from '../../../images/logo_black.png';
+import logo_default from '../../../images/logo_black.png';
+import logo_halloween from '../../../images/logo_halloween.png';
+import logo_holidays from '../../../images/logo_holidays.png';
+import logo_newyear from '../../../images/logo_newyear.png';
 import Button from '../../UI/Button/Button';
+import moment from 'moment';
 
 export default class HomePage extends Component {
 	constructor(props){
@@ -28,6 +32,17 @@ export default class HomePage extends Component {
 	}
 	render() {
 		let latestTemplate = Util.context.getLatestTemplate();
+
+		let now = new Date();
+		let logo = logo_default;
+
+		let halloweenDate = new Date(now.getFullYear(), 9, 31, 23, 59, 59);
+		let holidaysDate = new Date(now.getFullYear(), 11, 25, 23, 59, 59);
+		let newYearDate = new Date(now.getFullYear() + 1, 0, 1, 23, 59, 59); // new years day
+
+		if(now < halloweenDate && now > moment(halloweenDate).subtract(1, 'week')) logo = logo_halloween;
+		if(now < holidaysDate && now > moment(holidaysDate).subtract(1, 'week')) logo = logo_holidays;
+		if(now < newYearDate && now > moment(newYearDate).subtract(2, 'days')) logo = logo_newyear;
 
 		return <div className="page-home">
 			<div className="panel-inset">

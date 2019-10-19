@@ -89,7 +89,7 @@ export default class UserService extends Service {
 		//We want to include banned users, so we can do a proper error message below
 		let dbUser = await this.DbGetByUsernameEmailMatch(emailUsername, emailUsername);
 
-		if(!dbUser) return common.getErrorResult('Invalid email or password.');
+		if(!dbUser) return common.getErrorResult('Invalid email/username or password.');
 
 		const banMistakeMessage = `If you believe this ban was a mistake, contact admin@s4ycomic.com and provide your username.`;
 
@@ -108,7 +108,7 @@ export default class UserService extends Service {
 			return common.getErrorResult(`Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(common.config.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
 		} else {
 			let isPasswordMatch = await auth.comparePassword(password, dbUser.Password);
-			if(!isPasswordMatch) return common.getErrorResult('Invalid email or password.');
+			if(!isPasswordMatch) return common.getErrorResult('Invalid email/username or password.');
 
 			return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
 		}
@@ -123,7 +123,7 @@ export default class UserService extends Service {
 			&& !common.config.ForbiddenUserNames.includes(username)
 			&& isNaN(username); //Can't have a username with just numbers, confuses profile page
 
-		if(!isValidEmail || !isValidUsername) throw 'Invalid email or username supplied.';
+		if(!isValidEmail || !isValidUsername) throw 'Invalid email/username or username supplied.';
 
 		//Check for existing username or email match
 		let dbExistingUser = await this.DbGetByUsernameEmailMatch(email, username);
