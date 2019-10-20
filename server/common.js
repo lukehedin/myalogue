@@ -49,8 +49,11 @@ export default {
 	
 		//The minutes a lock is held on a comic, regardless of client-side timer
 		ComicLockWindowMins: getIntegerEnvSettingOrDefault('COMIC_LOCK_WINDOW_MINS', 3),
+
 		//The minutes a panel won't again be shown to a player after skipping
-		PanelSkipWindowMins: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_WINDOW_MINS', 30),
+		ComicPanelSkipWindowMins: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_WINDOW_MINS', 60),
+		//The max amount of skips to pay attention to during the window (if a player skips 10000 times, only pay attention to the latest 30)
+		ComicPanelSkipWindowLimit: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_WINDOW_LIMIT', 30),
 	
 		//The max number of unique skips on a panel before REMOVING it
 		ComicPanelSkipLimit: getIntegerEnvSettingOrDefault('COMIC_PANEL_SKIP_LIMIT', 8),

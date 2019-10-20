@@ -85,7 +85,7 @@ export default class PlayService extends Service {
 				where: {
 					UserId: userId,
 					UpdatedAt: {
-						[Sequelize.Op.gte]: moment(new Date()).subtract(common.config.PanelSkipWindowMins, 'minutes').toDate()
+						[Sequelize.Op.gte]: moment(new Date()).subtract(common.config.ComicPanelSkipWindowMins, 'minutes').toDate()
 					}
 				},
 				include: [{
@@ -94,7 +94,7 @@ export default class PlayService extends Service {
 				}],
 				//Only take the latest 20 skips
 				order: [['UpdatedAt', 'DESC']],
-				limit: 20
+				limit: common.config.ComicPanelSkipWindowLimit
 			});
 			
 			//Unique list of skipped comic ids
