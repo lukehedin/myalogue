@@ -1,6 +1,6 @@
-@import './styles/_variables.scss';
-@import './styles/_animations.scss';
-@import './styles/_mixins.scss';
+@import './styles/variables.scss';
+@import './styles/animations.scss';
+@import './styles/mixins.scss';
 
 body {
 	margin: 0;
@@ -24,8 +24,8 @@ body {
 		}
 
 		.app {
-			@import './components/UI/_UI.scss';
-			@import './components/Pages/_pages.scss';
+			@import './components/UI/UI.scss';
+			@import './components/Pages/pages.scss';
 			height: 100%;
 
 			.app-inner {

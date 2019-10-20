@@ -35,7 +35,7 @@
 			background-color: transparent;
 
 			.button-icon {
-				@include svgColourStroke($colour)	
+				@include svgColourStroke($colour);
 			}
 
 			&:hover {

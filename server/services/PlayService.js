@@ -91,7 +91,10 @@ export default class PlayService extends Service {
 				include: [{
 					model: this.models.ComicPanel,
 					as: 'ComicPanel'
-				}]
+				}],
+				//Only take the latest 20 skips
+				order: [['UpdatedAt', 'DESC']],
+				limit: 20
 			});
 			
 			//Unique list of skipped comic ids
@@ -284,7 +287,7 @@ export default class PlayService extends Service {
 		//Anons can't track their skips, so leave here
 		if(!userId) return;
 		
-		//Find the current comic panel (using server data, NOT from client)
+		//Find the current comic panels (using server data, NOT from client)
 		let dbComicPanels = await this.models.ComicPanel.findAll({
 			where: {
 				ComicId: skippedComicId

@@ -543,9 +543,6 @@ body {
             @media (min-width: 576px) {
               body .app-container .app .template-navigation .button-container .button .button-label {
                 display: initial; } }
-      body .app-container .app .s4y-button .button-icon {
-        width: 32px;
-        height: 32px; }
       body .app-container .app .progress-bar {
         height: 14px;
         width: 100%;
@@ -830,6 +827,18 @@ body {
               margin-top: 4px; }
               body .app-container .app .comment .comment-inner .comment-lower .comment-actions a {
                 font-size: 12px; }
+      body .app-container .app .share-buttons {
+        display: flex;
+        flex-direction: row; }
+        body .app-container .app .share-buttons .share-button {
+          width: 24px;
+          height: 24px; }
+          body .app-container .app .share-buttons .share-button:not(:first-child) {
+            margin-left: 8px; }
+          body .app-container .app .share-buttons .share-button > * path {
+            fill: #080808; }
+          body .app-container .app .share-buttons .share-button > *:hover path {
+            fill: #ff0052; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;
@@ -845,9 +854,9 @@ body {
         margin-bottom: 16px; }
         body .app-container .app .page-home .home-banner .app-logo {
           margin: 0 auto;
+          display: block;
           width: 200px;
-          min-height: 100px;
-          display: block; }
+          min-height: 100px; }
       body .app-container .app .page-home .how-to-play-button {
         margin-top: 8px; }
       body .app-container .app .page-home .play-info {

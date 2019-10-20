@@ -8,6 +8,7 @@ import Button from '../Button/Button';
 import ReportComicPanelForm from '../Forms/ReportComicPanelForm/ReportComicPanelForm';
 import CopyButton from '../CopyButton/CopyButton';
 import ComicInfoLabel from '../ComicInfoLabel/ComicInfoLabel';
+import ShareButtons from '../../UI/ShareButtons/ShareButtons';
 
 import ReactSVG from 'react-svg';
 
@@ -71,9 +72,10 @@ class Modal extends Component {
 					<input className="input-link" onClick={e => e.target.select()} readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
 					{!Util.route.isCurrently(Util.route.comic(modal.comic.comicId))
-						? <Button isHollow={true} colour="black" label="View comic page" to={Util.route.comic(modal.comic.comicId)} />
+						? <Button colour="black" label="View comic page" to={Util.route.comic(modal.comic.comicId)} />
 						: null
 					}
+					<ShareButtons title={`Speak4Yourself%20-%20Comic%20%23${modal.comic.comicId}`} />
 					{Util.context.isAuthenticated()
 						? <p className="center sm">If there's a problem with dialogue in this comic, you can <a onClick={() => {
 							this.close();

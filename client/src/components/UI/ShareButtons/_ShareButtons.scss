@@ -1,0 +1,21 @@
+.share-buttons {
+	display: flex;
+	flex-direction: row;
+
+	.share-button {
+		width: 24px;
+		height: 24px;
+		
+		&:not(:first-child) {
+			margin-left: $spacing-xs;
+		} 
+
+		> * {
+			@include svgColourStroke($colour-black);
+
+			&:hover {
+				@include svgColourStroke($colour-pink);
+			}
+		}
+	}
+}

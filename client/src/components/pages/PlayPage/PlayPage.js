@@ -6,7 +6,6 @@ import Timer from '../../UI/Timer/Timer';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
 import Button from '../../UI/Button/Button';
-import S4YButton from '../../UI/S4YButton/S4YButton';
 import ProgressBar from '../../UI/ProgressBar/ProgressBar';
 
 const playTimerMins = 2;
@@ -201,7 +200,7 @@ export default class PlayPage extends Component {
 					</div>
 				}
 				<div className="end-buttons button-container">
-					<S4YButton label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} size="lg" />
+					<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
 					<Button colour="black" label="Back to home" size="md" to={Util.route.home()} />
 				</div>
 			</div>

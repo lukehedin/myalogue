@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
-import S4YButton from '../../UI/S4YButton/S4YButton';
 import ComicList from '../../UI/ComicList/ComicList';
 
 import logo_default from '../../../images/logo_black.png';
@@ -40,9 +39,9 @@ export default class HomePage extends Component {
 		let holidaysDate = new Date(now.getFullYear(), 11, 25, 23, 59, 59);
 		let newYearDate = new Date(now.getFullYear() + 1, 0, 1, 23, 59, 59); // new years day
 
-		if(now < halloweenDate && now > moment(halloweenDate).subtract(1, 'week')) logo = logo_halloween;
-		if(now < holidaysDate && now > moment(holidaysDate).subtract(1, 'week')) logo = logo_holidays;
-		if(now < newYearDate && now > moment(newYearDate).subtract(2, 'days')) logo = logo_newyear;
+		if(now < halloweenDate && now > moment(halloweenDate).subtract(1, 'week').toDate()) logo = logo_halloween;
+		if(now < holidaysDate && now > moment(holidaysDate).subtract(1, 'week').toDate()) logo = logo_holidays;
+		if(now < newYearDate && now > moment(newYearDate).subtract(2, 'days').toDate()) logo = logo_newyear;
 
 		return <div className="page-home">
 			<div className="panel-inset">
@@ -53,7 +52,7 @@ export default class HomePage extends Component {
 							<p className="page-subtitle center">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 						</div>
 						<div className="button-container justify-center">
-							<S4YButton size="lg" />
+							<Button label="Play" to={Util.route.play()} colour="pink" size="lg" />
 						</div>
 						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress</p>
 						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>

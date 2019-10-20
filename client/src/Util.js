@@ -14,6 +14,7 @@ import iconContextMenu from './icons/contextmenu.svg';
 import iconCopy from './icons/copy.svg';
 import iconDislike from './icons/dislike.svg';
 import iconDownload from './icons/download.svg';
+import iconFacebook from './icons/facebook.svg';
 import iconFirst from './icons/first.svg';
 import iconFlag from './icons/flag.svg';
 import iconGit from './icons/git.svg';
@@ -27,8 +28,10 @@ import iconMenu from './icons/menu.svg';
 import iconNext from './icons/next.svg';
 import iconPanels from './icons/panels.svg';
 import iconQuestion from './icons/question.svg';
+import iconReddit from './icons/reddit.svg';
 import iconShare from './icons/share.svg';
 import iconStar from './icons/star.svg';
+import iconTwitter from './icons/twitter.svg';
 import iconUser from './icons/user.svg';
 
 const Util = {
@@ -334,6 +337,7 @@ const Util = {
 		copy: iconCopy,
 		dislike: iconDislike,
 		download: iconDownload,
+		facebook: iconFacebook,
 		first: iconFirst,
 		flag: iconFlag,
 		git: iconGit,
@@ -347,8 +351,10 @@ const Util = {
 		next: iconNext,
 		panels: iconPanels,
 		question: iconQuestion,
+		reddit: iconReddit,
 		share: iconShare,
 		star: iconStar,
+		twitter: iconTwitter,
 		user: iconUser
 	},
 
