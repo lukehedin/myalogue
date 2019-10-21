@@ -40,7 +40,7 @@ export default class PlayService extends Service {
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
 			PanelCount: this._GetRandomPanelCount(dbTemplate.MaxPanelCount),
-			HasAnonymous: !userId
+			IsAnonymous: !userId
 		});
 
 		return await this.PrepareDbComicForPlay(userId, anonId, dbNewComic);
@@ -60,23 +60,30 @@ export default class PlayService extends Service {
 
 		//Where I wasn't the last author
 		if(userId) {
-			comicWhere.HasAnonymous = false;
+			//Only logged in users can target a template
+			if(templateId) comicWhere.TemplateId = templateId;
+
+			comicWhere.IsAnonymous = false;
 			comicWhere.LastAuthorUserId = {
 				[Sequelize.Op.or]: {
 					[Sequelize.Op.ne]: userId,
 					[Sequelize.Op.eq]: null
 				}
-			}
-			//Anon users can't target a template
-			if(templateId) comicWhere.TemplateId = templateId;
+			};
+			comicWhere.PenultimateAuthorUserId = {
+				[Sequelize.Op.or]: {
+					[Sequelize.Op.ne]: userId,
+					[Sequelize.Op.eq]: null
+				}
+			};
 		} else {
-			comicWhere.HasAnonymous = true;
+			comicWhere.IsAnonymous = true;
 			comicWhere.LastAuthorAnonId = {
 				[Sequelize.Op.or]: {
 					[Sequelize.Op.ne]: anonId,
 					[Sequelize.Op.eq]: null
 				}
-			}
+			};
 		}
 	
 		if(userId) {
@@ -248,11 +255,10 @@ export default class PlayService extends Service {
 
 		//Record me as last author
 		if(userId) {
+			dbComic.PenultimateAuthorUserId = dbComic.LastAuthorUserId;
 			dbComic.LastAuthorUserId = userId;
-			dbComic.LastAuthorAnonId = null;
 		} else {
 			dbComic.LastAuthorAnonId = anonId;
-			dbComic.LastAuthorUserId = null;
 		}
 		
 		await dbComic.save();
@@ -292,7 +298,7 @@ export default class PlayService extends Service {
 			where: {
 				ComicId: skippedComicId
 			},
-			order: [['Ordinal', 'DESC']]
+			order: [['Ordinal', 'DESC']] //This sort is used to update last authors below
 		});
 
 		//There may be no panels (if the user skipped at the BEGIN COMIC stage)
@@ -318,20 +324,13 @@ export default class PlayService extends Service {
 					//Remove the panel (await this before we do the next update)
 					await dbCurrentComicPanel.destroy();
 
-					//Update the comic's lastauthoruserid to the previous panel, if there is one.
+					//Should already be sorted by reverse ordinal from query above
 					let otherDbComicPanels = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
 
-					console.log(otherDbComicPanels.length);
-
-					// We still want to make it NULL if no panel, or anon panel
-					let newLastAuthorUserId = (otherDbComicPanels && otherDbComicPanels.length > 0) 
-						? otherDbComicPanels[0].UserId
-						: null;
-
-					console.log('new author for comic ' + skippedComicId + ': ' + newLastAuthorUserId);
-					
+					//Update the comic's lastauthoruserid/penultimateuserid to the previous panels, if they exist. Otherwise, just nullify them.					
 					this.models.Comic.update({
-						LastAuthorUserId: newLastAuthorUserId
+						LastAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 0) ? otherDbComicPanels[0].UserId : null,
+						PenultimateAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 1) ? otherDbComicPanels[1].UserId : null
 					}, {
 						where: {
 							ComicId: skippedComicId

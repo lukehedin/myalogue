@@ -79,7 +79,7 @@ export default class ComicService extends Service {
 		};
 
 		if(templateId) comicWhere.TemplateId = templateId;
-		if(!includeAnonymous) comicWhere.HasAnonymous = false;
+		if(!includeAnonymous) comicWhere.IsAnonymous = false;
 		if(sortBy === 4) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'days').toDate();
 
 		let comicOrder = [];

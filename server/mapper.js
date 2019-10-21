@@ -23,7 +23,7 @@ const mapper = {
 			title: dbComic.Title || "Untitled",
 			templateId: dbComic.TemplateId,
 			rating: dbComic.Rating || 0,
-			hasAnonymous: dbComic.HasAnonymous,
+			isAnonymous: dbComic.IsAnonymous,
 			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
 			comicComments: (dbComic.ComicComments || [])

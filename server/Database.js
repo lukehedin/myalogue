@@ -156,6 +156,7 @@ export default class Database {
 
 			//Anonymous fields
 			HasAnonymous: getBoooleanNotNull(),
+			IsAnonymous: getBoooleanNotNull(),
 			LockedByAnonId: Sequelize.STRING,
 			LastAuthorAnonId: Sequelize.STRING,
 			
@@ -212,6 +213,7 @@ export default class Database {
 		
 		createOneToMany('Notification', 'UserNotification');
 		
+		createOneToMany('User', 'Comic', 'PenultimateAuthorUser', 'PenultimateAuthoredComics');
 		createOneToMany('User', 'Comic', 'LastAuthorUser', 'LastAuthoredComics');
 		createOneToMany('User', 'Comic', 'LockedByUser', 'LockedComics');
 		createOneToMany('User', 'ComicVote');
