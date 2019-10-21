@@ -126,13 +126,22 @@ export default class ComicService extends Service {
 				CompletedAt: {
 					[Sequelize.Op.eq]: null
 				},
-				LastAuthorUserId: {
-					[Sequelize.Op.ne]: null
-				}
+				[Sequelize.Op.or]: [{
+					LastAuthorAnonId: {
+						[Sequelize.Op.ne]: null
+					}
+				}, {
+					LastAuthorUserId: {
+						[Sequelize.Op.ne]: null
+					}
+				}]
 			}
 		});
 
-		return dbComics.length;
+		return {
+			count: dbComics.length,
+			anonCount: dbComics.filter(dbComic => dbComic.IsAnonymous).length
+		};
 	}
 	async GetStatsForUser(userId) {
 		//Calculate their panel points TODO make a worker service and set points on user row
