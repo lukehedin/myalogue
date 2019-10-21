@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ReactSVG from 'react-svg';
 import Util from '../../../Util';
 
-import logo from '../../../images/logo_white.png';
+import logo from '../../../images/logo_header.png';
 
 import Avatar from '../Avatar/Avatar';
 import Button from '../Button/Button';
