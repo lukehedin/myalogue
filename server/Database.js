@@ -155,7 +155,6 @@ export default class Database {
 			LockedAt: Sequelize.DATE, // locked while editing (1 min)
 
 			//Anonymous fields
-			HasAnonymous: getBoooleanNotNull(),
 			IsAnonymous: getBoooleanNotNull(),
 			LockedByAnonId: Sequelize.STRING,
 			LastAuthorAnonId: Sequelize.STRING,
