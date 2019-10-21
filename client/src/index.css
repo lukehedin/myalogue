@@ -472,6 +472,12 @@ body {
           body .app-container .app .button.button-lg .button-icon {
             height: 18px;
             width: 18px; }
+        body .app-container .app .button.button-xl {
+          padding: 16px 32px;
+          font-size: 24px; }
+          body .app-container .app .button.button-xl .button-icon {
+            height: 24px;
+            width: 24px; }
       body .app-container .app .modal {
         width: 94vw;
         background-color: #fff; }

@@ -252,7 +252,7 @@ export default class UserService extends Service {
 			if(newBanCount > common.config.UserTemporarilyBannedLimit) {
 				//If they've exceeded the last time they can get a temp ban, perm ban instead
 				dbUser.PermanentlyBannedAt = new Date();
-				dbUser.BannedReason = 'Too many censored panels';
+				dbUser.BannedReason = (dbUser.BannedReason ? ' | ' : '') + 'Too many censored panels';
 				this.models.Log.create({
 					Type: 'PERMANENT BAN',
 					Message: `UserId ${dbUser.UserId} was banned permanently`
@@ -261,7 +261,7 @@ export default class UserService extends Service {
 				//If they can still get a perm ban, do that
 				dbUser.TemporarilyBannedAt = new Date();
 				dbUser.TemporarilyBannedCount = newBanCount;
-				dbUser.BannedReason = 'Too many censored panels, too many temporary bans';
+				dbUser.BannedReason = (dbUser.BannedReason ? ' | ' : '') + 'Too many censored panels, too many temporary bans';
 				this.models.Log.create({
 					Type: 'PERMANENT BAN',
 					Message: `UserId ${dbUser.UserId} was banned temporarily (${newBanCount} so far)`

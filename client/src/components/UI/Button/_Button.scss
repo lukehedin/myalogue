@@ -128,4 +128,9 @@
 		padding: $spacing-sm $spacing-md;
 		@include scaleButton(18px);
 	}
+
+	&.button-xl {
+		padding: $spacing-sm $spacing-md;
+		@include scaleButton(24px);
+	}
 }
