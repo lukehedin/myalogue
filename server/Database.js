@@ -127,6 +127,7 @@ export default class Database {
 			Name: Sequelize.STRING,
 			Ordinal: Sequelize.INTEGER,
 			MaxPanelCount: getIntegerNotNull(8),
+			MinPanelCount: getIntegerNotNull(4),
 			// DescriptionHtml: Sequelize.TEXT
 		}, true);
 
@@ -142,12 +143,13 @@ export default class Database {
 			Ordinal: Sequelize.INTEGER, //optional
 			Description: Sequelize.TEXT,
 
-			//Occurance controls
+			//Occurance controls (not needed by mapper, just play logic)
 			IsNeverLast: getBoooleanNotNull(),
 			IsNeverFirst: getBoooleanNotNull(),
 			IsOnlyLast: getBoooleanNotNull(), //Implies IsNeverFirst
 			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
-			// IsNeverRepeat: getBoooleanNotNull()
+			IsNeverRepeat: getBoooleanNotNull(),
+			PreferredPanelGroup: Sequelize.INTEGER, //Panels with the same group will be preferred next (best used with IsNeverRepeat)
 		}, true);
 
 		defineTable('Comic', {

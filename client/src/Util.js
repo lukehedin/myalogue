@@ -74,7 +74,7 @@ const Util = {
 			}
 		},
 
-		clear: (noRedirect = false) => {
+		clear: (noRefresh = false) => {
 			localStorage.removeItem(Util.context._tokenKey);
 
 			Util.context._userId = null;
@@ -84,7 +84,7 @@ const Util = {
 
 			Util.analytics.set('userId', null);
 			
-			if(!noRedirect) window.location.href = "/";
+			if(!noRefresh) window.location.href = "/";
 		},
 
 		isDev: () => Util.context._isDev,
@@ -98,9 +98,19 @@ const Util = {
 
 		//Refdata
 		getTemplates: () => Util.context._referenceData.templates,
-		getTemplateById: (templateId) => Util.context._referenceData.templates.find(template => templateId === template.templateId),
 		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
-		getTemplatePanelById: (templatePanelId) => Util.context._referenceData.templatePanelLookup[templatePanelId],
+		getTemplateById: (templateId) => {
+			let template = Util.context._referenceData.templates.find(template => templateId === template.templateId);
+			if(!template) Util.context.clear(); //Reference data is outdated, do a refresh.
+
+			return template;
+		},
+		getTemplatePanelById: (templatePanelId) => {
+			let templatePanel = Util.context._referenceData.templatePanelLookup[templatePanelId];
+			if(!templatePanel) Util.context.clear(); //Reference data is outdated, do a refresh.
+
+			return templatePanel;
+		},
 
 		getTopComic: () => Util.context._referenceData.topComic,
 

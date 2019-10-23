@@ -144,31 +144,67 @@ export default class PlayService extends Service {
 		let currentComicPanel = completedComicPanels.length > 0
 			? completedComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[completedComicPanels.length - 1]
 			: null;
-		let isFirst = !currentComicPanel;
-		let isLast = completedComicPanels.length + 1 === dbComic.PanelCount;
-			
+		let nextPanelIsFirst = !currentComicPanel;
+		let nextPanelIsLast = completedComicPanels.length + 1 === dbComic.PanelCount;
+		let usedTemplatePanelIds = [...new Set(completedComicPanels.map(completedComicPanel => completedComicPanel.TemplatePanelId))];
+
 		let templatePanelWhere = {
-			TemplateId: dbComic.TemplateId
+			TemplateId: dbComic.TemplateId,
+			[Sequelize.Op.or]: [{
+				//Return templatepanels that can repeat
+				IsNeverRepeat: false
+			}, {
+				//Or ones that can't repeat, but haven't been used yet
+				IsNeverRepeat: true,
+				TemplatePanelId: {
+					[Sequelize.Op.notIn]: usedTemplatePanelIds
+				}
+			}]
 		};
 	
-		//Certain panels only show up in the first or last position
-		isFirst
+		//Certain panels only show up in the first or last position, or never will
+		nextPanelIsFirst
 			? templatePanelWhere.IsNeverFirst = false
 			: templatePanelWhere.IsOnlyFirst = false;
-	
-		isLast
+		nextPanelIsLast
 			? templatePanelWhere.IsNeverLast = false
 			: templatePanelWhere.IsOnlyLast = false;
-	
-		let dbTemplatePanels = await this.models.TemplatePanel.findAll({
-			limit: 1,
-			order: [Sequelize.fn('RANDOM')],
-			where: templatePanelWhere
+
+		let templatePanelPromises = [
+			this.models.TemplatePanel.findAll({
+				order: [[Sequelize.fn('RANDOM')]],
+				where: templatePanelWhere
+			})
+		];
+		//If we have a currentComicPanel, also fetch that so we can check if it has a PreferredPanelGroup
+		if(currentComicPanel) {
+			templatePanelPromises.push(
+				this.models.TemplatePanel.findOne({
+					where: {
+						TemplatePanelId: currentComicPanel.TemplatePanelId
+					}
+				})
+			);
+		}
+
+		//Find the possible next template panels, and the current one (may be null)
+		let [dbPossibleNextTemplatePanels, dbCurrentTemplatePanel] = await Promise.all(templatePanelPromises);
+
+		//If there are no possible next template panels, something has gone wrong or a template has a bad combo of rules
+		if(!dbPossibleNextTemplatePanels || dbPossibleNextTemplatePanels.length < 1) throw 'No viable next template panels';
+
+		//Get an array of PREFERRED template panels, but this is most often completely empty
+		let dbPreferredNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => {
+			return dbCurrentTemplatePanel && dbCurrentTemplatePanel.PreferredPanelGroup
+				? dbTemplatePanel.PreferredPanelGroup === dbCurrentTemplatePanel.PreferredPanelGroup
+				: false;
 		});
 
-		if(!dbTemplatePanels || dbTemplatePanels.length < 1) throw 'No viable template panels';
-
-		let dbTemplatePanel = dbTemplatePanels[0];
+		//If we have any PREFERRED template panels, use the first of them (the random from the query above should still be applied)
+		//Otherwise, use the first POSSIBLE template panel
+		let dbTemplatePanel = dbPreferredNextTemplatePanels.length > 0
+			? dbPreferredNextTemplatePanels[0]
+			: dbPossibleNextTemplatePanels[0];
 	
 		//Set the next template panel
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
@@ -185,7 +221,7 @@ export default class PlayService extends Service {
 
 		return {
 			comicId: dbComic.ComicId,
-			templatePanelId: dbComic.NextTemplatePanelId, //changed this from dbTemplatePanel.TeplatePanelId remove this comment if no brekay
+			templatePanelId: dbComic.NextTemplatePanelId,
 
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,
