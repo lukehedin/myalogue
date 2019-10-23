@@ -79,7 +79,7 @@ export default class ProfilePage extends Component {
 					</div>
 				</div>
 			</div>
-			<div className="panel-stanard">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						{this.state.user && !this.state.isLoading

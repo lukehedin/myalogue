@@ -40,9 +40,13 @@ export default class HomePage extends Component {
 		let holidaysDate = new Date(now.getFullYear(), 11, 25, 23, 59, 59);
 		let newYearDate = new Date(now.getFullYear() + 1, 0, 1, 23, 59, 59); // new years day
 
-		if(now < halloweenDate && now > moment(halloweenDate).subtract(1, 'week').toDate()) logo = logo_halloween;
-		if(now < holidaysDate && now > moment(holidaysDate).subtract(1, 'week').toDate()) logo = logo_holidays;
-		if(now < newYearDate && now > moment(newYearDate).subtract(2, 'days').toDate()) logo = logo_newyear;
+		let isHalloween = now < halloweenDate && now > moment(halloweenDate).subtract(1, 'week').toDate();
+		let isHolidays = now < holidaysDate && now > moment(holidaysDate).subtract(1, 'week').toDate();
+		let isNewYear = now < newYearDate && now > moment(newYearDate).subtract(2, 'days').toDate();
+
+		if(isHalloween) logo = logo_halloween;
+		if(isHolidays) logo = logo_holidays;
+		if(isNewYear) logo = logo_newyear;
 
 		return <div className="page-home">
 			<div className="panel-inset">

@@ -1,8 +1,66 @@
+@keyframes loader-spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1; }
+  100% {
+    -webkit-transform: translateX(-100px);
+    transform: translateX(-100px);
+    opacity: 0; } }
+
+@keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1; }
+  100% {
+    -webkit-transform: translateX(-100px);
+    transform: translateX(-100px);
+    opacity: 0; } }
+
+@-webkit-keyframes slide-in-left {
+  0% {
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+    opacity: 0; }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1; } }
+
+@keyframes slide-in-left {
+  0% {
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+    opacity: 0; }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1; } }
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: #efefef;
+  background-color: #fff;
   color: #080808;
   text-align: left; }
   body .app-container {
@@ -74,11 +132,13 @@ body {
       body .app-container .app .comic-list {
         position: relative; }
         body .app-container .app .comic-list .comic-list-filters {
-          margin: 16px auto;
           display: flex;
           flex-direction: row;
           align-items: center;
-          justify-content: center; }
+          justify-content: center;
+          margin: 16px auto; }
+          body .app-container .app .comic-list .comic-list-filters:first-child {
+            margin-top: 0; }
           body .app-container .app .comic-list .comic-list-filters > *:not(:first-child) {
             margin-left: 8px; }
           body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkmark {
@@ -147,18 +207,6 @@ body {
             margin-bottom: 16px; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
-
-@-webkit-keyframes fade-in {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
-
-@keyframes fade-in {
-  0% {
-    opacity: 0; }
-  100% {
-    opacity: 1; } }
       body .app-container .app .comic-panel {
         position: relative;
         border: 1px solid #c8c8c8; }
@@ -926,29 +974,29 @@ body {
             font-size: 12px; }
       body .app-container .app .page-template .template-navigation {
         margin: 16px auto; }
-      body .app-container .app .page-template .play-template {
-        margin-bottom: 16px; }
       body .app-container .app .page-top-comics .top-comics-inner {
         position: relative;
         min-height: 60vh; }
         body .app-container .app .page-top-comics .top-comics-inner .top-comics-table {
           border-collapse: collapse;
           width: 100%; }
-          body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr:not(:last-child) {
-            border-bottom: 1px solid #c8c8c8; }
-          body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td {
-            vertical-align: top;
-            padding: 16px 0; }
-            body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
-              text-align: right;
-              min-width: 100px; }
-              @media (min-width: 576px) {
-                body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
-                  min-width: 160px; } }
-              body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container {
-                justify-content: flex-end; }
-                body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {
-                  margin-top: 8px; }
+          body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr {
+            border-bottom: 1px solid #efefef; }
+            body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr:first-child {
+              border-top: 1px solid #efefef; }
+            body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td {
+              vertical-align: top;
+              padding: 16px 0; }
+              body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
+                text-align: right;
+                min-width: 100px; }
+                @media (min-width: 576px) {
+                  body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button {
+                    min-width: 160px; } }
+                body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container {
+                  justify-content: flex-end; }
+                  body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {
+                    margin-top: 8px; }
       body .app-container .app .page-profile .user-info {
         position: relative;
         min-height: 60px; }
@@ -974,10 +1022,7 @@ body {
           -moz-box-shadow: 6px 6px 6px #00000016; }
       body .app-container .app .page-settings .settings-row {
         position: relative;
-        min-height: 100px;
-        margin-top: 32px;
-        border-top: 1px solid #c8c8c8;
-        padding-top: 32px; }
+        min-height: 100px; }
         body .app-container .app .page-settings .settings-row > h2 {
           margin-bottom: 16px; }
       body .app-container .app .app-inner {
@@ -1004,6 +1049,8 @@ body {
             @media (min-width: 992px) {
               body .app-container .app .app-inner [class^="panel-"]:first-child {
                 padding-top: 32px; } }
+          body .app-container .app .app-inner [class^="panel-"].panel-standard {
+            background-color: #efefef; }
           body .app-container .app .app-inner [class^="panel-"].panel-inset {
             margin-left: -16px;
             margin-right: -16px;
@@ -1027,12 +1074,6 @@ body {
         body .app-container .app .container .row {
           position: relative;
           padding: 0 16px; }
-
-@keyframes loader-spin {
-  0% {
-    transform: rotate(0deg); }
-  100% {
-    transform: rotate(360deg); } }
     body .app-container .loader {
       position: absolute;
       height: 100%;

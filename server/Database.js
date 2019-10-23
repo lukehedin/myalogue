@@ -141,10 +141,13 @@ export default class Database {
 			TextColour: Sequelize.INTEGER, //null = black, 1. white
 			Ordinal: Sequelize.INTEGER, //optional
 			Description: Sequelize.TEXT,
-			IsOnlyLast: getBoooleanNotNull(),
-			IsOnlyFirst: getBoooleanNotNull(),
+
+			//Occurance controls
 			IsNeverLast: getBoooleanNotNull(),
-			IsNeverFirst: getBoooleanNotNull()
+			IsNeverFirst: getBoooleanNotNull(),
+			IsOnlyLast: getBoooleanNotNull(), //Implies IsNeverFirst
+			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
+			// IsNeverRepeat: getBoooleanNotNull()
 		}, true);
 
 		defineTable('Comic', {

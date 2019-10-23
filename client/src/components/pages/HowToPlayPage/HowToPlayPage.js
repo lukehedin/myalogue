@@ -26,15 +26,39 @@ export default class HowToPlayPage extends Component {
 						<h1 className="page-title">How to play</h1>
 						<p className="center">When you hit the play button, you will be shown two comic panels; one will have some dialogue in it, and the other won’t have any at all.</p>
 						<p className="center">Your goal is to <b>add dialogue to the empty panel</b> and continue the comic's story as best you can.</p>
+					</div>
+				</div>
+			</div>
+			<div className="panel-standard">
+				<div className="container">
+					<div className="row">
 						<ComicPanelPair>
 							<ComicPanel comicPanel={demoPanel} />
 							<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
 						</ComicPanelPair>
+					</div>
+				</div>
+			</div>
+			<div className="panel-inset">
+				<div className="container">
+					<div className="row">
 						<p className="center">Another player will see your panel and have to write dialogue for the next. This process is repeated until the comic is complete.</p>
 						<p className="center">The final comic might be amusing, confusing or utterly bamboozling depending on how everyone interpreted their panel.</p>
+					</div>
+				</div>
+			</div>
+			<div className="panel-standard">
+				<div className="container">
+					<div className="row">
 						<div className="comic-wrapper">
 							<Comic comic={topComic} />
 						</div>
+					</div>
+				</div>
+			</div>
+			<div className="panel-inset">
+				<div className="container">
+					<div className="row">
 						<p className="center"><b>Every comic is different</b>. There are many different templates featuring unique situations for your dialogue, and most of the panels are ordered at random.</p>
 						<p className="center">You can make dialogue for as many comics as you want.
 							{Util.context.isAuthenticated()

@@ -30,17 +30,11 @@ export default class TopComicsPage extends Component {
 	}
 	render() {
 		return <div className="page-top-comics">
-			<div className="panel-standard">
+			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">Top comics</h1>
 						<p className="page-subtitle">The highest rated comics for each template.</p>
-					</div>
-				</div>
-			</div>
-			<div className="panel-inset">
-				<div className="container">
-					<div className="row">
 						<div className="top-comics-inner">
 							{this.state.isLoading
 								? <div className="loader"></div>

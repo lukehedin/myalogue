@@ -2,11 +2,14 @@
 	position: relative;
 
 	.comic-list-filters {
-		margin: $spacing-sm auto;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
+		margin: $spacing-sm auto;
+		&:first-child {
+			margin-top: 0;
+		}
 
 		> * {
 			&:not(:first-child) {

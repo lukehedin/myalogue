@@ -8,8 +8,9 @@
 			width: 100%;
 	
 			tr {
-				&:not(:last-child) {
-					border-bottom: 1px solid $colour-grey-b;
+				border-bottom: 1px solid $colour-grey-a;
+				&:first-child {
+					border-top: 1px solid $colour-grey-a;
 				}
 	
 				td {
