@@ -31,15 +31,18 @@ export default class PlayService extends Service {
 			//If a templateId is supplied, only 1 will be returned and the random below will select it
 			where: templateWhere,
 			order: [[ 'UnlockedAt', 'DESC' ]]
-		})
+		});
+
+		if(!dbLatestTemplates || dbLatestTemplates.length === 0) throw 'No templates to play with';
 		
-		//Anonymous users can't access the latest template right away
-		let dbTemplate = dbLatestTemplates[common.getRandomInt((userId ? 0 : 1), dbLatestTemplates.length - 1)];
+		//Anonymous users can't access the latest template right away (but if there is only 1, dont skip it!)
+		let startIdx = (userId || dbLatestTemplates.length === 1 ? 0 : 1);
+		let dbTemplate = dbLatestTemplates[common.getRandomInt(startIdx, dbLatestTemplates.length - 1)];
 
 		//Create a new comic with this template
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
-			PanelCount: this._GetRandomPanelCount(dbTemplate.MaxPanelCount),
+			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
 			IsAnonymous: !userId
 		});
 
@@ -386,11 +389,13 @@ export default class PlayService extends Service {
 			}
 		}
 	}
-	_GetRandomPanelCount(maxPanelCount) {
+	_GetRandomPanelCount(minPanelCount, maxPanelCount) {
+		if(minPanelCount % 2 === 1) minPanelCount = minPanelCount + 1; //No odd numbers allowed.
 		if(maxPanelCount % 2 === 1) maxPanelCount = maxPanelCount + 1; //No odd numbers allowed.
-		let panelCount = 4;
 
-		//Adds additional panel pairs
+		let panelCount = minPanelCount;
+
+		//Adds additional panel pairs all the way up to the max (eg. min 2 max 10: 2, 4, 6, 8, 10)
 		if(maxPanelCount > panelCount) {
 			let maxAdditionalPanelPairs = ((maxPanelCount - panelCount) / 2);
 			let additionalPanels = (common.getRandomInt(0, maxAdditionalPanelPairs) * 2);

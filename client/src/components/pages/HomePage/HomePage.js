@@ -56,11 +56,11 @@ export default class HomePage extends Component {
 							<img src={logo} className="app-logo" alt="logo" />
 							<p className="page-subtitle center">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 						</div>
+						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
+						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress {this.state.anonComicsInProgressCount ? `(${this.state.anonComicsInProgressCount} anonymous)` : ``}</p>
 						<div className="button-container justify-center">
 							<Button label="Play" to={Util.route.play()} colour="pink" size="lg" />
 						</div>
-						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress {this.state.anonComicsInProgressCount ? `(${this.state.anonComicsInProgressCount} anonymous)` : ``}</p>
-						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
 						<div className="button-container justify-center">
 							<Button className="how-to-play-button" label="How to play" to={Util.route.howToPlay()} colour="pink" isHollow={true} size="sm" />
 						</div>
