@@ -21,8 +21,6 @@ export default {
 					topComic: topComic
 				}
 			}
-	
-			if(common.config.IsDev) result.isDev = true;
 
 			let authResult = await services.User.Authenticate(userId, anonId);
 
@@ -191,12 +189,21 @@ export default {
 			return await services.Comic.PostComicComment(userId, comicId, value);
 		},
 
+		updateComicComment: async (req, services) => {
+			let userId = req.userId;
+
+			let comicCommentId = req.body.comicCommentId;
+			let value = req.body.value;
+
+			return await services.Comic.UpdateComicComment(userId, comicCommentId, value);
+		},
+
 		deleteComicComment: async (req, services) => {
 			let userId = req.userId;
 
 			let comicCommentId = req.body.comicCommentId;
 
-			return await services.Comic.DeleteComicComment(comicCommentId, userId);
+			return await services.Comic.DeleteComicComment(userId, comicCommentId);
 		},
 
 		getNotifications: async (req, services) => {

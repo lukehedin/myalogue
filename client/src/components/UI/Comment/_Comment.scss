@@ -34,6 +34,10 @@
 				margin-top: $spacing-xxs;
 				a {
 					font-size: 12px;
+
+					&:not(:first-child) {
+						margin-left: $spacing-xs;
+					}
 				}
 			}
 		}

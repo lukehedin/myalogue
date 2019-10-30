@@ -284,10 +284,16 @@ body {
         display: flex;
         flex-direction: column;
         align-items: center; }
-        @media screen and (orientation: landscape) {
-          body .app-container .app .comic-panel-pair {
-            flex-direction: row;
-            justify-content: center; } }
+
+@media screen and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .app .comic-panel-pair {
+    flex-direction: row;
+    justify-content: center; } }
+
+@media screen and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .app .comic-panel-pair {
+    flex-direction: row;
+    justify-content: center; } }
       body .app-container .app .form-wrapper {
         position: relative;
         margin: 0 auto;
@@ -828,7 +834,6 @@ body {
           body .app-container .app .avatar-selector .avatar-settings .avatar-setting .setting-label {
             width: 80px; }
       body .app-container .app .comment-thread .comments {
-        padding: 4px 0;
         max-height: 300px;
         overflow-y: auto;
         overflow-x: hidden;
@@ -840,22 +845,24 @@ body {
             padding-top: 8px; }
         body .app-container .app .comment-thread .comments .posting-message {
           margin: 8px; }
-      body .app-container .app .comment-thread .new-comment {
+      body .app-container .app .comment-thread .comment-input-container {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         margin-top: 8px; }
-        body .app-container .app .comment-thread .new-comment .new-comment-inner {
-          flex: 1;
-          display: flex;
-          flex-direction: column; }
-          body .app-container .app .comment-thread .new-comment .new-comment-inner textarea {
-            align-self: stretch;
-            margin-left: 8px;
-            resize: vertical; }
-          body .app-container .app .comment-thread .new-comment .new-comment-inner .button {
-            align-self: flex-end;
-            margin-top: 4px; }
+        body .app-container .app .comment-thread .comment-input-container .avatar {
+          margin-right: 8px; }
+      body .app-container .app .comment-input {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative; }
+        body .app-container .app .comment-input textarea {
+          align-self: stretch;
+          resize: vertical; }
+        body .app-container .app .comment-input .button-container {
+          align-self: flex-end;
+          margin-top: 4px; }
       body .app-container .app .comment {
         display: flex;
         flex-direction: row;
@@ -881,6 +888,8 @@ body {
               margin-top: 4px; }
               body .app-container .app .comment .comment-inner .comment-lower .comment-actions a {
                 font-size: 12px; }
+                body .app-container .app .comment .comment-inner .comment-lower .comment-actions a:not(:first-child) {
+                  margin-left: 8px; }
       body .app-container .app .share-buttons {
         display: flex;
         flex-direction: row; }
@@ -1212,10 +1221,15 @@ body {
         font-size: calc(16px * 0.48); }
     body .app-container .comic-lower, body .app-container .comic-list-filters {
       width: calc(540px * 0.48); }
-      @media screen and (orientation: landscape) {
-        body .app-container .comic-lower, body .app-container .comic-list-filters {
-          width: calc(540px * 0.96); } }
-    @media (min-height: 800px) {
+
+@media screen and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 0.96); } }
+
+@media screen and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 0.96); } }
+    @media (min-width: 360px) {
       body .app-container .comic-panel {
         height: calc(450px * 0.52);
         width: calc(540px * 0.52); }
@@ -1227,10 +1241,15 @@ body {
           font-size: calc(16px * 0.52); }
       body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.52); } }
-  @media screen and (min-height: 800px) and (orientation: landscape) {
-    body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 1.04); } }
-    @media (min-height: 996px) {
+
+@media screen and (min-width: 360px) and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.04); } }
+
+@media screen and (min-width: 360px) and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.04); } }
+    @media (min-width: 700px) {
       body .app-container .comic-panel {
         height: calc(450px * 0.56);
         width: calc(540px * 0.56); }
@@ -1242,9 +1261,14 @@ body {
           font-size: calc(16px * 0.56); }
       body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.56); } }
-  @media screen and (min-height: 996px) and (orientation: landscape) {
-    body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 1.12); } }
+
+@media screen and (min-width: 700px) and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.12); } }
+
+@media screen and (min-width: 700px) and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.12); } }
     @media screen and (orientation: landscape) {
       body .app-container .comic-panel {
         height: calc(450px * 0.48);
@@ -1257,9 +1281,14 @@ body {
           font-size: calc(16px * 0.48); }
       body .app-container .comic-lower, body .app-container .comic-list-filters {
         width: calc(540px * 0.48); } }
-  @media screen and (orientation: landscape) and (orientation: landscape) {
-    body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 0.96); } }
+
+@media screen and (orientation: landscape) and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 0.96); } }
+
+@media screen and (orientation: landscape) and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 0.96); } }
 
 @media screen and (orientation: landscape) and (min-height: 680px) {
   body .app-container .comic-panel {
@@ -1273,9 +1302,14 @@ body {
       font-size: calc(16px * 0.52); }
   body .app-container .comic-lower, body .app-container .comic-list-filters {
     width: calc(540px * 0.52); } }
-  @media screen and (orientation: landscape) and (min-height: 680px) and (orientation: landscape) {
-    body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 1.04); } }
+
+@media screen and (orientation: landscape) and (min-height: 680px) and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.04); } }
+
+@media screen and (orientation: landscape) and (min-height: 680px) and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.04); } }
 
 @media screen and (orientation: landscape) and (min-height: 800px) {
   body .app-container .comic-panel {
@@ -1289,6 +1323,11 @@ body {
       font-size: calc(16px * 0.56); }
   body .app-container .comic-lower, body .app-container .comic-list-filters {
     width: calc(540px * 0.56); } }
-  @media screen and (orientation: landscape) and (min-height: 800px) and (orientation: landscape) {
-    body .app-container .comic-lower, body .app-container .comic-list-filters {
-      width: calc(540px * 1.12); } }
+
+@media screen and (orientation: landscape) and (min-height: 800px) and (orientation: landscape) and (min-width: 576px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.12); } }
+
+@media screen and (orientation: landscape) and (min-height: 800px) and (orientation: portrait) and (min-width: 768px) {
+  body .app-container .comic-lower, body .app-container .comic-list-filters {
+    width: calc(540px * 1.12); } }

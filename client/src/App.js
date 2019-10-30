@@ -37,6 +37,8 @@ class App extends Component {
 			isLoading: true,
 			isUnderMaintenance: false
 		};
+
+		this.authenticate = this.authenticate.bind(this);
 	}
 	componentWillUnmount() {
 		this.unlisten();
@@ -48,6 +50,9 @@ class App extends Component {
 			Util.selector.getRootScrollElement().scrollTo(0, 0);
 		});
 
+		this.authenticate();
+	}
+	authenticate() {
 		Util.api.post('/api/authenticate')
 			.then(result => {
 				//An error also triggers maintenance mode
@@ -69,6 +74,11 @@ class App extends Component {
 				this.setState({
 					isLoading: false
 				});
+			})
+			.catch(err => {
+				console.log(err);
+				//If a 500 error, try again in a few secs
+				setTimeout(this.authenticate, Util.isDev ? 200 : 5000);
 			});
 	}
 	render() {

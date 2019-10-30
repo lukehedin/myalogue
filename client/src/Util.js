@@ -35,6 +35,9 @@ import iconTwitter from './icons/twitter.svg';
 import iconUser from './icons/user.svg';
 
 const Util = {
+	//One of the bare few env variables that can be used client side.
+	isDev: process.env.NODE_ENV === 'development',
+
 	context: {
 		_tokenKey: 'auth-token',
 		_getToken: () => localStorage.getItem(Util.context._tokenKey),
@@ -43,7 +46,6 @@ const Util = {
 		_username: null,
 		_avatar: null,
 
-		_isDev: null,
 		_referenceData: null,
 
 		set: (authResult) => {
@@ -64,14 +66,11 @@ const Util = {
 			Util.context._userId = authResult.userId;
 			Util.context._username = authResult.username;
 			Util.context._avatar = authResult.avatar;
-			Util.context._isDev = authResult.isDev;
 			Util.context._referenceData = authResult.referenceData;
 
 			Util.analytics.set('userId', authResult.userId);
 
-			if(Util.context._isDev) {
-				document.title = 'DEV - ' + document.title; 
-			}
+			if(Util.isDev) document.title = 'DEV - ' + document.title; 
 		},
 
 		clear: (noRefresh = false) => {
@@ -79,7 +78,6 @@ const Util = {
 
 			Util.context._userId = null;
 			Util.context._username = null;
-			Util.context._isDev = null;
 			Util.context._referenceData = null;
 
 			Util.analytics.set('userId', null);
@@ -87,7 +85,6 @@ const Util = {
 			if(!noRefresh) window.location.href = "/";
 		},
 
-		isDev: () => Util.context._isDev,
 		isAuthenticated: () => !!Util.context.getUserId(), // Cannot use token, as anons also use this
 		
 		getUserId: () => Util.context._userId,
@@ -132,7 +129,7 @@ const Util = {
 
 	analytics: {
 		init: () => {
-			if(Util.context.isDev()) {
+			if(Util.isDev) {
 				console.log(`GA:INIT`);
 			} else {
 				ReactGA.initialize('UA-92026212-3');
@@ -140,7 +137,7 @@ const Util = {
 		},
 
 		set: (property, value) => {
-			if(Util.context.isDev()) {
+			if(Util.isDev) {
 				console.log(`GA:SET - ${property}:${value}`);
 			} else {
 				ReactGA.set({ [property]: value });
@@ -148,7 +145,7 @@ const Util = {
 		},
 
 		event: (eventCategory, eventAction, value = null, nonInteraction = false) => {
-			if(Util.context.isDev()) {
+			if(Util.isDev) {
 				console.log(`GA:EVENT - ${eventCategory}:${eventAction}`);
 			} else {
 				ReactGA.event({
@@ -163,7 +160,7 @@ const Util = {
 		page: () => {
 			let path = Util.route.getCurrent();
 
-			if(Util.context.isDev()) {
+			if(Util.isDev) {
 				console.log(`GA:PAGE - ${path}`);
 			} else {
 				ReactGA.pageview(path);
@@ -171,7 +168,7 @@ const Util = {
 		},
 
 		modal: (modalName) => {
-			if(Util.context.isDev()) {
+			if(Util.isDev) {
 				console.log(`GA:MODAL - ${modalName}`);
 			} else {
 				ReactGA.modalview(modalName);

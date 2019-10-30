@@ -109,6 +109,20 @@
 
 //Comic mixins
 
+@mixin canFitTwoComicPanels {
+	//If any problems arise from this combo, simply replace with a single isLandscape
+	@include isLandscape  {
+		@include oversm {
+			@content;
+		}
+	}
+	@include isPortrait() {
+		@include overmd {
+			@content;
+		}
+	}
+}
+
 @mixin comicWrapperStyle {
 	//The wrapper around a collection of comic panels, makes the border consistent width and gives curve
 	border: 1px solid $colour-grey-b;

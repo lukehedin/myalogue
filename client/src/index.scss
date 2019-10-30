@@ -307,17 +307,17 @@ body {
 			//Elements that need to match the width of a comic
 			.comic-lower, .comic-list-filters {
 				@include applyComicPanelWidth($scale);
-				@include isLandscape {
+				@include canFitTwoComicPanels {
 					@include applyComicPanelWidth($scale * 2);
 				}
 			}
 		}
 		//Portrait
 		@include scaleComicPanel($comic-panel-scale-sm);
-		@media (min-height: 800px) {
+		@media (min-width: 360px) {
 			@include scaleComicPanel($comic-panel-scale-md);
 		}
-		@media (min-height: 996px) {
+		@media (min-width: 700px) {
 			@include scaleComicPanel($comic-panel-scale-lg);
 		}
 		//Landscape

@@ -1,0 +1,16 @@
+.comment-input {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+
+	textarea {
+		align-self: stretch;
+		resize: vertical;
+	}
+
+	.button-container {
+		align-self: flex-end;
+		margin-top: $spacing-xxs;
+	}
+}

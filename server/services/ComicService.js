@@ -316,6 +316,8 @@ export default class ComicService extends Service {
 		}
 	}
 	async PostComicComment (userId, comicId, value) {
+		if(!userId || !comicId || !value) throw 'Invalid comic comment data supplied';
+
 		let dbComic = await this.models.Comic.findOne({
 			where: {
 				ComicId: comicId,
@@ -345,7 +347,21 @@ export default class ComicService extends Service {
 
 		return mapper.fromDbComicComment(dbCreatedComicComment);
 	}
-	async DeleteComicComment (comicCommentId, userId) {
+	async UpdateComicComment (userId, comicCommentId, value) {
+		if(!userId || !comicCommentId || !value) throw 'Invalid comic comment data supplied';
+
+		this.models.ComicComment.update({
+			Value: value
+		}, {
+			where: {
+				UserId: userId, //Validation
+				ComicCommentId: comicCommentId
+			}
+		});
+	}
+	async DeleteComicComment (userId, comicCommentId) {
+		if(!userId || !comicCommentId) throw 'Invalid comic comment data supplied';
+
 		this.models.ComicComment.destroy({
 			where: {
 				UserId: userId, //Validation

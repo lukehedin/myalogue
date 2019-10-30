@@ -32,6 +32,7 @@ class Comic extends Component {
 		this.openShareComicModal = this.openShareComicModal.bind(this);
 		this.openReportComicPanelModal = this.openReportComicPanelModal.bind(this);
 		this.postComicComment = this.postComicComment.bind(this);
+		this.updateComicComment = this.updateComicComment.bind(this);
 		this.deleteComicComment = this.deleteComicComment.bind(this);
 	}
 	toggleIsCommentsVisible() {
@@ -51,7 +52,7 @@ class Comic extends Component {
 			comic: this.props.comic
 		});
 	}
-	postComicComment(value) {
+	postComicComment(value, callback) {
 		Util.api.post('/api/postComicComment', {
 			comicId: this.state.comic.comicId,
 			value
@@ -71,6 +72,30 @@ class Comic extends Component {
 						comicComments: [...this.state.comic.comicComments, result]
 					}
 				});
+
+				if(callback) callback();
+			}
+		});
+	}
+	updateComicComment(comicComment, value) {
+		//Server
+		Util.api.post('/api/updateComicComment', {
+			comicCommentId: comicComment.comicCommentId,
+			value: value
+		});
+
+		//Client
+		this.setState({
+			comic: {
+				...this.state.comic,
+				comicComments: this.state.comic.comicComments.map(c => {
+					return c.comicCommentId !== comicComment.comicCommentId
+						? c
+						: {
+							...c,
+							value: value
+						}
+				})
 			}
 		});
 	}
@@ -123,7 +148,10 @@ class Comic extends Component {
 					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 				</div>
 				{this.state.isCommentsVisible
-					? <CommentThread comments={this.state.comic.comicComments} onPostComment={this.postComicComment} onDeleteComment={this.deleteComicComment} />
+					? <CommentThread comments={this.state.comic.comicComments} 
+						onPostComment={this.postComicComment}
+						onUpdateComment={this.updateComicComment}
+						onDeleteComment={this.deleteComicComment} />
 					: null
 				}
 			</div>
