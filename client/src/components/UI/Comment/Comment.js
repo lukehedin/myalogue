@@ -60,7 +60,7 @@ class Comment extends Component {
 					{this.state.isEditing
 						? <CommentInput 
 							buttonLabel="Save" 
-							placeholder="Edit the comment" 
+							placeholder="Enter new comment" 
 							value={this.props.comment.value} 
 							onCancel={() => this.setIsEditing(false)} 
 							onSubmit={(value) => {
