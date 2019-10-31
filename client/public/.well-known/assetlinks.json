@@ -4,7 +4,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "xyz.appmaker.qunped",
-      "sha256_cert_fingerprints": ["AE:CE:24:07:EE:DC:98:F7:33:7B:2D:30:C5:12:2B:4F:A8:83:6B:C4:0F:03:22:40:33:28:28:43:43:E1:7D:62","SHA256: F9:A5:C8:66:B2:A3:78:EE:29:39:34:3F:5B:33:06:1F:4F:39:F7:56:6E:4F:EF:91:07:FF:EC:B2:4B:2C:42:5B"]
+      "sha256_cert_fingerprints": ["AE:CE:24:07:EE:DC:98:F7:33:7B:2D:30:C5:12:2B:4F:A8:83:6B:C4:0F:03:22:40:33:28:28:43:43:E1:7D:62","F9:A5:C8:66:B2:A3:78:EE:29:39:34:3F:5B:33:06:1F:4F:39:F7:56:6E:4F:EF:91:07:FF:EC:B2:4B:2C:42:5B"]
     }
   }
 ]
