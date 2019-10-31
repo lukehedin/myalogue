@@ -30,6 +30,7 @@ if(process.env.NODE_ENV === 'production') {
 	//Serve static assets if in prod
 	app.use(express.static('client/build'));
 
+	//LH: I don't think this is doing anything. The .use seems to fetch index
 	app.get('*', (req, res) => {
 		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 	});
