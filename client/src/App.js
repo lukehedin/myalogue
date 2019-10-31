@@ -138,6 +138,9 @@ class App extends Component {
 						<Route exact path="/about" render={() => <AboutPage />}/>
 						<Route exact path="/privacy-policy" render={() => <PrivacyPolicyPage />}/>
 						<Route exact path="/terms-of-service" render={() => <TermsOfServicePage />}/>
+
+						{/* Static asset serving */}
+						<Route path="/.well-known/assetlinks.json" onEnter={() => window.location.reload()} />
 						
 						{/* No other route match, 404 */}
 						<Route render={({ match }) => <Error404Page />} />
