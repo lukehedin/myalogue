@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "xyz.appmaker.qunped",
+      "sha256_cert_fingerprints": ["AE:CE:24:07:EE:DC:98:F7:33:7B:2D:30:C5:12:2B:4F:A8:83:6B:C4:0F:03:22:40:33:28:28:43:43:E1:7D:62"]
+    }
+  }
+]
