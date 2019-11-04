@@ -104,19 +104,21 @@ export default {
 		},
 
 		getUser: async (req, services) => {
+			let userId = req.userId;
+
 			let requestedUserId = req.body.requestedUserId; //do not confuse
 			let requestedUsername = req.body.requestedUsername;
 
-			let user = requestedUsername
+			let requestedUser = requestedUsername
 				? await services.User.GetByUsername(requestedUsername)
 				: await services.User.GetById(requestedUserId);
 
-			if(!user) throw 'User not found.';
+			if(!requestedUser) throw 'User not found.';
 
-			let userStats = await services.Comic.GetStatsForUser(user.userId);
-
+			let userStats = await services.Comic.GetStatsForUser(requestedUser.userId);
+			
 			return {
-				user: user,
+				user: requestedUser,
 				userStats: userStats
 			};
 		},

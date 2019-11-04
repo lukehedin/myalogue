@@ -209,7 +209,7 @@ export default class PlayService extends Service {
 			? dbPreferredNextTemplatePanels[0]
 			: dbPossibleNextTemplatePanels[0];
 	
-		//Set the next template panel
+		//Set the next template panel (this prevents people from submitting a panel that isn't in line with the one provided)
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
 
 		//Lock the comic
@@ -267,7 +267,7 @@ export default class PlayService extends Service {
 		if(!isComicValid || !isDialogueValid) throw 'Invalid dialogue supplied.';
 			
 		await this.models.ComicPanel.create({
-			TemplatePanelId: dbComic.NextTemplatePanelId,
+			TemplatePanelId: dbComic.NextTemplatePanelId, //We use the server's recorded nexttemplatepanelid, not one sent from the client
 			ComicId: dbComic.ComicId,
 			Value: dialogue,
 			Ordinal: dbComic.ComicPanels.length + 1,

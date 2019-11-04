@@ -26,6 +26,8 @@ export default class Avatar extends Component {
 		let style={ 
 			width: size,
 			height: size,
+			minWidth: size,
+			minHeight: size,
 			backgroundSize: `${(size / avatarImageSize) * imageWidth}px ${(size / avatarImageSize) * imageHeight}px`,
 			backgroundImage: `url('${avatars}')`, 
 			backgroundPositionX: backgroundX, 

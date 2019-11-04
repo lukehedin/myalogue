@@ -1,12 +1,67 @@
 .page-profile {
 
-	.user-info {
+	.user-info-container {
 		position: relative;
 		min-height: 60px;
 
-		.user-info-inner {
-			.avatar {
-				margin: 0 auto $spacing-xs auto;
+		.user-info {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			flex: 1;
+
+			.user-info-header {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+
+				.user-info-header-detail {
+					> * {
+						text-align: center;
+					}
+					
+					.user-name {
+						word-break: break-word;
+					}
+
+					.joined-date {
+						margin: $spacing-xxs 0;
+						color: $colour-grey-e;
+					}
+				}
+			}
+
+			.user-stats {
+				margin-top: $spacing-sm;
+
+				.user-stats-row {
+					display: flex;
+					flex-direction: row;
+
+					.user-stat {
+						flex: 1;
+					}
+				}
+					
+				.user-stat {
+					padding: $spacing-sm;
+					border-top: 1px solid $colour-grey-b;
+
+					h2 {
+						text-align: center;
+					}
+
+					h5 {
+						color: $colour-grey-e;
+						text-align: center;
+					}
+
+					> * {
+						&:not(:first-child) {
+							margin-top: $spacing-xs;
+						}
+					}
+				}
 			}
 		}
 	}

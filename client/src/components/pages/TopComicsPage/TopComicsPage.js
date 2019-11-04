@@ -47,7 +47,7 @@ export default class TopComicsPage extends Component {
 													<td>
 														<p className="sm"><b>Template {template.templateId}</b>: <Link to={Util.route.template(template.templateId)}>{template.name}</Link></p>
 														{topComic 
-															? <p className="sm"><Link to={Util.route.comic(topComic.comicId)}>Comic #{topComic.comicId}</Link> (Rating: {topComic.rating}) - <ComicInfoLabel comic={topComic} /></p> 
+															? <p className="sm"><Link to={Util.route.comic(topComic.comicId)}>Comic #{topComic.comicId}</Link> (rating: {topComic.rating}) - <ComicInfoLabel comic={topComic} /></p> 
 															: null
 														}
 													</td>

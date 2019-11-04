@@ -24,6 +24,8 @@ export default class Database {
 		});
 
 		this.loadedModels = {};
+
+		console.log('Database: Database connected');
 	}
 	get models() {
 		return this.loadedModels;
@@ -230,5 +232,7 @@ export default class Database {
 		//Notification FKS
 		createOneToMany('Comic', 'Notification'); // Will link to comicid
 		createOneToMany('User', 'Notification'); // Will link to user profile
+
+		console.log('Database: Database models loaded');
 	}
 };

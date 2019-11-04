@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 import moment from 'moment';
 
 import ComicList from '../../UI/ComicList/ComicList';
-import Button from '../../UI/Button/Button';
 import Avatar from '../../UI/Avatar/Avatar';
+import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
 
 //this.props.userIdOrUserName
 export default class ProfilePage extends Component {
@@ -54,24 +56,47 @@ export default class ProfilePage extends Component {
 			<div className="panel-inset">
 				<div className="container">
 					<div className="row">
-						<div className="user-info">
+						<div className="user-info-container">
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: this.state.user
-									? <div className="user-info-inner">
-										<Avatar user={this.state.user} to={isMe ? Util.route.settings() : null} />
-										<h1 className="page-title">{this.state.user.username}</h1>
-										<p className="center sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
-										{this.state.userStats.panelCount
-											? <p className="center sm">{this.state.user.username} has made <b>{this.state.userStats.panelCount} </b>{Util.format.pluralise(this.state.userStats.panelCount, 'panel')} for <b>{this.state.userStats.comicCount}</b> {Util.format.pluralise(this.state.userStats.comicCount, 'comic')} with a total rating of <b>{this.state.userStats.comicTotalRating}</b>!</p>
-											: null
-										}
-										{
-											isMe ? <div className="button-container justify-center">
-												<Button to={Util.route.settings()} label={'Edit profile'} colour="black" isHollow={true} />
+									? <div className="user-info">
+										<div className="user-info-header">
+											<Avatar className="avatar-lg" user={this.state.user} to={isMe ? Util.route.settings() : null} />
+											<div className="user-info-header-detail">
+												<h2 className="user-name">{this.state.user.username}</h2>
+												<p className="joined-date sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
 											</div>
-											: null
-										}
+										</div>
+										<div className="user-stats">
+											<div className="user-stats-row">
+												<div className="user-stat">
+													<h5>Created</h5>
+													<h2><CountUp end={this.state.userStats.panelCount} /></h2>
+													<h5>{Util.format.pluralise(this.state.userStats.panelCount, 'panel')}</h5>
+												</div>
+												<div className="user-stat">
+													<h5>Featured in</h5>
+													<h2><CountUp end={this.state.userStats.comicCount} /></h2>
+													<h5>{Util.format.pluralise(this.state.userStats.comicCount, 'comic')}</h5>
+												</div>
+											</div>
+											<div className="user-stat">
+												<h5>Total comic rating</h5>
+												<h1><CountUp end={this.state.userStats.comicTotalRating} /></h1>
+											</div>
+											<div className="user-stat">
+												<h5>Average comic rating</h5>
+												<h2><CountUp end={this.state.userStats.comicAverageRating} decimals={2}/></h2>
+											</div>
+											{this.state.userStats && this.state.userStats.topComic
+												? <div className="user-stat">
+													<h5>Top rated comic</h5>
+													<p className="center"><Link to={Util.route.comic(this.state.userStats.topComic.comicId)}>Comic #{this.state.userStats.topComic.comicId}</Link> (rating: {this.state.userStats.topComic.rating})</p>
+												</div>
+												: null
+											}
+										</div>
 									</div>
 									: <p className="empty-text">User not found.</p>
 							}

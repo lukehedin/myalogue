@@ -130,6 +130,7 @@ export default function asForm(WrappedForm, formConfig) {
 						placeholder={fieldConfig.placeholder || null}
 						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
 						value={this.state.formData[fieldName]}
+						disabled={this.state.isLoading}
 					/>;
 					break;
 					
@@ -142,6 +143,7 @@ export default function asForm(WrappedForm, formConfig) {
 						valueProp={fieldConfig.valueProp || 'value'}
 						isBlankAllowed={fieldConfig.isBlankAllowed}
 						blankLabel={fieldConfig.blankLabel}
+						disabled={this.state.isLoading}
 						options={fieldConfig.getOptions
 							? fieldConfig.getOptions(this.state.formData)
 							: fieldConfig.options}
@@ -154,6 +156,7 @@ export default function asForm(WrappedForm, formConfig) {
 						label={fieldConfig.label}
 						onChange={(value) => this.updateFormData(fieldName, value)}
 						value={this.state.formData[fieldName]}
+						disabled={this.state.isLoading}
 					/>;
 					break;
 
@@ -164,6 +167,7 @@ export default function asForm(WrappedForm, formConfig) {
 						onChange={(e) => this.updateFormData(fieldName, e.target.value)} 
 						type={fieldConfig.isPassword ? "password" : "text"} 
 						value={this.state.formData[fieldName]}
+						disabled={this.state.isLoading}
 					/>;
 					break;
 			}

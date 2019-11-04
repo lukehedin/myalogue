@@ -1010,11 +1010,42 @@ body {
                   justify-content: flex-end; }
                   body .app-container .app .page-top-comics .top-comics-inner .top-comics-table tr td.cell-button .button-container:not(:first-child) {
                     margin-top: 8px; }
-      body .app-container .app .page-profile .user-info {
+      body .app-container .app .page-profile .user-info-container {
         position: relative;
         min-height: 60px; }
-        body .app-container .app .page-profile .user-info .user-info-inner .avatar {
-          margin: 0 auto 8px auto; }
+        body .app-container .app .page-profile .user-info-container .user-info {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          flex: 1; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-info-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail > * {
+              text-align: center; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .user-name {
+              word-break: break-word; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .joined-date {
+              margin: 4px 0;
+              color: #525252; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats {
+            margin-top: 16px; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row {
+              display: flex;
+              flex-direction: row; }
+              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row .user-stat {
+                flex: 1; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat {
+              padding: 16px;
+              border-top: 1px solid #c8c8c8; }
+              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h2 {
+                text-align: center; }
+              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h5 {
+                color: #525252;
+                text-align: center; }
+              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat > *:not(:first-child) {
+                margin-top: 8px; }
       body .app-container .app .page-how-to-play .how-to-play-image {
         margin: 0 auto;
         border: 1px solid #c8c8c8;

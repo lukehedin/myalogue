@@ -11,6 +11,7 @@ import common from './common';
 import Database from './Database';
 
 import ComicService from './services/ComicService';
+import CronService from './services/CronService';
 import EmailService from './services/EmailService';
 import NotificationService from './services/NotificationService';
 import PlayService from './services/PlayService';
@@ -43,6 +44,7 @@ db.LoadModels();
 
 const services = {
 	Comic: new ComicService(db.models, () => services),
+	Cron: new CronService(db.models, () => services),
 	Email: new EmailService(db.models, () => services),
 	Notification: new NotificationService(db.models, () => services),
 	Play: new PlayService(db.models, () => services),
@@ -57,6 +59,9 @@ if(common.config.IsDevelopmentScript) {
 		db.SyncSchema(); //async
 	}, 10000);
 } else {
+	//Not a dev script, register background cronjobs
+	services.Cron.RegisterJobs();
+
 	app.use((req, res, next) => {
 		let token = req.headers['x-access-token'] || req.headers['authorization'];
 		token = token ? token.slice(7, token.length).trimLeft() : null;

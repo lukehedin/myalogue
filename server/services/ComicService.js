@@ -158,16 +158,22 @@ export default class ComicService extends Service {
 				CompletedAt: {
 					[Sequelize.Op.ne]: null
 				}
-			}
+			},
+			order: [[ 'Rating', 'DESC' ], ['CompletedAt', 'DESC']]
 		});
 		
 		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
 		let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
+		let comicAverageRating = comicTotalRating / dbComics.length;
+		let topComic = dbComics.length > 0 ? dbComics[0] : null; //Already sorted
 		
 		return {
 			panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
 			comicCount: dbComics.length,
 			comicTotalRating: comicTotalRating,
+			comicAverageRating: comicAverageRating,
+
+			topComic: mapper.fromDbComic(topComic)
 		};
 	}
 	async VoteComic(userId, comicId, value) {
