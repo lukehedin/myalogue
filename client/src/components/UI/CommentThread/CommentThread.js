@@ -17,9 +17,11 @@ export default class CommentThread extends Component {
 		};
 
 		this.commentsContainerRef = React.createRef();
+		this.commentInputRef = React.createRef();
 		
 		this.scrollToBottom = this.scrollToBottom.bind(this);
 		this.postComment = this.postComment.bind(this);
+		this.replyToComment = this.replyToComment.bind(this);
 	}
 	componentDidMount() {
 		this.scrollToBottom();
@@ -46,11 +48,20 @@ export default class CommentThread extends Component {
 			});
 		}
 	}
+	replyToComment(username) {
+		let commentInput = this.commentInputRef.current;
+		if(commentInput) commentInput.focus(`@${username} `);
+	}
 	render() {
 		return <div className="comment-thread">
 			{Util.array.any(this.state.comments)
 				? <div className="comments" ref={this.commentsContainerRef}>
-					{this.state.comments.map(comment => <Comment key={comment.comicCommentId} comment={comment} onDelete={this.props.onDeleteComment} onUpdate={this.props.onUpdateComment} />)}
+					{this.state.comments.map(comment => <Comment key={comment.comicCommentId} 
+						comment={comment} 
+						onReply={this.replyToComment}
+						onDelete={this.props.onDeleteComment} 
+						onUpdate={this.props.onUpdateComment}
+					/>)}
 					{this.state.isLoadingNewComment 
 						? <p className="posting-message empty-text center sm">Posting...</p>
 						: null
@@ -61,7 +72,7 @@ export default class CommentThread extends Component {
 			{Util.context.isAuthenticated()
 				? <div className="comment-input-container">
 					<Avatar size={32} />
-					<CommentInput isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
+					<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
 				</div>
 				: <p className="empty-text">You need to <Link to={Util.route.register()}>create an account</Link> to make comments.</p>
 			}

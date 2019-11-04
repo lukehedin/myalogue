@@ -13,9 +13,20 @@ export default class CommentInput extends Component {
 			isLoading: false
 		};
 
+		this.inputRef = React.createRef();
+
 		this.onInputChange = this.onInputChange.bind(this);
 		this.onInputTouchEnd = this.onInputTouchEnd.bind(this);
 		this.submit = this.submit.bind(this);
+	}
+	focus(withValue) {
+		if(withValue) {
+			this.setState({
+				value: withValue
+			});
+		}
+
+		this.inputRef.focus();
 	}
 	onInputChange(e) {
 		this.setState({
@@ -54,7 +65,7 @@ export default class CommentInput extends Component {
 	render() {
 		return <div className="comment-input">
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
-			<Textarea placeholder={this.props.placeholder || 'Add a comment'} onChange={this.onInputChange} value={this.state.value} onTouchEnd={this.onInputTouchEnd} />
+			<Textarea inputRef={tag => (this.inputRef = tag)} placeholder={this.props.placeholder || 'Add a comment'} onChange={this.onInputChange} value={this.state.value} onTouchEnd={this.onInputTouchEnd} />
 			<div className="button-container">
 				{this.props.onCancel 
 					? <Button onClick={this.props.onCancel} colour="black" size="sm" isHollow={true} label='Cancel' isDisabled={this.props.isLoading} />

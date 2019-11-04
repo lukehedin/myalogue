@@ -151,7 +151,8 @@ class Comic extends Component {
 					? <CommentThread comments={this.state.comic.comicComments} 
 						onPostComment={this.postComicComment}
 						onUpdateComment={this.updateComicComment}
-						onDeleteComment={this.deleteComicComment} />
+						onDeleteComment={this.deleteComicComment}
+					/>
 					: null
 				}
 			</div>

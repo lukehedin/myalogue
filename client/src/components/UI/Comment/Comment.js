@@ -41,6 +41,7 @@ class Comment extends Component {
 		if(!this.props.comment.user) return null;
 		
 		let user = this.props.comment.user;
+		let isMe = user.userId === Util.context.getUserId();
 
 		return <div className="comment">
 			<Avatar size={32} to={Util.route.profile(user.username)} user={user} />
@@ -70,13 +71,20 @@ class Comment extends Component {
 						/>
 						: <div className="comment-value" dangerouslySetInnerHTML={{ __html: Util.format.userTextToSafeHtml(this.props.comment.value)}}></div>
 					}
-					{user.userId === Util.context.getUserId() && !this.state.isEditing
-						? <div className="comment-actions">
-							<a onClick={() => this.setIsEditing(true)}>Edit</a>
-							<a onClick={this.deleteComment}>Delete</a>
-						</div>
-						: null
-					}
+					<div className="comment-actions">
+						{isMe && !this.state.isEditing
+							? <a onClick={() => this.setIsEditing(true)}>Edit</a>
+							: null
+						}
+						{isMe && !this.state.isEditing
+							? <a onClick={this.deleteComment}>Delete</a>
+							: null
+						}
+						{/* {!isMe && Util.context.isAuthenticated() && this.props.onReply
+							? <a onClick={() => this.props.onReply(user.username)}>Reply</a>
+							: null
+						} */}
+					</div>
 				</div>
 			</div>
 		</div>

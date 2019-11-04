@@ -886,6 +886,8 @@ body {
               white-space: pre-line; }
             body .app-container .app .comment .comment-inner .comment-lower .comment-actions {
               margin-top: 8px; }
+              body .app-container .app .comment .comment-inner .comment-lower .comment-actions:empty {
+                display: none; }
               body .app-container .app .comment .comment-inner .comment-lower .comment-actions a {
                 font-size: 12px;
                 color: #080808;
