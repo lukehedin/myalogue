@@ -38,6 +38,8 @@ const Util = {
 	//One of the bare few env variables that can be used client side.
 	isDev: process.env.NODE_ENV === 'development',
 
+	// Context and ref data
+
 	context: {
 		_tokenKey: 'auth-token',
 		_getToken: () => localStorage.getItem(Util.context._tokenKey),
@@ -46,27 +48,16 @@ const Util = {
 		_username: null,
 		_avatar: null,
 
-		_referenceData: null,
-
 		set: (authResult) => {
 			authResult.token
 				? localStorage.setItem(Util.context._tokenKey, authResult.token)
 				: localStorage.removeItem(Util.context._tokenKey);
 
-			if(authResult.referenceData) {
-				//Add a lookup of templatepanels to the referencedata
-				authResult.referenceData.templatePanelLookup = {};
-				authResult.referenceData.templates.forEach(template => {
-					template.templatePanels.forEach(templatePanel => {
-						authResult.referenceData.templatePanelLookup[templatePanel.templatePanelId] = templatePanel;
-					});
-				});
-			}
-
 			Util.context._userId = authResult.userId;
 			Util.context._username = authResult.username;
 			Util.context._avatar = authResult.avatar;
-			Util.context._referenceData = authResult.referenceData;
+
+			if(authResult.referenceData) Util.referenceData.set(authResult.referenceData);
 
 			Util.analytics.set('userId', authResult.userId);
 
@@ -78,7 +69,6 @@ const Util = {
 
 			Util.context._userId = null;
 			Util.context._username = null;
-			Util.context._referenceData = null;
 
 			Util.analytics.set('userId', null);
 			
@@ -92,24 +82,6 @@ const Util = {
 		getUserAvatar: () => Util.context._avatar && Util.context._avatar.character && Util.context._avatar.expression && Util.context._avatar.colour
 			? Util.context._avatar
 			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
-
-		//Refdata
-		getTemplates: () => Util.context._referenceData.templates,
-		getLatestTemplate: () => Util.context._referenceData.templates[Util.context._referenceData.templates.length - 1],
-		getTemplateById: (templateId) => {
-			let template = Util.context._referenceData.templates.find(template => templateId === template.templateId);
-			if(!template) Util.context.clear(); //Reference data is outdated, do a refresh.
-
-			return template;
-		},
-		getTemplatePanelById: (templatePanelId) => {
-			let templatePanel = Util.context._referenceData.templatePanelLookup[templatePanelId];
-			if(!templatePanel) Util.context.clear(); //Reference data is outdated, do a refresh.
-
-			return templatePanel;
-		},
-
-		getTopComic: () => Util.context._referenceData.topComic,
 
 		//localstored, device only settings (the ones that do not matter if cleared)
 		setting: {
@@ -126,6 +98,44 @@ const Util = {
 		isBrowserSupported: () => detectBrowser().name !== "ie",
 		isTouchDevice: () => isTouchDevice()
 	},
+
+	referenceData: {
+		_referenceData: null,
+	
+		set: (referenceData) => {
+			if(referenceData) {
+				//Add a lookup of templatepanels to the referencedata
+				referenceData.templatePanelLookup = {};
+				referenceData.templates.forEach(template => {
+					template.templatePanels.forEach(templatePanel => {
+						referenceData.templatePanelLookup[templatePanel.templatePanelId] = templatePanel;
+					});
+				});
+			}
+			Util.referenceData._referenceData = referenceData;
+		},
+
+		getTemplates: () => Util.referenceData._referenceData.templates,
+		getLatestTemplate: () => Util.referenceData._referenceData.templates[Util.referenceData._referenceData.templates.length - 1],
+		getTemplateById: (templateId) => {
+			let template = Util.referenceData._referenceData.templates.find(template => templateId === template.templateId);
+			if(!template) Util.context.clear(); //Reference data is outdated, do a refresh.
+	
+			return template;
+		},
+
+		getTemplatePanelById: (templatePanelId) => {
+			let templatePanel = Util.referenceData._referenceData.templatePanelLookup[templatePanelId];
+			if(!templatePanel) Util.context.clear(); //Reference data is outdated, do a refresh.
+	
+			return templatePanel;
+		},
+	
+		getTopComic: () => Util.referenceData._referenceData.topComic, // Used for how to play page
+
+	},
+
+	// Functions and static data
 
 	analytics: {
 		init: () => {

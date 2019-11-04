@@ -58,7 +58,7 @@ export default class ComicPage extends Component {
 					this.setState({
 						isComicCompleted: true,
 						comic: result.comic,
-						template: Util.context.getTemplateById(result.comic.templateId)
+						template: Util.referenceData.getTemplateById(result.comic.templateId)
 					});
 				} else {
 					this.setState({

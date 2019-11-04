@@ -123,8 +123,12 @@ export default {
 			};
 		},
 
-		getComicsInProgressCount: async (req, services) => {
-			return await services.Comic.GetComicsInProgressCount();
+		homeUpdate: async (req, services) => {
+			let comicsInProgress = await services.Comic.GetComicsInProgressCount();
+
+			return {
+				...comicsInProgress
+			};
 		},
 
 		//Gets a comic in progress or starts new

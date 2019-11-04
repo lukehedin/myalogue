@@ -16,7 +16,7 @@ class Comic extends Component {
 		super(props);
 
 		this.initialComic = this.props.comic;
-		this.template = Util.context.getTemplateById(this.props.comic.templateId);
+		this.template = Util.referenceData.getTemplateById(this.props.comic.templateId);
 
 		this.state = {
 			isLoading: false,

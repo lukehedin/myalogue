@@ -16,23 +16,30 @@ export default class HomePage extends Component {
 		super(props);
 
 		this.state = {
+			latestTemplate: Util.referenceData.getLatestTemplate(),
 			comicsInProgressCount: 0
 		};
 	}
 	componentDidMount(){
-		Util.api.post('/api/getComicsInProgressCount')
-			.then(result => {
-				if(!result.error) {
+		Util.api.post('/api/homeUpdate', {
+			existingTemplateIds: Util.referenceData.getTemplates().map(template => template.templateId)
+		})
+		.then(result => {
+			if(!result.error) {
+				this.setState({
+					comicsInProgressCount: result.count,
+					anonComicsInProgressCount: result.anonCount
+				});
+
+				if(Util.array.any(result.updatedTemplates)) {
 					this.setState({
-						comicsInProgressCount: result.count,
-						anonComicsInProgressCount: result.anonCount
+						latestTemplate: Util.referenceData.getLatestTemplate()
 					});
 				}
-			});
+			}
+		});
 	}
 	render() {
-		let latestTemplate = Util.context.getLatestTemplate();
-
 		let now = new Date();
 		let logo = logo_default;
 
@@ -56,7 +63,7 @@ export default class HomePage extends Component {
 							<img src={logo} className="app-logo" alt="logo" />
 							<p className="page-subtitle center">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 						</div>
-						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
+						<p className="play-info sm center"><span>Newest template: </span><Link to={Util.route.template(this.state.latestTemplate.templateId)}>{this.state.latestTemplate.name}</Link></p>
 						<p className={`play-info sm center ${this.state.comicsInProgressCount ? '' : 'invisible'}`}><b>{this.state.comicsInProgressCount}</b> {Util.format.pluralise(this.state.comicsInProgressCount, 'comic')} in progress {this.state.anonComicsInProgressCount ? `(${this.state.anonComicsInProgressCount} anonymous)` : ``}</p>
 						<div className="button-container justify-center">
 							<Button label="Play" to={Util.route.play()} colour="pink" size="lg" />

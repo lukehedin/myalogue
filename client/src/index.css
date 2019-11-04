@@ -1012,7 +1012,7 @@ body {
                     margin-top: 8px; }
       body .app-container .app .page-profile .user-info-container {
         position: relative;
-        min-height: 60px; }
+        min-height: 30vh; }
         body .app-container .app .page-profile .user-info-container .user-info {
           display: flex;
           flex-direction: column;

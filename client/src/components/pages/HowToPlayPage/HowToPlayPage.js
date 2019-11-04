@@ -10,7 +10,7 @@ import Comic from '../../UI/Comic/Comic';
 
 export default class HowToPlayPage extends Component {
 	render() {
-		let topComic = Util.context.getTopComic();
+		let topComic = Util.referenceData.getTopComic();
 		if(!topComic) return <Redirect to={Util.route.register()} />; //Should not happen
 
 		let demoPanel = {

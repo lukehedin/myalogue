@@ -31,7 +31,7 @@ export default class ComicPanel extends Component {
 	render() {
 		let isEditing = !this.props.comicPanel;
 		let isMyPanel = Util.context.isAuthenticated() && this.props.comicPanel && this.props.comicPanel.user && this.props.comicPanel.user.userId === Util.context.getUserId();
-		let templatePanel = Util.context.getTemplatePanelById(this.props.comicPanel ? this.props.comicPanel.templatePanelId : this.props.templatePanelId);
+		let templatePanel = Util.referenceData.getTemplatePanelById(this.props.comicPanel ? this.props.comicPanel.templatePanelId : this.props.templatePanelId);
 		
 		const basePanelWidth = 540;
 		const basePanelHeight = 450;

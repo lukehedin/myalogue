@@ -28,8 +28,8 @@ export default class TemplatePage extends Component {
 		let templateId = this.props.templateId ? parseInt(this.props.templateId, 10) : null;
 
 		let template = templateId 
-			? Util.context.getTemplateById(templateId) 
-			: Util.context.getLatestTemplate();
+			? Util.referenceData.getTemplateById(templateId) 
+			: Util.referenceData.getLatestTemplate();
 		
 		this.setState({
 			templateId: templateId,

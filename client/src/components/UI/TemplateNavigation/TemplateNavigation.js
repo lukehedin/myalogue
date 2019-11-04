@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 export default class TemplateNavigation extends Component {
 	render() {
 		let templateId = this.props.template.templateId;
-		let latestTemplateId = Util.context.getLatestTemplate().templateId;
+		let latestTemplateId = Util.referenceData.getLatestTemplate().templateId;
 		
 		return <div className={`template-navigation ${this.props.className || ''}`}>
 			<div className="button-container">
