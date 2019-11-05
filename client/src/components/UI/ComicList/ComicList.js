@@ -113,15 +113,22 @@ export default class ComicList extends Component {
 						onChange={value => this.setSortBy(value)}
 						displayProp='label' 
 						valueProp='type' 
-						options={[{
-								type: Util.enums.ComicSortBy.TopToday,
-								label: 'Top (Today)'
-							}, {
-								type: Util.enums.ComicSortBy.TopAll,
-								label: 'Top (All time)'
-							}, {
+						options={[
+							{
 								type: Util.enums.ComicSortBy.Newest,
 								label: 'Newest'
+							}, {
+								type: Util.enums.ComicSortBy.TopToday,
+								label: 'Top (today)'
+							}, {
+								type: Util.enums.ComicSortBy.TopWeek,
+								label: 'Top (week)'
+							}, {
+								type: Util.enums.ComicSortBy.TopMonth,
+								label: 'Top (month)'
+							}, {
+								type: Util.enums.ComicSortBy.TopAll,
+								label: 'Top (all time)'
 							}, {
 								type: Util.enums.ComicSortBy.Random,
 								label: 'Random'

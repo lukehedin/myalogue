@@ -3,6 +3,7 @@ import ReactGA from 'react-ga';
 import { detect as detectBrowser } from 'detect-browser';
 import isTouchDevice from 'is-touch-device';
 import linkifyHtml  from 'linkifyjs/html';
+import escape from 'escape-html';
 
 import iconBack from './icons/back.svg';
 import iconBell from './icons/bell.svg';
@@ -262,6 +263,8 @@ const Util = {
 			Newest: 2,
 			Random: 3,
 			TopToday: 4,
+			TopWeek: 5,
+			TopMonth: 6
 		},
 
 		TextAlignVertical: {
@@ -284,7 +287,7 @@ const Util = {
 
 	event: {
 		absorb: (event) => {
-			var e = event || window.event;
+			let e = event || window.event;
 			e.preventDefault && e.preventDefault();
 			e.stopPropagation && e.stopPropagation();
 			e.cancelBubble = true;
@@ -295,7 +298,7 @@ const Util = {
 
 	fn: {
 		copyToClipboard: (value) => {
-			var textArea = document.createElement("textarea");
+			let textArea = document.createElement("textarea");
 			textArea.style.position = 'fixed';
 			textArea.style.top = 0;
 			textArea.style.left = 0;
@@ -323,22 +326,26 @@ const Util = {
 			return count === 1 ? singular : plural;
 		},
 
-		userTextToSafeHtml: (text = "") => {
-			return linkifyHtml(text, {
+		userStringToSafeHtml: (str = "") => {
+			if(!str) return str;
+
+			// Most importantly, escape html.
+			// External components convert this string to live html
+			str = escape(str);
+
+			//Everything below this point will be valid html
+
+			//Add user mention links (regex also on server)
+			str = str.replace(/\B@[a-z0-9]+/gi, (userMention) => {
+				let username = userMention.replace('@', '');
+				return `<a target="_self" href="${Util.route.profile(username)}">${userMention}</a>`;
+			});
+			
+			//Add hyperlinks
+			//The internal ternary's here are for safety, but are usually overrridden by Link components outside this fn
+			return linkifyHtml(str, {
 				target: (href) => Util.route.isLinkInternal(href) ? '_self' : '_blank',
-				attributes: (href) =>  Util.route.isLinkInternal(href) ? {} : { rel: 'noopener nofollow' },
-				
-				//If you figure out how to make them work with router
-				// formatHref: (href) => Util.route.isLinkInternal(href) ? ''  : href,
-				// events: (href) => {
-				// 	return Util.route.isLinkInternal(href)
-				// 		? {
-				// 			click: function (e) {
-				// 				alert('Link clicked!');
-				// 			}
-				// 		}
-				// 		: {}
-				// },
+				attributes: (href) =>  Util.route.isLinkInternal(href) ? {} : { rel: 'noopener nofollow' }
 			});
 		}
 	},
@@ -381,9 +388,16 @@ const Util = {
 		isCurrently: (route) => Util.route.getCurrent() === route,
 		
 		isLinkInternal: (link) => {
+			if(link.startsWith('/')) return true;
 			let urlLink = new URL(link);
 			return urlLink.host === window.location.host;
 		},
+		toInternalLink: (link) => {
+			if(link.startsWith('/')) return link;
+			let urlLink = new URL(link);
+			return urlLink.pathname;
+		},
+
 		home: () => `/`,
 		settings: () => `/settings`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,

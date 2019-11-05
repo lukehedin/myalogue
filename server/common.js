@@ -22,8 +22,9 @@ export default {
 			Welcome: 2,
 			ComicCompleted: 3,
 			PanelRemoved: 4, // valueInteger = comicId, valueString = dialogue from removed panel
-			ComicComment: 5, // valueInteger = number of OTHER commenters
+			ComicComment: 5, // valueInteger = number of OTHER commenters, valueString = latest commenter
 			PanelCensored: 6, // valueInteger = comicId, valueString = dialogue from reported panel
+			ComicCommentMention: 7, //valueString = name of user who tagged you
 		}
 	},
 

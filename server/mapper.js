@@ -136,6 +136,10 @@ const mapper = {
 				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} commented on comic #${dbRelatedComicId}.`;
 				break;
 
+			case common.enums.NotificationType.ComicCommentMention:
+				message = `${valueString || 'A user'} mentioned you in a comment on comic #${dbRelatedComicId}.`;
+				break;
+
 			case common.enums.NotificationType.ComicCompleted:
 				title = `Comic #${dbRelatedComicId} completed!`
 				message = `A comic you made a panel for has been completed. Click here to view the comic.`;

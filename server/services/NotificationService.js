@@ -57,6 +57,7 @@ export default class NotificationService extends Service {
 		await this._CreateNotification(notifyUserIds, common.enums.NotificationType.ComicCompleted, { comicId: comicId });
 	}
 	async SendComicCommentNotification(dbNewComicComment, dbComic) {
+		//dbComic needs to have panels and comments with it
 		//NOTE: dbComic's ComicComments should not have the dbNewComicComment in them
 
 		// This is an updatable user notification as further comments happen. 
@@ -64,30 +65,34 @@ export default class NotificationService extends Service {
 		// if the user has seen the notification, a new one is made. (eg. "sarah commented")
 		// A SEEN NOTIFICATION SHOULD NEVER CHANGE
 
-		//dbComic needs to have panels and comments with it
 		let commenterUserId = dbNewComicComment.UserId;
+		let dbNewCommenterUser = await this.models.User.findOne({
+			where: {
+				UserId: commenterUserId
+			}
+		});
+
+		//Find any users mentioned in this comment, and send them a specific notification
+		//They are also filtered out of the general notification below
+		let userMentionUserIds = await this._GetUserMentionUserIds(dbNewComicComment.Value);
+		this.SendComicCommentMentionedNotification(userMentionUserIds, dbNewCommenterUser, dbComic.ComicId);
 
 		//The userIds to send notifications to: all commenters and panel authors
 		let notifyUserIds = this._CleanNotifyUserIds([
 				...dbComic.ComicComments.map(dbComicComment => dbComicComment.UserId), 
 				...dbComic.ComicPanels.map(dbComicPanel => dbComicPanel.UserId)
-			].filter(userId => userId !== commenterUserId) //DO NOT include THIS commenter
+			]
+			.filter(userId => !userMentionUserIds.includes(userId)) //DO NOT include users mentioned in this comment, they get a direct notification
+			.filter(userId => userId !== commenterUserId) //DO NOT include THIS commenter
 		);
 		
 		// Find or create a comment notification for this comicid
-		let [[dbNotification, wasCreated], dbNewCommenterUser] = await Promise.all([
-			this.models.Notification.findOrCreate({
-				where: {
-					Type: common.enums.NotificationType.ComicComment,
-					ComicId: dbComic.ComicId
-				}
-			}),
-			this.models.User.findOne({
-				where: {
-					UserId: commenterUserId
-				}
-			})
-		]);
+		let [dbNotification, wasCreated] = await this.models.Notification.findOrCreate({
+			where: {
+				Type: common.enums.NotificationType.ComicComment,
+				ComicId: dbComic.ComicId
+			}
+		});
 
 		if(wasCreated) {
 			//We just made the root comment notification, so make all the user ones now
@@ -179,6 +184,30 @@ export default class NotificationService extends Service {
 			});
 		}
 	}
+	async SendComicCommentMentionedNotification(mentionedUserIds, dbNewCommenterUser, comicId) {
+		if(!mentionedUserIds || mentionedUserIds.length < 1) return;
+
+		let notifyUserIds = this._CleanNotifyUserIds(mentionedUserIds)
+			.filter(userId => userId !== dbNewCommenterUser.UserId); // you can't mention yourself!
+
+		// Find or create a comment notification for this comicid
+		let [dbNotification, wasCreated] = await this.models.Notification.findOrCreate({
+			where: {
+				Type: common.enums.NotificationType.ComicCommentMention,
+				ComicId: comicId
+			}
+		});
+
+		//Make all the user ones now
+		this.models.UserNotification.bulkCreate(notifyUserIds.map(notifyUserId => {
+			return {
+				UserId: notifyUserId,
+				NotificationId: dbNotification.NotificationId,
+				ValueString: dbNewCommenterUser.Username,
+				ValueInteger: null
+			};
+		}));
+	}
 	SeenUserNotificationsByIds(userId, userNotificationIds) {
 		this.models.UserNotification.update({
 			SeenAt: new Date()
@@ -251,6 +280,14 @@ export default class NotificationService extends Service {
 				ValueString: valueString
 			};
 		}));
+	}
+	async _GetUserMentionUserIds (str) {
+		let userMentions = str.match(/\B@[a-z0-9]+/gi);//Regex also on client
+		if(!userMentions || userMentions.length < 1) return [];
+		
+		let usernames = userMentions.map(userMention => userMention.replace('@', ''));
+		let dbUsers = await this.services.User.DbGetByUsernames(usernames);
+		return [...new Set(dbUsers.map(dbUser => dbUser.UserId))];
 	}
 	_CleanNotifyUserIds (notifyUserIds) {
 		//Unique-ify and filter any null, undefined, 0 etc

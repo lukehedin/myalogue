@@ -21,16 +21,22 @@ export default class UserService extends Service {
 			}
 		});
 	}
-	async DbGetByUsername(username, additionalWhere = {}) {
-		return await this.models.User.findOne({
+	async DbGetByUsernames(usernames, additionalWhere = {}) {
+		return await this.models.User.findAll({
 			where: {
 				...additionalWhere,
-				Username: username,
+				Username: {
+					[Sequelize.Op.in]: usernames
+				},
 				VerificationToken: {
 					[Sequelize.Op.eq]: null //unverified users cant do anything
 				}
 			}
 		});
+	}
+	async DbGetByUsername(username, additionalWhere = {}) {
+		let dbUsers = await this.DbGetByUsernames([username], additionalWhere);
+		if(dbUsers && dbUsers.length > 0) return dbUsers[0];
 	}
 	async DbGetByUsernameEmailMatch(email, username, additionalWhere = {}) {
 		//Includes banned and unverified users

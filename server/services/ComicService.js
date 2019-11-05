@@ -80,7 +80,10 @@ export default class ComicService extends Service {
 
 		if(templateId) comicWhere.TemplateId = templateId;
 		if(!includeAnonymous) comicWhere.IsAnonymous = false;
+		
 		if(sortBy === 4) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'days').toDate();
+		if(sortBy === 5) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'weeks').toDate();
+		if(sortBy === 6) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'month').toDate();
 
 		let comicOrder = [];
 
@@ -91,8 +94,10 @@ export default class ComicService extends Service {
 			case 2: //newest
 				//Thenby will do this for us
 				break;
-			case 4: //top today
 			case 1: //top all
+			case 4: //top today
+			case 5: //top week
+			case 6: //top month
 			default:
 				comicOrder.push([ 'Rating', 'DESC' ]);
 				break;
