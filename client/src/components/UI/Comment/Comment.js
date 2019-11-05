@@ -98,10 +98,10 @@ class Comment extends Component {
 							? <a onClick={this.deleteComment}>Delete</a>
 							: null
 						}
-						{/* {!isMe && Util.context.isAuthenticated() && this.props.onReply
+						{!isMe && Util.context.isAuthenticated() && this.props.onReply
 							? <a onClick={() => this.props.onReply(user.username)}>Reply</a>
 							: null
-						} */}
+						}
 					</div>
 				</div>
 			</div>

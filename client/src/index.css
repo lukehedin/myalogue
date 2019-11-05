@@ -890,10 +890,9 @@ body {
                 display: none; }
               body .app-container .app .comment .comment-inner .comment-lower .comment-actions a {
                 font-size: 12px;
-                color: #080808;
-                text-decoration: underline; }
+                color: #777777; }
                 body .app-container .app .comment .comment-inner .comment-lower .comment-actions a:hover {
-                  color: #ff0052; }
+                  text-decoration: underline; }
                 body .app-container .app .comment .comment-inner .comment-lower .comment-actions a:not(:first-child) {
                   margin-left: 8px; }
       body .app-container .app .share-buttons {

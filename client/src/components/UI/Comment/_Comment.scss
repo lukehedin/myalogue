@@ -39,11 +39,10 @@
 
 				a {
 					font-size: 12px;
-					color: $colour-black;
-					text-decoration: underline;
+					color: $colour-grey-d;
 
 					&:hover {
-						color: $colour-pink;
+						text-decoration: underline;
 					}
 
 					&:not(:first-child) {
