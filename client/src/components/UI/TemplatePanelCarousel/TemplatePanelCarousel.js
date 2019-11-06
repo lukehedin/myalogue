@@ -15,14 +15,14 @@ export default class TemplatePanelCarousel extends Component {
 
 		const settings = {
 			infinite: true,
-			autoplay: true,
+			autoplay: this.props.autoplay,
 			autoplaySpeed: 4500,
 			arrows: false,
 			lazyLoad: 'ondemand'
 		};
 
-		return <div className="template-panel-carousel">
-			<img className="lil-buddy" src={lilbuddy1} />
+		return <div className={`template-panel-carousel ${this.props.withLilBuddy ? 'with-lil-buddy' : ''}`}>
+			{this.props.withLilBuddy ? <img className="lil-buddy" src={lilbuddy1} /> : null}
 			<Slider className="template-panel-carousel-slider comic-panel-width comic-panel-height" {...settings}>
 			{templates.map(template => {
 				let firstTemplatePanel = template.templatePanels[0];

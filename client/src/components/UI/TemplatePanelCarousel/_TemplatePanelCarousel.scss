@@ -14,6 +14,7 @@
 	
 				a {
 					@include absoluteCover;
+					@include noSelect;
 				}
 			
 				.comic-panel {

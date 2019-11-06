@@ -94,15 +94,10 @@ export default class HomePage extends Component {
 			}
 		</div>
 
-		let featureItem = <div className="feature-item">
-			{Util.context.isAuthenticated()
-				? <div className="latest-template-panel">
-					<ComicPanel readOnly={true} templatePanelId={this.state.latestTemplate.templatePanels[0].templatePanelId} />
-					<Link to={Util.route.template(this.state.latestTemplate.templatePanelId)} />
-				</div>
-				: <TemplatePanelCarousel />
-			}
-		</div>
+		let templatePanelCarousel = <TemplatePanelCarousel 
+			autoplay={!Util.context.isAuthenticated()} 
+			withLilBuddy={!Util.context.isAuthenticated()}
+		/>;
 
 		return <div className="page-home">
 			<div className="panel-inset">
@@ -112,7 +107,7 @@ export default class HomePage extends Component {
 							{homeHeader}
 							<div className="home-detail">
 								{homeHeader}
-								{featureItem}
+								{templatePanelCarousel}
 								<div className="play-panel">
 									{Util.context.isAuthenticated()
 										? null
@@ -129,7 +124,7 @@ export default class HomePage extends Component {
 								</div>
 							</div>
 							<div className="home-feature">
-								{featureItem}
+								{templatePanelCarousel}
 							</div>
 						</div>
 					</div>

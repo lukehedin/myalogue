@@ -242,6 +242,11 @@ body {
             overflow-wrap: break-word;
             white-space: pre-line; }
           body .app-container .app .comic-panel .dialogue div {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             -khtml-user-select: none;
@@ -344,6 +349,11 @@ body {
         -moz-border-radius: 4px;
         text-decoration: none;
         border: 1px solid;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -624,7 +634,18 @@ body {
               height: 100%;
               width: 100%;
               left: 0;
-              top: 0; }
+              top: 0;
+              -webkit-user-drag: none;
+              -khtml-user-drag: none;
+              -moz-user-drag: none;
+              -o-user-drag: none;
+              user-drag: none;
+              -webkit-touch-callout: none;
+              -webkit-user-select: none;
+              -khtml-user-select: none;
+              -moz-user-select: none;
+              -ms-user-select: none;
+              user-select: none; }
             body .app-container .app .template-panel-carousel .template-panel-carousel-slider .slick-list .template-panel-item .comic-panel {
               border: none; }
         body .app-container .app .template-panel-carousel .lil-buddy {
@@ -704,6 +725,11 @@ body {
         align-items: center;
         position: relative;
         cursor: pointer;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -983,22 +1009,6 @@ body {
         @media (min-width: 768px) {
           body .app-container .app .page-home .home-inner > .home-header {
             display: none; } }
-        body .app-container .app .page-home .home-inner .latest-template-panel {
-          position: relative;
-          border: 1px solid #c8c8c8;
-          background-color: #fff;
-          border-radius: 4px;
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px;
-          box-shadow: 6px 6px 6px #00000016;
-          -webkit-box-shadow: 6px 6px 6px #00000016;
-          -moz-box-shadow: 6px 6px 6px #00000016; }
-          body .app-container .app .page-home .home-inner .latest-template-panel > a {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0; }
         body .app-container .app .page-home .home-inner .home-detail {
           flex: 1;
           display: flex;
@@ -1012,12 +1022,12 @@ body {
             @media (min-width: 768px) {
               body .app-container .app .page-home .home-inner .home-detail > .home-header {
                 display: flex; } }
-          body .app-container .app .page-home .home-inner .home-detail .feature-item {
+          body .app-container .app .page-home .home-inner .home-detail .template-panel-carousel {
             margin-top: 16px; }
             @media (min-width: 768px) {
-              body .app-container .app .page-home .home-inner .home-detail .feature-item {
+              body .app-container .app .page-home .home-inner .home-detail .template-panel-carousel {
                 display: none; } }
-            body .app-container .app .page-home .home-inner .home-detail .feature-item .template-panel-carousel .lil-buddy {
+            body .app-container .app .page-home .home-inner .home-detail .template-panel-carousel .lil-buddy {
               display: none; }
           body .app-container .app .page-home .home-inner .home-detail hr {
             margin: 16px 0; }
@@ -1048,13 +1058,8 @@ body {
             @media (min-width: 768px) {
               body .app-container .app .page-home .home-inner .home-feature > * {
                 margin-top: 0; } }
-          body .app-container .app .page-home .home-inner .home-feature .feature-item .template-panel-carousel {
+          body .app-container .app .page-home .home-inner .home-feature .template-panel-carousel.with-lil-buddy {
             margin-top: 100px; }
-          body .app-container .app .page-home .home-inner .home-feature .feature-item .latest-template-panel {
-            display: none; }
-            @media (min-width: 768px) {
-              body .app-container .app .page-home .home-inner .home-feature .feature-item .latest-template-panel {
-                display: block; } }
       body .app-container .app .page-play .play-area {
         position: relative;
         min-height: 60vh;
@@ -1287,6 +1292,11 @@ body {
     body .app-container .invisible {
       opacity: 0; }
     body .app-container .no-select {
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      user-drag: none;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;

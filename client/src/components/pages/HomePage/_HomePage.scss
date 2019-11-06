@@ -38,15 +38,6 @@
 				display: none;
 			}
 		}
-		
-		.latest-template-panel {
-			position: relative;
-			@include comicWrapperStyle;
-
-			> a {
-				@include absoluteCover;
-			}
-		}
 
 		.home-detail {
 			flex: 1;
@@ -64,17 +55,15 @@
 				}
 			}
 
-			.feature-item {
+			.template-panel-carousel {
 				margin-top: $spacing-sm;
 
 				@include overmd {
 					display: none;
 				}
-
-				.template-panel-carousel {
-					.lil-buddy {
-						display: none;
-					}
+				
+				.lil-buddy {
+					display: none;
 				}
 			}
 
@@ -121,16 +110,9 @@
 				}
 			}
 
-			.feature-item {
-				.template-panel-carousel {
+			.template-panel-carousel {
+				&.with-lil-buddy {
 					margin-top: 100px;
-				}
-	
-				.latest-template-panel {
-					display: none;
-					@include overmd {
-						display: block;
-					}
 				}
 			}
 		}
