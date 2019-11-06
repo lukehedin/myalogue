@@ -137,7 +137,7 @@ class Comic extends Component {
 				{comicPanelsPairs.map(comicPanelPair => comicPanelPair)}
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
 			</div>
-			<div className="comic-lower">
+			<div className="comic-lower comic-width">
 				<div className="comic-lower-inner">
 					<div className="comic-lower-details">
 						<p className="sm"><b>Comic #{this.state.comic.comicId}</b></p>

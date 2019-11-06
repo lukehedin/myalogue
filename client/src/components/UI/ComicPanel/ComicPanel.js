@@ -29,7 +29,7 @@ export default class ComicPanel extends Component {
 		if(this.textarea) this.textarea.focus();
 	}
 	render() {
-		let isEditing = !this.props.comicPanel;
+		let isEditing = !this.props.comicPanel && !this.props.readOnly;
 		let isMyPanel = Util.context.isAuthenticated() && this.props.comicPanel && this.props.comicPanel.user && this.props.comicPanel.user.userId === Util.context.getUserId();
 		let templatePanel = Util.referenceData.getTemplatePanelById(this.props.comicPanel ? this.props.comicPanel.templatePanelId : this.props.templatePanelId);
 		
@@ -70,7 +70,7 @@ export default class ComicPanel extends Component {
 				? <div className="comic-panel-id comic-panel-subtle">Comic #{this.props.comicPanel.comicId} {Util.route.getHost()}</div> 
 				: null
 			}
-			{!isEditing && this.props.comicPanel.user 
+			{!isEditing && this.props.comicPanel && this.props.comicPanel.user 
 				? <div className={`comic-panel-subtle comic-panel-author ${isMyPanel ? 'me': ''}`}>{this.props.comicPanel.user.username}</div> 
 				: null
 			}

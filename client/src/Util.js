@@ -214,7 +214,25 @@ const Util = {
 	array: {
 		any: arr => arr && arr.length > 0,
 		none: arr => !Util.array.any(arr),
-		random: arr => arr[Util.random.getRandomInt(0, arr.length - 1)]
+		random: arr => arr[Util.random.getRandomInt(0, arr.length - 1)],
+		shuffle: arr => {
+			var currentIndex = arr.length, temporaryValue, randomIndex;
+
+			// While there remain elements to shuffle...
+			while (0 !== currentIndex) {
+		  
+			  // Pick a remaining element...
+			  randomIndex = Math.floor(Math.random() * currentIndex);
+			  currentIndex -= 1;
+		  
+			  // And swap it with the current element.
+			  temporaryValue = arr[currentIndex];
+			  arr[currentIndex] = arr[randomIndex];
+			  arr[randomIndex] = temporaryValue;
+			}
+		  
+			return arr;
+		}
 	},
 
 	avatar: {

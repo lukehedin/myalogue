@@ -125,27 +125,45 @@ export default class ComicService extends Service {
 		
 		return dbComics.map(dbComic => mapper.fromDbComic(dbComic));
 	}
-	async GetComicsInProgressCount() {
-		let dbComics = await this.models.Comic.findAll({
-			where: {
-				CompletedAt: {
-					[Sequelize.Op.eq]: null
-				},
-				[Sequelize.Op.or]: [{
-					LastAuthorAnonId: {
-						[Sequelize.Op.ne]: null
-					}
-				}, {
-					LastAuthorUserId: {
-						[Sequelize.Op.ne]: null
-					}
-				}]
+	async GetComicsInProgress(userId) {
+		let comicWhere =  {
+			CompletedAt: {
+				[Sequelize.Op.eq]: null
 			}
+		};
+
+		if(userId) {
+			comicWhere.LastAuthorUserId = {
+				[Sequelize.Op.ne]: null
+			};
+		} else {
+			comicWhere[Sequelize.Op.or] = [{
+				LastAuthorAnonId: {
+					[Sequelize.Op.ne]: null
+				}
+			}, {
+				LastAuthorUserId: {
+					[Sequelize.Op.ne]: null
+				}
+			}];
+		}
+
+		let dbComics = await this.models.Comic.findAll({
+			where: comicWhere,
+			include: userId ? [{
+				model: this.models.ComicPanel,
+				as: 'ComicPanels',
+				required: false,
+				where: {
+					UserId: userId
+				}
+			}] : []
 		});
 
 		return {
-			count: dbComics.length,
-			anonCount: dbComics.filter(dbComic => dbComic.IsAnonymous).length
+			comicsInProgressCount: dbComics.length,
+			myComicsInProgressCount: dbComics.filter(dbComic => dbComic.ComicPanels && dbComic.ComicPanels.length > 0).length,
+			anonComicsInProgressCount: dbComics.filter(dbComic => dbComic.IsAnonymous).length
 		};
 	}
 	async GetStatsForUser(userId) {

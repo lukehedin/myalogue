@@ -82,6 +82,7 @@ body {
 				}
 
 				hr {
+					width: 100%;
 					border: none;
 					border-bottom: 1px solid $colour-grey-b;
 					margin: $spacing-md 0;
@@ -304,12 +305,20 @@ body {
 				}
 			}
 
-			//Elements that need to match the width of a comic
-			.comic-lower, .comic-list-filters {
+			//Elements that need to match the width of a COMIC
+			.comic-width {
 				@include applyComicPanelWidth($scale);
 				@include canFitTwoComicPanels {
 					@include applyComicPanelWidth($scale * 2);
 				}
+			}
+			//Elements that need to match the width of a COMIC PANEL
+			.comic-panel-width {				
+				@include applyComicPanelWidth($scale);
+			}
+
+			.comic-panel-height {
+				@include applyComicPanelHeight($scale);
 			}
 		}
 		//Portrait

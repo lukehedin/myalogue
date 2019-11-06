@@ -1,0 +1,40 @@
+.template-panel-carousel {
+	position: relative;
+    display: inline-block;
+	@include comicWrapperStyle;
+	border-width: 2px;
+	
+	.template-panel-carousel-slider {
+
+		.slick-list {
+			width: 100%;
+	
+			.template-panel-item {
+				position: relative;
+	
+				a {
+					@include absoluteCover;
+				}
+			
+				.comic-panel {
+					border: none;
+				}
+			}
+		}
+	}
+			
+	.lil-buddy {
+		z-index: 1;
+		position: absolute;
+		bottom: 100%;
+		right: 0;
+
+		height: 56px;
+		margin-bottom: -6px;
+		@include overmd {
+			height: 138px;
+			margin-bottom: -18px;
+			right: 30px;
+		}
+	}
+}

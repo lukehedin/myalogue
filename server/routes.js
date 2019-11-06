@@ -124,10 +124,12 @@ export default {
 		},
 
 		homeUpdate: async (req, services) => {
-			let comicsInProgress = await services.Comic.GetComicsInProgressCount();
+			let userId = req.userId;
+
+			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
 
 			return {
-				...comicsInProgress
+				comicsInProgress
 			};
 		},
 

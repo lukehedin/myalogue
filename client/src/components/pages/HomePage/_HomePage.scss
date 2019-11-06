@@ -1,20 +1,130 @@
 .page-home {
-	.home-banner {
-		margin-bottom: $spacing-sm;
-		
-		.app-logo {
-			margin: 0 auto;
-			display: block;
-			width: 200px;
-			min-height: 100px;
-		}	
-	}
+	.home-inner {
+		display: flex;
+		flex-direction: column;
+		@include overmd {
+			flex-direction: row;
+		}
 
-	.how-to-play-button {
-		margin-top: $spacing-xs;
-	}
+		.home-header {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 
-	.play-info {
-		color: $colour-grey-e;
+			.app-logo {
+				width: 120px;
+				height: 60px;
+
+				@include overmd {
+					width: 200px;
+					height: 100px;
+				}
+			}
+
+			.header-subtitle {
+				font-size: 12px;
+				text-align: center;
+				color: $colour-grey-d;
+				margin-top: $spacing-sm;
+
+				@include overmd {
+					font-size: 16px;
+				}
+			}
+		}
+
+		> .home-header {
+			@include overmd {
+				display: none;
+			}
+		}
+
+		.home-detail {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			@include overmd {
+				margin-right: $spacing-sm;
+			}
+
+			> .home-header {
+				display: none;
+				@include overmd {
+					display: flex;
+				}
+			}
+
+			.template-panel-carousel {
+				margin-top: $spacing-sm;
+				.lil-buddy {
+					display: none;
+				}
+
+				@include overmd {
+					display: none;
+				}
+			}
+
+			hr {
+				margin: $spacing-sm 0;
+			}
+
+			.play-panel {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: $spacing-sm;	
+
+				.play-info {
+					margin-top: $spacing-xs;
+					
+					> p {
+						color: $colour-grey-e;
+						margin: 0;
+						text-align: center;
+					}
+				}
+
+				.how-to-play-button {
+					margin-bottom: $spacing-xs;
+				}
+			}
+		}
+
+		.home-feature {
+			flex-direction: column;
+			position: relative;
+			justify-content: flex-end;
+			display: none;
+			@include overmd {
+				display: flex;
+			}
+
+			> * {
+				align-self: center;
+				margin-top: $spacing-sm;
+				@include overmd {
+					margin-top: 0;
+				}
+			}
+
+			.template-panel-carousel {
+				margin-top: 100px;
+			}
+
+			.latest-template-panel {
+				position: relative;
+				@include comicWrapperStyle;
+				display: none;
+				@include overmd {
+					display: block;
+				}
+
+				> a {
+					@include absoluteCover;
+				}
+			}
+		}
 	}
 }
