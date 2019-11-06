@@ -38,6 +38,15 @@
 				display: none;
 			}
 		}
+		
+		.latest-template-panel {
+			position: relative;
+			@include comicWrapperStyle;
+
+			> a {
+				@include absoluteCover;
+			}
+		}
 
 		.home-detail {
 			flex: 1;
@@ -55,14 +64,17 @@
 				}
 			}
 
-			.template-panel-carousel {
+			.feature-item {
 				margin-top: $spacing-sm;
-				.lil-buddy {
-					display: none;
-				}
 
 				@include overmd {
 					display: none;
+				}
+
+				.template-panel-carousel {
+					.lil-buddy {
+						display: none;
+					}
 				}
 			}
 
@@ -109,20 +121,16 @@
 				}
 			}
 
-			.template-panel-carousel {
-				margin-top: 100px;
-			}
-
-			.latest-template-panel {
-				position: relative;
-				@include comicWrapperStyle;
-				display: none;
-				@include overmd {
-					display: block;
+			.feature-item {
+				.template-panel-carousel {
+					margin-top: 100px;
 				}
-
-				> a {
-					@include absoluteCover;
+	
+				.latest-template-panel {
+					display: none;
+					@include overmd {
+						display: block;
+					}
 				}
 			}
 		}

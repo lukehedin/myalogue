@@ -60,7 +60,7 @@ body {
 
 					&:first-child {
 						padding-top: $spacing-sm;
-						@include overlg {
+						@include overmd {
 							padding-top: $spacing-md;
 						}
 					}

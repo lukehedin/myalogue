@@ -19,21 +19,50 @@ export default class HomePage extends Component {
 		super(props);
 
 		this.state = {
+			lastHomeUpdateAt: new Date(),
 			latestTemplate: Util.referenceData.getLatestTemplate(),
-			comicsInProgress: {}
+			comicsInProgress: {},
+			previousComicsInProgress: {}
 		};
+
+		this.homeUpdateInterval = null;
+		
+		this.homeUpdate = this.homeUpdate.bind(this);
 	}
 	componentDidMount(){
+		this.homeUpdate();
+
+		this.homeUpdateInterval = setInterval(() => {
+			if(document.hasFocus() && this.state.lastHomeUpdateAt < moment().subtract(1, 'minute').toDate()) {
+				//If the document has focus and it has been more than a minute since last update, do one now
+				this.homeUpdate();
+			}
+		}, 5000);
+	}
+	componentWillUnmount() {
+		clearInterval(this.homeUpdateInterval);
+	}
+	homeUpdate() {
+		this.setState({
+			lastHomeUpdateAt: new Date()
+		});
+
 		Util.api.post('/api/homeUpdate', {
 			existingTemplateIds: Util.referenceData.getTemplates().map(template => template.templateId)
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					comicsInProgress: result.comicsInProgress
+					comicsInProgress: result.comicsInProgress,
+					previousComicsInProgress: this.state.comicsInProgress
 				});
 
-				if(Util.array.any(result.updatedTemplates)) {
+				if(Util.array.any(result.newTemplates)) {
+					Util.referenceData.set({
+						...Util.referenceData.get(),
+						templates: [...Util.referenceData.getTemplates(), ...result.newTemplates]
+					});
+
 					this.setState({
 						latestTemplate: Util.referenceData.getLatestTemplate()
 					});
@@ -65,6 +94,16 @@ export default class HomePage extends Component {
 			}
 		</div>
 
+		let featureItem = <div className="feature-item">
+			{Util.context.isAuthenticated()
+				? <div className="latest-template-panel">
+					<ComicPanel readOnly={true} templatePanelId={this.state.latestTemplate.templatePanels[0].templatePanelId} />
+					<Link to={Util.route.template(this.state.latestTemplate.templatePanelId)} />
+				</div>
+				: <TemplatePanelCarousel />
+			}
+		</div>
+
 		return <div className="page-home">
 			<div className="panel-inset">
 				<div className="container">
@@ -73,10 +112,7 @@ export default class HomePage extends Component {
 							{homeHeader}
 							<div className="home-detail">
 								{homeHeader}
-								{Util.context.isAuthenticated()
-									? null
-									: <TemplatePanelCarousel />
-								}
+								{featureItem}
 								<div className="play-panel">
 									{Util.context.isAuthenticated()
 										? null
@@ -84,22 +120,16 @@ export default class HomePage extends Component {
 									}
 									<Button label="Play" to={Util.route.play()} colour="pink" size="lg" />
 									<div className="play-info">
-										<p className="sm"><b><CountUp end={this.state.comicsInProgress.comicsInProgressCount || 0} /></b> {Util.format.pluralise(this.state.comicsInProgress.comicsInProgressCount, 'comic')} in progress</p>
+										<p className="sm"><b><CountUp start={this.state.previousComicsInProgress.comicsInProgressCount || 0} end={this.state.comicsInProgress.comicsInProgressCount || 0} /></b> {Util.format.pluralise(this.state.comicsInProgress.comicsInProgressCount, 'comic')} in progress</p>
 										{Util.context.isAuthenticated()
-											? <p className="sm">(you've made panels for <b>{this.state.comicsInProgress.myComicsInProgressCount ? <CountUp end={this.state.comicsInProgress.myComicsInProgressCount} /> : 'none'}</b> of them)</p>
-											: <p className="sm">(<CountUp end={this.state.comicsInProgress.anonComicsInProgressCount || 0} /> anonymous)</p>
+											? <p className="sm">(you've made panels for <b>{this.state.comicsInProgress.myComicsInProgressCount ? <CountUp start={this.state.previousComicsInProgress.myComicsInProgressCount || 0} end={this.state.comicsInProgress.myComicsInProgressCount} /> : 'none'}</b> of them)</p>
+											: <p className="sm">(<CountUp start={this.state.previousComicsInProgress.anonComicsInProgressCount || 0} end={this.state.comicsInProgress.anonComicsInProgressCount || 0} /> anonymous)</p>
 										}
 									</div>
 								</div>
 							</div>
 							<div className="home-feature">
-								{Util.context.isAuthenticated()
-									? <div className="latest-template-panel">
-										<ComicPanel readOnly={true} templatePanelId={this.state.latestTemplate.templatePanels[0].templatePanelId} />
-										<Link to={Util.route.template(this.state.latestTemplate.templatePanelId)} />
-									</div>
-									: <TemplatePanelCarousel />
-								}
+								{featureItem}
 							</div>
 						</div>
 					</div>

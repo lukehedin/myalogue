@@ -125,11 +125,14 @@ export default {
 
 		homeUpdate: async (req, services) => {
 			let userId = req.userId;
+			let existingTemplateIds = req.body.existingTemplateIds;
 
 			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
+			let newTemplates = await services.Comic.GetNewTemplates(existingTemplateIds)
 
 			return {
-				comicsInProgress
+				comicsInProgress,
+				newTemplates
 			};
 		},
 

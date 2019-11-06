@@ -116,6 +116,8 @@ const Util = {
 			Util.referenceData._referenceData = referenceData;
 		},
 
+		get: () => Util.referenceData._referenceData,
+
 		getTemplates: () => Util.referenceData._referenceData.templates,
 		getLatestTemplate: () => Util.referenceData._referenceData.templates[Util.referenceData._referenceData.templates.length - 1],
 		getTemplateById: (templateId) => {
@@ -216,6 +218,7 @@ const Util = {
 		none: arr => !Util.array.any(arr),
 		random: arr => arr[Util.random.getRandomInt(0, arr.length - 1)],
 		shuffle: arr => {
+		
 			var currentIndex = arr.length, temporaryValue, randomIndex;
 
 			// While there remain elements to shuffle...

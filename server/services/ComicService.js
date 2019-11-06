@@ -398,9 +398,10 @@ export default class ComicService extends Service {
 			}
 		});
 	}
-	async GetAllTemplatesWhereUnlockedWithPanels() {
+	async GetAllTemplatesWhereUnlockedWithPanels(additionalWhere = {}) {
 		let dbTemplates = await this.models.Template.findAll({
 			where: {
+				...additionalWhere,
 				UnlockedAt: {
 					[Sequelize.Op.ne]: null,
 					[Sequelize.Op.lte]: new Date()
@@ -416,6 +417,13 @@ export default class ComicService extends Service {
 		});
 
 		return dbTemplates.map(mapper.fromDbTemplate);
+	}
+	async GetNewTemplates(existingTemplateIds) {
+		return await this.GetAllTemplatesWhereUnlockedWithPanels({
+			TemplateId: {
+				[Sequelize.Op.notIn]: existingTemplateIds
+			}
+		});
 	}
 	_GetFullIncludeForComic(forUserId) {
 		let include = [{
