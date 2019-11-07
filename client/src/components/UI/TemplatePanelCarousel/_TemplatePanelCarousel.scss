@@ -11,11 +11,6 @@
 	
 			.template-panel-item {
 				position: relative;
-	
-				a {
-					@include absoluteCover;
-					@include noSelect;
-				}
 			
 				.comic-panel {
 					border: none;

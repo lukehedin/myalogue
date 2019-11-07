@@ -19,7 +19,7 @@ export default class HomePage extends Component {
 		super(props);
 
 		this.state = {
-			lastHomeUpdateAt: new Date(),
+			lastHomeUpdateAt: null,
 			latestTemplate: Util.referenceData.getLatestTemplate(),
 			comicsInProgress: {},
 			previousComicsInProgress: {}
@@ -30,45 +30,45 @@ export default class HomePage extends Component {
 		this.homeUpdate = this.homeUpdate.bind(this);
 	}
 	componentDidMount(){
-		this.homeUpdate();
+		this.homeUpdate(true);
 
-		this.homeUpdateInterval = setInterval(() => {
-			if(document.hasFocus() && this.state.lastHomeUpdateAt < moment().subtract(1, 'minute').toDate()) {
-				//If the document has focus and it has been more than a minute since last update, do one now
-				this.homeUpdate();
-			}
-		}, 5000);
+		window.addEventListener('focus', () => this.homeUpdate());
+		this.homeUpdateInterval = setInterval(() => this.homeUpdate(), 15000);
 	}
 	componentWillUnmount() {
+		window.removeEventListener('focus', () => this.homeUpdate());
 		clearInterval(this.homeUpdateInterval);
 	}
-	homeUpdate() {
-		this.setState({
-			lastHomeUpdateAt: new Date()
-		});
-
-		Util.api.post('/api/homeUpdate', {
-			existingTemplateIds: Util.referenceData.getTemplates().map(template => template.templateId)
-		})
-		.then(result => {
-			if(!result.error) {
-				this.setState({
-					comicsInProgress: result.comicsInProgress,
-					previousComicsInProgress: this.state.comicsInProgress
-				});
-
-				if(Util.array.any(result.newTemplates)) {
-					Util.referenceData.set({
-						...Util.referenceData.get(),
-						templates: [...Util.referenceData.getTemplates(), ...result.newTemplates]
-					});
-
+	homeUpdate(ignoreConditions = false) {
+		//If the document has focus and it has been more than a minute since last update, do one now
+		if(ignoreConditions || (document.hasFocus() && this.state.lastHomeUpdateAt < moment().subtract(1, 'minute').toDate())) {
+			this.setState({
+				lastHomeUpdateAt: new Date()
+			});
+	
+			Util.api.post('/api/homeUpdate', {
+				existingTemplateIds: Util.referenceData.getTemplates().map(template => template.templateId)
+			})
+			.then(result => {
+				if(!result.error) {
 					this.setState({
-						latestTemplate: Util.referenceData.getLatestTemplate()
+						comicsInProgress: result.comicsInProgress,
+						previousComicsInProgress: this.state.comicsInProgress
 					});
+	
+					if(Util.array.any(result.newTemplates)) {
+						Util.referenceData.set({
+							...Util.referenceData.get(),
+							templates: [...Util.referenceData.getTemplates(), ...result.newTemplates]
+						});
+	
+						this.setState({
+							latestTemplate: Util.referenceData.getLatestTemplate()
+						});
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	render() {
 		let now = new Date();
@@ -94,8 +94,7 @@ export default class HomePage extends Component {
 			}
 		</div>
 
-		let templatePanelCarousel = <TemplatePanelCarousel 
-			autoplay={!Util.context.isAuthenticated()} 
+		let templatePanelCarousel = <TemplatePanelCarousel
 			withLilBuddy={!Util.context.isAuthenticated()}
 		/>;
 
