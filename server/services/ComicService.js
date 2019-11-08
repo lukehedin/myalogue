@@ -81,9 +81,13 @@ export default class ComicService extends Service {
 		if(templateId) comicWhere.TemplateId = templateId;
 		if(!includeAnonymous) comicWhere.IsAnonymous = false;
 		
+		//Top of day/week/month
 		if(sortBy === 4) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'days').toDate();
 		if(sortBy === 5) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'weeks').toDate();
 		if(sortBy === 6) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'month').toDate();
+
+		//Hot (hour buffer)
+		if(sortBy) comicWhere.CompletedAt[Sequelize.Op.lte] = moment().subtract(1, 'hour').toDate();
 
 		let comicOrder = [];
 
