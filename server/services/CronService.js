@@ -1,11 +1,17 @@
 import common from '../common';
+import RedditScore from 'reddit-score';
+import { Sequelize } from 'sequelize';
 import { CronJob } from 'cron';
 
 import Service from './Service';
 
 export default class CronService extends Service {
 	RegisterJobs() {
-		const jobs = [];
+		const jobs = [{
+			name: 'Update hot ranks',
+			time: '*/10 * * * *', //Every 10th minute
+			fn: () => this.UpdateHotRanks()
+		}];
 		
 		// {
 		// 	name: 'Update user statistics',
@@ -35,5 +41,42 @@ export default class CronService extends Service {
 	}
 	async UpdateUserStatistics(now) {
 		let dbUsers = await this.models.User.findAll();
+	}
+	async UpdateHotRanks() {		
+		let dbComics = await this.models.Comic.findAll({
+			where: {
+				CompletedAt: {
+					[Sequelize.Op.ne]: null
+				}
+			},
+			order: [['CompletedAt', 'ASC']]
+		});
+
+		if(dbComics.length < 1) return;
+
+		let comicsToUpdate = [];
+		let redditScore = new RedditScore;
+
+		dbComics.forEach(dbComic => {
+			//Tweaked from https://github.com/kamilkisiela/reddit-score-js/blob/master/index.js#L12
+			// (Used the rating upfront rather than up - down votes)
+			const score = dbComic.Rating;
+
+			let order = redditScore.order(score);
+			let sign = redditScore.sign(score);
+			let seconds = redditScore.seconds(dbComic.CompletedAt) - redditScore.base;
+			let result = sign * order + seconds / 45000;
+			
+			let hotRank = Math.round(Math.pow(10, 7) * result) / Math.pow(10, 7);
+
+			comicsToUpdate.push({
+				ComicId: dbComic.ComicId,
+				HotRank: hotRank
+			});
+		});
+
+		await this.models.Comic.bulkCreate(comicsToUpdate, {
+		 	updateOnDuplicate: ['HotRank']
+		});
 	}
 }

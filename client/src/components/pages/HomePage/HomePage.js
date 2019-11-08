@@ -133,7 +133,7 @@ export default class HomePage extends Component {
 				<div className="container">
 					<div className="row">
 						<ComicList 
-								sortBy={Util.isDev ? Util.enums.ComicSortBy.Newest : Util.enums.ComicSortBy.TopToday}
+								sortBy={Util.enums.ComicSortBy.TopToday}
 								title={`Completed comics`} 
 						/>
 					</div>

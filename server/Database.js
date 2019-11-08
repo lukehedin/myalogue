@@ -159,6 +159,11 @@ export default class Database {
 			Token: Sequelize.STRING, //If present, the comic is private
 			PanelCount: Sequelize.INTEGER,
 			Rating: getIntegerNotNull(),
+			HotRank: {
+				type: Sequelize.DECIMAL,
+				defaultValue: 0,
+				allowNull: false
+			},
 			LockedAt: Sequelize.DATE, // locked while editing (1 min)
 
 			//Anonymous fields

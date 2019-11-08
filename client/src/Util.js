@@ -285,7 +285,8 @@ const Util = {
 			Random: 3,
 			TopToday: 4,
 			TopWeek: 5,
-			TopMonth: 6
+			TopMonth: 6,
+			Hot: 7
 		},
 
 		TextAlignVertical: {

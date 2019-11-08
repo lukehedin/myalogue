@@ -91,6 +91,9 @@ export default class ComicService extends Service {
 			case 3: //random
 				comicOrder.push(Sequelize.fn('RANDOM'));
 				break;
+			case 7: 
+				comicOrder.push(['HotRank', 'DESC']);
+				break;
 			case 2: //newest
 				//Thenby will do this for us
 				break;

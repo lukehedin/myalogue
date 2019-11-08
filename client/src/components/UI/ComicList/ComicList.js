@@ -113,8 +113,10 @@ export default class ComicList extends Component {
 						onChange={value => this.setSortBy(value)}
 						displayProp='label' 
 						valueProp='type' 
-						options={[
-							{
+						options={[{
+								type: Util.enums.ComicSortBy.Hot,
+								label: 'Hot'
+							}, {
 								type: Util.enums.ComicSortBy.Newest,
 								label: 'Newest'
 							}, {

@@ -29,6 +29,7 @@
     "node-sass": "^4.12.0",
     "pg": "^7.12.1",
     "react-svg": "^10.0.20",
+    "reddit-score": "0.0.2",
     "sequelize": "^5.18.1",
     "validator": "^11.1.0"
   },
