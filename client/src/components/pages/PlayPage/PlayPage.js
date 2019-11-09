@@ -144,7 +144,7 @@ export default class PlayPage extends Component {
 					<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
 					<p className="instruction center sm">{this.state.currentComicPanel
 						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
-							? `End` 
+							? `Finish` 
 							: `Continue`
 						: `Begin`} the comic</p>
 					<ProgressBar 

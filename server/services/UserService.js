@@ -22,16 +22,18 @@ export default class UserService extends Service {
 		});
 	}
 	async DbGetByUsernames(usernames, additionalWhere = {}) {
+		let cleanUsernames = usernames.map(username => username.trim().toLowerCase());
+
 		return await this.models.User.findAll({
-			where: {
+			where: [
+				Sequelize.where(Sequelize.fn('lower', Sequelize.col('Username')), {
+					[Sequelize.Op.in]: cleanUsernames
+				}), {
 				...additionalWhere,
-				Username: {
-					[Sequelize.Op.in]: usernames
-				},
 				VerificationToken: {
 					[Sequelize.Op.eq]: null //unverified users cant do anything
 				}
-			}
+			}]
 		});
 	}
 	async DbGetByUsername(username, additionalWhere = {}) {
