@@ -14,15 +14,36 @@ export default class TemplatePanelCarousel extends Component {
 		super(props);
 
 		this.state = {
-			redirectTo: null
+			redirectTo: null,
+			mouseDownPos: null
 		};
 
-		this.setRedirectTo = this.setRedirectTo.bind(this);
+		this.onMouseDown = this.onMouseDown.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
 	}
-	setRedirectTo(to) {
+	onMouseDown(e) {
 		this.setState({
-			redirectTo: to
+			mouseDownPos: {
+				x: e.pageX,
+				y: e.pageY
+			}
 		});
+	}
+	onMouseUp(e, templateId) {
+		if(this.state.mouseDownPos) {
+			let xDiff = Math.abs(e.pageX - this.state.mouseDownPos.x);
+			let yDiff = Math.abs(e.pageY - this.state.mouseDownPos.y);
+			
+			if(xDiff < 4 && yDiff < 4) {
+				this.setState({
+					redirectTo: Util.route.template(templateId)
+				});
+			} else {
+				this.setState({
+					mouseDownPos: null
+				});
+			}
+		}
 	}
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />;
@@ -43,7 +64,7 @@ export default class TemplatePanelCarousel extends Component {
 			{templates.map(template => {
 				let firstTemplatePanel = template.templatePanels[0];
 
-				return <div key={template.templateId} className="template-panel-item" onDoubleClick={() => this.setRedirectTo(Util.route.template(template.templateId))}>
+				return <div key={template.templateId} className="template-panel-item" onMouseDown={this.onMouseDown} onMouseUp={(e) => this.onMouseUp(e, template.templateId)}>
 					<ComicPanel readOnly={true} templatePanelId={firstTemplatePanel.templatePanelId} />
 				</div>;
 			})}
