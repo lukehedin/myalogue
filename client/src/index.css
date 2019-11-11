@@ -630,6 +630,7 @@ body {
           body .app-container .app .template-panel-carousel .template-panel-carousel-slider .slick-list .template-panel-item {
             position: relative; }
             body .app-container .app .template-panel-carousel .template-panel-carousel-slider .slick-list .template-panel-item .comic-panel {
+              cursor: pointer;
               border: none; }
         body .app-container .app .template-panel-carousel .lil-buddy {
           z-index: 1;
