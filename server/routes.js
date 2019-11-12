@@ -9,7 +9,7 @@ export default {
 			let anonId = req.anonId;
 
 			let referenceDataPromises = [
-				services.Comic.GetAllTemplatesWhereUnlockedWithPanels(),
+				services.Comic.GetAllTemplatesWhereUnlocked(),
 				services.Comic.GetTopComic(userId)
 			];
 	
@@ -99,8 +99,8 @@ export default {
 			return await services.Comic.GetComics(forUserId, templateId, authorUserId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
 		},
 
-		getTopComics: async (req, services) => {
-			return await services.Comic.GetTopComics();
+		getLeaderboard: async (req, services) => {
+			return await services.Comic.getLeaderboard();
 		},
 
 		getUser: async (req, services) => {
@@ -115,7 +115,7 @@ export default {
 
 			if(!requestedUser) throw 'User not found.';
 
-			let userStats = await services.Comic.GetStatsForUser(requestedUser.userId);
+			let userStats = await services.User.GetStatsForUser(requestedUser.userId);
 			
 			return {
 				user: requestedUser,
@@ -128,7 +128,7 @@ export default {
 			let existingTemplateIds = req.body.existingTemplateIds;
 
 			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
-			let newTemplates = await services.Comic.GetNewTemplates(existingTemplateIds)
+			let newTemplates = await services.Comic.GetNewTemplates(existingTemplateIds);
 
 			return {
 				comicsInProgress,

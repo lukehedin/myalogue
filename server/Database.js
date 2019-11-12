@@ -107,7 +107,9 @@ export default class Database {
 			TemporarilyBannedAt: Sequelize.DATE,
 			TemporarilyBannedCount: getIntegerNotNull(),
 			PermanentlyBannedAt: Sequelize.DATE,
-			BannedReason: Sequelize.STRING
+			BannedReason: Sequelize.STRING,
+			LeaderboardTopAt: Sequelize.DATE,
+			LeaderboardRating: getIntegerNotNull()
 		}, true);
 
 		defineTable('Notification', {
@@ -122,6 +124,14 @@ export default class Database {
 			RenewedAt: Sequelize.DATE, //When unseen notifications get updated, this does too. If present, used to override CreatedAt and bump notifications back to top.
 			ValueInteger: Sequelize.INTEGER, //A value that can be used for incrementing purposes (eg. "and 34 others") - not to be used as a FK!
 			ValueString: Sequelize.TEXT //A value that can be used for description purposes (eg. your text was "i hate eggs")
+		});
+
+		defineTable('UserAchievement', {
+			LastChecked: Sequelize.DATE,
+			CheckRequiredAt: Sequelize.DATE,
+			UnlockedAt: Sequelize.DATE,
+			Type: Sequelize.INTEGER,
+			ValueInt: Sequelize.INTEGER
 		});
 
 		defineTable('Template', {
@@ -165,6 +175,8 @@ export default class Database {
 				allowNull: false
 			},
 			LockedAt: Sequelize.DATE, // locked while editing (1 min)
+			LeaderboardTopAt: Sequelize.DATE,
+			LeaderboardRating: getIntegerNotNull(),
 
 			//Anonymous fields
 			IsAnonymous: getBoooleanNotNull(),
@@ -212,6 +224,8 @@ export default class Database {
 		createOneToMany('Comic', 'ComicPanel');
 		createOneToMany('Comic', 'ComicVote');
 		createOneToMany('Comic', 'ComicComment');
+		createOneToMany('Comic', 'UserAchievement'); // Achievement will link to comicId
+		createOneToMany('Comic', 'Notification'); // Notification will link to comicid
 		
 		createOneToMany('ComicPanel', 'ComicPanelSkip');
 		createOneToMany('ComicPanel', 'ComicPanelReport');
@@ -233,10 +247,8 @@ export default class Database {
 		createOneToMany('User', 'ComicPanel');
 		createOneToMany('User', 'ComicPanelSkip');
 		createOneToMany('User', 'ComicPanelReport');
-		
-		//Notification FKS
-		createOneToMany('Comic', 'Notification'); // Will link to comicid
-		createOneToMany('User', 'Notification'); // Will link to user profile
+		createOneToMany('User', 'UserAchievement');
+		createOneToMany('User', 'Notification'); // Notification will link to user profile
 
 		console.log('Database: Database models loaded');
 	}

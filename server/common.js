@@ -17,6 +17,40 @@ export default {
 	},
 	
 	enums: {
+		AchievementType: {
+			//Punchlines
+			TopLastPanel: 1, // Make the last panel for a top comic
+			LotsOfLastPanels: 2, //Make the last panel for 500 comics (worker check)
+
+			//Beginning
+			TopFirstPanel: 3, // Make the first panel for a top comic
+			LotsOfFirstPanels: 4, //Start 500 comics (worker check)
+
+			//Template usage
+			LotsOfComics: 7, //Feature in 1500 comics, (worker check)
+			LotsOfTemplates: 5, //Feature in comics using over 100 different templates (worker check)
+			FirstTemplateUsage: 6, //Feature in the first comic using a particular template
+
+			// Panel uniqueness
+			FewUniquePanels: 7, // Min 6 panels, no more than 2 unique
+			AllUniquePanels: 8, // Min 8 panels, all unique
+			MinorPanelStreak: 9, //Part of a 3 panel streak
+			MajorPanelStreak: 10, //Part of a 4 panel streak
+
+			// Comic Authors
+			TwoPanelsOneComic: 11, // Two panels in one comic
+			ThreePanelsOneComic: 12, // Three panels in one comic
+			Sandwich: 13, //Min 6 panels, made only first and last panel
+			AllUniqueAuthors: 14, //Min 8 panels, all different authors
+			ThreeUniqueAuthors: 15, //3 authors only
+
+			//Others
+			FirstComic: 16, // Made a comic
+			FastComic: 17, //Comic started and completed in an hour or less
+			TopComic: 18, //Featured in a top comic
+			TopAuthor: 19 //Reach the top of the author leaderboard
+		},
+		
 		NotificationType: {
 			General: 1,
 			Welcome: 2,
@@ -68,7 +102,7 @@ export default {
 	
 		//The chance a new comic will be started instead of an existing game (1 in X, 0 for never)
 		ComicPlayNewChance: getIntegerEnvSettingOrDefault('COMIC_PLAY_NEW_CHANCE', 0),
-	
+
 		//The length of time a user is temporarily
 		UserTemporarilyBannedDays: getIntegerEnvSettingOrDefault('USER_TEMPORARILY_BANNED_DAYS', 2),
 		//The amount of temporary bans before a permanent one

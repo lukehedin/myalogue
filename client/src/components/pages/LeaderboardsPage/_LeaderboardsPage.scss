@@ -1,0 +1,72 @@
+.page-leaderboards {
+	.leaderboards-inner {
+		position: relative;
+		min-height: 60vh;
+		margin-top: $spacing-sm;
+
+		.leaderboard-table {
+			border-collapse: collapse;
+			width: 100%;
+	
+			.leaderboard-item {
+				text-align: left;
+				@include allHeadings {
+					text-align: left;
+				}
+
+				&:not(:last-child) {
+					border-bottom: 1px solid $colour-grey-a;
+				}
+
+				&.leaderboard-comic {
+				}
+				
+				&.leaderboard-user {
+					td {
+						align-items: center;
+					}
+				}
+
+				.leaderboard-item-detail {
+					> * {
+						&:not(:first-child) {
+							margin-top: $spacing-xs;
+						}
+					}
+				}
+	
+				td {
+					vertical-align: top;
+					padding: $spacing-sm 0;
+					display: flex;
+					flex-direction: row;
+
+					>:not(:last-child) {
+						margin-right: $spacing-xs;
+					}
+		
+					&.cell-button {
+						text-align: right;
+						min-width: 100px;
+						@include oversm {
+							min-width: 160px;
+						}
+
+						.button-container {
+							justify-content: flex-end;
+							
+							&:not(:first-child) {
+								margin-top: $spacing-xs;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.leaderboards-note {
+			margin-top: $spacing-xs;
+			color: $colour-grey-d;
+		}
+	}
+}

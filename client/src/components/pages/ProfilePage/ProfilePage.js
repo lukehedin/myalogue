@@ -92,7 +92,8 @@ export default class ProfilePage extends Component {
 											{this.state.userStats && this.state.userStats.topComic
 												? <div className="user-stat">
 													<h5>Top rated comic</h5>
-													<p className="center"><Link to={Util.route.comic(this.state.userStats.topComic.comicId)}>Comic #{this.state.userStats.topComic.comicId}</Link> (rating: {this.state.userStats.topComic.rating})</p>
+													{/* TODO, display same as leaderboard row? */}
+													<p className="center"><Link to={Util.route.comic(this.state.userStats.topComic.comicId)}>Comic #{this.state.userStats.topComic.comicId}</Link> (rating: {this.state.userStats.topComic.rating})</p> 
 												</div>
 												: null
 											}

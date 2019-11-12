@@ -33,39 +33,43 @@ export default class ComicService extends Service {
 
 		return dbComics.length > 0 ? mapper.fromDbComic(dbComics[0]) : null;
 	}
-	async GetTopComics() {
-		
-		let dbComics = await this.models.Comic.findAll({
-			where: {
-				CompletedAt: {
-					[Sequelize.Op.ne]: null
-				}
-			},
-			// a newer comic tie will beat an older comic (it got more ratings in shorter time)
-			order: [[ 'CompletedAt', 'DESC' ]]
-		});
+	async getLeaderboard() {
+		let [dbLeaderboardComics, dbLeaderboardUsers] = await Promise.all([
+			this.models.Comic.findAll({
+				where: {
+					LeaderboardRating: {
+						[Sequelize.Op.gt]: 0
+					},
+					CompletedAt: {
+						[Sequelize.Op.ne]: null,
+						[Sequelize.Op.gte]: moment().subtract(2, 'week').toDate() //TODO make 1 week
+					}
+				},
+				order: [
+					[ 'LeaderboardRating', 'DESC'],
+					[ 'CompletedAt', 'DESC' ] // a newer comic will beat an older comic (it got more ratings in shorter time)
+				],
+				include: this._GetFullIncludeForComic(),
+				limit: 10
+			}),
+			this.models.User.findAll({
+				where: {
+					LeaderboardRating: {
+						[Sequelize.Op.gt]: 0
+					}
+				},
+				order: [
+					['LeaderboardRating', 'DESC'],
+					['CreatedAt', 'ASC'] //Newer users will show up higher on the leaderboard if they have the same rating as an older one
+				],
+				limit: 10
+			})
+		]);
 
-		//Find the top comics
-		let topComics = {};
-		dbComics.forEach(dbComic => {
-			let currentTop = topComics[dbComic.TemplateId];
-			if(!currentTop || (currentTop && currentTop.Rating <= dbComic.Rating)) {
-				topComics[dbComic.TemplateId] = dbComic;
-			}
-		});
-		let topComicIds = Object.keys(topComics).map(key => topComics[key].ComicId);
-
-		//Get these ones WITH includes
-		let dbTopComics = await this.models.Comic.findAll({
-			where: {
-				ComicId: {
-					[Sequelize.Op.in]: topComicIds
-				}
-			},
-			include: this._GetFullIncludeForComic()
-		});
-
-		return dbTopComics.map(mapper.fromDbComic);
+		return {
+			comics: dbLeaderboardComics.map(mapper.fromDbComic),
+			users: dbLeaderboardUsers.map(mapper.fromDbUser)
+		};
 	}
 	async GetComics(forUserId = null, templateId = null, authorUserId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {
 		let comicWhere = {
@@ -173,39 +177,6 @@ export default class ComicService extends Service {
 			anonComicsInProgressCount: dbComics.filter(dbComic => dbComic.IsAnonymous).length
 		};
 	}
-	async GetStatsForUser(userId) {
-		//Calculate their panel points TODO make a worker service and set points on user row
-		//That way we can have leaderboards etc
-		let dbComicPanels = await this.GetComicPanelsForUserNotCensored(userId);
-
-		let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
-
-		let dbComics = await this.models.Comic.findAll({
-			where: {
-				ComicId: {
-					[Sequelize.Op.in]: comicIds
-				},
-				CompletedAt: {
-					[Sequelize.Op.ne]: null
-				}
-			},
-			order: [[ 'Rating', 'DESC' ], ['CompletedAt', 'DESC']]
-		});
-		
-		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
-		let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
-		let comicAverageRating = comicTotalRating / dbComics.length;
-		let topComic = dbComics.length > 0 ? dbComics[0] : null; //Already sorted
-		
-		return {
-			panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
-			comicCount: dbComics.length,
-			comicTotalRating: comicTotalRating,
-			comicAverageRating: comicAverageRating,
-
-			topComic: mapper.fromDbComic(topComic)
-		};
-	}
 	async VoteComic(userId, comicId, value) {
 		let dbComic = await this.models.Comic.findOne({
 			where: {
@@ -219,6 +190,10 @@ export default class ComicService extends Service {
 				where: {
 					UserId: userId
 				}
+			}, {
+				//Used for achievement calculations below
+				model: this.models.ComicPanel,
+				as: 'ComicPanels'
 			}]
 		});
 
@@ -405,7 +380,7 @@ export default class ComicService extends Service {
 			}
 		});
 	}
-	async GetAllTemplatesWhereUnlockedWithPanels(additionalWhere = {}) {
+	async GetAllTemplatesWhereUnlocked(additionalWhere = {}, excludePanels = false) {
 		let dbTemplates = await this.models.Template.findAll({
 			where: {
 				...additionalWhere,
@@ -415,7 +390,7 @@ export default class ComicService extends Service {
 				}
 			},
 			paranoid: false,
-			include: [{
+			include: excludePanels ? [] : [{
 				model: this.models.TemplatePanel,
 				as: 'TemplatePanels',
 				paranoid: false
@@ -426,7 +401,7 @@ export default class ComicService extends Service {
 		return dbTemplates.map(mapper.fromDbTemplate);
 	}
 	async GetNewTemplates(existingTemplateIds) {
-		return await this.GetAllTemplatesWhereUnlockedWithPanels({
+		return await this.GetAllTemplatesWhereUnlocked({
 			TemplateId: {
 				[Sequelize.Op.notIn]: existingTemplateIds
 			}
@@ -447,6 +422,9 @@ export default class ComicService extends Service {
 				model: this.models.User,
 				as: 'User'
 			}]
+		}, {
+			model: this.models.UserAchievement,
+			as: 'UserAchievements'
 		}];
 		
 		if(forUserId) {

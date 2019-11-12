@@ -1,9 +1,13 @@
 .page-template {
 	.template-navigation {
-		margin: 0 auto $spacing-sm auto;
+		margin: 0 auto;
 	}
 
-	.play-template {
+	.page-title {
+		margin: $spacing-sm 0;
+	}
+
+	.comic-list {
 		margin-top: $spacing-sm;
 	}
 }

@@ -307,6 +307,44 @@ export default class UserService extends Service {
 
 		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
 	}
+	async GetStatsForUser(userId) {
+		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
+		//Is used for profile, but also for worker jobs to calculate leaderboards and achievements
+
+		//Calculate their panel points TODO make a worker service and set points on user row
+		//That way we can have leaderboards etc
+		let dbComicPanels = await this.services.Comic.GetComicPanelsForUserNotCensored(userId);
+
+		let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
+
+		let dbComics = await this.models.Comic.findAll({
+			where: {
+				ComicId: {
+					[Sequelize.Op.in]: comicIds
+				},
+				CompletedAt: {
+					[Sequelize.Op.ne]: null
+				}
+			},
+			order: [[ 'Rating', 'DESC' ], ['CompletedAt', 'DESC']]
+		});
+		
+		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
+		let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
+		let comicAverageRating = comicTotalRating / dbComics.length;
+		let topComic = dbComics.length > 0 ? dbComics[0] : null; //Already sorted
+		let distinctTemplateIds = [...new Set(dbComics.map(dbComic => dbComic.TemplateId))];
+		
+		return {
+			panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
+			comicCount: dbComics.length,
+			comicTotalRating: comicTotalRating,
+			comicAverageRating: comicAverageRating,
+			distinctTemplateIds: distinctTemplateIds,
+
+			topComic: mapper.fromDbComic(topComic)
+		};
+	}
 	_GetUserNotBannedWhere() {
 		return {
 			PermanentlyBannedAt: {

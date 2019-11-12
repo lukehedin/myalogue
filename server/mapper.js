@@ -6,6 +6,7 @@ const mapper = {
 			userId: dbUser.UserId,
 			username: dbUser.Username,
 			createdAt: dbUser.CreatedAt,
+			leaderboardRating: dbUser.LeaderboardRating,
 			avatar: {
 				character: dbUser.AvatarCharacter,
 				expression: dbUser.AvatarExpression,
@@ -26,6 +27,7 @@ const mapper = {
 			isAnonymous: dbComic.IsAnonymous,
 			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
+			leaderboardRating: dbComic.LeaderboardRating,
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
 				.map(mapper.fromDbComicComment),

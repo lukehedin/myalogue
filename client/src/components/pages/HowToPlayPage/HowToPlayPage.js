@@ -14,7 +14,7 @@ export default class HowToPlayPage extends Component {
 		if(!topComic) return <Redirect to={Util.route.register()} />; //Should not happen
 
 		let demoPanel = {
-			...topComic.comicPanels[topComic.comicPanels.length - 2],
+			...topComic.comicPanels[0],
 			userId: null,
 			username: null
 		}
@@ -34,7 +34,7 @@ export default class HowToPlayPage extends Component {
 					<div className="row">
 						<ComicPanelPair>
 							<ComicPanel comicPanel={demoPanel} />
-							<ComicPanel templatePanelId={topComic.comicPanels[topComic.comicPanels.length - 1].templatePanelId} />
+							<ComicPanel templatePanelId={topComic.comicPanels[1].templatePanelId} />
 						</ComicPanelPair>
 					</div>
 				</div>

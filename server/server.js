@@ -16,6 +16,7 @@ import EmailService from './services/EmailService';
 import NotificationService from './services/NotificationService';
 import PlayService from './services/PlayService';
 import UserService from './services/UserService';
+import AchievementService from './services/AchievementService';
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,6 +44,7 @@ let db = new Database();
 db.LoadModels();
 
 const services = {
+	Achievement: new AchievementService(db.models, () => services),
 	Comic: new ComicService(db.models, () => services),
 	Cron: new CronService(db.models, () => services),
 	Email: new EmailService(db.models, () => services),

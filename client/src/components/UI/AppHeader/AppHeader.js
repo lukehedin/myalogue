@@ -28,17 +28,14 @@ export default class AppHeader extends Component {
 							label: 'Home',
 							to: Util.route.home()
 						}, {
-							label: 'Play',
-							to: Util.route.play()
+							label: 'Templates',
+							to: Util.route.template()
+						}, {
+							label: 'Leaderboards',
+							to: Util.route.leaderboards()
 						}, {
 							label: 'How to play',
 							to: Util.route.howToPlay()
-						}, {
-							label: 'Top comics',
-							to: Util.route.topComics()
-						}, {
-							label: 'Templates',
-							to: Util.route.template()
 						}, {
 							label: 'About',
 							to: Util.route.about()

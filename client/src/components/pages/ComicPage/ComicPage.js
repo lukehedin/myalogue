@@ -24,7 +24,6 @@ export default class ComicPage extends Component {
 			completedPanelCount: 0,
 			
 			//Complete comic
-			template: null,
 			comic: null
 		};
 	}
@@ -45,8 +44,7 @@ export default class ComicPage extends Component {
 			isComicCompleted: false,
 			totalPanelCount: null,
 			completedPanelCount: null,
-			comic: null,
-			template: null
+			comic: null
 		});
 
 		Util.api.post('/api/getComicById', {
@@ -57,8 +55,7 @@ export default class ComicPage extends Component {
 				if(result.isComicCompleted) {
 					this.setState({
 						isComicCompleted: true,
-						comic: result.comic,
-						template: Util.referenceData.getTemplateById(result.comic.templateId)
+						comic: result.comic
 					});
 				} else {
 					this.setState({
@@ -92,11 +89,7 @@ export default class ComicPage extends Component {
 			</div>
 		} else if(this.state.isComicCompleted) {
 			content = <div>
-				<p className="center"><ComicInfoLabel comic={this.state.comic} /></p>
-				{this.state.template
-					? <p className="center">Template: <Link to={Util.route.template(this.state.template.templateId)}>{this.state.template.name}</Link></p>
-					: null
-				}
+				<ComicInfoLabel className="center" comic={this.state.comic} />
 				<div className="comic-wrapper">
 					<Comic isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>

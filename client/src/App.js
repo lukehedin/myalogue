@@ -15,7 +15,7 @@ import HomePage from './components/pages/HomePage/HomePage';
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import VerifyPage from './components/pages/VerifyPage/VerifyPage';
-import TopComicsPage from './components/pages/TopComicsPage/TopComicsPage';
+import LeaderboardsPage from './components/pages/LeaderboardsPage/LeaderboardsPage';
 import ProfilePage from './components/pages/ProfilePage/ProfilePage';
 import AboutPage from './components/pages/AboutPage/AboutPage';
 import HowToPlayPage from './components/pages/HowToPlayPage/HowToPlayPage';
@@ -127,7 +127,7 @@ class App extends Component {
 						<Route exact path="/template" render={() => <TemplatePage />} />
 						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 
-						<Route exact path="/top-comics" render={() => <TopComicsPage />} />
+						<Route exact path="/leaderboards" render={() => <LeaderboardsPage />} />
 						
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUsername())} />)} />
 						<Route exact path="/profile/:userIdOrUserName" render={({ match }) => <ProfilePage userIdOrUserName={match.params.userIdOrUserName} />} />
@@ -139,6 +139,9 @@ class App extends Component {
 						<Route exact path="/privacy-policy" render={() => <PrivacyPolicyPage />}/>
 						<Route exact path="/terms-of-service" render={() => <TermsOfServicePage />}/>
 						
+						{/* Legacy redirects */}
+						<Route exact path="/top-comics" render={() => <Redirect to={Util.route.leaderboards()} />} />
+
 						{/* No other route match, 404 */}
 						<Route render={({ match }) => <Error404Page />} />
 					</Switch>

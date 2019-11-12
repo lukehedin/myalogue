@@ -5,6 +5,8 @@ import Util from '../../../Util';
 
 export default class ComicInfoLabel extends Component {
 	render() {
+		let template = Util.referenceData.getTemplateById(this.props.comic.templateId);
+
 		let authors = [];
 		let anonCount = 0;
 		this.props.comic.comicPanels.forEach(comicPanel => {
@@ -23,10 +25,13 @@ export default class ComicInfoLabel extends Component {
 			});
 		}
 
-		return <span>Completed {moment(this.props.comic.completedAt).fromNow()} by {authors.map((author, idx) => {
-			return author.anonCount
-				? <span key={idx}>{Util.format.pluralise(author.anonCount, 'an anonymous user', 'anonymous users')}</span>
-				: <span key={idx}><Link to={Util.route.profile(author.username)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
-		})}.</span>
+		return <div className="comic-info-label">
+			<p className={this.props.className || ''}>Completed {moment(this.props.comic.completedAt).fromNow()} with the <Link to={Util.route.template(template.templateId)}>{template.name}</Link> template.</p>
+			<p className={this.props.className || ''}>Panels by {authors.map((author, idx) => {
+					return author.anonCount
+						? <span key={idx}>{Util.format.pluralise(author.anonCount, 'an anonymous user', 'anonymous users')}</span>
+						: <span key={idx}><Link to={Util.route.profile(author.username)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
+				})}.</p>
+		</div>
 	}
 }

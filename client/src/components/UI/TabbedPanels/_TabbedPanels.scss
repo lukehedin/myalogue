@@ -1,0 +1,52 @@
+.tabbed-panels {
+	.tabbed-panels-tabs {
+		display: flex;
+		flex-direction: row;
+		padding: $spacing-xxs;
+		padding-bottom: 0;
+		background-color: $colour-pink;
+		list-style: none;
+		@include borderRadius(4px);
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		margin: 0 (-$spacing-sm);
+		@include oversm {
+			margin: 0;
+		}
+
+		.tabbed-panels-tab {
+			flex: 1;
+			padding: $spacing-xs $spacing-sm;
+			text-align: center;
+			cursor: pointer;
+			outline:0;
+			@include borderRadius(4px);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			
+			&.react-tabs__tab--selected {
+				color: $colour-pink;
+				background-color: $colour-white;
+			}
+			&:not(.react-tabs__tab--selected) {
+				color: $colour-white;
+				background-color: $colour-pink;
+
+			}
+		}
+	}
+
+	.tabbed-panels-panel {
+		&.react-tabs__tab-panel--selected {
+			padding: $spacing-sm 0;
+			@include oversm {
+				border: $spacing-xxs solid $colour-pink;
+				border-top: none;
+				padding: $spacing-sm;
+				@include borderRadius(4px);
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+	}
+}

@@ -67,8 +67,7 @@ class Modal extends Component {
 				let template = Util.referenceData.getTemplateById(modal.comic.templateId);
 
 				modalContent = <div className="share-comic-container">
-					<p className="center sm"><ComicInfoLabel comic={modal.comic} /></p>
-					<p className="center sm">Template: <Link to={Util.route.template(template.templateId)}>{template.name}</Link></p>
+					<ComicInfoLabel className="center sm" comic={modal.comic} />
 					<input className="input-link" onClick={e => e.target.select()} readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
 					{!Util.route.isCurrently(Util.route.comic(modal.comic.comicId))

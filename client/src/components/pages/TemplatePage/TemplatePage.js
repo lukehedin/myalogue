@@ -42,7 +42,7 @@ export default class TemplatePage extends Component {
 		if(!this.state.template) return <Redirect to={Util.route.home()} />;
 		
 		return <div className="page-template">
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
@@ -53,14 +53,8 @@ export default class TemplatePage extends Component {
 							</div>
 							: null
 						}
-					</div>
-				</div>
-			</div>
-			<div className="panel-standard">
-				<div className="container">
-					<div className="row">
+						<hr />
 						<ComicList
-							title={`Comics using this template`}
 							sortBy={Util.enums.ComicSortBy.TopAll}
 							fetchDelay={700} //Prevent fast nav spamming
 							templateId={this.state.template.templateId}

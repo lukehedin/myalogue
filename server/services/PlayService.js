@@ -284,6 +284,7 @@ export default class PlayService extends Service {
 			//Notify other panel creators, but not this one.
 			let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
 			this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
+			this.services.Achievement.ProcessForComicCompleted(dbComic);
 		}
 
 		//Remove the lock
@@ -317,7 +318,7 @@ export default class PlayService extends Service {
 		}
 	
 		//Remove the lock on the comic
-		let [affectedRows] = await this.models.Comic.update({
+		let [dbComicsAffected] = await this.models.Comic.update({
 			LockedAt: null,
 			LockedByUserId: null,
 			LockedByAnonId: null,
@@ -327,7 +328,7 @@ export default class PlayService extends Service {
 		});
 
 		//Should never be > 1: comicId alone should assure that, but in the case of 0 affected rows....
-		if(affectedRows !== 1) throw `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`;
+		if(dbComicsAffected !== 1) throw `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`;
 		
 		//Anons can't track their skips, so leave here
 		if(!userId) return;
