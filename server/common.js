@@ -18,37 +18,40 @@ export default {
 	
 	enums: {
 		AchievementType: {
-			//Punchlines
-			TopLastPanel: 1, // Make the last panel for a top comic
-			LotsOfLastPanels: 2, //Make the last panel for 500 comics (worker check)
+			FirstComic: 1, // Made a comic
+			FastComic: 2, //Comic started and completed in an hour or less
 
-			//Beginning
-			TopFirstPanel: 3, // Make the first panel for a top comic
-			LotsOfFirstPanels: 4, //Start 500 comics (worker check)
+			TopComic: 3, //Featured in a top comic
+			TopUser: 4, //Reach the top of the author leaderboard
 
-			//Template usage
-			LotsOfTemplates: 5, //Feature in comics using over 100 different templates (worker check)
-			FirstTemplateUsage: 6, //Feature in the first comic using a particular template
+			LotsOfComics: 5, //Feature in 1500 comics, (acc)
+			LotsOfTemplates: 6, //Feature in comics using over 100 different templates (acc)
+			
+			HighTotalRating: 7, //Reach a total comic rating of 5000 or more (acc)
 
-			// Panel uniqueness
-			FewUniquePanels: 7, // Min 6 panels, no more than 2 unique
-			AllUniquePanels: 8, // Min 8 panels, all unique
-			MinorPanelStreak: 9, //Part of a 3 panel streak
-			MajorPanelStreak: 10, //Part of a 4 panel streak
+			FirstTemplateUsage: 8, //Feature in the first comic using a particular template
 
 			// Comic Authors
-			TwoPanelsOneComic: 11, // Two panels in one comic
-			ThreePanelsOneComic: 12, // Three panels in one comic
-			Sandwich: 13, //Min 6 panels, made only first and last panel
-			AllUniqueAuthors: 14, //Min 8 panels, all different authors
-			ThreeUniqueAuthors: 15, //3 authors only
+			TwoPanelsOneComic: 9, // Two panels in one comic
+			ThreePanelsOneComic: 10, // Three panels in one comic
 
-			//Others
-			FirstComic: 16, // Made a comic
-			FastComic: 17, //Comic started and completed in an hour or less
-			TopComic: 18, //Featured in a top comic
-			TopAuthor: 19, //Reach the top of the author leaderboard
-			LotsOfComics: 20 //Feature in 1500 comics, (worker check)
+			Sandwich: 11, //Min 6 panels, made only first and last panel
+
+			AllUniqueAuthors: 12, //Min 8 panels, all different authors
+			ThreeUniqueAuthors: 13, //3 authors only
+
+			// Panel uniqueness
+			AllUniquePanels: 14, // Min 8 panels, all unique
+
+			MinorPanelStreak: 15, //Part of a 3 panel streak
+			MajorPanelStreak: 16, //Part of a 4 panel streak
+
+			//Punchlines/Beginnings
+			TopFirstPanel: 17, // Make the first panel for a top comic
+			TopLastPanel: 18, // Make the last panel for a top comic
+			LotsOfLastPanels: 19, //Make the last panel for 500 comics (acc)
+			LotsOfFirstPanels: 20 //Start 500 comics (acc)
+
 		},
 		
 		NotificationType: {
@@ -59,6 +62,7 @@ export default {
 			ComicComment: 5, // valueInteger = number of OTHER commenters, valueString = latest commenter
 			PanelCensored: 6, // valueInteger = comicId, valueString = dialogue from reported panel
 			ComicCommentMention: 7, //valueString = name of user who tagged you
+			AchievementUnlocked: 8 //valueString = achievement name, valueInteger = achievmentType
 		}
 	},
 

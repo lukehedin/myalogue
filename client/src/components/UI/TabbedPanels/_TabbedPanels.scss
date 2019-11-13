@@ -1,9 +1,5 @@
 .tabbed-panels {
-	margin: 0 (-$spacing-sm);
 	@include boxShadow(6px, 6px, 6px, #00000016);
-	@include oversm {
-		margin: 0;
-	}
 
 	.tabbed-panels-tabs {
 		display: flex;
@@ -16,14 +12,11 @@
 		border-bottom-right-radius: 0;
 		margin: 0;
 		border-top: 1px solid $colour-grey-b;
-		@include oversm {
-			border-left: 1px solid $colour-grey-b;
-			border-right: 1px solid $colour-grey-b;
-		}
+		border-left: 1px solid $colour-grey-b;
+		border-right: 1px solid $colour-grey-b;
 
 		.tabbed-panels-tab {
 			flex: 1;
-			padding: $spacing-xs $spacing-sm;
 			text-align: center;
 			cursor: pointer;
 			outline:0;
@@ -31,6 +24,18 @@
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 			color: $colour-black;
+			padding: $spacing-xs;
+
+			.tab-title {
+				font-size: 12px;
+			}
+			
+			@include oversm {
+				.tab-title {
+					font-size: 14px;
+				}
+				padding: $spacing-xs $spacing-sm;
+			}
 
 			&.react-tabs__tab--selected {
 				background-color: $colour-white;
@@ -50,13 +55,11 @@
 		&.react-tabs__tab-panel--selected {
 			padding: $spacing-sm;
 			border-bottom: 1px solid $colour-grey-b;
-			@include oversm {
-				border: 1px solid $colour-grey-b;
-				border-top: none;
-				@include borderRadius(4px);
-				border-top-left-radius: 0;
-				border-top-right-radius: 0;
-			}
+			border: 1px solid $colour-grey-b;
+			border-top: none;
+			@include borderRadius(4px);
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
 		}
 	}
 }

@@ -133,6 +133,8 @@ const Util = {
 	
 			return templatePanel;
 		},
+
+		getAchievements: () => Util.referenceData._referenceData.achievements,
 	
 		getTopComic: () => Util.referenceData._referenceData.topComic, // Used for how to play page
 
@@ -202,7 +204,7 @@ const Util = {
 				.then(response => resolve(response.data))
 				.catch(err => {
 					console.log(err);
-					if(err.response.status === 401) {
+					if(err.response && err.response.status === 401) {
 						//Authentication failure, clear cache and refresh
 						Util.context.clear();
 					} else {

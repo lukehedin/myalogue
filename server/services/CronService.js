@@ -12,11 +12,7 @@ export default class CronService extends Service {
 			name: 'Update hot ranks',
 			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59
 			fn: () => this.UpdateHotRanks()
-		// }, {
-		// 	name: 'Check user achievements',
-		// 	time: '6-59/10 * * * *', //At every 10th minute from 6 through 59
-		// 	fn: () => this.CheckUserAchievements()
-		// }, {
+		// }, { //TODO enable
 		// 	name: 'Update leaderboards',
 		// 	time: '0 * * * *', //At minute 0 (hourly)
 		// 	fn: () => this.UpdateLeaderboards()
@@ -79,72 +75,6 @@ export default class CronService extends Service {
 		 	updateOnDuplicate: ['HotRank']
 		});
 	}
-	async CheckUserAchievements() {
-		const achievementTypesToCheck = [
-			common.enums.AchievementType.LotsOfLastPanels,
-			common.enums.AchievementType.LotsOfFirstPanels,
-			common.enums.AchievementType.LotsOfTemplates,
-			common.enums.AchievementType.LotsOfComics
-		];
-
-		let dbUsersToCheck = await this.models.User.findAll({
-			where: {
-				IsAchievementCheckRequired: true
-			},
-			include: [{
-				model: this.models.UserAchievement,
-				as: 'UserAchievements',
-				where: {
-					Type: {
-						[Sequelize.Op.in]: achievementTypesToCheck
-					}
-				}
-			}]
-		});
-
-		//For each user that hasn't got all the worker achievements
-		dbUsersToCheck.forEach(async dbUser => {
-			let lockedAchievementTypesForUser = achievementTypesToCheck.filter(achievementType => {
-				return !dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === achievementType);
-			});
-
-			//User has all the worker achievements
-			if(lockedAchievementTypesForUser.length === 0) return; 
-
-			let userStats = await this.services.Comic.GetStatsForUser(dbUser.UserId);
-
-			let checkAchievement = async (achievementType, checkFn) => {
-				dbUserAchievementsToCheck
-					.filter(dbUserAchievement => dbUserAchievement.Type === achievementType)
-					.forEach(dbUserAchievement => checkFn(dbUserAchievement))
-			};
-	
-			checkAchievement(common.enums.AchievementType.LotsOfTemplates, async (dbUserAchievement) => {
-				
-				let uniqueTemplateCount = userStats.distinctTemplateIds.length;
-				
-			});
-
-			if(lockedAchievementTypesForUser.includes(common.enums.AchievementType.LotsOfTemplates)) {
-				let dbExistingUserAchievement = dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === common.enums.AchievementType.LotsOfTemplates);
-
-				if(dbUserAchievement.ValueInt !== uniqueTemplateCount) {
-					achievementsToUpdate.push({
-						UserAchievementId: dbUserAchievement.UserAchievementId,
-						ValueInt: uniqueTemplateCount
-					});
-				}
-				if(uniqueTemplateCount >= 100) {
-					this.services.Achievement.UnlockAchievement(common.enums.achievementType.LotsOfTemplates, [dbUser.UserId])
-				}
-			}
-		});
-		
-		console.log('applying worker achivement updates');
-		await this.models.UserAchievement.bulkCreate(achievementsToUpdate, {
-			updateOnDuplicate: ['ValueInt']
-		});
-	}
 	async UpdateLeaderboards() {
 		let dbWeeklyComics = await this.models.Comic.findAll({
 			where: {
@@ -169,7 +99,6 @@ export default class CronService extends Service {
 
 		if(dbWeeklyComics.length > 0) {
 			let dbTopComic = dbWeeklyComics[0];
-			let topComicId = dbTopComic.ComicId;
 
 			//Update leaderboard ratings
 			await this.models.Comic.bulkCreate(dbWeeklyComics.map(dbWeeklyComic => {
@@ -191,23 +120,7 @@ export default class CronService extends Service {
 					}
 				});
 	
-				let distinctUserIds = [
-					...new Set(dbTopComic.ComicPanels
-						.filter(dbComicPanel => !!dbComicPanel.UserId)
-						.map(dbComicPanel => dbComicPanel.UserId)
-					)];
-
-				//Top of leaderboard comic
-				this.services.Achievement.UnlockAchievement(common.enums.AchievementType.TopComic, distinctUserIds, topComicId);
-		
-				//Panel position achievements
-				let lastPanelUserId = dbTopComic.ComicPanels[dbTopComic.ComicPanels.length - 1].userId;
-				let firstPanelUserId = dbTopComic.ComicPanels[0].userId;
-		
-				if(firstPanelUserId || lastPanelUserId) {
-					if(lastPanelUserId) this.services.Achievement.UnlockAchievement(common.enums.AchievementType.TopLastPanel, [lastPanelUserId], topComicId);
-					if(firstPanelUserId) this.services.Achievement.UnlockAchievement(common.enums.AchievementType.TopFirstPanel, [firstPanelUserId], topComicId);
-				}
+				this.services.Achievement.ProcessForTopComic(dbTopComic);
 			}
 
 			//Calculate user leaderboard from these comics
@@ -228,7 +141,6 @@ export default class CronService extends Service {
 			let weeklyUserIds = Object.keys(userScoreLookup);
 			
 			if(weeklyUserIds.length > 0) {
-		
 				//Update user leaderboard ratings and reset all other users leaderboardrating to 0
 				await Promise.all([
 					this.models.User.bulkCreate(weeklyUserIds.map(userId => {
@@ -259,7 +171,6 @@ export default class CronService extends Service {
 				});
 
 				let topUserIds = dbTopUsers.map(dbTopUser => dbTopUser.UserId);
-				this.services.Achievement.UnlockAchievement(common.enums.AchievementType.TopAuthor, topUserIds);
 
 				//Record as the first time the user got leaderboardtop, if they havent already
 				await this.models.User.update({
@@ -274,7 +185,8 @@ export default class CronService extends Service {
 						}
 					}
 				});
-				console.log('B');
+
+				this.services.ProcessForTopUsers(topUserIds);
 			}
 		}
 	}

@@ -6,8 +6,8 @@ import moment from 'moment';
 
 import ComicList from '../../UI/ComicList/ComicList';
 import Avatar from '../../UI/Avatar/Avatar';
-import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
+import AchievementList from '../../UI/AchievementList/AchievementList';
 
 //this.props.userIdOrUserName
 export default class ProfilePage extends Component {
@@ -17,7 +17,8 @@ export default class ProfilePage extends Component {
 		this.state = {
 			isLoading: true,
 			user: null,
-			userStats: null
+			userStats: null,
+			userAchievements: null
 		};
 	}
 	componentDidMount() {
@@ -42,7 +43,8 @@ export default class ProfilePage extends Component {
 			if(!result.error) {
 				this.setState({
 					user: result.user,
-					userStats: result.userStats
+					userStats: result.userStats,
+					userAchievements: result.userAchievements
 				});
 			}
 
@@ -96,7 +98,7 @@ export default class ProfilePage extends Component {
 											</div>
 										}, {
 											title: 'Achievements',
-											content: <div></div>
+											content: <AchievementList userAchievements={this.state.userAchievements} />
 										}, {
 											title: 'Templates',
 											content: <table className="template-usage-table">

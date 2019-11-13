@@ -115,6 +115,15 @@ const mapper = {
 		};
 	},
 
+	fromDbUserAchievement: (dbUserAchievement) => {
+		return {
+			userAchievementId: dbUserAchievement.UserAchievementId,
+			type: dbUserAchievement.Type,
+			unlockedAt: dbUserAchievement.UnlockedAt,
+			valueInt: dbUserAchievement.ValueInt
+		};
+	},
+
 	fromDbUserNotification: (dbUserNotification) => {
 		//A user notification always requires the Notification object with it. These two layers form a user notification.
 		//The UserNotification holds additional data that may be specific to the user. Eg. the amount of additional comments
@@ -156,6 +165,11 @@ const mapper = {
 				message = `A panel you made for comic #${valueInt} has been censored. Too many censored panels will result in a ban.\n\nYour dialogue was: "${valueString}"`;
 				break;
 
+			case common.enums.NotificationType.AchievementUnlocked:
+				title = `Achievement unlocked!`
+				message = `You unlocked the achievement "${valueString}"! Click here to view your achievement progress.`;
+				break;
+
 			case common.enums.NotificationType.General:
 			default:
 				title = dbUserNotification.Notification.Title;
@@ -169,6 +183,7 @@ const mapper = {
 
 		return {
 			userNotificationId: dbUserNotification.UserNotificationId,
+			type: dbUserNotification.Notification.Type,
 			isSeen: !!dbUserNotification.SeenAt,
 			isActionable: isActionable,
 			createdAt: dbUserNotification.RenewedAt

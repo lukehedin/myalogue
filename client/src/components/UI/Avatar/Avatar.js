@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import ReactSVG from 'react-svg'
 import Util from '../../../Util';
 
-import avatars from '../../../images/avatars.png';
+import avatarsImage from '../../../images/avatars.png';
 
 //this.props.user
 export default class Avatar extends Component {
@@ -14,7 +13,7 @@ export default class Avatar extends Component {
 					: Util.avatar.getPseudoAvatar(this.props.user.userId)
 				: Util.context.getUserAvatar(); //Me
 
-		let avatarImageSize = 96;
+		const avatarImageSize = 96;
 		let imageWidth = avatarImageSize * Util.avatar.getExpressionCount();
 		let imageHeight = avatarImageSize * Util.avatar.getCharacterCount();
 		
@@ -29,7 +28,7 @@ export default class Avatar extends Component {
 			minWidth: size,
 			minHeight: size,
 			backgroundSize: `${(size / avatarImageSize) * imageWidth}px ${(size / avatarImageSize) * imageHeight}px`,
-			backgroundImage: `url('${avatars}')`, 
+			backgroundImage: `url('${avatarsImage}')`, 
 			backgroundPositionX: backgroundX, 
 			backgroundPositionY: backgroundY,
 			backgroundColor: `#${Util.avatar.colourLookup[avatar.colour] || Util.avatar.colourLookup[1]}`

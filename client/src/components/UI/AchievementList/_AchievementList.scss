@@ -1,0 +1,33 @@
+.achievement-list {
+	.achievement-table {
+		margin: 0 auto;
+
+		.achievement-row {
+
+			td {
+				vertical-align: top;
+				padding: $spacing-xs 0;
+			}
+
+			.td-achievement-image {
+				padding-right: $spacing-xs;
+				&.unlocked {
+					background-color: $colour-pink;
+				}
+				&:not(.unlocked) {
+					opacity: 0.5;
+				}
+			}
+
+			.td-achievement-detail {
+				@include allHeadings {
+					text-align: left;
+				}
+
+				p {
+					margin: 0;
+				}
+			}
+		}
+	}
+}

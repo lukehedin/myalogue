@@ -954,13 +954,9 @@ body {
           body .app-container .app .share-buttons .share-button > *:hover path {
             fill: #ff0052; }
       body .app-container .app .tabbed-panels {
-        margin: 0 -16px;
         box-shadow: 6px 6px 6px #00000016;
         -webkit-box-shadow: 6px 6px 6px #00000016;
         -moz-box-shadow: 6px 6px 6px #00000016; }
-        @media (min-width: 576px) {
-          body .app-container .app .tabbed-panels {
-            margin: 0; } }
         body .app-container .app .tabbed-panels .tabbed-panels-tabs {
           display: flex;
           flex-direction: row;
@@ -973,14 +969,11 @@ body {
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
           margin: 0;
-          border-top: 1px solid #c8c8c8; }
-          @media (min-width: 576px) {
-            body .app-container .app .tabbed-panels .tabbed-panels-tabs {
-              border-left: 1px solid #c8c8c8;
-              border-right: 1px solid #c8c8c8; } }
+          border-top: 1px solid #c8c8c8;
+          border-left: 1px solid #c8c8c8;
+          border-right: 1px solid #c8c8c8; }
           body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
             flex: 1;
-            padding: 8px 16px;
             text-align: center;
             cursor: pointer;
             outline: 0;
@@ -989,7 +982,15 @@ body {
             -moz-border-radius: 4px;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            color: #080808; }
+            color: #080808;
+            padding: 8px; }
+            body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab .tab-title {
+              font-size: 12px; }
+            @media (min-width: 576px) {
+              body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
+                padding: 8px 16px; }
+                body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab .tab-title {
+                  font-size: 14px; } }
             body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab.react-tabs__tab--selected {
               background-color: #fff; }
             body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab:not(.react-tabs__tab--selected) {
@@ -1000,16 +1001,29 @@ body {
           background-color: #fff; }
           body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
             padding: 16px;
-            border-bottom: 1px solid #c8c8c8; }
-            @media (min-width: 576px) {
-              body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
-                border: 1px solid #c8c8c8;
-                border-top: none;
-                border-radius: 4px;
-                -webkit-border-radius: 4px;
-                -moz-border-radius: 4px;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0; } }
+            border-bottom: 1px solid #c8c8c8;
+            border: 1px solid #c8c8c8;
+            border-top: none;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0; }
+      body .app-container .app .achievement-list .achievement-table {
+        margin: 0 auto; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row td {
+          vertical-align: top;
+          padding: 8px 0; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image {
+          padding-right: 8px; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image.unlocked {
+            background-color: #ff0052; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image:not(.unlocked) {
+            opacity: 0.5; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h1, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h2, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h3, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h4, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h5, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h6 {
+          text-align: left; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
+          margin: 0; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;

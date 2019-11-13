@@ -10,14 +10,16 @@ export default {
 
 			let referenceDataPromises = [
 				services.Comic.GetAllTemplatesWhereUnlocked(),
+				services.Achievement.GetAllAchievements(),
 				services.Comic.GetTopComic(userId)
 			];
 	
-			let [templates, topComic] = await Promise.all(referenceDataPromises);
+			let [templates, achievements, topComic] = await Promise.all(referenceDataPromises);
 
 			let result = {
 				referenceData: {
 					templates: templates,
+					achievements: achievements,
 					topComic: topComic
 				}
 			}
@@ -106,20 +108,22 @@ export default {
 		getUser: async (req, services) => {
 			let userId = req.userId;
 
-			let requestedUserId = req.body.requestedUserId; //do not confuse
-			let requestedUsername = req.body.requestedUsername;
+			let possibleRequestedUserId = req.body.requestedUserId; //do not confuse
+			let possibleRequestedUsername = req.body.requestedUsername;
 
-			let requestedUser = requestedUsername
-				? await services.User.GetByUsername(requestedUsername)
-				: await services.User.GetById(requestedUserId);
+			let requestedUser = possibleRequestedUsername
+				? await services.User.GetByUsername(possibleRequestedUsername)
+				: await services.User.GetById(possibleRequestedUserId);
 
 			if(!requestedUser) throw 'User not found.';
 
 			let userStats = await services.User.GetStatsForUser(requestedUser.userId);
+			let userAchievements = await services.User.GetAchievementsForUser(requestedUser.userId);
 			
 			return {
 				user: requestedUser,
-				userStats: userStats
+				userStats,
+				userAchievements
 			};
 		},
 

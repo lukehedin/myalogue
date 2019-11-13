@@ -53,6 +53,10 @@ export default class NotificationService extends Service {
 	async SendPanelCensoredNotification (dbComicPanel) {
 		await this._CreateSingletonNotification([dbComicPanel.UserId], common.enums.NotificationType.PanelCensored, dbComicPanel.ComicId, dbComicPanel.Value);
 	}
+	async SendAchievementUnlockedNotification(notifyUserIds, achievementType) {
+		let achievement = this.services.Achievement.GetByType(achievementType);
+		await this._CreateSingletonNotification(notifyUserIds, common.enums.NotificationType.AchievementUnlocked, achievementType, achievement.name);
+	}
 	async SendComicCompletedNotification(notifyUserIds, comicId) {
 		await this._CreateNotification(notifyUserIds, common.enums.NotificationType.ComicCompleted, { comicId: comicId });
 	}

@@ -307,6 +307,15 @@ export default class UserService extends Service {
 
 		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
 	}
+	async GetAchievementsForUser(userId) {
+		let dbUserAchievements = await this.models.UserAchievement.findAll({
+			where: {
+				UserId: userId
+			}
+		});
+
+		return dbUserAchievements.map(mapper.fromDbUserAchievement);
+	}
 	async GetStatsForUser(userId) {
 		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
 		//Is used for profile, but also for worker jobs to calculate leaderboards and achievements
