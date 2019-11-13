@@ -9,12 +9,6 @@ import Service from './Service';
 
 export default class AchievementService extends Service {
 	async ProcessForComicCompleted(dbComic) {
-		//User participation achievements (involve checking large amount of data other than that in dbComic)
-		let participationAchievements = [
-			common.enums.AchievementType.LotsOfComics,
-			common.enums.AchievementType.LotsOfTemplates
-		];
-
 		let comicId = dbComic.comicId;
 		let distinctUserIds = [
 			...new Set(dbComic.ComicPanels
@@ -23,28 +17,27 @@ export default class AchievementService extends Service {
 			)];
 
 		if(distinctUserIds.length > 0) {
-			participationAchievements.forEach(participationAchievement => {
-				this.SetAchievementCheckRequired(participationAchievement, distinctUserIds)
+			//Mark these users as requiring worker achievement checks
+			this.models.User.update({
+				IsAchievementCheckRequired: true
+			}, {
+				where: {
+					IsAchievementCheckRequired: false,
+					UserId: {
+						[Sequelize.Op.in]: distinctUserIds
+					}
+				}
 			});
 		};
 		
 		//Panel position achievements
-		let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].UserId;
 		let firstPanelUserId = dbComic.ComicPanels[0].UserId;
-		if(firstPanelUserId || lastPanelUserId) {
-			if(firstPanelUserId) {
-				this.SetAchievementCheckRequired(common.enums.AchievementType.LotsOfFirstPanels, [firstPanelUserId])
-			}
-			if(lastPanelUserId) {
-				this.SetAchievementCheckRequired(common.enums.AchievementType.LotsOfLastPanels, [lastPanelUserId]);
-			}
-
+		if(dbComic.ComicPanels.length >= 6 && firstPanelUserId) {
 			//Sandwich
-			if(dbComic.ComicPanels.length >= 6 && firstPanelUserId === lastPanelUserId) {
-				let panelsByUser = dbComic.ComicPanels.find(dbComicPanel => dbComicPanel.UserId === firstPanelUserId);
-				if(panelsByUser.length === 2) {
-					this.UnlockAchievement(common.enums.AchievementType.Sandwich, [firstPanelUserId], comicId);
-				}
+			let panelsByUser = dbComic.ComicPanels.find(dbComicPanel => dbComicPanel.UserId === firstPanelUserId);
+			let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].UserId;
+			if(panelsByUser.length === 2 && firstPanelUserId === lastPanelUserId) {
+				this.UnlockAchievement(common.enums.AchievementType.Sandwich, [firstPanelUserId], comicId);
 			}
 		}
 
@@ -127,7 +120,6 @@ export default class AchievementService extends Service {
 	}
 	async UnlockAchievement(achievementType, userIds, comicId) {
 		console.log('Achievement unlocked:' + achievementType + ' for ' + userIds.length + ' users, on comic id ' + comicId);
-		return;
 		let now = new Date();
 
 		//Get all the relevant userachievements matching this type and these userids
@@ -155,7 +147,6 @@ export default class AchievementService extends Service {
 				//Row found, but not achieved yet. Use PK to update
 				createPromises.push({
 					UserAchievementId: dbExistingUserAchievement.UserAchievementId,
-					CheckRequiredAt: null,
 					UnlockedAt: now,
 					ComicId: comicId
 				});
@@ -164,57 +155,7 @@ export default class AchievementService extends Service {
 
 		//No await
 		this.models.UserAchievement.bulkCreate(createPromises, {
-			updateOnDuplicate: ['UnlockedAt', 'CheckRequiredAt']
+			updateOnDuplicate: ['UnlockedAt']
 		});
-	}
-	async SetAchievementCheckRequired(achievementType, userIds) {
-		console.log('Set achievment check required:' + achievementType + ' for ' + userIds.length + ' users');
-		return;
-		let now = new Date();
-		
-		//Get all the relevant userachievements matching this type and these userids
-		let dbExistingUserAchievements = await this.models.UserAchievement.findAll({
-			where: {
-				Type: achievementType,
-				UserId: {
-					[Sequelize.Op.in]: userIds
-				}
-			}
-		});
-
-		//Update the existing ones to be re-checked
-		//(DO NOT include rows already with checkrequiredat, but this filter must happen here or the create below will create dupes)
-		let dbUserAchievementIdsToRecheck = dbExistingUserAchievements
-			.filter(dbExistingUserAchievement => !dbExistingUserAchievement.CheckRequiredAt && !dbExistingUserAchievement.UnlockedAt)
-			.map(dbExistingUserAchievement => dbExistingUserAchievement.UserAchievementId);
-
-		if(dbUserAchievementIdsToRecheck.length > 0) {
-			//No await
-			this.models.UserAchievement.update({
-				CheckRequiredAt: now
-			}, {
-				where: {
-					UserAchievementId: {
-						[Sequelize.Op.in]: dbUserAchievementIdsToRecheck
-					}
-				}
-			});
-		}
-
-		//Create the new ones to be checked for first time
-		//Find the userids that were not returnd (no row for the achievement yet)
-		let existingUserIds = dbExistingUserAchievements.map(dbUserAchievement => dbUserAchievement.UserId);
-		let createForUserIds = userIds.filter(userId => !existingUserIds.includes(userId));
-		
-		if(createForUserIds.length > 0) {
-			//No await
-			this.models.UserAchievement.bulkCreate(createForUserIds.map(userId => {
-				return {
-					CheckRequiredAt: now,
-					Type: achievementType,
-					UserId: userId
-				};
-			}))
-		}
 	}
 }

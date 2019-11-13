@@ -1,17 +1,24 @@
 .tabbed-panels {
+	margin: 0 (-$spacing-sm);
+	@include boxShadow(6px, 6px, 6px, #00000016);
+	@include oversm {
+		margin: 0;
+	}
+
 	.tabbed-panels-tabs {
 		display: flex;
 		flex-direction: row;
-		padding: $spacing-xxs;
-		padding-bottom: 0;
-		background-color: $colour-pink;
+		padding: 0;
+		background-color: $colour-grey-b;
 		list-style: none;
 		@include borderRadius(4px);
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
-		margin: 0 (-$spacing-sm);
+		margin: 0;
+		border-top: 1px solid $colour-grey-b;
 		@include oversm {
-			margin: 0;
+			border-left: 1px solid $colour-grey-b;
+			border-right: 1px solid $colour-grey-b;
 		}
 
 		.tabbed-panels-tab {
@@ -23,26 +30,29 @@
 			@include borderRadius(4px);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
-			
+			color: $colour-black;
+
 			&.react-tabs__tab--selected {
-				color: $colour-pink;
 				background-color: $colour-white;
 			}
 			&:not(.react-tabs__tab--selected) {
-				color: $colour-white;
-				background-color: $colour-pink;
+				background-color: $colour-grey-b;
 
+				&:hover {
+					background-color: $colour-grey-c;
+				}
 			}
 		}
 	}
 
 	.tabbed-panels-panel {
+		background-color: $colour-white;
 		&.react-tabs__tab-panel--selected {
-			padding: $spacing-sm 0;
+			padding: $spacing-sm;
+			border-bottom: 1px solid $colour-grey-b;
 			@include oversm {
-				border: $spacing-xxs solid $colour-pink;
+				border: 1px solid $colour-grey-b;
 				border-top: none;
-				padding: $spacing-sm;
 				@include borderRadius(4px);
 				border-top-left-radius: 0;
 				border-top-right-radius: 0;

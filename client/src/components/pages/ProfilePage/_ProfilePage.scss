@@ -14,7 +14,8 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-
+				margin-bottom: $spacing-sm;
+				
 				.user-info-header-detail {
 					> * {
 						text-align: center;
@@ -32,7 +33,15 @@
 			}
 
 			.user-stats {
-				margin-top: $spacing-sm;
+				> * {
+					&:not(:last-child) {
+						border-bottom: 1px solid $colour-grey-b;
+						padding-bottom: $spacing-sm;
+					}
+					&:not(:first-child) {
+						padding-top: $spacing-sm;
+					}
+				}
 
 				.user-stats-row {
 					display: flex;
@@ -44,8 +53,6 @@
 				}
 					
 				.user-stat {
-					padding: $spacing-sm;
-					border-top: 1px solid $colour-grey-b;
 
 					h2 {
 						text-align: center;
@@ -62,6 +69,38 @@
 						}
 					}
 				}
+			}
+
+			.template-usage-table {
+				border-collapse:collapse;
+
+				th {
+					font-size: 12px;
+    				font-weight: normal;
+				    border-bottom: 1px solid $colour-grey-b;
+				}
+
+				td, th {
+					padding: $spacing-xs;
+
+					&.td-template-name {
+						width: 100%;
+					}
+					&.td-template-usages {
+						text-align: center;
+					}
+				}
+
+				.template-usage-row {
+					
+					&:nth-child(2n) {
+						background-color: $colour-grey-a;
+					}
+				}
+			}
+
+			.comic-list {
+				margin-top: $spacing-md;
 			}
 		}
 	}

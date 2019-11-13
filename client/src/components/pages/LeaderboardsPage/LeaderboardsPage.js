@@ -82,7 +82,7 @@ export default class LeaderboardsPage extends Component {
 		}];
 
 		return <div className="page-leaderboards">
-			<div className="panel-inset">
+			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">Leaderboards</h1>

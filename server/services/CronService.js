@@ -12,14 +12,14 @@ export default class CronService extends Service {
 			name: 'Update hot ranks',
 			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59
 			fn: () => this.UpdateHotRanks()
-		}, {
-			name: 'Check user achievements',
-			time: '6-59/10 * * * *', //At every 10th minute from 6 through 59
-			fn: () => this.CheckUserAchievements()
-		}, {
-			name: 'Update leaderboards',
-			time: '0 * * * *', //At minute 0 (hourly)
-			fn: () => this.UpdateLeaderboards()
+		// }, {
+		// 	name: 'Check user achievements',
+		// 	time: '6-59/10 * * * *', //At every 10th minute from 6 through 59
+		// 	fn: () => this.CheckUserAchievements()
+		// }, {
+		// 	name: 'Update leaderboards',
+		// 	time: '0 * * * *', //At minute 0 (hourly)
+		// 	fn: () => this.UpdateLeaderboards()
 		}];
 
 		jobs.forEach(job => {
@@ -80,42 +80,69 @@ export default class CronService extends Service {
 		});
 	}
 	async CheckUserAchievements() {
-		let dbUserAchievementsToCheck = await this.models.UserAchievement.findAll({
+		const achievementTypesToCheck = [
+			common.enums.AchievementType.LotsOfLastPanels,
+			common.enums.AchievementType.LotsOfFirstPanels,
+			common.enums.AchievementType.LotsOfTemplates,
+			common.enums.AchievementType.LotsOfComics
+		];
+
+		let dbUsersToCheck = await this.models.User.findAll({
 			where: {
-				CheckRequiredAt: {
-					[Sequelize.Op.ne]: null
-				},
-				UnlockedAt: {
-					[Sequelize.Op.eq]: null //Just in case
+				IsAchievementCheckRequired: true
+			},
+			include: [{
+				model: this.models.UserAchievement,
+				as: 'UserAchievements',
+				where: {
+					Type: {
+						[Sequelize.Op.in]: achievementTypesToCheck
+					}
+				}
+			}]
+		});
+
+		//For each user that hasn't got all the worker achievements
+		dbUsersToCheck.forEach(async dbUser => {
+			let lockedAchievementTypesForUser = achievementTypesToCheck.filter(achievementType => {
+				return !dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === achievementType);
+			});
+
+			//User has all the worker achievements
+			if(lockedAchievementTypesForUser.length === 0) return; 
+
+			let userStats = await this.services.Comic.GetStatsForUser(dbUser.UserId);
+
+			let checkAchievement = async (achievementType, checkFn) => {
+				dbUserAchievementsToCheck
+					.filter(dbUserAchievement => dbUserAchievement.Type === achievementType)
+					.forEach(dbUserAchievement => checkFn(dbUserAchievement))
+			};
+	
+			checkAchievement(common.enums.AchievementType.LotsOfTemplates, async (dbUserAchievement) => {
+				
+				let uniqueTemplateCount = userStats.distinctTemplateIds.length;
+				
+			});
+
+			if(lockedAchievementTypesForUser.includes(common.enums.AchievementType.LotsOfTemplates)) {
+				let dbExistingUserAchievement = dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === common.enums.AchievementType.LotsOfTemplates);
+
+				if(dbUserAchievement.ValueInt !== uniqueTemplateCount) {
+					achievementsToUpdate.push({
+						UserAchievementId: dbUserAchievement.UserAchievementId,
+						ValueInt: uniqueTemplateCount
+					});
+				}
+				if(uniqueTemplateCount >= 100) {
+					this.services.Achievement.UnlockAchievement(common.enums.achievementType.LotsOfTemplates, [dbUser.UserId])
 				}
 			}
 		});
-
-		let unlockedTemplates = await this.services.Comic.GetAllTemplatesWhereUnlocked({}, true);
-		let latestTemplateId = unlockedTemplates[unlockedTemplates.length - 1].templateId;
-
-		let achievementsToUpdate = [];
-
-		let checkAchievement = async (achievementType, checkFn) => {
-			dbUserAchievementsToCheck
-				.filter(dbUserAchievement => dbUserAchievement.Type === achievementType)
-				.forEach(dbUserAchievement => checkFn(dbUserAchievement))
-		};
-
-		checkAchievement(common.enums.AchievementType.LotsOfTemplates, async (dbUserAchievement) => {
-			let userStats = await this.services.Comic.GetStatsForUser(dbUserAchievement.UserId);
-			let uniqueTemplateCount = userStats.distinctTemplateIds.length;
-			if(dbUserAchievement.ValueInt !== uniqueTemplateCount) {
-				achievementsToUpdate.push({
-					UserAchievementId: dbUserAchievement.UserAchievementId,
-					ValueInt: uniqueTemplateCount
-				});
-			}
-			return uniqueTemplateCount >= 50;
-		});
-
+		
+		console.log('applying worker achivement updates');
 		await this.models.UserAchievement.bulkCreate(achievementsToUpdate, {
-		 	updateOnDuplicate: ['ValueInt']
+			updateOnDuplicate: ['ValueInt']
 		});
 	}
 	async UpdateLeaderboards() {

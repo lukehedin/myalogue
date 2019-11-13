@@ -953,51 +953,63 @@ body {
             fill: #080808; }
           body .app-container .app .share-buttons .share-button > *:hover path {
             fill: #ff0052; }
-      body .app-container .app .tabbed-panels .tabbed-panels-tabs {
-        display: flex;
-        flex-direction: row;
-        padding: 4px;
-        padding-bottom: 0;
-        background-color: #ff0052;
-        list-style: none;
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        margin: 0 -16px; }
+      body .app-container .app .tabbed-panels {
+        margin: 0 -16px;
+        box-shadow: 6px 6px 6px #00000016;
+        -webkit-box-shadow: 6px 6px 6px #00000016;
+        -moz-box-shadow: 6px 6px 6px #00000016; }
         @media (min-width: 576px) {
-          body .app-container .app .tabbed-panels .tabbed-panels-tabs {
+          body .app-container .app .tabbed-panels {
             margin: 0; } }
-        body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
-          flex: 1;
-          padding: 8px 16px;
-          text-align: center;
-          cursor: pointer;
-          outline: 0;
+        body .app-container .app .tabbed-panels .tabbed-panels-tabs {
+          display: flex;
+          flex-direction: row;
+          padding: 0;
+          background-color: #c8c8c8;
+          list-style: none;
           border-radius: 4px;
           -webkit-border-radius: 4px;
           -moz-border-radius: 4px;
           border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0; }
-          body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab.react-tabs__tab--selected {
-            color: #ff0052;
-            background-color: #fff; }
-          body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab:not(.react-tabs__tab--selected) {
-            color: #fff;
-            background-color: #ff0052; }
-      body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
-        padding: 16px 0; }
-        @media (min-width: 576px) {
-          body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
-            border: 4px solid #ff0052;
-            border-top: none;
-            padding: 16px;
+          border-bottom-right-radius: 0;
+          margin: 0;
+          border-top: 1px solid #c8c8c8; }
+          @media (min-width: 576px) {
+            body .app-container .app .tabbed-panels .tabbed-panels-tabs {
+              border-left: 1px solid #c8c8c8;
+              border-right: 1px solid #c8c8c8; } }
+          body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
+            flex: 1;
+            padding: 8px 16px;
+            text-align: center;
+            cursor: pointer;
+            outline: 0;
             border-radius: 4px;
             -webkit-border-radius: 4px;
             -moz-border-radius: 4px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0; } }
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            color: #080808; }
+            body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab.react-tabs__tab--selected {
+              background-color: #fff; }
+            body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab:not(.react-tabs__tab--selected) {
+              background-color: #c8c8c8; }
+              body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab:not(.react-tabs__tab--selected):hover {
+                background-color: #969696; }
+        body .app-container .app .tabbed-panels .tabbed-panels-panel {
+          background-color: #fff; }
+          body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
+            padding: 16px;
+            border-bottom: 1px solid #c8c8c8; }
+            @media (min-width: 576px) {
+              body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
+                border: 1px solid #c8c8c8;
+                border-top: none;
+                border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -moz-border-radius: 4px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0; } }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;
@@ -1185,7 +1197,7 @@ body {
                   body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td.cell-button .button-container:not(:first-child) {
                     margin-top: 8px; }
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboards-note {
-          margin-top: 8px;
+          margin-top: 16px;
           color: #777777; }
       body .app-container .app .page-profile .user-info-container {
         position: relative;
@@ -1198,7 +1210,8 @@ body {
           body .app-container .app .page-profile .user-info-container .user-info .user-info-header {
             display: flex;
             flex-direction: column;
-            align-items: center; }
+            align-items: center;
+            margin-bottom: 16px; }
             body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail > * {
               text-align: center; }
             body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .user-name {
@@ -1206,23 +1219,39 @@ body {
             body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .joined-date {
               margin: 4px 0;
               color: #525252; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats {
-            margin-top: 16px; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row {
-              display: flex;
-              flex-direction: row; }
-              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row .user-stat {
-                flex: 1; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat {
-              padding: 16px;
-              border-top: 1px solid #c8c8c8; }
-              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h2 {
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats > *:not(:last-child) {
+            border-bottom: 1px solid #c8c8c8;
+            padding-bottom: 16px; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats > *:not(:first-child) {
+            padding-top: 16px; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row {
+            display: flex;
+            flex-direction: row; }
+            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row .user-stat {
+              flex: 1; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h2 {
+            text-align: center; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h5 {
+            color: #525252;
+            text-align: center; }
+          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat > *:not(:first-child) {
+            margin-top: 8px; }
+          body .app-container .app .page-profile .user-info-container .user-info .template-usage-table {
+            border-collapse: collapse; }
+            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th {
+              font-size: 12px;
+              font-weight: normal;
+              border-bottom: 1px solid #c8c8c8; }
+            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th {
+              padding: 8px; }
+              body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td.td-template-name, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th.td-template-name {
+                width: 100%; }
+              body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td.td-template-usages, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th.td-template-usages {
                 text-align: center; }
-              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h5 {
-                color: #525252;
-                text-align: center; }
-              body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat > *:not(:first-child) {
-                margin-top: 8px; }
+            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table .template-usage-row:nth-child(2n) {
+              background-color: #efefef; }
+          body .app-container .app .page-profile .user-info-container .user-info .comic-list {
+            margin-top: 32px; }
       body .app-container .app .page-how-to-play .how-to-play-image {
         margin: 0 auto;
         border: 1px solid #c8c8c8;

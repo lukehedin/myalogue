@@ -109,7 +109,8 @@ export default class Database {
 			PermanentlyBannedAt: Sequelize.DATE,
 			BannedReason: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
-			LeaderboardRating: getIntegerNotNull()
+			LeaderboardRating: getIntegerNotNull(),
+			IsAchievementCheckRequired: getBoooleanNotNull()
 		}, true);
 
 		defineTable('Notification', {
@@ -127,8 +128,6 @@ export default class Database {
 		});
 
 		defineTable('UserAchievement', {
-			LastChecked: Sequelize.DATE,
-			CheckRequiredAt: Sequelize.DATE,
 			UnlockedAt: Sequelize.DATE,
 			Type: Sequelize.INTEGER,
 			ValueInt: Sequelize.INTEGER

@@ -27,7 +27,6 @@ export default {
 			LotsOfFirstPanels: 4, //Start 500 comics (worker check)
 
 			//Template usage
-			LotsOfComics: 7, //Feature in 1500 comics, (worker check)
 			LotsOfTemplates: 5, //Feature in comics using over 100 different templates (worker check)
 			FirstTemplateUsage: 6, //Feature in the first comic using a particular template
 
@@ -48,7 +47,8 @@ export default {
 			FirstComic: 16, // Made a comic
 			FastComic: 17, //Comic started and completed in an hour or less
 			TopComic: 18, //Featured in a top comic
-			TopAuthor: 19 //Reach the top of the author leaderboard
+			TopAuthor: 19, //Reach the top of the author leaderboard
+			LotsOfComics: 20 //Feature in 1500 comics, (worker check)
 		},
 		
 		NotificationType: {

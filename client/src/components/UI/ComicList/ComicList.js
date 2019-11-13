@@ -126,9 +126,9 @@ export default class ComicList extends Component {
 								type: Util.enums.ComicSortBy.TopWeek,
 								label: 'Top (week)'
 							}, {
-								type: Util.enums.ComicSortBy.TopMonth,
-								label: 'Top (month)'
-							}, {
+							// 	type: Util.enums.ComicSortBy.TopMonth,
+							// 	label: 'Top (month)'
+							// }, {
 								type: Util.enums.ComicSortBy.TopAll,
 								label: 'Top (all time)'
 							}, {

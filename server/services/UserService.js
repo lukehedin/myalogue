@@ -332,17 +332,32 @@ export default class UserService extends Service {
 		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
 		let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
 		let comicAverageRating = comicTotalRating / dbComics.length;
-		let topComic = dbComics.length > 0 ? dbComics[0] : null; //Already sorted
-		let distinctTemplateIds = [...new Set(dbComics.map(dbComic => dbComic.TemplateId))];
+		
+		let templateUsageLookup = dbComics.reduce((lookup, dbComic) => {
+			lookup[dbComic.TemplateId] = lookup[dbComic.TemplateId]
+				? lookup[dbComic.TemplateId] + 1
+				: 1;
+
+			return lookup;
+		}, {});
+		let firstPanelCount = 0;
+		let lastPanelCount = 0;
+
+		dbComics.forEach(dbComic => {
+			let dbComicPanelsByUser = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicId === dbComic.ComicId && dbComicPanel.UserId === userId);
+			if(dbComicPanelsByUser.find(dbComicPanelByUser => dbComicPanelByUser.Ordinal === 1)) firstPanelCount++;
+			if(dbComicPanelsByUser.find(dbComicPanelByUser => dbComicPanelByUser.Ordinal === dbComic.PanelCount)) lastPanelCount++;
+		});
 		
 		return {
 			panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
 			comicCount: dbComics.length,
 			comicTotalRating: comicTotalRating,
 			comicAverageRating: comicAverageRating,
-			distinctTemplateIds: distinctTemplateIds,
 
-			topComic: mapper.fromDbComic(topComic)
+			templateUsageLookup: templateUsageLookup,
+			firstPanelCount,
+			lastPanelCount
 		};
 	}
 	_GetUserNotBannedWhere() {
