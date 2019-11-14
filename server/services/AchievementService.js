@@ -46,8 +46,8 @@ export default class AchievementService extends Service {
 		let firstPanelUserId = dbComic.ComicPanels[0].UserId;
 		if(dbComic.ComicPanels.length >= 6 && firstPanelUserId) {
 			//Sandwich
-			let panelsByUser = dbComic.ComicPanels.find(dbComicPanel => dbComicPanel.UserId === firstPanelUserId);
 			let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].UserId;
+			let panelsByUser = dbComic.ComicPanels.filter(dbComicPanel => dbComicPanel.UserId === firstPanelUserId);
 			if(panelsByUser.length === 2 && firstPanelUserId === lastPanelUserId) {
 				await this._UnlockAchievement(common.enums.AchievementType.Sandwich, [firstPanelUserId], comicId);
 			}

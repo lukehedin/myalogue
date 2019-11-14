@@ -14,7 +14,7 @@ export default class CronService extends Service {
 			fn: () => this.UpdateHotRanks()
 		}, {
 			name: 'Update leaderboards',
-			time: '* * * * *', //At minute 0 (hourly)
+			time: '0 * * * *', //At minute 0 (hourly)
 			fn: () => this.UpdateLeaderboards()
 		}];
 

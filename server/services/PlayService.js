@@ -255,6 +255,11 @@ export default class PlayService extends Service {
 	
 		let dbComic = await this.models.Comic.findOne({
 			where: comicWhere,
+			order: [[{
+					model: this.models.ComicPanel, 
+					as: 'ComicPanels'
+				}, 'Ordinal', 'ASC']
+			],
 			include: [{
 				model: this.models.ComicPanel,
 				as: 'ComicPanels'
