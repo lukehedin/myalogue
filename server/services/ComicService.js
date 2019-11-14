@@ -91,7 +91,7 @@ export default class ComicService extends Service {
 		if(sortBy === 6) comicWhere.CompletedAt[Sequelize.Op.gte] = moment().subtract(1, 'month').toDate();
 
 		//Hot (hour buffer)
-		if(sortBy) comicWhere.CompletedAt[Sequelize.Op.lte] = moment().subtract(1, 'hour').toDate();
+		if(sortBy === 7) comicWhere.CompletedAt[Sequelize.Op.lte] = moment().subtract(1, 'hour').toDate();
 
 		let comicOrder = [];
 

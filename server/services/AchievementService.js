@@ -285,15 +285,15 @@ export default class AchievementService extends Service {
 		}, {
 			type: common.enums.AchievementType.AllUniquePanels,
 			name: 'Good shuffle',
-			description: 'Feature in a comic with 8 or more unique panels'
+			description: 'Feature in a comic with 8 or more unique template panels'
 		}, {
 			type: common.enums.AchievementType.MinorPanelStreak,
 			name: 'Déjà vu',
-			description: 'Be part of a streak of 3 identical panels'
+			description: 'Be part of a streak of 3 identical template panels'
 		}, {
 			type: common.enums.AchievementType.MajorPanelStreak,
 			name: 'Groundhog day',
-			description: 'Be part of a streak of 4 identical panels'
+			description: 'Be part of a streak of 4 identical template panels'
 		}, {
 			type: common.enums.AchievementType.TopFirstPanel,
 			name: 'Grand opening',
