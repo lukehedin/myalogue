@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import AchievementImage from './AchievementImage/AchievementImage';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import moment from 'moment';
 
 //this.props.userAchievementInfo
 export default class AchievementList extends Component {
@@ -33,6 +35,10 @@ export default class AchievementList extends Component {
 								? <ProgressBar amount={achievement.userAchievementProgress || 0} total={achievement.targetValue} label={`${(achievement.userAchievementProgress || 0)}/${(achievement.targetValue)}`} /> 
 								: null
 							}
+							{achievement.userAchievement
+								? <p className="unlocked-info">Unlocked on {moment(achievement.userAchievement).format('DD/MM/YYYY')}{achievement.userAchievement.comicId ? <span> (<Link to={Util.route.comic(achievement.userAchievement.comicId)}>comic #${achievement.userAchievement.comicId}</Link>)</span> : null}</p>
+								: null
+							}
 						</td>
 					</tr>
 				})}
@@ -40,7 +46,7 @@ export default class AchievementList extends Component {
 		</table>;
 
 		return <div className="achievement-list">
-			<h4>Unlocked achievements</h4>
+			<h4 className="table-title">Unlocked achievements</h4>
 			{Util.array.any(unlockedAchievements)
 				? getAchievementTable(unlockedAchievements)
 				: <p className="empty-text">This user has no achievements.</p>
@@ -48,7 +54,7 @@ export default class AchievementList extends Component {
 			{Util.array.any(lockedAchievements)
 				? <div>
 					<hr />
-					<h4>Locked achievements</h4>
+					<h4 className="table-title">Locked achievements</h4>
 					{getAchievementTable(lockedAchievements)}
 				</div>
 				: null

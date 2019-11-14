@@ -1,4 +1,8 @@
 .achievement-list {
+	.table-title {
+		margin-bottom: $spacing-sm;
+	}
+
 	.achievement-table {
 		margin: 0 auto;
 
@@ -12,7 +16,9 @@
 			.td-achievement-image {
 				padding-right: $spacing-xs;
 				&.unlocked {
-					background-color: $colour-pink;
+					.achievement-image {
+						background-color: $colour-pink;
+					}
 				}
 				&:not(.unlocked) {
 					opacity: 0.5;
@@ -39,6 +45,13 @@
 					.progress-bar-label {
 						line-height: 10px;
 					}
+				}
+
+				.unlocked-info {
+					font-size: 10px;
+					font-weight: bold;
+					color: $colour-grey-c;
+					margin-top: $spacing-xxs;
 				}
 			}
 		}

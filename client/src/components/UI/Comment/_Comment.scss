@@ -3,8 +3,12 @@
 	flex-direction: row;
 	align-items: flex-start;
 			
-	.avatar {
+	.avatar, .empty-avatar {
 		margin-right: $spacing-xs;
+	}
+
+	.empty-avatar {
+		width: 32px;
 	}
 
 	.comment-inner {

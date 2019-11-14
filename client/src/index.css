@@ -914,8 +914,10 @@ body {
         display: flex;
         flex-direction: row;
         align-items: flex-start; }
-        body .app-container .app .comment .avatar {
+        body .app-container .app .comment .avatar, body .app-container .app .comment .empty-avatar {
           margin-right: 8px; }
+        body .app-container .app .comment .empty-avatar {
+          width: 32px; }
         body .app-container .app .comment .comment-inner {
           flex: 1; }
           body .app-container .app .comment .comment-inner .comment-upper {
@@ -1009,6 +1011,8 @@ body {
             -moz-border-radius: 4px;
             border-top-left-radius: 0;
             border-top-right-radius: 0; }
+      body .app-container .app .achievement-list .table-title {
+        margin-bottom: 16px; }
       body .app-container .app .achievement-list .achievement-table {
         margin: 0 auto; }
         body .app-container .app .achievement-list .achievement-table .achievement-row td {
@@ -1016,7 +1020,7 @@ body {
           padding: 8px 0; }
         body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image {
           padding-right: 8px; }
-          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image.unlocked {
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image.unlocked .achievement-image {
             background-color: #ff0052; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image:not(.unlocked) {
             opacity: 0.5; }
@@ -1031,6 +1035,11 @@ body {
             background-color: #ff0052; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-label {
             line-height: 10px; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .unlocked-info {
+          font-size: 10px;
+          font-weight: bold;
+          color: #969696;
+          margin-top: 4px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;

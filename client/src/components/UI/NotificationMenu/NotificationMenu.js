@@ -121,7 +121,13 @@ export default class NotificationButton extends Component {
 		let content = <div className="notification-content">
 			{Util.array.any(notifications)
 				? notifications.map(notification => {
-					let link = notification.comicId ? Util.route.comic(notification.comicId) : null;
+					let link = notification.comicId 
+						? Util.route.comic(notification.comicId)
+						: null;
+
+					if(!link && notification.type === Util.enums.NotificationType.AchievementUnlocked) {
+						link = Util.route.profile(Util.context.getUsername(), 'achievements')
+					}
 
 					let className = `notification ${notification.isActionable ? 'actionable' : ''} ${link ? 'linked' : ''}`;
 					

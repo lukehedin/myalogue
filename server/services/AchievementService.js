@@ -8,97 +8,6 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class AchievementService extends Service {
-	async GetAllAchievements() {
-		return [{
-			type: common.enums.AchievementType.FirstComic,
-			name: 'Spoke4Yourself',
-			description: 'Feature in a comic'
-		}, {
-			type: common.enums.AchievementType.FastComic,
-			name: 'Fast and furious',
-			description: 'Feature in a comic that was started and completed in an hour or less'
-		}, {
-			type: common.enums.AchievementType.TopComic,
-			name: 'Comic royalty',
-			description: 'Feature in a comic that reaches the top of the comic leaderboard'
-		}, {
-			type: common.enums.AchievementType.TopUser,
-			name: 'Current reigning',
-			description: 'Reach the top of the user leaderboard'
-		}, {
-			type: common.enums.AchievementType.LotsOfComics,
-			name: 'Vast voice',
-			description: 'Feature in 1500 comics',
-			targetValue: 1500
-		}, {
-			type: common.enums.AchievementType.LotsOfTemplates,
-			name: 'Versatile voice',
-			description: 'Use 100 different templates',
-			targetValue: 100
-		}, {
-			type: common.enums.AchievementType.HighTotalRating,
-			name: 'Critically acclaimed',
-			description: 'Reach a total comic rating of 5000',
-			targetValue: 5000
-		}, {
-			type: common.enums.AchievementType.FirstTemplateUsage,
-			name: 'First in, best dressed',
-			description: 'Feature in the first comic using a particular template'
-		}, {
-			type: common.enums.AchievementType.TwoPanelsOneComic,
-			name: 'Recurring character',
-			description: 'Make two panels in a single comic'
-		}, {
-			type: common.enums.AchievementType.ThreePanelsOneComic,
-			name: 'Breakout character',
-			description: 'Make three panels in a single comic'
-		}, {
-			type: common.enums.AchievementType.Sandwich,
-			name: 'Sandvich',
-			description: 'In a comic with at least 6 panels, make only the first and last panel'
-		}, {
-			type: common.enums.AchievementType.AllUniqueAuthors,
-			name: 'Full house',
-			description: 'Feature in a comic with at least 8 panels, each by a unique user'
-		}, {
-			type: common.enums.AchievementType.ThreeUniqueAuthors,
-			name: 'Three\'s company',
-			description: 'Feature in a comic with only 3 unique users'
-		}, {
-			type: common.enums.AchievementType.AllUniquePanels,
-			name: 'Good shuffle',
-			description: 'Feature in a comic with 8 or more unique panels'
-		}, {
-			type: common.enums.AchievementType.MinorPanelStreak,
-			name: 'Déjà vu',
-			description: 'Be part of a streak of 3 identical panels'
-		}, {
-			type: common.enums.AchievementType.MajorPanelStreak,
-			name: 'Groundhog day',
-			description: 'Be part of a streak of 4 identical panels'
-		}, {
-			type: common.enums.AchievementType.TopFirstPanel,
-			name: 'Grand opening',
-			description: 'Make the first panel for a comic on top of the comic leaderboard'
-		}, {
-			type: common.enums.AchievementType.TopLastPanel,
-			name: 'Falcon punchline',
-			description: 'Make the last panel for a comic on top of the comic leaderboard'
-		}, {
-			type: common.enums.AchievementType.LotsOfFirstPanels,
-			name: 'First and foremost',
-			description: 'Make the first panel for 500 comics',
-			targetValue: 500
-		}, {
-			type: common.enums.AchievementType.LotsOfLastPanels,
-			name: 'Last but not least',
-			description: 'Make the last panel for 500 comics',
-			targetValue: 500
-		}];
-	}
-	async GetByType(achievementType) {
-		return this.GetAllAchievements().find(achievement => achievement.type === achievementType);
-	}
 	async ProcessForTopComic(dbComic) {
 		let comicId = dbComic.ComicId;
 
@@ -121,7 +30,7 @@ export default class AchievementService extends Service {
 		}
 	}
 	async ProcessForComicCompleted(dbComic) {
-		let comicId = dbComic.comicId;
+		let comicId = dbComic.ComicId;
 		let distinctUserIds = [
 			...new Set(dbComic.ComicPanels
 				.filter(dbComicPanel => !!dbComicPanel.UserId)
@@ -224,7 +133,7 @@ export default class AchievementService extends Service {
 			common.enums.AchievementType.LotsOfLastPanels,
 			common.enums.AchievementType.LotsOfFirstPanels,
 			common.enums.AchievementType.LotsOfComics,
-			common.enums.achievementType.HighTotalRating
+			common.enums.AchievementType.HighTotalRating
 		];
 
 		let dbUsersToCheck = await this.models.User.findAll({
@@ -280,7 +189,6 @@ export default class AchievementService extends Service {
 	}
 	async _UnlockAchievement(achievementType, userIds, comicId) {
 		console.log('Achievement unlocked:' + achievementType + ' for ' + userIds.length + ' users, on comic id ' + comicId);
-
 		//Get all the relevant userachievements matching this type and these userids
 		let dbExistingUserAchievements = await this.models.UserAchievement.findAll({
 			where: {
@@ -292,7 +200,6 @@ export default class AchievementService extends Service {
 		});
 
 		let achievementsToCreate = [];
-		let newAchievementUserIds = [];
 		userIds.forEach(userId => {
 			let dbExistingUserAchievement = dbExistingUserAchievements.find(dbExistingUserAchievement => dbExistingUserAchievement.UserId === userId);
 
@@ -315,5 +222,96 @@ export default class AchievementService extends Service {
 		if(newAchievementUserIds.length > 0) {
 			this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);
 		}
+	}
+	GetAllAchievements() {
+		return [{
+			type: common.enums.AchievementType.FirstComic,
+			name: 'Spoke4Yourself',
+			description: 'Feature in a comic'
+		}, {
+			type: common.enums.AchievementType.FastComic,
+			name: 'Fast and furious',
+			description: 'Feature in a comic that was started and completed in an hour or less'
+		}, {
+			type: common.enums.AchievementType.TopComic,
+			name: 'Comic royalty',
+			description: 'Feature in a comic that reaches the top of the comic leaderboard'
+		}, {
+			type: common.enums.AchievementType.TopUser,
+			name: 'Current reigning',
+			description: 'Reach the top of the user leaderboard'
+		}, {
+			type: common.enums.AchievementType.LotsOfComics,
+			name: 'Vast voice',
+			description: 'Feature in 1500 comics',
+			targetValue: 1500
+		}, {
+			type: common.enums.AchievementType.LotsOfTemplates,
+			name: 'Versatile voice',
+			description: 'Use 100 different templates',
+			targetValue: 100
+		}, {
+			type: common.enums.AchievementType.HighTotalRating,
+			name: 'Critically acclaimed',
+			description: 'Reach a total comic rating of 5000',
+			targetValue: 5000
+		}, {
+			type: common.enums.AchievementType.FirstTemplateUsage,
+			name: 'First in, best dressed',
+			description: 'Feature in the first comic using a particular template'
+		}, {
+			type: common.enums.AchievementType.TwoPanelsOneComic,
+			name: 'Recurring character',
+			description: 'Make two panels in a single comic'
+		}, {
+			type: common.enums.AchievementType.ThreePanelsOneComic,
+			name: 'Breakout character',
+			description: 'Make three panels in a single comic'
+		}, {
+			type: common.enums.AchievementType.Sandwich,
+			name: 'Sandvich',
+			description: 'In a comic with at least 6 panels, make only the first and last panel'
+		}, {
+			type: common.enums.AchievementType.AllUniqueAuthors,
+			name: 'Full house',
+			description: 'Feature in a comic with at least 8 panels, each by a unique user'
+		}, {
+			type: common.enums.AchievementType.ThreeUniqueAuthors,
+			name: 'Three\'s company',
+			description: 'Feature in a comic with only 3 unique users'
+		}, {
+			type: common.enums.AchievementType.AllUniquePanels,
+			name: 'Good shuffle',
+			description: 'Feature in a comic with 8 or more unique panels'
+		}, {
+			type: common.enums.AchievementType.MinorPanelStreak,
+			name: 'Déjà vu',
+			description: 'Be part of a streak of 3 identical panels'
+		}, {
+			type: common.enums.AchievementType.MajorPanelStreak,
+			name: 'Groundhog day',
+			description: 'Be part of a streak of 4 identical panels'
+		}, {
+			type: common.enums.AchievementType.TopFirstPanel,
+			name: 'Grand opening',
+			description: 'Make the first panel for a comic on top of the comic leaderboard'
+		}, {
+			type: common.enums.AchievementType.TopLastPanel,
+			name: 'Falcon punchline',
+			description: 'Make the last panel for a comic on top of the comic leaderboard'
+		}, {
+			type: common.enums.AchievementType.LotsOfFirstPanels,
+			name: 'First and foremost',
+			description: 'Make the first panel for 500 comics',
+			targetValue: 500
+		}, {
+			type: common.enums.AchievementType.LotsOfLastPanels,
+			name: 'Last but not least',
+			description: 'Make the last panel for 500 comics',
+			targetValue: 500
+		}];
+	}
+	GetByType(achievementType) {
+		return this.GetAllAchievements().find(achievement => achievement.type === achievementType);
 	}
 }

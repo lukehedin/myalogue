@@ -135,7 +135,8 @@ const Util = {
 		},
 
 		getAchievements: () => Util.referenceData._referenceData.achievements,
-	
+		getAchievementByType: (achievementType) => Util.referenceData.getAchievements().find(achievement => achievement.type === achievementType),
+		
 		getTopComic: () => Util.referenceData._referenceData.topComic, // Used for how to play page
 
 	},
@@ -281,6 +282,17 @@ const Util = {
 			ReportComicPanelModal: 4
 		},
 
+		NotificationType: {
+			General: 1,
+			Welcome: 2,
+			ComicCompleted: 3,
+			PanelRemoved: 4,
+			ComicComment: 5,
+			PanelCensored: 6,
+			ComicCommentMention: 7,
+			AchievementUnlocked: 8
+		},
+
 		ComicSortBy: {
 			TopAll: 1,
 			Newest: 2,
@@ -365,6 +377,9 @@ const Util = {
 				return `<a target="_self" href="${Util.route.profile(username)}">${userMention}</a>`;
 			});
 			
+			//Bold
+			str = str.replace(/\*\*(\S(.*?\S)?)\*\*/gm, '<b>$1</b>');
+			
 			//Add hyperlinks
 			//The internal ternary's here are for safety, but are usually overrridden by Link components outside this fn
 			return linkifyHtml(str, {
@@ -429,7 +444,7 @@ const Util = {
 		leaderboards: () => `/leaderboards`,
 		login: () => `/login`,
 		howToPlay: () => `/how-to-play`,
-		profile: (userId) => userId ? `/profile/${userId}` : `/profile`,
+		profile: (userId, tabId) => (userId ? `/profile/${userId}` : `/profile`) + (tabId ? `?tabId=${tabId}` : ``),
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,
 		setPassword: (token) => `/set-password/${token}`,

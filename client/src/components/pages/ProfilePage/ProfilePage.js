@@ -73,6 +73,7 @@ export default class ProfilePage extends Component {
 											</div>
 										</div>
 										<TabbedPanels tabs={[{
+											id: 'stats',
 											title: 'Stats',
 											content: <div className="user-stats">
 												<div className="user-stat">
@@ -97,9 +98,11 @@ export default class ProfilePage extends Component {
 												</div>
 											</div>
 										}, {
+											id: 'achievements',
 											title: 'Achievements',
 											content: <AchievementList userAchievementInfo={this.state.userAchievementInfo} />
 										}, {
+											id: 'templates',
 											title: 'Templates',
 											content: <table className="template-usage-table">
 												<thead>

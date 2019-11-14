@@ -12,10 +12,10 @@ export default class CronService extends Service {
 			name: 'Update hot ranks',
 			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59
 			fn: () => this.UpdateHotRanks()
-		// }, { //TODO enable
-		// 	name: 'Update leaderboards',
-		// 	time: '0 * * * *', //At minute 0 (hourly)
-		// 	fn: () => this.UpdateLeaderboards()
+		}, {
+			name: 'Update leaderboards',
+			time: '0 * * * *', //At minute 0 (hourly)
+			fn: () => this.UpdateLeaderboards()
 		}];
 
 		jobs.forEach(job => {
@@ -186,7 +186,7 @@ export default class CronService extends Service {
 					}
 				});
 
-				this.services.ProcessForTopUsers(topUserIds);
+				this.services.Achievement.ProcessForTopUsers(topUserIds);
 			}
 		}
 	}

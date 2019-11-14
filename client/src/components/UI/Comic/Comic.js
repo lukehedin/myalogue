@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Util from '../../../Util';
 
@@ -93,7 +94,8 @@ class Comic extends Component {
 						? c
 						: {
 							...c,
-							value: value
+							value: value,
+							updatedAt: new Date()
 						}
 				})
 			}
@@ -129,6 +131,40 @@ class Comic extends Component {
 			}
 		});
 
+		let comments = this.state.comic.comicComments;
+		//Add in user achievements comment if applicable
+		if(Util.array.any(this.state.comic.userAchievements)) {
+			let userAchievementLookup = {};
+			this.state.comic.userAchievements.forEach(userAchievement => {
+				let panelByUser = this.state.comic.comicPanels.find(comicPanel => comicPanel.user && comicPanel.user.userId === userAchievement.userId);
+				let user = panelByUser ? panelByUser.user : null;
+				let achievement = Util.referenceData.getAchievementByType(userAchievement.type);
+				
+				if(user && achievement) {
+					userAchievementLookup[achievement.name]
+						? userAchievementLookup[achievement.name].push(user.username)
+						: userAchievementLookup[achievement.name] = [user.username];
+				}
+			});
+
+			comments = [...Object.keys(userAchievementLookup).map(userAchievementName => {
+				let usernames = userAchievementLookup[userAchievementName];
+				let usernameString = "";
+
+				usernames.forEach((username, idx) => {
+					if(idx === usernames.length - 1) {
+						usernameString += " and "
+					} else if(idx !== 0) {
+						usernameString += ", ";
+					}
+					usernameString += `@${username}`;
+				});
+				return {
+					value: `The achievement **${userAchievementName}** was unlocked by ${usernameString}!`
+				}
+			}), ...comments]
+		}
+
 		return <div className="comic">
 			<div className="comic-content no-select"
 				ref={this.comicContentRef}
@@ -148,11 +184,11 @@ class Comic extends Component {
 					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 				</div>
 				{this.state.isCommentsVisible
-					? <CommentThread comments={this.state.comic.comicComments} 
-						onPostComment={this.postComicComment}
-						onUpdateComment={this.updateComicComment}
-						onDeleteComment={this.deleteComicComment}
-					/>
+					? <CommentThread comments={comments} 
+							onPostComment={this.postComicComment}
+							onUpdateComment={this.updateComicComment}
+							onDeleteComment={this.deleteComicComment}
+						/>
 					: null
 				}
 			</div>

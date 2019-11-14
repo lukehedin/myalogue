@@ -9,6 +9,7 @@ import Util from '../../../Util';
 import Avatar from '../Avatar/Avatar';
 import CommentInput from '../CommentInput/CommentInput';
 
+//Note: a comment should be able to get by and render with nothing but a { value: '' }
 class Comment extends Component {
 	constructor(props){
 		super(props);
@@ -56,25 +57,29 @@ class Comment extends Component {
 		</div>;
 	}
 	render() {
-		if(!this.props.comment.user) return null;
-		
 		let user = this.props.comment.user;
-		let isMe = user.userId === Util.context.getUserId();
+		let isMe = user && user.userId === Util.context.getUserId();
 
 		return <div className="comment">
-			<Avatar size={32} to={Util.route.profile(user.username)} user={user} />
+			{user 
+				? <Avatar size={32} to={Util.route.profile(user.username)} user={user} />
+				: <div className="empty-avatar"></div>
+			}
 			<div className="comment-inner">
-				<div className="comment-upper">
-					<div className="user-date">
-						<Link to={Util.route.profile(user.username)}>{user.username}</Link>
-						<span> {moment(this.props.comment.createdAt).fromNow()}</span>
-						{this.props.comment.createdAt !== this.props.comment.updatedAt
-							? <span> (edited)</span>
-							: null
-						}
+				{user && this.props.comment.createdAt
+					? <div className="comment-upper">
+						<div className="user-date">
+							<Link to={Util.route.profile(user.username)}>{user.username}</Link>
+							<span> {moment(this.props.comment.createdAt).fromNow()}</span>
+							{this.props.comment.createdAt !== this.props.comment.updatedAt
+								? <span> (edited)</span>
+								: null
+							}
+						</div>
+						<div className="flex-spacer"></div>
 					</div>
-					<div className="flex-spacer"></div>
-				</div>
+					: null
+				}
 				<div className="comment-lower">
 					{this.state.isEditing
 						? <CommentInput 
@@ -98,7 +103,7 @@ class Comment extends Component {
 							? <a onClick={this.deleteComment}>Delete</a>
 							: null
 						}
-						{!isMe && Util.context.isAuthenticated() && this.props.onReply
+						{user && !isMe && Util.context.isAuthenticated() && this.props.onReply
 							? <a onClick={() => this.props.onReply(user.username)}>Reply</a>
 							: null
 						}

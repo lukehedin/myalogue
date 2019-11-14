@@ -36,7 +36,9 @@ const mapper = {
 				.map(mapper.fromDbComicPanel),
 			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length > 0
 				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
-				: null
+				: null,
+			userAchievements: (dbComic.UserAchievements)
+				.map(mapper.fromDbUserAchievement)
 		}
 	},
 
@@ -118,6 +120,7 @@ const mapper = {
 	fromDbUserAchievement: (dbUserAchievement) => {
 		return {
 			userAchievementId: dbUserAchievement.UserAchievementId,
+			userId: dbUserAchievement.UserId,
 			comicId: dbUserAchievement.ComicId,
 			type: dbUserAchievement.Type
 		};
@@ -166,7 +169,7 @@ const mapper = {
 
 			case common.enums.NotificationType.AchievementUnlocked:
 				title = `Achievement unlocked!`
-				message = `You unlocked the achievement "${valueString}"! Click here to view your achievement progress.`;
+				message = `You unlocked the achievement ${valueString}! Click here to view your achievements.`;
 				break;
 
 			case common.enums.NotificationType.General:
