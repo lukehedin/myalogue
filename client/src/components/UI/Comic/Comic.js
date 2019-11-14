@@ -152,11 +152,7 @@ class Comic extends Component {
 				let usernameString = "";
 
 				usernames.forEach((username, idx) => {
-					if(idx === usernames.length - 1) {
-						usernameString += " and "
-					} else if(idx !== 0) {
-						usernameString += ", ";
-					}
+					if(idx !== 0) usernameString += idx === usernames.length - 1 ? " and " : " , ";
 					usernameString += `@${username}`;
 				});
 				return {

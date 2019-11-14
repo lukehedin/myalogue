@@ -56,7 +56,7 @@ export default class CommentThread extends Component {
 		return <div className="comment-thread">
 			{Util.array.any(this.state.comments)
 				? <div className="comments" ref={this.commentsContainerRef}>
-					{this.state.comments.map(comment => <Comment key={comment.comicCommentId} 
+					{this.state.comments.map((comment, idx) => <Comment key={idx} 
 						comment={comment} 
 						onReply={this.replyToComment}
 						onDelete={this.props.onDeleteComment} 

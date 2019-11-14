@@ -143,6 +143,16 @@ export default class PlayService extends Service {
 	}
 	async PrepareDbComicForPlay(userId, anonId, dbComic) {
 		// Once a dbComic has been found or created, this function is called to prepare it for play.
+
+		//FIRST: Lock the comic- even if something goes wrong below the lock will expire.
+		dbComic.LockedAt = new Date();
+		if(userId) {
+			dbComic.LockedByUserId = userId;
+		} else {
+			dbComic.LockedByAnonId = anonId;
+		}
+		await dbComic.save();
+		
 		let completedComicPanels = dbComic.ComicPanels || [];
 		let currentComicPanel = completedComicPanels.length > 0
 			? completedComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[completedComicPanels.length - 1]
@@ -211,14 +221,6 @@ export default class PlayService extends Service {
 	
 		//Set the next template panel (this prevents people from submitting a panel that isn't in line with the one provided)
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
-
-		//Lock the comic
-		dbComic.LockedAt = new Date();
-		if(userId) {
-			dbComic.LockedByUserId = userId;
-		} else {
-			dbComic.LockedByAnonId = anonId;
-		}
 	
 		await dbComic.save();
 
@@ -277,15 +279,7 @@ export default class PlayService extends Service {
 		let completedPanelCount = (dbComic.ComicPanels.length + 1);
 		let isComicCompleted = completedPanelCount === dbComic.PanelCount;
 				
-		if(isComicCompleted) {
-			let now = new Date();
-			dbComic.CompletedAt = now;
-
-			//Notify other panel creators, but not this one.
-			let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
-			this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
-			this.services.Achievement.ProcessForComicCompleted(dbComic);
-		}
+		if(isComicCompleted) dbComic.CompletedAt = new Date();
 
 		//Remove the lock
 		dbComic.LockedAt = null;
@@ -302,6 +296,13 @@ export default class PlayService extends Service {
 		}
 		
 		await dbComic.save();
+
+		if(isComicCompleted) {
+			//Notify other panel creators, but not this one.
+			let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
+			this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
+			await this.services.Achievement.ProcessForComicCompleted(dbComic);
+		}
 		
 		return { isComicCompleted: isComicCompleted };
 	}
