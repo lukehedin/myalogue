@@ -29,17 +29,17 @@ export default class AchievementService extends Service {
 			type: common.enums.AchievementType.LotsOfComics,
 			name: 'Vast voice',
 			description: 'Feature in 1500 comics',
-			targetInt: 1500
+			targetValue: 1500
 		}, {
 			type: common.enums.AchievementType.LotsOfTemplates,
 			name: 'Versatile voice',
 			description: 'Use 100 different templates',
-			targetInt: 100
+			targetValue: 100
 		}, {
 			type: common.enums.AchievementType.HighTotalRating,
 			name: 'Critically acclaimed',
 			description: 'Reach a total comic rating of 5000',
-			targetInt: 5000
+			targetValue: 5000
 		}, {
 			type: common.enums.AchievementType.FirstTemplateUsage,
 			name: 'First in, best dressed',
@@ -88,12 +88,12 @@ export default class AchievementService extends Service {
 			type: common.enums.AchievementType.LotsOfFirstPanels,
 			name: 'First and foremost',
 			description: 'Make the first panel for 500 comics',
-			targetInt: 500
+			targetValue: 500
 		}, {
 			type: common.enums.AchievementType.LotsOfLastPanels,
 			name: 'Last but not least',
 			description: 'Make the last panel for 500 comics',
-			targetInt: 500
+			targetValue: 500
 		}];
 	}
 	async GetByType(achievementType) {
@@ -244,13 +244,10 @@ export default class AchievementService extends Service {
 			}]
 		});
 
-		let achievementsToUpdate = [];
-
 		//For each user that hasn't got all the accumaltive achievements
 		dbUsersToCheck.forEach(async dbUser => {
 			let lockedAchievementTypesForUser = accumaltiveAchievementTypes.filter(accumaltiveAchievementType => {
-				let existingUnlockedAchievement = dbUser.UserAchievements.find(dbUserAchievement => !!dbUserAchievement.UnlockedAt && dbUserAchievement.Type === accumaltiveAchievementType);
-				return !existingUnlockedAchievement;
+				return !dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === accumaltiveAchievementType);
 			});
 
 			//User has all the accumaltive achievements, move onto the next
@@ -259,51 +256,30 @@ export default class AchievementService extends Service {
 			//A bit excessive, consider refactoring
 			let userStats = await this.services.Comic.GetStatsForUser(dbUser.UserId);
 
-			let checkAccumaltiveAchievement = async (achievementType, unlockValue, getNewValueIntFn) => {
+			let checkAccumaltiveAchievement = async (achievementType, unlockValue, newValue) => {
 				//User has the achivement already, move on
 				if(!lockedAchievementTypesForUser.includes(achievementType)) return;
 
 				let dbExistingUserAchievement = dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === achievementType);
-				let newValueInt = getNewValueIntFn();
 
-				//Update the achievement to the new value if required
-				if(!dbExistingUserAchievement || dbExistingUserAchievement.ValueInt !== newValueInt) {
-					//This will go in an updatable bulkcreate which only updates 'ValueInt'
-					//TODO check if it does 'UpdatedAt' too
-					achievementsToUpdate.push({
-						UserAchievementId: dbExistingUserAchievement 
-							? dbExistingUserAchievement.UserAchievementId
-							: null,
-						UserId: dbUser.UserId,
-						AchievementType: achievementType,
-						ValueInt: newValueInt
-					});
-
-					if(newValueInt >= unlockValue) {
-						this._UnlockAchievement(achievementType, [dbUser.UserId])
-					}
+				//If there is no existinguserachievement and we've passed the unlock value, give it
+				if(!dbExistingUserAchievement && newValue >= unlockValue) {
+					this._UnlockAchievement(achievementType, [dbUser.UserId])
 				}
 			};
 	
-			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfTemplates, 100, () => Object.keys(userStats.templateUsageLookup).length);
-			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfLastPanels, 500, () => userStats.lastPanelCount);
-			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfFirstPanels, 500, () => userStats.firstPanelCount);
-			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfComics, 1500, () => userStats.comicCount);
-			checkAccumaltiveAchievement(common.enums.AchievementType.HighTotalRating, 5000, () => userStats.comicTotalRating);
+			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfTemplates, 100, Object.keys(userStats.templateUsageLookup).length);
+			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfLastPanels, 500, userStats.lastPanelCount);
+			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfFirstPanels, 500, userStats.firstPanelCount);
+			checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfComics, 1500, userStats.comicCount);
+			checkAccumaltiveAchievement(common.enums.AchievementType.HighTotalRating, 5000, userStats.comicTotalRating);
 		});
-		
-		if(achievementsToUpdate.length > 0) {
-			await this.models.UserAchievement.bulkCreate(achievementsToUpdate, {
-				updateOnDuplicate: ['ValueInt']
-			});
-		}
 	}
 	async ProcessForTopUsers(userIds) {
 		this._UnlockAchievement(common.enums.AchievementType.TopUser, userIds);
 	}
 	async _UnlockAchievement(achievementType, userIds, comicId) {
 		console.log('Achievement unlocked:' + achievementType + ' for ' + userIds.length + ' users, on comic id ' + comicId);
-		let now = new Date();
 
 		//Get all the relevant userachievements matching this type and these userids
 		let dbExistingUserAchievements = await this.models.UserAchievement.findAll({
@@ -315,38 +291,26 @@ export default class AchievementService extends Service {
 			}
 		});
 
-		let createPromises = [];
+		let achievementsToCreate = [];
 		let newAchievementUserIds = [];
 		userIds.forEach(userId => {
 			let dbExistingUserAchievement = dbExistingUserAchievements.find(dbExistingUserAchievement => dbExistingUserAchievement.UserId === userId);
-			if(!dbExistingUserAchievement) {
-				//No row, create the achievement with unlockedAt set
-				createPromises.push({
-					UserId: userId,
-					Type: achievementType,
-					UnlockedAt: now,
-					ComicId: comicId
-				});
 
-				newAchievementUserIds.push(userId);
+			//Already has achievement
+			if(dbExistingUserAchievement) return;
 
-			} else if(!dbExistingUserAchievement.UnlockedAt) {
-				//Row found, but not achieved yet (accumaltive). Use PK to update
-				createPromises.push({
-					UserAchievementId: dbExistingUserAchievement.UserAchievementId,
-					UnlockedAt: now,
-					ComicId: comicId
-				});
-
-				newAchievementUserIds.push(userId);
-
-			}
+			//No achievement, create the achievement
+			achievementsToCreate.push({
+				UserId: userId,
+				Type: achievementType,
+				ComicId: comicId
+			});
 		});
+
+		let newAchievementUserIds = achievementsToCreate.map(achievementToCreate => achievementToCreate.UserId);
 
 		//No await
-		this.models.UserAchievement.bulkCreate(createPromises, {
-			updateOnDuplicate: ['UnlockedAt']
-		});
+		this.models.UserAchievement.bulkCreate(achievementsToCreate);
 
 		if(newAchievementUserIds.length > 0) {
 			this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);

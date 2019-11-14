@@ -49,9 +49,8 @@ export default {
 			//Punchlines/Beginnings
 			TopFirstPanel: 17, // Make the first panel for a top comic
 			TopLastPanel: 18, // Make the last panel for a top comic
-			LotsOfLastPanels: 19, //Make the last panel for 500 comics (acc)
-			LotsOfFirstPanels: 20 //Start 500 comics (acc)
-
+			LotsOfFirstPanels: 19, //Start 500 comics (acc)
+			LotsOfLastPanels: 20 //Make the last panel for 500 comics (acc)
 		},
 		
 		NotificationType: {

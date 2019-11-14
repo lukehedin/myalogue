@@ -118,9 +118,8 @@ const mapper = {
 	fromDbUserAchievement: (dbUserAchievement) => {
 		return {
 			userAchievementId: dbUserAchievement.UserAchievementId,
-			type: dbUserAchievement.Type,
-			unlockedAt: dbUserAchievement.UnlockedAt,
-			valueInt: dbUserAchievement.ValueInt
+			comicId: dbUserAchievement.ComicId,
+			type: dbUserAchievement.Type
 		};
 	},
 

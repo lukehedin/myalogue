@@ -1024,6 +1024,13 @@ body {
           text-align: left; }
         body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
           margin: 0; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar {
+          margin-top: 4px;
+          height: 10px; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-inner {
+            background-color: #ff0052; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-label {
+            line-height: 10px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;

@@ -127,9 +127,7 @@ export default class Database {
 		});
 
 		defineTable('UserAchievement', {
-			UnlockedAt: Sequelize.DATE,
-			Type: Sequelize.INTEGER,
-			ValueInt: Sequelize.INTEGER
+			Type: Sequelize.INTEGER
 		});
 
 		defineTable('Template', {

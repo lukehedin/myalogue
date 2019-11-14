@@ -18,7 +18,7 @@ export default class ProfilePage extends Component {
 			isLoading: true,
 			user: null,
 			userStats: null,
-			userAchievements: null
+			userAchievementInfo: null
 		};
 	}
 	componentDidMount() {
@@ -44,7 +44,7 @@ export default class ProfilePage extends Component {
 				this.setState({
 					user: result.user,
 					userStats: result.userStats,
-					userAchievements: result.userAchievements
+					userAchievementInfo: result.userAchievementInfo
 				});
 			}
 
@@ -98,7 +98,7 @@ export default class ProfilePage extends Component {
 											</div>
 										}, {
 											title: 'Achievements',
-											content: <AchievementList userAchievements={this.state.userAchievements} />
+											content: <AchievementList userAchievementInfo={this.state.userAchievementInfo} />
 										}, {
 											title: 'Templates',
 											content: <table className="template-usage-table">
@@ -113,9 +113,9 @@ export default class ProfilePage extends Component {
 													.sort((t1, t2) => {
 														return (this.state.userStats.templateUsageLookup[t2.templateId] || 0) - (this.state.userStats.templateUsageLookup[t1.templateId] || 0)
 													})
-													.map(template => {
+													.map((template, idx)=> {
 														let amountUsed = this.state.userStats.templateUsageLookup[template.templateId] || 0;
-														return <tr className="template-usage-row">
+														return <tr key={idx} className="template-usage-row">
 															<td className="td-template-name">
 																<Link to={Util.route.template(template.templateId)}>{template.name}</Link>
 															</td>

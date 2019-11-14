@@ -118,12 +118,12 @@ export default {
 			if(!requestedUser) throw 'User not found.';
 
 			let userStats = await services.User.GetStatsForUser(requestedUser.userId);
-			let userAchievements = await services.User.GetAchievementsForUser(requestedUser.userId);
-			
+			let userAchievementInfo = await services.User.GetUserAchievementInfo(requestedUser.userId, userStats);
+
 			return {
 				user: requestedUser,
 				userStats,
-				userAchievements
+				userAchievementInfo
 			};
 		},
 

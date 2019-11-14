@@ -27,6 +27,19 @@
 				p {
 					margin: 0;
 				}
+
+				.progress-bar {
+					margin-top: $spacing-xxs;
+					height: 10px;
+
+					.progress-bar-inner {
+						background-color: $colour-pink;
+					}
+
+					.progress-bar-label {
+						line-height: 10px;
+					}
+				}
 			}
 		}
 	}

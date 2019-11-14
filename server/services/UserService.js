@@ -307,14 +307,25 @@ export default class UserService extends Service {
 
 		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
 	}
-	async GetAchievementsForUser(userId) {
+	async GetUserAchievementInfo(userId, userStats) {
 		let dbUserAchievements = await this.models.UserAchievement.findAll({
 			where: {
 				UserId: userId
 			}
 		});
 
-		return dbUserAchievements.map(mapper.fromDbUserAchievement);
+		return {
+			userAchievements: dbUserAchievements.map(mapper.fromDbUserAchievement),
+			userAchievementProgress: userStats 
+				? {
+					[common.enums.AchievementType.LotsOfTemplates]: Object.keys(userStats.templateUsageLookup).length,
+					[common.enums.AchievementType.LotsOfLastPanels]: userStats.lastPanelCount,
+					[common.enums.AchievementType.LotsOfFirstPanels]: userStats.firstPanelCount,
+					[common.enums.AchievementType.LotsOfComics]: userStats.comicCount,
+					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating,
+				} 
+				: {}
+		};
 	}
 	async GetStatsForUser(userId) {
 		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
