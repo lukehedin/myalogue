@@ -18,18 +18,20 @@ export default class AchievementService extends Service {
 			)];
 
 		//Top of leaderboard comic
-		this._UnlockAchievement(common.enums.AchievementType.TopComic, distinctUserIds, comicId);
+		await this._UnlockAchievement(common.enums.AchievementType.TopComic, distinctUserIds, comicId);
 
 		//Panel position achievements
-		let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].userId;
-		let firstPanelUserId = dbComic.ComicPanels[0].userId;
+		let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].UserId;
+		let firstPanelUserId = dbComic.ComicPanels[0].UserId;
 
 		if(firstPanelUserId || lastPanelUserId) {
-			if(lastPanelUserId) this._UnlockAchievement(common.enums.AchievementType.TopLastPanel, [lastPanelUserId], comicId);
-			if(firstPanelUserId) this._UnlockAchievement(common.enums.AchievementType.TopFirstPanel, [firstPanelUserId], comicId);
+			if(firstPanelUserId) await this._UnlockAchievement(common.enums.AchievementType.TopFirstPanel, [firstPanelUserId], comicId);
+			if(lastPanelUserId) await this._UnlockAchievement(common.enums.AchievementType.TopLastPanel, [lastPanelUserId], comicId);
 		}
 	}
 	async ProcessForComicCompleted(dbComic) {
+		//This dbComic will only have .ComicPanels, no users or other data.
+
 		let comicId = dbComic.ComicId;
 		let distinctUserIds = [
 			...new Set(dbComic.ComicPanels
@@ -47,12 +49,12 @@ export default class AchievementService extends Service {
 			let panelsByUser = dbComic.ComicPanels.find(dbComicPanel => dbComicPanel.UserId === firstPanelUserId);
 			let lastPanelUserId = dbComic.ComicPanels[dbComic.ComicPanels.length - 1].UserId;
 			if(panelsByUser.length === 2 && firstPanelUserId === lastPanelUserId) {
-				this._UnlockAchievement(common.enums.AchievementType.Sandwich, [firstPanelUserId], comicId);
+				await this._UnlockAchievement(common.enums.AchievementType.Sandwich, [firstPanelUserId], comicId);
 			}
 		}
 
 		//If anyone doesn't have firstcomic achievement, unlock it
-		this._UnlockAchievement(common.enums.AchievementType.FirstComic, distinctUserIds, comicId);
+		await this._UnlockAchievement(common.enums.AchievementType.FirstComic, distinctUserIds, comicId);
 		
 		let dbOtherComicUsingTemplate = await this.models.Comic.findOne({
 			where: {
@@ -66,24 +68,24 @@ export default class AchievementService extends Service {
 			}
 		});
 		if(!dbOtherComicUsingTemplate) {
-			this._UnlockAchievement(common.enums.AchievementType.FirstTemplateUsage, distinctUserIds, comicId);
+			await this._UnlockAchievement(common.enums.AchievementType.FirstTemplateUsage, distinctUserIds, comicId);
 		}
 
 		//Unique authors
 		if(dbComic.ComicPanels.length >= 8 && distinctUserIds.length === dbComic.ComicPanels.length) {
-			this._UnlockAchievement(common.enums.AchievementType.AllUniqueAuthors, distinctUserIds, comicId)
+			await this._UnlockAchievement(common.enums.AchievementType.AllUniqueAuthors, distinctUserIds, comicId)
 		} else {
-			distinctUserIds.forEach(distinctUserId => {
+			distinctUserIds.forEach(async distinctUserId => {
 				let panelCount = dbComic.ComicPanels.filter(dbComicPanel => dbComicPanel.UserId === distinctUserId).length;
 				if(panelCount >= 3) {
-					this._UnlockAchievement(common.enums.AchievementType.ThreePanelsOneComic, [distinctUserId], comicId);
+					await this._UnlockAchievement(common.enums.AchievementType.ThreePanelsOneComic, [distinctUserId], comicId);
 				} else if (panelCount >= 2) {
-					this._UnlockAchievement(common.enums.AchievementType.TwoPanelsOneComic, [distinctUserId], comicId);
+					await this._UnlockAchievement(common.enums.AchievementType.TwoPanelsOneComic, [distinctUserId], comicId);
 				}
 			});
 
 			if(distinctUserIds.length === 3) {
-				this._UnlockAchievement(common.enums.AchievementType.ThreeUniqueAuthors, distinctUserIds, comicId);
+				await this._UnlockAchievement(common.enums.AchievementType.ThreeUniqueAuthors, distinctUserIds, comicId);
 			}
 		}
 
@@ -91,18 +93,18 @@ export default class AchievementService extends Service {
 		let createdMoment = moment(dbComic.CreatedAt);
 		let completedMoment = moment(dbComic.CompletedAt);
 		if(moment.duration(createdMoment.diff(completedMoment)).asHours() <= 1) {
-			this._UnlockAchievement(common.enums.AchievementType.FastComic, distinctUserIds, comicId);
+			await this._UnlockAchievement(common.enums.AchievementType.FastComic, distinctUserIds, comicId);
 		}
 
 		//Panel uniqueness
 		let uniqueTemplatePanelIds = [...new Set(dbComic.ComicPanels.map(dbComicPanel => dbComicPanel.TemplatePanelId))];
 		if(dbComic.ComicPanels.length >= 8 && uniqueTemplatePanelIds.length === dbComic.ComicPanels.length) {
-			this._UnlockAchievement(common.enums.AchievementType.AllUniquePanels, distinctUserIds, comicId);
+			await this._UnlockAchievement(common.enums.AchievementType.AllUniquePanels, distinctUserIds, comicId);
 		}
 
 		//Panel streaks
 		let streakDbComicPanels = [];
-		dbComic.ComicPanels.forEach(dbComicPanel => {
+		dbComic.ComicPanels.forEach(async dbComicPanel => {
 			let lastDbComicPanelInStreak = streakDbComicPanels.length > 0 
 				? streakDbComicPanels[streakDbComicPanels.length - 1]
 				: null;
@@ -119,9 +121,9 @@ export default class AchievementService extends Service {
 			let streakUserIds = streakDbComicPanels.map(streakDbComicPanel => streakDbComicPanel.UserId);
 			//Check if the existing streak achieves anything
 			if(streakDbComicPanels.length === 4) {
-				this._UnlockAchievement(common.enums.AchievementType.MajorPanelStreak, streakUserIds, comicId);
+				await this._UnlockAchievement(common.enums.AchievementType.MajorPanelStreak, streakUserIds, comicId);
 			} else if (streakDbComicPanels.length === 3) {
-				this._UnlockAchievement(common.enums.AchievementType.MinorPanelStreak, streakUserIds, comicId);
+				await this._UnlockAchievement(common.enums.AchievementType.MinorPanelStreak, streakUserIds, comicId);
 			}
 		});
 		
@@ -169,9 +171,6 @@ export default class AchievementService extends Service {
 				let dbExistingUserAchievement = dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === achievementType);
 
 				//If there is no existinguserachievement and we've passed the unlock value, give it
-				console.log('comparing for user ' + dbUser.UserId);
-				console.log('comparing for achievement ' + achievement.type);
-				console.log(newValue + ' > ' + achievement.targetValue);
 				if(!dbExistingUserAchievement && newValue >= achievement.targetValue) {
 					await this._UnlockAchievement(achievementType, [dbUser.UserId])
 				}

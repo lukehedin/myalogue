@@ -268,16 +268,18 @@ export default class PlayService extends Service {
 	
 		if(!isComicValid || !isDialogueValid) throw 'Invalid dialogue supplied.';
 			
-		await this.models.ComicPanel.create({
+		let newDbComicPanel = await this.models.ComicPanel.create({
 			TemplatePanelId: dbComic.NextTemplatePanelId, //We use the server's recorded nexttemplatepanelid, not one sent from the client
 			ComicId: dbComic.ComicId,
 			Value: dialogue,
 			Ordinal: dbComic.ComicPanels.length + 1,
 			UserId: userId //Might be null if anon
 		});
+
+		//Add the newly created panel to our dbComic object for the code below, and acihevement service
+		dbComic.ComicPanels.push(newDbComicPanel);
 		
-		let completedPanelCount = (dbComic.ComicPanels.length + 1);
-		let isComicCompleted = completedPanelCount === dbComic.PanelCount;
+		let isComicCompleted = dbComic.ComicPanels.length === dbComic.PanelCount;
 				
 		if(isComicCompleted) dbComic.CompletedAt = new Date();
 
@@ -298,10 +300,11 @@ export default class PlayService extends Service {
 		await dbComic.save();
 
 		if(isComicCompleted) {
+			await this.services.Achievement.ProcessForComicCompleted(dbComic);
+
 			//Notify other panel creators, but not this one.
 			let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
-			this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
-			await this.services.Achievement.ProcessForComicCompleted(dbComic);
+			await this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
 		}
 		
 		return { isComicCompleted: isComicCompleted };

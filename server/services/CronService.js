@@ -14,7 +14,7 @@ export default class CronService extends Service {
 			fn: () => this.UpdateHotRanks()
 		}, {
 			name: 'Update leaderboards',
-			time: '0 * * * *', //At minute 0 (hourly)
+			time: '* * * * *', //At minute 0 (hourly)
 			fn: () => this.UpdateLeaderboards()
 		}];
 
@@ -85,15 +85,15 @@ export default class CronService extends Service {
 			},
 			order: [
 				[ 'Rating', 'DESC'],
-				[ 'CompletedAt', 'DESC' ] // a newer comic tie will beat an older comic (it got more ratings in shorter time)
+				[ 'CompletedAt', 'DESC' ], // a newer comic tie will beat an older comic (it got more ratings in shorter time)
+				[{
+					model: this.models.ComicPanel, 
+					as: 'ComicPanels'
+				}, 'Ordinal', 'ASC']
 			],
 			include: [{
 				model: this.models.ComicPanel,
-				as: 'ComicPanels',
-				include: [{
-					model: this.models.User,
-					as: 'User'
-				}]
+				as: 'ComicPanels'
 			}]
 		});
 
@@ -120,7 +120,7 @@ export default class CronService extends Service {
 					}
 				});
 	
-				this.services.Achievement.ProcessForTopComic(dbTopComic);
+				await this.services.Achievement.ProcessForTopComic(dbTopComic);
 			}
 
 			//Calculate user leaderboard from these comics

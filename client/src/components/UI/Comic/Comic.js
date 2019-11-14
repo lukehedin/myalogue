@@ -141,9 +141,13 @@ class Comic extends Component {
 				let achievement = Util.referenceData.getAchievementByType(userAchievement.type);
 				
 				if(user && achievement) {
-					userAchievementLookup[achievement.name]
-						? userAchievementLookup[achievement.name].push(user.username)
-						: userAchievementLookup[achievement.name] = [user.username];
+					let existingUsernames = userAchievementLookup[achievement.name];
+
+					if(existingUsernames && !existingUsernames.includes(user.username)) {
+						userAchievementLookup[achievement.name].push(user.username)
+					} else if(!existingUsernames) {
+						userAchievementLookup[achievement.name] = [user.username];
+					}
 				}
 			});
 
@@ -152,7 +156,7 @@ class Comic extends Component {
 				let usernameString = "";
 
 				usernames.forEach((username, idx) => {
-					if(idx !== 0) usernameString += idx === usernames.length - 1 ? " and " : " , ";
+					if(idx !== 0) usernameString += idx === usernames.length - 1 ? " and " : ", ";
 					usernameString += `@${username}`;
 				});
 				return {
