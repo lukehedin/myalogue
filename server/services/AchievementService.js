@@ -90,9 +90,9 @@ export default class AchievementService extends Service {
 		//Completed speed
 		let createdMoment = moment(dbComic.CreatedAt);
 		let completedMoment = moment(dbComic.CompletedAt);
-		// if(moment.duration(Math.abs(createdMoment.diff(completedMoment).asHours()) <= 1) {
-		// 	await this._UnlockAchievement(common.enums.AchievementType.FastComic, distinctUserIds, comicId);
-		// }
+		if(Math.abs(moment.duration(createdMoment.diff(completedMoment)).asHours()) <= 1) {
+			await this._UnlockAchievement(common.enums.AchievementType.FastComic, distinctUserIds, comicId);
+		}
 
 		//Panel uniqueness
 		let uniqueTemplatePanelIds = [...new Set(dbComic.ComicPanels.map(dbComicPanel => dbComicPanel.TemplatePanelId))];
