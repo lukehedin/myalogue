@@ -112,7 +112,7 @@ export default class ProfilePage extends Component {
 													</tr>
 												</thead>
 												<tbody>
-													{Util.referenceData.getTemplates()
+													{[...Util.referenceData.getTemplates()]
 													.sort((t1, t2) => {
 														return (this.state.userStats.templateUsageLookup[t2.templateId] || 0) - (this.state.userStats.templateUsageLookup[t1.templateId] || 0)
 													})

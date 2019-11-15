@@ -322,7 +322,7 @@ export default class UserService extends Service {
 					[common.enums.AchievementType.LotsOfLastPanels]: userStats.lastPanelCount,
 					[common.enums.AchievementType.LotsOfFirstPanels]: userStats.firstPanelCount,
 					[common.enums.AchievementType.LotsOfComics]: userStats.comicCount,
-					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating,
+					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating
 				} 
 				: {}
 		};
@@ -330,9 +330,6 @@ export default class UserService extends Service {
 	async GetStatsForUser(userId) {
 		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
 		//Is used for profile, but also for worker jobs to calculate leaderboards and achievements
-
-		//Calculate their panel points TODO make a worker service and set points on user row
-		//That way we can have leaderboards etc
 		let dbComicPanels = await this.services.Comic.GetComicPanelsForUserNotCensored(userId);
 
 		let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);

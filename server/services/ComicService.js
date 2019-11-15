@@ -42,7 +42,7 @@ export default class ComicService extends Service {
 					},
 					CompletedAt: {
 						[Sequelize.Op.ne]: null,
-						[Sequelize.Op.gte]: moment().subtract(2, 'week').toDate() //TODO make 1 week
+						[Sequelize.Op.gte]: moment().subtract(1, 'week').toDate()
 					}
 				},
 				order: [

@@ -63,10 +63,19 @@ export default class LeaderboardsPage extends Component {
 					<table className="leaderboard-table">
 						<tbody>
 							{this.state.leaderboard.users.map((leaderboardUser, idx) => {
-								//TODO: same placement should be reflected in UI
+								//Placement may be same as the previous user (tied score)
+								let placement = idx + 1;
+								if(idx !== 0) {
+									let compareIdx = idx - 1;
+									while(compareIdx >= 0 && leaderboardUser.leaderboardRating === this.state.leaderboard.users[compareIdx].leaderboardRating) {
+										placement = compareIdx + 1;
+										compareIdx--;
+									}
+								}
+
 								return <tr key={leaderboardUser.userId} className="leaderboard-item leaderboard-user">
 									<td>
-										<h4>{idx + 1}.</h4>
+										<h4>{placement}.</h4>
 										<Avatar size={32} to={Util.route.profile(leaderboardUser.username)} user={leaderboardUser} />
 										<div className="leaderboard-item-detail">
 											<h4 className="username"><Link to={Util.route.profile(leaderboardUser.username)}>{leaderboardUser.username}</Link></h4>

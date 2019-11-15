@@ -1,9 +1,7 @@
 import Sequelize from 'sequelize';
-import validator from 'validator';
 import moment from 'moment';
 
 import common from '../common';
-import mapper from '../mapper';
 
 import Service from './Service';
 
@@ -183,7 +181,6 @@ export default class AchievementService extends Service {
 			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfLastPanels, userStats.lastPanelCount);
 			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfFirstPanels, userStats.firstPanelCount);
 			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfComics, userStats.comicCount);
-			await checkAccumaltiveAchievement(common.enums.AchievementType.HighTotalRating, userStats.comicTotalRating);
 		});
 	}
 	async ProcessForTopUsers(userIds) {
