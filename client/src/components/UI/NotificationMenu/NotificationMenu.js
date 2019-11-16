@@ -25,9 +25,11 @@ export default class NotificationButton extends Component {
 	componentDidMount() {
 		this.fetchNewNotifications();
 		this.notificationInterval = setInterval(this.fetchNewNotifications, 20000);
+		window.addEventListener('focus', this.fetchNewNotifications);
 	}
 	componentWillUnmount() {
 		clearInterval(this.notificationInterval);
+		window.removeEventListener('focus', this.fetchNewNotifications);
 	}
 	setNotifications(notifications) {
 		//Sets state AND updates window/tab title with (3) 

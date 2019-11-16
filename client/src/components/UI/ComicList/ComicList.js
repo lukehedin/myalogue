@@ -130,7 +130,7 @@ export default class ComicList extends Component {
 							// 	label: 'Top (month)'
 							// }, {
 								type: Util.enums.ComicSortBy.TopAll,
-								label: 'Top (all time)'
+								label: 'Top (all)'
 							}, {
 								type: Util.enums.ComicSortBy.Random,
 								label: 'Random'

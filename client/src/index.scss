@@ -261,7 +261,7 @@ body {
 			background-color: $colour-white;
 			padding: $spacing-xs;
 			@include borderRadius(4px);
-			font-size: 14px;
+			font-size: 16px; //Must be min 16 or ios will zoom in (and not zoom out)
 			font-family: $font-family-default;
 
 			border: 1px solid $colour-grey-b;
