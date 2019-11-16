@@ -1014,7 +1014,9 @@ body {
       body .app-container .app .achievement-list .table-title {
         margin-bottom: 16px; }
       body .app-container .app .achievement-list .achievement-table {
-        margin: 0 auto; }
+        margin: 0 auto;
+        width: 100%;
+        max-width: 420px; }
         body .app-container .app .achievement-list .achievement-table .achievement-row td {
           vertical-align: top;
           padding: 8px 0; }
@@ -1024,22 +1026,24 @@ body {
             background-color: #ff0052; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-image:not(.unlocked) {
             opacity: 0.5; }
-        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h1, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h2, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h3, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h4, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h5, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h6 {
-          text-align: left; }
-        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
-          margin: 0; }
-        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar {
-          margin-top: 4px;
-          height: 10px; }
-          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-inner {
-            background-color: #ff0052; }
-          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-label {
-            line-height: 10px; }
-        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .unlocked-info {
-          font-size: 10px;
-          font-weight: bold;
-          color: #969696;
-          margin-top: 4px; }
+        body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail {
+          width: 100%; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h1, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h2, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h3, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h4, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h5, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h6 {
+            text-align: left; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
+            margin: 0; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar {
+            margin-top: 4px;
+            height: 10px; }
+            body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-inner {
+              background-color: #ff0052; }
+            body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar .progress-bar-label {
+              line-height: 10px; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .unlocked-info {
+            font-size: 10px;
+            font-weight: bold;
+            color: #969696;
+            margin-top: 4px; }
       body .app-container .app .page-comic .comic-area {
         position: relative;
         min-height: 100px;

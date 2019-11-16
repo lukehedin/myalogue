@@ -5,6 +5,8 @@
 
 	.achievement-table {
 		margin: 0 auto;
+		width: 100%;
+		max-width: 420px;
 
 		.achievement-row {
 
@@ -26,6 +28,7 @@
 			}
 
 			.td-achievement-detail {
+				width: 100%;
 				@include allHeadings {
 					text-align: left;
 				}
