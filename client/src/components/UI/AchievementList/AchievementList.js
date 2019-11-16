@@ -36,7 +36,7 @@ export default class AchievementList extends Component {
 								: null
 							}
 							{achievement.userAchievement
-								? <p className="unlocked-info">Unlocked on {moment(achievement.userAchievement).format('DD/MM/YYYY')}{achievement.userAchievement.comicId ? <span> (<Link to={Util.route.comic(achievement.userAchievement.comicId)}>comic #{achievement.userAchievement.comicId}</Link>)</span> : null}</p>
+								? <p className="unlocked-info">Unlocked on {moment(achievement.userAchievement.createdAt).format('DD/MM/YYYY')}{achievement.userAchievement.comicId ? <span> (<Link to={Util.route.comic(achievement.userAchievement.comicId)}>comic #{achievement.userAchievement.comicId}</Link>)</span> : null}</p>
 								: null
 							}
 						</td>

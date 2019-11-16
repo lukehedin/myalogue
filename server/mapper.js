@@ -122,7 +122,8 @@ const mapper = {
 			userAchievementId: dbUserAchievement.UserAchievementId,
 			userId: dbUserAchievement.UserId,
 			comicId: dbUserAchievement.ComicId,
-			type: dbUserAchievement.Type
+			type: dbUserAchievement.Type,
+			createdAt: dbUserAchievement.CreatedAt
 		};
 	},
 
