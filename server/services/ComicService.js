@@ -190,10 +190,6 @@ export default class ComicService extends Service {
 				where: {
 					UserId: userId
 				}
-			}, {
-				//Used for achievement calculations below
-				model: this.models.ComicPanel,
-				as: 'ComicPanels'
 			}]
 		});
 
@@ -377,33 +373,6 @@ export default class ComicService extends Service {
 			where: {
 				UserId: userId, //Validation
 				ComicCommentId: comicCommentId
-			}
-		});
-	}
-	async GetAllTemplatesWhereUnlocked(additionalWhere = {}, excludePanels = false) {
-		let dbTemplates = await this.models.Template.findAll({
-			where: {
-				...additionalWhere,
-				UnlockedAt: {
-					[Sequelize.Op.ne]: null,
-					[Sequelize.Op.lte]: new Date()
-				}
-			},
-			paranoid: false,
-			include: excludePanels ? [] : [{
-				model: this.models.TemplatePanel,
-				as: 'TemplatePanels',
-				paranoid: false
-			}],
-			order: [[ 'TemplateId', 'ASC' ]]
-		});
-
-		return dbTemplates.map(mapper.fromDbTemplate);
-	}
-	async GetNewTemplates(existingTemplateIds) {
-		return await this.GetAllTemplatesWhereUnlocked({
-			TemplateId: {
-				[Sequelize.Op.notIn]: existingTemplateIds
 			}
 		});
 	}

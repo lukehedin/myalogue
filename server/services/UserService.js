@@ -322,7 +322,9 @@ export default class UserService extends Service {
 					[common.enums.AchievementType.LotsOfLastPanels]: userStats.lastPanelCount,
 					[common.enums.AchievementType.LotsOfFirstPanels]: userStats.firstPanelCount,
 					[common.enums.AchievementType.LotsOfComics]: userStats.comicCount,
-					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating
+					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating,
+					[common.enums.AchievementType.LotsOfRatings]: userStats.ratingCount,
+					[common.enums.AchievementType.LotsOfRatingsForOthers]: userStats.ratingCountForOthers
 				} 
 				: {}
 		};
@@ -344,6 +346,15 @@ export default class UserService extends Service {
 				}
 			},
 			order: [[ 'Rating', 'DESC' ], ['CompletedAt', 'DESC']]
+		});
+
+		let dbComicVotes = await this.models.ComicVote.findAll({
+			where: {
+				UserId: userId,
+				Value: {
+					[Sequelize.Op.ne]: 0
+				}
+			}
 		});
 		
 		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
@@ -374,7 +385,10 @@ export default class UserService extends Service {
 
 			templateUsageLookup: templateUsageLookup,
 			firstPanelCount,
-			lastPanelCount
+			lastPanelCount,
+
+			ratingCount: dbComicVotes.length,
+			ratingCountForOthers: dbComicVotes.filter(dbComicVote => !comicIds.includes(dbComicVote.ComicId)).length
 		};
 	}
 	_GetUserNotBannedWhere() {

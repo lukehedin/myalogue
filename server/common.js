@@ -26,8 +26,6 @@ export default {
 
 			LotsOfComics: 5, //Feature in 1500 comics, (acc)
 			LotsOfTemplates: 6, //Feature in comics using over 100 different templates (acc)
-			
-			HighTotalRating: 7, //Reach a total comic rating of 5000 or more (acc)
 
 			FirstTemplateUsage: 8, //Feature in the first comic using a particular template
 
@@ -50,7 +48,12 @@ export default {
 			TopFirstPanel: 17, // Make the first panel for a top comic
 			TopLastPanel: 18, // Make the last panel for a top comic
 			LotsOfFirstPanels: 19, //Start 500 comics (acc)
-			LotsOfLastPanels: 20 //Make the last panel for 500 comics (acc)
+			LotsOfLastPanels: 20, //Make the last panel for 500 comics (acc)
+
+			//Ratings
+			HighTotalRating: 7, //Reach a total comic rating of 5000 or more (acc)
+			LotsOfRatings: 21, //Rate 1000 comics
+			LotsOfRatingsForOthers: 22, //Rate 1000 comics you aren't featured in
 		},
 		
 		NotificationType: {

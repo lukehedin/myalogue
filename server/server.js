@@ -10,13 +10,14 @@ import common from './common';
 
 import Database from './Database';
 
+import AchievementService from './services/AchievementService';
 import ComicService from './services/ComicService';
 import CronService from './services/CronService';
 import EmailService from './services/EmailService';
 import NotificationService from './services/NotificationService';
 import PlayService from './services/PlayService';
+import TemplateService from './services/TemplateService';
 import UserService from './services/UserService';
-import AchievementService from './services/AchievementService';
 
 const app = express();
 app.use(bodyParser.json());
@@ -50,6 +51,7 @@ const services = {
 	Email: new EmailService(db.models, () => services),
 	Notification: new NotificationService(db.models, () => services),
 	Play: new PlayService(db.models, () => services),
+	Template: new TemplateService(db.models, () => services),
 	User: new UserService(db.models, () => services)
 };
 

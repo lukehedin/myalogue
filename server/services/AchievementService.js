@@ -125,13 +125,15 @@ export default class AchievementService extends Service {
 			}
 		});
 		
-		await this.CheckAccumaltiveComicAchievements(distinctUserIds);
+		await this.CheckAccumaltiveComicAchievements(distinctUserIds, [
+			common.enums.AchievementType.LotsOfTemplates,
+			common.enums.AchievementType.LotsOfLastPanels,
+			common.enums.AchievementType.LotsOfFirstPanels,
+			common.enums.AchievementType.LotsOfComics
+		]);
 	}
-	async CheckAccumaltiveComicAchievements(userIds) {
-		console.log(userIds.length);
-
-		const accumaltiveAchievements = this.GetAllAchievements().filter(achievement => achievement.targetValue);
-		const accumaltiveAchievementTypes = accumaltiveAchievements.map(accumaltiveAchievement => accumaltiveAchievement.type);
+	async CheckAccumaltiveComicAchievements(userIds, accumaltiveAchievementTypes) {
+		const accumaltiveAchievements = this.GetAll().filter(achievement => accumaltiveAchievementTypes.includes(achievement.type));
 
 		let dbUsersToCheck = await this.models.User.findAll({
 			where: {
@@ -160,7 +162,7 @@ export default class AchievementService extends Service {
 			//User has all the accumaltive achievements, move onto the next
 			if(lockedAchievementTypesForUser.length === 0) return; 
 
-			let checkAccumaltiveAchievement = async (achievementType, newValue) => {
+			let checkAccumaltiveAchievement = async (achievementType, userStats) => {
 				let achievement = accumaltiveAchievements.find(accumaltiveAchievement => accumaltiveAchievement.type === achievementType);
 				
 				//User has the achivement already (or achievement with targetvalue not found), move on
@@ -169,7 +171,7 @@ export default class AchievementService extends Service {
 				let dbExistingUserAchievement = dbUser.UserAchievements.find(dbUserAchievement => dbUserAchievement.Type === achievementType);
 
 				//If there is no existinguserachievement and we've passed the unlock value, give it
-				if(!dbExistingUserAchievement && newValue >= achievement.targetValue) {
+				if(!dbExistingUserAchievement && achievement.getValue(userStats) >= achievement.targetValue) {
 					await this._UnlockAchievement(achievementType, [dbUser.UserId])
 				}
 			};
@@ -177,10 +179,7 @@ export default class AchievementService extends Service {
 			//A bit excessive, consider refactoring
 			let userStats = await this.services.User.GetStatsForUser(dbUser.UserId);
 	
-			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfTemplates, Object.keys(userStats.templateUsageLookup).length);
-			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfLastPanels, userStats.lastPanelCount);
-			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfFirstPanels, userStats.firstPanelCount);
-			await checkAccumaltiveAchievement(common.enums.AchievementType.LotsOfComics, userStats.comicCount);
+			accumaltiveAchievementTypes.forEach(async accumaltiveAchievementType => await checkAccumaltiveAchievement(accumaltiveAchievementType, userStats));
 		});
 	}
 	async ProcessForTopUsers(userIds) {
@@ -223,7 +222,7 @@ export default class AchievementService extends Service {
 			console.log('Achievement unlocked:' + achievementType + ' for ' + newAchievementUserIds.length + ' users, on comic id ' + comicId);
 		}
 	}
-	GetAllAchievements() {
+	GetAll() {
 		return [{
 			type: common.enums.AchievementType.FirstComic,
 			name: 'Spoke4Yourself',
@@ -244,17 +243,20 @@ export default class AchievementService extends Service {
 			type: common.enums.AchievementType.LotsOfComics,
 			name: 'Vast voice',
 			description: 'Feature in 1500 comics',
-			targetValue: 1500
+			targetValue: 1500,
+			getValue: userStats => userStats.comicCount
 		}, {
 			type: common.enums.AchievementType.LotsOfTemplates,
 			name: 'Versatile voice',
 			description: 'Use 100 different templates',
-			targetValue: 100
+			targetValue: 100,
+			getValue: userStats => Object.keys(userStats.templateUsageLookup).length
 		}, {
 			type: common.enums.AchievementType.HighTotalRating,
 			name: 'Critically acclaimed',
 			description: 'Reach a total comic rating of 5000',
-			targetValue: 5000
+			targetValue: 5000,
+			getValue: userStats => userStats.comicTotalRating
 		}, {
 			type: common.enums.AchievementType.FirstTemplateUsage,
 			name: 'First in, best dressed',
@@ -303,15 +305,29 @@ export default class AchievementService extends Service {
 			type: common.enums.AchievementType.LotsOfFirstPanels,
 			name: 'First and foremost',
 			description: 'Make the first panel for 500 comics',
-			targetValue: 500
+			targetValue: 500,
+			getValue: userStats => userStats.firstPanelCount
 		}, {
 			type: common.enums.AchievementType.LotsOfLastPanels,
 			name: 'Last but not least',
 			description: 'Make the last panel for 500 comics',
-			targetValue: 500
+			targetValue: 500,
+			getValue: userStats => userStats.lastPanelCount
+		}, {
+			type: common.enums.AchievementType.LotsOfRatings,
+			name: 'Quality control',
+			description: 'Rate 1000 comics',
+			targetValue: 1000,
+			getValue: userStats => userStats.ratingCount
+		}, {
+			type: common.enums.AchievementType.LotsOfRatingsForOthers,
+			name: 'Everyone\'s a critic',
+			description: 'Rate 500 comics that you aren\'t featured in',
+			targetValue: 500,
+			getValue: userStats => userStats.ratingCountForOthers
 		}];
 	}
 	GetByType(achievementType) {
-		return this.GetAllAchievements().find(achievement => achievement.type === achievementType);
+		return this.GetAll().find(achievement => achievement.type === achievementType);
 	}
 }

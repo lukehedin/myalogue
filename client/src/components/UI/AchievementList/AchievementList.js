@@ -31,7 +31,7 @@ export default class AchievementList extends Component {
 						<td className="td-achievement-detail">
 							<h4>{achievement.name}</h4>
 							<p className="sm">{achievement.description}</p>
-							{achievement.targetValue 
+							{achievement.targetValue && !achievement.userAchievement 
 								? <ProgressBar amount={achievement.userAchievementProgress || 0} total={achievement.targetValue} label={`${(achievement.userAchievementProgress || 0)}/${(achievement.targetValue)}`} /> 
 								: null
 							}

@@ -10,8 +10,12 @@ export default class CronService extends Service {
 	RegisterJobs() {
 		const jobs = [{
 			name: 'Update hot ranks',
-			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59
+			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59 (10:02, 10:12, 10:22, 10:32, etc)
 			fn: () => this.UpdateHotRanks()
+		}, {
+			name: 'Check rating achievements',
+			time: '* * * * *', //Every minute
+			fn: () => this.CheckRatingAchievements()
 		}, {
 			name: 'Update leaderboards',
 			time: '0 * * * *', //At minute 0 (hourly)
@@ -93,7 +97,13 @@ export default class CronService extends Service {
 			],
 			include: [{
 				model: this.models.ComicPanel,
-				as: 'ComicPanels'
+				as: 'ComicPanels',
+				required: false,
+				where: {
+					CensoredAt: {
+						[Sequelize.Op.eq]: null
+					}
+				}
 			}]
 		});
 
@@ -129,7 +139,7 @@ export default class CronService extends Service {
 				if(dbWeeklyComic.Rating > 0) {
 					dbWeeklyComic.ComicPanels.forEach(dbComicPanel => {
 						let userId = dbComicPanel.UserId;
-						if(userId && !dbComicPanel.CensoredAt) {
+						if(userId) {
 							userScoreLookup[userId] = userScoreLookup[userId] 
 								? userScoreLookup[userId] + dbWeeklyComic.Rating 
 								: dbWeeklyComic.Rating;
@@ -189,5 +199,42 @@ export default class CronService extends Service {
 				this.services.Achievement.ProcessForTopUsers(topUserIds);
 			}
 		}
+	}
+	async CheckRatingAchievements() {
+		let dbComicVotes = await this.models.ComicVote.findAll({
+			where: {
+				UpdatedAt: {
+					[Sequelize.Op.gte]: moment().subtract(1, 'minute').toDate()
+				}
+			}
+		});
+
+		if(dbComicVotes.length === 0) return;
+
+		//Firstly, check if any of the VOTERS have unlocked achievements related to voting
+		let voterUserIds = [...new Set(dbComicVotes.map(dbComicVote => dbComicVote.UserId))];
+		await this.services.Achievement.CheckAccumaltiveComicAchievements(voterUserIds, [
+			common.enums.AchievementType.LotsOfRatings,
+			common.enums.AchievementType.LotsOfRatingsForOthers
+		]);
+		
+		//Secondly, check if any people who were AFFECTED by these ratings have new total ratings
+		let comicIds = [...dbComicVotes.map(dbComicVote => dbComicVote.ComicId)];
+
+		let dbComicPanels = await this.models.ComicPanel.findAll({
+			where: {
+				ComicId: {
+					[Sequelize.Op.in]: comicIds
+				},
+				CensoredAt: {
+					[Sequelize.Op.eq]: null
+				}
+			}
+		});
+		//These are the users who have had their ratings change in the last hour
+		let affectedUserIds = [...new Set(dbComicPanels.map(dbComicPanel => dbComicPanel.UserId))];
+		await this.services.Achievement.CheckAccumaltiveComicAchievements(affectedUserIds, [
+			common.enums.AchievementType.HighTotalRating
+		]);
 	}
 }

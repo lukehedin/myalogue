@@ -9,8 +9,8 @@ export default {
 			let anonId = req.anonId;
 
 			let referenceDataPromises = [
-				services.Comic.GetAllTemplatesWhereUnlocked(),
-				services.Achievement.GetAllAchievements(),
+				services.Template.GetAll(),
+				services.Achievement.GetAll(),
 				services.Comic.GetTopComic(userId)
 			];
 	
@@ -132,7 +132,7 @@ export default {
 			let existingTemplateIds = req.body.existingTemplateIds;
 
 			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
-			let newTemplates = await services.Comic.GetNewTemplates(existingTemplateIds);
+			let newTemplates = await services.Template.GetNew(existingTemplateIds);
 
 			return {
 				comicsInProgress,
