@@ -60,7 +60,7 @@ class App extends Component {
 					Util.context.set(result);
 				} else {
 					//A failed authenticate should clear context
-					// if(result.error) Util.context.clear(true);
+					if(result.error) Util.context.clear(true);
 					
 					//If errored or isUnderMaintenance, show the maintenance screen
 					this.setState({
