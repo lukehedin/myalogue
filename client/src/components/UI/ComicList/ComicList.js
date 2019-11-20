@@ -80,10 +80,8 @@ export default class ComicList extends Component {
 				offset: isRandomSort ? 0 : this.state.offset,
 				ignoreComicIds: [
 					...(this.props.ignoreComicIds || []),
-					...(isRandomSort
-						? this.state.comics.map(comic => comic.comicId)
-						: [])
-					]
+					...(this.state.comics.map(comic => comic.comicId) || []) //Don't return any comics we already have
+				]
 			})
 			.then(result => {
 				if(!result.error) {
