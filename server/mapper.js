@@ -21,7 +21,9 @@ const mapper = {
 	fromDbComic: (dbComic) => {
 		return {
 			comicId: dbComic.ComicId,
-			title: dbComic.Title || "Untitled",
+			title: dbComic.ComicPanels && dbComic.ComicPanels[0]
+				? `"${dbComic.ComicPanels[0].Value}"`
+				: 'Untitled',
 			templateId: dbComic.TemplateId,
 			rating: dbComic.Rating || 0,
 			isAnonymous: dbComic.IsAnonymous,

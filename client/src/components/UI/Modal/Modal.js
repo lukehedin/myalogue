@@ -63,8 +63,7 @@ class Modal extends Component {
 				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
 
-				let comicLink = Util.route.getHost() + Util.route.comic(modal.comic.comicId);
-				let template = Util.referenceData.getTemplateById(modal.comic.templateId);
+				let comicLink = window.location.href;
 
 				modalContent = <div className="share-comic-container">
 					<ComicInfoLabel className="center sm" comic={modal.comic} />

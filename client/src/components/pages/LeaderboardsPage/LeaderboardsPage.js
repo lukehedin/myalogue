@@ -44,7 +44,7 @@ export default class LeaderboardsPage extends Component {
 										<h4>{idx + 1}.</h4>
 										<div className="leaderboard-item-detail">
 											<h4><Link to={Util.route.comic(leaderboardComic.comicId)}>Comic #{leaderboardComic.comicId}</Link></h4>
-											<h4 className="comic-opener">"{leaderboardComic.comicPanels[0].value}"</h4>
+											<h4 className="comic-opener">{leaderboardComic.title}</h4>
 											<ComicInfoLabel className="sm" comic={leaderboardComic} />
 											<p className="sm rating"><b>Rating</b>: {leaderboardComic.leaderboardRating}</p>
 										</div>
