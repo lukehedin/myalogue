@@ -65,6 +65,11 @@ export default {
 			PanelCensored: 6, // valueInteger = comicId, valueString = dialogue from reported panel
 			ComicCommentMention: 7, //valueString = name of user who tagged you
 			AchievementUnlocked: 8 //valueString = achievement name, valueInteger = achievmentType
+		},
+
+		PanelGroupBehaviour: {
+			Prefer: 1,
+			Avoid: 2
 		}
 	},
 

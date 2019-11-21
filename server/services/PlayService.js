@@ -189,7 +189,7 @@ export default class PlayService extends Service {
 				where: templatePanelWhere
 			})
 		];
-		//If we have a currentComicPanel, also fetch that so we can check if it has a PreferredPanelGroup
+		//If we have a currentComicPanel, also fetch that so we can check if it has a PanelGroup
 		if(currentComicPanel) {
 			templatePanelPromises.push(
 				this.models.TemplatePanel.findOne({
@@ -207,11 +207,18 @@ export default class PlayService extends Service {
 		if(!dbPossibleNextTemplatePanels || dbPossibleNextTemplatePanels.length < 1) throw 'No viable next template panels';
 
 		//Get an array of PREFERRED template panels, but this is most often completely empty
-		let dbPreferredNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => {
-			return dbCurrentTemplatePanel && dbCurrentTemplatePanel.PreferredPanelGroup
-				? dbTemplatePanel.PreferredPanelGroup === dbCurrentTemplatePanel.PreferredPanelGroup
-				: false;
-		});
+		let dbPreferredNextTemplatePanels = [];
+		if(dbCurrentTemplatePanel && dbCurrentTemplatePanel.PanelGroup) {
+			switch(dbCurrentTemplatePanel.PanelGroupBehaviour) {
+				case common.enums.PanelGroupBehaviour.Avoid:
+					dbPreferredNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => dbTemplatePanel.PanelGroup !== dbCurrentTemplatePanel.PanelGroup);
+					break;
+				case common.enums.PanelGroupBehaviour.Prefer:
+				default:
+					dbPreferredNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => dbTemplatePanel.PanelGroup === dbCurrentTemplatePanel.PanelGroup);
+					break;
+			}
+		}
 
 		//If we have any PREFERRED template panels, use the first of them (the random from the query above should still be applied)
 		//Otherwise, use the first POSSIBLE template panel

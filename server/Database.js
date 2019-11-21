@@ -145,9 +145,9 @@ export default class Database {
 			PositionX: Sequelize.INTEGER,
 			PositionY: Sequelize.INTEGER,
 			Image: Sequelize.STRING,
-			TextAlignVertical: Sequelize.INTEGER, //null = bottom 1.bottom, 2.top, 3.middle
-			TextAlignHorizontal: Sequelize.INTEGER, //null = middle 1.middle, 2.left, 3.right
-			TextColour: Sequelize.INTEGER, //null = black, 1. white
+			TextAlignVertical: Sequelize.SMALLINT, //1.(null)bottom, 2.top, 3.middle
+			TextAlignHorizontal: Sequelize.SMALLINT, //1.(null)middle, 2.left, 3.right
+			TextColour: Sequelize.SMALLINT, //1.(null)black, 2. white
 			Ordinal: Sequelize.INTEGER, //optional
 			Description: Sequelize.TEXT,
 
@@ -158,6 +158,8 @@ export default class Database {
 			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
 			IsNeverRepeat: getBoooleanNotNull(),
 			PreferredPanelGroup: Sequelize.INTEGER, //Panels with the same group will be preferred next (best used with IsNeverRepeat)
+			PanelGroup: Sequelize.SMALLINT,
+			PanelGroupBehaviour: Sequelize.SMALLINT //1.(null)prefer, 2.avoid 
 		}, true);
 
 		defineTable('Comic', {
