@@ -157,8 +157,7 @@ export default class Database {
 			IsOnlyLast: getBoooleanNotNull(), //Implies IsNeverFirst
 			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
 			IsNeverRepeat: getBoooleanNotNull(),
-			PreferredPanelGroup: Sequelize.INTEGER, //Panels with the same group will be preferred next (best used with IsNeverRepeat)
-			PanelGroup: Sequelize.SMALLINT,
+			PanelGroup: Sequelize.SMALLINT, //Used to create preferential/avoidance etc behaviour with other panels
 			PanelGroupBehaviour: Sequelize.SMALLINT //1.(null)prefer, 2.avoid 
 		}, true);
 

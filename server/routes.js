@@ -146,7 +146,7 @@ export default {
 			let anonId = req.anonId;
 
 			let skippedComicId = req.body.skippedComicId;
-			let templateId = req.body.templateId;
+			let templateId = userId ? req.body.templateId : null; //Only use templateId if logged in
 
 			if(!userId && !anonId) throw 'No identity id supplied';
 

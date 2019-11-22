@@ -47,12 +47,9 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
 						<h1 className="page-title">{this.state.template.name}</h1>
-						{Util.context.isAuthenticated()
-							? <div className="play-template button-container justify-center">
-								<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
-							</div>
-							: null
-						}
+						<div className="play-template button-container justify-center">
+							<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
+						</div>
 						<hr />
 						<ComicList
 							sortBy={Util.enums.ComicSortBy.TopAll}

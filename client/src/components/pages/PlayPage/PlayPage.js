@@ -122,6 +122,7 @@ export default class PlayPage extends Component {
 	}
 	render() {
 		if(this.state.redirectToComicId) return <Redirect to={Util.route.comic(this.state.redirectToComicId)} />;
+		if(this.props.templateId && !Util.context.isAuthenticated()) return <Redirect to={Util.route.register()} />;
 		let content = null;
 
 		if(this.state.isLoading) {

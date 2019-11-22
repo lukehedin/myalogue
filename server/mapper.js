@@ -141,6 +141,9 @@ const mapper = {
 
 		let dbRelatedComicId = dbUserNotification.Notification.ComicId;
 
+		///Actionable if the notification links to a FK item, can also be set in switch below
+		let isActionable = dbUserNotification.Notification.ComicId;
+
 		switch(dbUserNotification.Notification.Type) {
 			case common.enums.NotificationType.Welcome:
 				title = `Welcome!`;
@@ -173,6 +176,7 @@ const mapper = {
 			case common.enums.NotificationType.AchievementUnlocked:
 				title = `Achievement unlocked!`
 				message = `You unlocked the achievement ${valueString}! Click here to view your achievements.`;
+				isActionable = true;
 				break;
 
 			case common.enums.NotificationType.General:
@@ -182,15 +186,11 @@ const mapper = {
 				break;
 		}
 
-		///Actionable if the notification links to a FK item
-		let isActionable = !dbUserNotification.ActionedAt 
-			&& dbUserNotification.Notification.ComicId;
-
 		return {
 			userNotificationId: dbUserNotification.UserNotificationId,
 			type: dbUserNotification.Notification.Type,
 			isSeen: !!dbUserNotification.SeenAt,
-			isActionable: isActionable,
+			isActionable: !dbUserNotification.ActionedAt && isActionable,
 			createdAt: dbUserNotification.RenewedAt
 				? dbUserNotification.RenewedAt //Notifications can be updated with more recent data
 				: dbUserNotification.CreatedAt,
