@@ -145,6 +145,7 @@ export default class Database {
 			PositionX: Sequelize.INTEGER,
 			PositionY: Sequelize.INTEGER,
 			Image: Sequelize.STRING,
+			ImageColour: Sequelize.STRING,
 			TextAlignVertical: Sequelize.SMALLINT, //1.(null)bottom, 2.top, 3.middle
 			TextAlignHorizontal: Sequelize.SMALLINT, //1.(null)middle, 2.left, 3.right
 			TextColour: Sequelize.SMALLINT, //1.(null)black, 2. white

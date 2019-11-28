@@ -42,7 +42,7 @@ export default class ComicPanel extends Component {
 		let percentSizeY = (templatePanel.sizeY / basePanelHeight) * 100;
 		
 		return <div className={`comic-panel ${isEditing ? 'editing' : ''}`} onClick={isEditing ? this.focusTextarea : null}>
-			<img className="comic-panel-image" alt="" onContextMenu={Util.event.absorb} src={templatePanel.image} />
+			<img className="comic-panel-image" alt="" onContextMenu={Util.event.absorb} src={isEditing ? templatePanel.image : templatePanel.imageColour} />
 			<div className={`dialogue 
 					${this.props.comicPanel && this.props.comicPanel.isCensored ? 'censored' : ''}
 					${isEditing && !this.state.dialogue ? 'edit-empty' : ''}

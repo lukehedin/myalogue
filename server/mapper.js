@@ -19,23 +19,21 @@ const mapper = {
 	},
 
 	fromDbComic: (dbComic) => {
+		let dbComicPanels = (dbComic.ComicPanels || []).sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal);
+
 		return {
 			comicId: dbComic.ComicId,
-			title: dbComic.ComicPanels && dbComic.ComicPanels[0]
-				? `"${dbComic.ComicPanels[0].Value}"`
-				: 'Untitled',
+			title: dbComicPanels && dbComicPanels[0] ? `"${dbComicPanels[0].Value}"` : 'Untitled',
 			templateId: dbComic.TemplateId,
 			rating: dbComic.Rating || 0,
 			isAnonymous: dbComic.IsAnonymous,
 			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
 			leaderboardRating: dbComic.LeaderboardRating,
+			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
 				.map(mapper.fromDbComicComment),
-			comicPanels: (dbComic.ComicPanels || [])
-				.sort((cd1, cd2) => cd1.Ordinal - cd2.Ordinal)
-				.map(mapper.fromDbComicPanel),
 			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length > 0
 				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
 				: null,
@@ -113,6 +111,7 @@ const mapper = {
 			sizeY: dbTemplatePanel.SizeY,
 			max: dbTemplatePanel.Max,
 			image: dbTemplatePanel.Image,
+			imageColour: dbTemplatePanel.ImageColour || dbTemplatePanel.Image,
 			textAlignVertical: dbTemplatePanel.TextAlignVertical,
 			textAlignHorizontal: dbTemplatePanel.TextAlignHorizontal,
 			textColour: dbTemplatePanel.TextColour
