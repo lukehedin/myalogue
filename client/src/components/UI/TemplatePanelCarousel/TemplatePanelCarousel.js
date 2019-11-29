@@ -65,7 +65,7 @@ export default class TemplatePanelCarousel extends Component {
 				let firstTemplatePanel = template.templatePanels[0];
 
 				return <div key={template.templateId} className="template-panel-item" onMouseDown={this.onMouseDown} onMouseUp={(e) => this.onMouseUp(e, template.templateId)}>
-					<ComicPanel readOnly={true} templatePanelId={firstTemplatePanel.templatePanelId} />
+					<ComicPanel readOnly={true} isColour={true} templatePanelId={firstTemplatePanel.templatePanelId} />
 				</div>;
 			})}
 			</Slider>

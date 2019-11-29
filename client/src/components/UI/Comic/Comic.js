@@ -121,11 +121,11 @@ class Comic extends Component {
 		let heldPanel = null;
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
 			if(idx % 2 === 0) {
-				heldPanel = <ComicPanel comicPanel={comicPanel} includeComicId={idx === 0} />;
+				heldPanel = <ComicPanel isColour={true} comicPanel={comicPanel} includeComicId={idx === 0} />;
 			} else {
 				comicPanelsPairs.push(<ComicPanelPair key={idx}>
 					{heldPanel}
-					<ComicPanel comicPanel={comicPanel} />
+					<ComicPanel isColour={true} comicPanel={comicPanel} />
 				</ComicPanelPair>);
 				heldPanel = null;
 			}

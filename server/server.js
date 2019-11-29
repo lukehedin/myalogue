@@ -33,7 +33,8 @@ if(process.env.NODE_ENV === 'production') {
 	//Serve static assets if in prod
 	app.use(express.static('client/build'));
 
-	//LH: I don't think this is doing anything. The .use seems to fetch index
+	//This is very important, ensures scrapers and link previews, and LINKS sent to people actually returns the right root file.
+	//The route in the link eg. /about will still be applied with react router, but without this get wildcard, many of those sublinks will return nothing and report NOT FOUND
 	app.get('*', (req, res) => {
 		res.sendFile(path.resolve(__dirname, '..', 'client', 'build', 'index.html'));
 	});
