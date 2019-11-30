@@ -27,10 +27,10 @@ export default class PlayService extends Service {
 		if(templateId) templateWhere.TemplateId = templateId;
 
 		let dbLatestTemplates = await this.models.Template.findAll({
-			limit: 10, //10 keeps the latest templates in circulation, while still having variety
 			//If a templateId is supplied, only 1 will be returned and the random below will select it
 			where: templateWhere,
-			order: [[ 'UnlockedAt', 'DESC' ]]
+			order: [[ 'UnlockedAt', 'DESC' ]],
+			limit: 10 //10 keeps the latest templates in circulation, while still having variety
 		});
 
 		if(!dbLatestTemplates || dbLatestTemplates.length === 0) throw 'No templates to play with';

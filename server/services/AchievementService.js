@@ -125,7 +125,9 @@ export default class AchievementService extends Service {
 			}
 		});
 		
-		await this.CheckAccumaltiveComicAchievements(distinctUserIds, [
+
+		//Do not await this, these achievements will not display on the comic itself
+		this.CheckAccumaltiveComicAchievements(distinctUserIds, [
 			common.enums.AchievementType.LotsOfTemplates,
 			common.enums.AchievementType.LotsOfLastPanels,
 			common.enums.AchievementType.LotsOfFirstPanels,
