@@ -586,7 +586,7 @@ body {
             body .app-container .app .modal.modal-share-comic .share-comic-container > *:not(:first-child) {
               margin-top: 8px; }
             body .app-container .app .modal.modal-share-comic .share-comic-container .input-link {
-              width: 240px; }
+              max-width: 240px; }
         body .app-container .app .modal.modal-report-comic-panel {
           max-width: 440px;
           font-size: 14px; }
@@ -1194,6 +1194,12 @@ body {
         margin: 0 auto; }
       body .app-container .app .page-template .page-title {
         margin: 16px 0; }
+      body .app-container .app .page-template .top-comic-container {
+        margin-top: 16px;
+        min-height: 100px;
+        position: relative; }
+        body .app-container .app .page-template .top-comic-container h3 {
+          margin-bottom: 16px; }
       body .app-container .app .page-template .comic-list {
         margin-top: 16px; }
       body .app-container .app .page-leaderboards .leaderboards-inner {

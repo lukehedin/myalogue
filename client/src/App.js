@@ -25,6 +25,7 @@ import SetPasswordPage from './components/pages/SetPasswordPage/SetPasswordPage'
 import TermsOfServicePage from './components/pages/TermsOfServicePage/TermsOfServicePage';
 import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage/PrivacyPolicyPage';
 import TemplatePage from './components/pages/TemplatePage/TemplatePage';
+import TemplatesPage from './components/pages/TemplatesPage/TemplatesPage';
 import ComicPage from './components/pages/ComicPage/ComicPage';
 import PlayPage from './components/pages/PlayPage/PlayPage';
 import SettingsPage from './components/pages/SettingsPage/SettingsPage';
@@ -124,6 +125,7 @@ class App extends Component {
 						<Route exact path="/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 						<Route exact path="/comic/:comicId/comic/:comicId" render={({ match }) => <ComicPage comicId={match.params.comicId} />} />
 
+						<Route exact path="/templates" render={() => <TemplatesPage />} />
 						<Route exact path="/template" render={() => <TemplatePage />} />
 						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 

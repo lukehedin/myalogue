@@ -7,6 +7,16 @@
 		margin: $spacing-sm 0;
 	}
 
+	.top-comic-container {
+		margin-top: $spacing-sm;
+		min-height: 100px;
+		position: relative;
+
+		h3 {
+			margin-bottom: $spacing-sm;
+		}
+	}
+
 	.comic-list {
 		margin-top: $spacing-sm;
 	}

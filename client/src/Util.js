@@ -439,6 +439,7 @@ const Util = {
 
 		home: () => `/`,
 		settings: () => `/settings`,
+		templates: () => `/templates`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,
 		leaderboards: () => `/leaderboards`,

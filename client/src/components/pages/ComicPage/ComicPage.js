@@ -99,7 +99,6 @@ export default class ComicPage extends Component {
 				<hr />
 				<ComicList
 					title="Other comics with this template"
-					fetchDelay={700} //Prevent fast nav spamming
 					sortBy={Util.enums.ComicSortBy.Random}
 					templateId={this.state.comic.templateId}
 					ignoreComicIds={[this.props.comicId]}

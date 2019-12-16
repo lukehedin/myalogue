@@ -26,7 +26,10 @@ export default class TemplateService extends Service {
 			order: [[ 'TemplateId', 'ASC' ]]
 		});
 
-		return dbTemplates.map(mapper.fromDbTemplate);
+		return dbTemplates
+			//Do not return any templates that don't have template panels, these are unplayable and break things.
+			.filter(dbTemplate => dbTemplate.TemplatePanels && dbTemplate.TemplatePanels.length > 0)
+			.map(mapper.fromDbTemplate);
 	}
 	async GetNew(existingTemplateIds) {
 		return await this.GetAll({

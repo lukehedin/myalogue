@@ -11,7 +11,7 @@ export default {
 			let referenceDataPromises = [
 				services.Template.GetAll(),
 				services.Achievement.GetAll(),
-				services.Comic.GetTopComic(userId)
+				services.Comic.GetTopComic(null, userId)
 			];
 	
 			let [templates, achievements, topComic] = await Promise.all(referenceDataPromises);
@@ -84,6 +84,14 @@ export default {
 					totalPanelCount: comic.panelCount,
 					completedPanelCount: (comic.comicPanels || []).length
 				};
+		},
+
+		getTopComic: async (req, services) => {
+			let forUserId = req.userId;
+
+			let templateId = req.body.templateId;
+
+			return await services.Comic.GetTopComic(templateId, forUserId);
 		},
 		
 		getComics: async (req, services) => {

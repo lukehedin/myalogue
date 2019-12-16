@@ -5,15 +5,20 @@ import { Redirect } from 'react-router-dom';
 import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import ComicList from '../../UI/ComicList/ComicList';
 import Button from '../../UI/Button/Button';
+import Comic from '../../UI/Comic/Comic';
 
 export default class TemplatePage extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			isLoading: true,
-			template: null
+			isLoading: true, //if true, loading comics but not the template itself
+			template: null,
+
+			topComic: null
 		};
+
+		this.fetchTimeout = null;
 	}
 	componentDidMount(){
 		this.setTemplate();
@@ -34,12 +39,22 @@ export default class TemplatePage extends Component {
 		this.setState({
 			templateId: templateId,
 			template: template,
-			isLoading: false
+			isLoading: true
 		});
+
+		if(this.fetchTimeout) clearTimeout(this.fetchTimeout);
+		this.fetchTimeout = setTimeout(() => {
+			Util.api.post('/api/getTopComic', { templateId: templateId})
+				.then(topComic => {
+					if(topComic) this.setState({ topComic: topComic });
+					this.setState({
+						isLoading: false
+					})
+				})
+		}, 700);
 	}
 	render() {
-		if(this.state.isLoading) return null;
-		if(!this.state.template) return <Redirect to={Util.route.home()} />;
+		if(!this.state.template) return null;
 		
 		return <div className="page-template">
 			<div className="panel-standard">
@@ -50,12 +65,29 @@ export default class TemplatePage extends Component {
 						<div className="play-template button-container justify-center">
 							<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
 						</div>
-						<hr />
-						<ComicList
-							sortBy={Util.enums.ComicSortBy.TopAll}
-							fetchDelay={700} //Prevent fast nav spamming
-							templateId={this.state.template.templateId}
-						/>
+						<div className="top-comic-container">
+							{this.state.isLoading
+								? <div className="loader"></div>
+								: this.state.topComic 
+									? <div className="comic-wrapper">
+										<h3>Top comic with this template</h3>
+										<Comic comic={this.state.topComic} />
+									</div>
+									: <p className="empty-text">No comics have been made using this template yet.</p>
+							}
+						</div>
+						{this.state.isLoading
+							? null
+							: <div>
+								<hr />
+								<ComicList
+									title={'More comics with this template'}
+									sortBy={Util.enums.ComicSortBy.TopAll}
+									ignoreComicIds={this.state.topComic.comicId ? [this.state.topComic.comicId] : null}
+									templateId={this.state.template.templateId}
+								/>
+							</div>
+						}
 					</div>
 				</div>
 			</div>

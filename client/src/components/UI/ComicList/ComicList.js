@@ -23,8 +23,6 @@ export default class ComicList extends Component {
 			isNoMore: false
 		};
 
-		this.fetchTimeout = null;
-
 		this.setSortBy = this.setSortBy.bind(this);
 		this.setIncludeAnonymous = this.setIncludeAnonymous.bind(this);
 		this.fetchData = this.fetchData.bind(this);
@@ -36,17 +34,15 @@ export default class ComicList extends Component {
 		return this.props.templateId !== prevProps.templateId || this.props.authorUserId !== prevProps.authorUserId;
 	}
 	componentDidUpdate(prevProps, prevState, isNewProps) {
-		if(isNewProps) this.resetFetch(this.props.fetchDelay);
+		if(isNewProps) this.resetFetch();
 	}
-	resetFetch(fetchDelay) {
-		clearTimeout(this.fetchTimeout);
-
+	resetFetch() {
 		this.setState({
 			completedAtBefore: new Date(),
 			offset: 0,
 			isNoMore: false,
 			comics: [] //Otherwise random will use these to filter out
-		}, () => this.fetchData(fetchDelay));
+		}, () => this.fetchData());
 	}
 	setSortBy(sortBy) {
 		this.setState({
@@ -59,45 +55,43 @@ export default class ComicList extends Component {
 			includeAnonymous: includeAnonymous
 		}, this.resetFetch);
 	}
-	fetchData(fetchDelay) {
+	fetchData() {
 		this.setState({
 			isLoading: true
 		});
 		
-		this.fetchTimeout = setTimeout(() => {
-			let isRandomSort = this.state.sortBy === Util.enums.ComicSortBy.Random;
-			let templateId = this.props.templateId;
+		let isRandomSort = this.state.sortBy === Util.enums.ComicSortBy.Random;
+		let templateId = this.props.templateId;
 
-			Util.api.post('/api/getComics', {
-				//Optional
-				templateId: templateId,
-				authorUserId: this.props.authorUserId,
+		Util.api.post('/api/getComics', {
+			//Optional
+			templateId: templateId,
+			authorUserId: this.props.authorUserId,
 
-				completedAtBefore: this.state.completedAtBefore,
-				sortBy: this.state.sortBy,
-				includeAnonymous: this.state.includeAnonymous,
-				limit: this.state.limit,
-				offset: isRandomSort ? 0 : this.state.offset,
-				ignoreComicIds: [
-					...(this.props.ignoreComicIds || []),
-					...(this.state.comics.map(comic => comic.comicId) || []) //Don't return any comics we already have
-				]
-			})
-			.then(result => {
-				if(!result.error) {
-					//There is a reasonable chance the selected template has changed since the request began
-					//There will be another request lagging behind, so don't do anything and wait for that one
-					if(templateId === this.props.templateId) {
-						this.setState({
-							comics: [...this.state.comics, ...result],
-							isLoading: false,
-							offset: this.state.offset + this.state.limit,
-							isNoMore: result.length < this.state.limit
-						});
-					}
+			completedAtBefore: this.state.completedAtBefore,
+			sortBy: this.state.sortBy,
+			includeAnonymous: this.state.includeAnonymous,
+			limit: this.state.limit,
+			offset: isRandomSort ? 0 : this.state.offset,
+			ignoreComicIds: [
+				...(this.props.ignoreComicIds || []),
+				...(this.state.comics.map(comic => comic.comicId) || []) //Don't return any comics we already have
+			]
+		})
+		.then(result => {
+			if(!result.error) {
+				//There is a reasonable chance the selected template has changed since the request began
+				//There will be another request lagging behind, so don't do anything and wait for that one
+				if(templateId === this.props.templateId) {
+					this.setState({
+						comics: [...this.state.comics, ...result],
+						isLoading: false,
+						offset: this.state.offset + this.state.limit,
+						isNoMore: result.length < this.state.limit
+					});
 				}
-			});
-		}, fetchDelay || 0);
+			}
+		});
 	}
 	render() {
 		return <div className="comic-list">

@@ -19,15 +19,22 @@ export default class ComicService extends Service {
 		let dbComic = await this.DbGetById(comicId, forUserId);
 		return dbComic ? mapper.fromDbComic(dbComic) : null;
 	}
-	async GetTopComic(forUserId) {
+	async GetTopComic(templateId, forUserId) {
+		let comicWhere = {
+			CompletedAt: {
+				[Sequelize.Op.ne]: null
+			}
+		};
+
+		if(templateId) comicWhere.TemplateId = templateId;
+
 		let dbComics = await this.models.Comic.findAll({
-			where: {
-				CompletedAt: {
-					[Sequelize.Op.ne]: null
-				}
-			},
+			where: comicWhere,
 			include: this._GetFullIncludeForComic(forUserId),
-			order: [[ 'Rating', 'DESC' ]],
+			order: [
+				[ 'Rating', 'DESC' ],
+				[ 'CompletedAt', 'DESC' ]
+			],
 			limit: 1
 		});
 

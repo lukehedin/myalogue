@@ -29,7 +29,7 @@ export default class AppHeader extends Component {
 							to: Util.route.home()
 						}, {
 							label: 'Templates',
-							to: Util.route.template()
+							to: Util.route.templates()
 						}, {
 							label: 'Leaderboards',
 							to: Util.route.leaderboards()
