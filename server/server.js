@@ -118,7 +118,7 @@ if(common.config.IsDevelopmentScript) {
 			if(!hasAuthenticationError) {
 				try {
 					let result = await routes[isPublic ? 'public' : 'private'][route](req, services);
-					res.json(result || { success: true });
+					res.json(result);
 				} catch (error) {
 					//Only serious errors should hit this, validation/UI errors should use {error:}
 					db.LogError(error);

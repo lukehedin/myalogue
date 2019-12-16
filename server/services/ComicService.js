@@ -243,7 +243,7 @@ export default class ComicService extends Service {
 			votePromises.push(dbComic.save());
 		}
 
-		return await Promise.all(votePromises);
+		await Promise.all(votePromises);
 	}
 	async GetComicPanelsForUserNotCensored(userId) {
 		return await this.models.ComicPanel.findAll({

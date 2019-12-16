@@ -188,7 +188,9 @@ export default {
 			//Value can only be 1, 0, -1
 			if(value > 1 || value < -1) throw 'Invalid vote value supplied.';
 
-			return await services.Comic.VoteComic(userId, comicId, value);
+			await services.Comic.VoteComic(userId, comicId, value);
+
+			return;
 		},
 
 		reportComicPanel: async (req, services) => {

@@ -39,6 +39,7 @@ export default class TemplatePage extends Component {
 		this.setState({
 			templateId: templateId,
 			template: template,
+			topComic: null,
 			isLoading: true
 		});
 
@@ -76,14 +77,14 @@ export default class TemplatePage extends Component {
 									: <p className="empty-text">No comics have been made using this template yet.</p>
 							}
 						</div>
-						{this.state.isLoading
+						{this.state.isLoading || !this.state.topComic
 							? null
 							: <div>
 								<hr />
 								<ComicList
 									title={'More comics with this template'}
 									sortBy={Util.enums.ComicSortBy.TopAll}
-									ignoreComicIds={this.state.topComic.comicId ? [this.state.topComic.comicId] : null}
+									ignoreComicIds={[this.state.topComic.comicId]}
 									templateId={this.state.template.templateId}
 								/>
 							</div>
