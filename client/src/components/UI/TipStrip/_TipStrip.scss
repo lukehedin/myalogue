@@ -1,0 +1,42 @@
+.tip-strip {
+	.tip-strip-inner {
+		display: flex;
+		align-items: center;
+
+		flex-direction: column;
+		@include oversm {
+			flex-direction: row;
+			justify-content: space-evenly;
+
+			> * {
+				width: 50%;
+			}
+		}
+
+		.tip-detail {
+			text-align: center;
+		}
+
+		.tip-image {
+			max-width: 200px;
+
+			&.vertical {
+				margin-top: $spacing-xs;
+			}
+
+			&.horizontal {
+				display: none;
+			}
+
+			@include oversm {
+				&.vertical {
+					display: none;
+				}
+
+				&.horizontal {
+					display: block;
+				}
+			}
+		}
+	}
+}

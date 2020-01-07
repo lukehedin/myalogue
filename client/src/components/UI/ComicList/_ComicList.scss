@@ -42,4 +42,8 @@
 			min-height: 100px; //this was 40vh, seemed excessive?
 		}
 	}
+
+	.tip-strip {
+		margin-top: $spacing-lg;
+	}
 }

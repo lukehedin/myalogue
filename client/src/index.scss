@@ -214,7 +214,7 @@ body {
 			text-transform: uppercase;
 		}
 
-		p {
+		p, ul, ol {
 			margin: $spacing-sm 0;
 			&.sm {
 				margin: $spacing-xs 0;

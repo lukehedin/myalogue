@@ -5,6 +5,7 @@ import Comic from '../../UI/Comic/Comic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
 import Checkbox from '../Checkbox/Checkbox';
+import TipStrip from '../TipStrip/TipStrip';
 
 export default class ComicList extends Component {
 	constructor(props) {
@@ -162,6 +163,7 @@ export default class ComicList extends Component {
 					}
 				</div>
 			</div>
+			<TipStrip />
 		</div>;
 	}
 }

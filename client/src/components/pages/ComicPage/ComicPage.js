@@ -96,7 +96,6 @@ export default class ComicPage extends Component {
 				<div className="button-container justify-center">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
 				</div>
-				<hr />
 				<ComicList
 					title="Other comics with this template"
 					sortBy={Util.enums.ComicSortBy.Random}

@@ -8,7 +8,7 @@ export default class AppFooter extends Component {
 	render() {
 		return <footer className="app-footer">
 			<div className="container">
-				<div className="row"> 
+				<div className="row">
 					<div className="app-footer-inner">
 						<img src={logo} className="app-logo" alt="logo" />
 						<div className="flex-spacer"></div>
