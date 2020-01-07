@@ -36,7 +36,7 @@ export default class Button extends Component {
 		return this.props.to
 			? <Link className={className} onClick={this.onClick} to={this.props.to}>{leftIcon}{label}{rightIcon}</Link>
 			: this.props.href
-				? <a className={className} onClick={this.onClick} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
+				? <a target="_blank" rel="noopener noreferrer" className={className} onClick={this.onClick} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
 				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.onClick}>{leftIcon}{label}{rightIcon}</button>
 	}
 }

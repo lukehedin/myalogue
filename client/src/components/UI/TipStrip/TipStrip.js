@@ -68,12 +68,12 @@ export default class TipStrip extends Component {
 
 		return <div className="tip-strip">
 			<div className="tip-strip-inner">
+				<img className="tip-image horizontal" src={this.state.tip.image} />
 				<div className="tip-detail">
 					<h4>Tip: {this.state.tip.tip}</h4>
-					<p>{this.state.tip.details}</p>
 					<img className="tip-image vertical" src={this.state.tip.image} />
+					<p>{this.state.tip.details}</p>
 				</div>
-				<img className="tip-image horizontal" src={this.state.tip.image} />
 			</div>
 		</div>
 	}

@@ -13,6 +13,7 @@ import iconCog from './icons/cog.svg';
 import iconComment from './icons/comment.svg';
 import iconContextMenu from './icons/contextmenu.svg';
 import iconCopy from './icons/copy.svg';
+import iconDiscord from './icons/discord.svg';
 import iconDislike from './icons/dislike.svg';
 import iconDownload from './icons/download.svg';
 import iconFacebook from './icons/facebook.svg';
@@ -398,6 +399,7 @@ const Util = {
 		comment: iconComment,
 		contextMenu: iconContextMenu,
 		copy: iconCopy,
+		discord: iconDiscord,
 		dislike: iconDislike,
 		download: iconDownload,
 		facebook: iconFacebook,
