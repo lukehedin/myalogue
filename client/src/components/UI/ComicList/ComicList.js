@@ -68,6 +68,7 @@ export default class ComicList extends Component {
 			//Optional
 			templateId: templateId,
 			authorUserId: this.props.authorUserId,
+			teamId: this.props.teamId,
 
 			completedAtBefore: this.state.completedAtBefore,
 			sortBy: this.state.sortBy,
@@ -96,44 +97,46 @@ export default class ComicList extends Component {
 	}
 	render() {
 		return <div className="comic-list">
-				{this.props.title 
-					? <h3 className="comic-list-title">{this.props.title}</h3> 
-					: null
-				}
-				<div className="comic-list-filters comic-width">
-					<Dropdown 
-						value={this.state.sortBy}
-						onChange={value => this.setSortBy(value)}
-						displayProp='label' 
-						valueProp='type' 
-						options={[{
-								type: Util.enums.ComicSortBy.Hot,
-								label: 'Hot'
-							}, {
-								type: Util.enums.ComicSortBy.Newest,
-								label: 'Newest'
-							}, {
-								type: Util.enums.ComicSortBy.TopToday,
-								label: 'Top (today)'
-							}, {
-								type: Util.enums.ComicSortBy.TopWeek,
-								label: 'Top (week)'
-							}, {
-							// 	type: Util.enums.ComicSortBy.TopMonth,
-							// 	label: 'Top (month)'
-							// }, {
-								type: Util.enums.ComicSortBy.TopAll,
-								label: 'Top (all)'
-							}, {
-								type: Util.enums.ComicSortBy.Random,
-								label: 'Random'
-							}
-						]} 
-					/>
-					{this.props.authorUserId
-						? null
-						: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
+				<div className="comic-list-upper comic-width">
+					{this.props.title 
+						? <h3 className="comic-list-title">{this.props.title}</h3> 
+						: null
 					}
+					<div className="comic-list-filters">
+						<Dropdown 
+							value={this.state.sortBy}
+							onChange={value => this.setSortBy(value)}
+							displayProp='label' 
+							valueProp='type' 
+							options={[{
+									type: Util.enums.ComicSortBy.Hot,
+									label: 'Hot'
+								}, {
+									type: Util.enums.ComicSortBy.Newest,
+									label: 'Newest'
+								}, {
+									type: Util.enums.ComicSortBy.TopToday,
+									label: 'Top (today)'
+								}, {
+									type: Util.enums.ComicSortBy.TopWeek,
+									label: 'Top (week)'
+								}, {
+								// 	type: Util.enums.ComicSortBy.TopMonth,
+								// 	label: 'Top (month)'
+								// }, {
+									type: Util.enums.ComicSortBy.TopAll,
+									label: 'Top (all)'
+								}, {
+									type: Util.enums.ComicSortBy.Random,
+									label: 'Random'
+								}
+							]} 
+						/>
+						{this.props.authorUserId
+							? null
+							: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
+						}
+					</div>
 				</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {
@@ -146,8 +149,8 @@ export default class ComicList extends Component {
 							{this.state.isNoMore
 								? <p className="empty-text">
 									{Util.array.none(this.state.comics) 
-										? (this.props.emptyText || 'No comics to display.')
-										: (this.props.noMoreText || 'No more comics to display.')
+										? (this.props.emptyText || 'No comics found.')
+										: (this.props.noMoreText || 'No more comics found.')
 									}
 								</p>
 								: null

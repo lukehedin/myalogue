@@ -131,20 +131,34 @@ body {
             text-align: right; }
       body .app-container .app .comic-list {
         position: relative; }
-        body .app-container .app .comic-list .comic-list-filters {
+        body .app-container .app .comic-list .comic-list-upper {
+          margin: 0 auto;
+          margin-bottom: 16px;
           display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-          margin: 16px auto; }
-          body .app-container .app .comic-list .comic-list-filters:first-child {
-            margin-top: 0; }
-          body .app-container .app .comic-list .comic-list-filters > *:not(:first-child) {
-            margin-left: 8px; }
-          body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkmark {
-            top: 6px; }
-          body .app-container .app .comic-list .comic-list-filters .anonymous-switch .checkbox-label {
-            width: 110px; }
+          flex-direction: column;
+          align-items: center; }
+          @media (min-width: 768px) {
+            body .app-container .app .comic-list .comic-list-upper {
+              flex-direction: row; } }
+          body .app-container .app .comic-list .comic-list-upper .comic-list-title {
+            flex: 1;
+            margin-bottom: 8px; }
+            @media (min-width: 768px) {
+              body .app-container .app .comic-list .comic-list-upper .comic-list-title {
+                margin-bottom: 0; } }
+          body .app-container .app .comic-list .comic-list-upper .comic-list-filters {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center; }
+            body .app-container .app .comic-list .comic-list-upper .comic-list-filters:first-child {
+              margin-top: 0; }
+            body .app-container .app .comic-list .comic-list-upper .comic-list-filters > *:not(:first-child) {
+              margin-left: 8px; }
+            body .app-container .app .comic-list .comic-list-upper .comic-list-filters .anonymous-switch .checkmark {
+              top: 6px; }
+            body .app-container .app .comic-list .comic-list-upper .comic-list-filters .anonymous-switch .checkbox-label {
+              width: 110px; }
         body .app-container .app .comic-list .comic-list-inner {
           display: flex;
           flex-direction: column;
@@ -152,8 +166,8 @@ body {
           body .app-container .app .comic-list .comic-list-inner .comic {
             margin-bottom: 32px; }
           body .app-container .app .comic-list .comic-list-inner .comic-list-bottom {
-            position: relative;
-            min-height: 100px; }
+            min-height: 40px;
+            position: relative; }
         body .app-container .app .comic-list .tip-strip {
           margin-top: 64px; }
       body .app-container .app .comic-vote {
@@ -324,6 +338,8 @@ body {
             body .app-container .app .form-wrapper form .field-container > label {
               font-size: 12px;
               margin-bottom: 4px; }
+              body .app-container .app .form-wrapper form .field-container > label .optional {
+                color: #777777; }
             body .app-container .app .form-wrapper form .field-container.error input:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error input:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error select:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error select:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=radio]) {
               border-color: #f02100; }
           body .app-container .app .form-wrapper form .button-container {
@@ -606,6 +622,8 @@ body {
         margin: 0 auto; }
         body .app-container .app .template-navigation .template-info h2 {
           color: #ff0052; }
+        body .app-container .app .template-navigation .template-info h1, body .app-container .app .template-navigation .template-info h2, body .app-container .app .template-navigation .template-info h3, body .app-container .app .template-navigation .template-info h4, body .app-container .app .template-navigation .template-info h5, body .app-container .app .template-navigation .template-info h6 {
+          text-align: center; }
         body .app-container .app .template-navigation .button-container {
           flex: 1; }
           body .app-container .app .template-navigation .button-container:last-child {
@@ -865,22 +883,25 @@ body {
         border-radius: 50%;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%; }
-      body .app-container .app .avatar-selector > * {
-        margin: 0 auto; }
-      body .app-container .app .avatar-selector .avatar {
-        margin-bottom: 8px; }
-      body .app-container .app .avatar-selector .avatar-settings {
-        margin: 16px 0; }
-        body .app-container .app .avatar-selector .avatar-settings .avatar-setting {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
+      body .app-container .app .avatar-selector {
+        min-height: 40px;
+        position: relative; }
+        body .app-container .app .avatar-selector > * {
+          margin: 0 auto; }
+        body .app-container .app .avatar-selector .avatar {
           margin-bottom: 8px; }
-          body .app-container .app .avatar-selector .avatar-settings .avatar-setting > * {
-            margin: 0 8px; }
-          body .app-container .app .avatar-selector .avatar-settings .avatar-setting .setting-label {
-            width: 80px; }
+        body .app-container .app .avatar-selector .avatar-settings {
+          margin: 16px 0; }
+          body .app-container .app .avatar-selector .avatar-settings .avatar-setting {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px; }
+            body .app-container .app .avatar-selector .avatar-settings .avatar-setting > * {
+              margin: 0 8px; }
+            body .app-container .app .avatar-selector .avatar-settings .avatar-setting .setting-label {
+              width: 80px; }
       body .app-container .app .comment-thread .comments {
         max-height: 300px;
         overflow-y: auto;
@@ -960,36 +981,34 @@ body {
       body .app-container .app .tabbed-panels {
         box-shadow: 6px 6px 6px #00000016;
         -webkit-box-shadow: 6px 6px 6px #00000016;
-        -moz-box-shadow: 6px 6px 6px #00000016; }
+        -moz-box-shadow: 6px 6px 6px #00000016;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border: 1px solid #c8c8c8;
+        overflow: hidden; }
         body .app-container .app .tabbed-panels .tabbed-panels-tabs {
           display: flex;
           flex-direction: row;
           padding: 0;
           background-color: #c8c8c8;
           list-style: none;
-          border-radius: 4px;
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px;
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-          margin: 0;
-          border-top: 1px solid #c8c8c8;
-          border-left: 1px solid #c8c8c8;
-          border-right: 1px solid #c8c8c8; }
+          margin: 0; }
           body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
             flex: 1;
             text-align: center;
             cursor: pointer;
             outline: 0;
+            color: #080808;
+            padding: 8px;
             border-radius: 4px;
             -webkit-border-radius: 4px;
             -moz-border-radius: 4px;
             border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            color: #080808;
-            padding: 8px; }
+            border-bottom-right-radius: 0; }
             body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab .tab-title {
-              font-size: 12px; }
+              font-size: 12px;
+              text-align: center; }
             @media (min-width: 576px) {
               body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab {
                 padding: 8px 16px; }
@@ -1004,17 +1023,12 @@ body {
         body .app-container .app .tabbed-panels .tabbed-panels-panel {
           background-color: #fff; }
           body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
-            padding: 16px;
-            border-bottom: 1px solid #c8c8c8;
-            border: 1px solid #c8c8c8;
-            border-top: none;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0; }
+            min-height: 40px;
+            position: relative;
+            padding: 16px; }
       body .app-container .app .achievement-list .table-title {
-        margin-bottom: 16px; }
+        margin-bottom: 16px;
+        text-align: center; }
       body .app-container .app .achievement-list .achievement-table {
         margin: 0 auto;
         width: 100%;
@@ -1030,8 +1044,6 @@ body {
             opacity: 0.5; }
         body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail {
           width: 100%; }
-          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h1, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h2, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h3, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h4, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h5, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h6 {
-            text-align: left; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
             margin: 0; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar {
@@ -1057,11 +1069,16 @@ body {
             body .app-container .app .tip-strip .tip-strip-inner > * {
               width: 50%; } }
         body .app-container .app .tip-strip .tip-strip-inner .tip-detail {
-          text-align: center; }
+          display: flex;
+          flex-direction: column;
+          align-items: center; }
+          @media (min-width: 576px) {
+            body .app-container .app .tip-strip .tip-strip-inner .tip-detail {
+              align-items: flex-start; } }
         body .app-container .app .tip-strip .tip-strip-inner .tip-image {
           max-width: 200px; }
           body .app-container .app .tip-strip .tip-strip-inner .tip-image.vertical {
-            margin-top: 8px; }
+            margin-bottom: 16px; }
           body .app-container .app .tip-strip .tip-strip-inner .tip-image.horizontal {
             display: none; }
           @media (min-width: 576px) {
@@ -1069,13 +1086,21 @@ body {
               display: none; }
             body .app-container .app .tip-strip .tip-strip-inner .tip-image.horizontal {
               display: block; } }
+      body .app-container .app .play-info {
+        color: #525252;
+        margin-top: 8px;
+        text-align: center; }
+        body .app-container .app .play-info > p {
+          margin: 0; }
+        body .app-container .app .play-info .start-new-info {
+          margin-top: 8px; }
       body .app-container .app .page-comic .comic-area {
+        min-height: 40px;
         position: relative;
-        min-height: 100px;
         display: flex;
         flex-direction: column; }
         body .app-container .app .page-comic .comic-area .comic-info-label {
-          margin: 16px 0; }
+          margin-bottom: 16px; }
         body .app-container .app .page-comic .comic-area .progress-bar {
           margin: 0 auto;
           width: 240px; }
@@ -1140,11 +1165,7 @@ body {
             margin-top: 16px; }
             body .app-container .app .page-home .home-inner .home-detail .play-panel .play-info {
               margin-top: 8px; }
-              body .app-container .app .page-home .home-inner .home-detail .play-panel .play-info > p {
-                color: #525252;
-                margin: 0;
-                text-align: center; }
-            body .app-container .app .page-home .home-inner .home-detail .play-panel .how-to-play-button {
+            body .app-container .app .page-home .home-inner .home-detail .play-panel .play-button {
               margin-bottom: 8px; }
         body .app-container .app .page-home .home-inner .home-feature {
           flex-direction: column;
@@ -1163,8 +1184,8 @@ body {
           body .app-container .app .page-home .home-inner .home-feature .template-panel-carousel.with-lil-buddy {
             margin-top: 100px; }
       body .app-container .app .page-play .play-area {
+        min-height: 40px;
         position: relative;
-        min-height: 60vh;
         display: flex;
         flex-direction: column;
         align-items: center; }
@@ -1221,29 +1242,37 @@ body {
             font-size: 12px; }
         body .app-container .app .page-play .play-area .tip-strip {
           margin-top: 64px; }
+      body .app-container .app .page-team-editor .team-editor {
+        min-height: 40px;
+        position: relative; }
+      body .app-container .app .page-templates .tabbed-panels {
+        margin-top: 16px; }
+        body .app-container .app .page-templates .tabbed-panels .templates ul {
+          padding-left: 0;
+          list-style-type: none; }
+          body .app-container .app .page-templates .tabbed-panels .templates ul li:not(:last-child) {
+            margin-bottom: 16px; }
       body .app-container .app .page-template .template-navigation {
         margin: 0 auto; }
-      body .app-container .app .page-template .page-title {
-        margin: 16px 0; }
+      body .app-container .app .page-template .template-name {
+        text-align: center;
+        margin-top: 16px; }
       body .app-container .app .page-template .top-comic-container {
         margin-top: 16px;
-        min-height: 100px;
+        min-height: 40px;
         position: relative; }
         body .app-container .app .page-template .top-comic-container h3 {
           margin-bottom: 16px; }
       body .app-container .app .page-template .comic-list {
         margin-top: 16px; }
       body .app-container .app .page-leaderboards .leaderboards-inner {
-        position: relative;
-        min-height: 60vh;
-        margin-top: 16px; }
+        min-height: 40px;
+        position: relative; }
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table {
           border-collapse: collapse;
           width: 100%; }
           body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item {
             text-align: left; }
-            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h1, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h2, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h3, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h4, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h5, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h6 {
-              text-align: left; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item:not(:last-child) {
               border-bottom: 1px solid #efefef; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-user td {
@@ -1270,58 +1299,57 @@ body {
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboards-note {
           margin-top: 16px;
           color: #777777; }
-      body .app-container .app .page-profile .user-info-container {
-        position: relative;
-        min-height: 30vh; }
-        body .app-container .app .page-profile .user-info-container .user-info {
+      body .app-container .app .page-profile .page-profile-inner {
+        min-height: 40px;
+        position: relative; }
+        body .app-container .app .page-profile .page-profile-inner .user-info {
           display: flex;
           flex-direction: column;
           align-items: stretch;
           flex: 1; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-info-header {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-info-header {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 16px; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail > * {
+            body .app-container .app .page-profile .page-profile-inner .user-info .user-info-header .user-info-header-detail > * {
               text-align: center; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .user-name {
+            body .app-container .app .page-profile .page-profile-inner .user-info .user-info-header .user-info-header-detail .user-name {
               word-break: break-word; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-info-header .user-info-header-detail .joined-date {
+            body .app-container .app .page-profile .page-profile-inner .user-info .user-info-header .user-info-header-detail .joined-date {
               margin: 4px 0;
               color: #525252; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats > *:not(:last-child) {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats > *:not(:last-child) {
             border-bottom: 1px solid #c8c8c8;
             padding-bottom: 16px; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats > *:not(:first-child) {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats > *:not(:first-child) {
             padding-top: 16px; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stats-row {
             display: flex;
             flex-direction: row; }
-            body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stats-row .user-stat {
+            body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stats-row .user-stat {
               flex: 1; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h2 {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h1, body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h2, body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h3, body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h4, body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h5, body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h6 {
             text-align: center; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat h5 {
-            color: #525252;
-            text-align: center; }
-          body .app-container .app .page-profile .user-info-container .user-info .user-stats .user-stat > *:not(:first-child) {
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat h5 {
+            color: #525252; }
+          body .app-container .app .page-profile .page-profile-inner .user-info .user-stats .user-stat > *:not(:first-child) {
             margin-top: 8px; }
-          body .app-container .app .page-profile .user-info-container .user-info .template-usage-table {
+          body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table {
             border-collapse: collapse; }
-            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th {
+            body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table th {
               font-size: 12px;
               font-weight: normal;
               border-bottom: 1px solid #c8c8c8; }
-            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th {
+            body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table td, body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table th {
               padding: 8px; }
-              body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td.td-template-name, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th.td-template-name {
+              body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table td.td-template-name, body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table th.td-template-name {
                 width: 100%; }
-              body .app-container .app .page-profile .user-info-container .user-info .template-usage-table td.td-template-usages, body .app-container .app .page-profile .user-info-container .user-info .template-usage-table th.td-template-usages {
+              body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table td.td-template-usages, body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table th.td-template-usages {
                 text-align: center; }
-            body .app-container .app .page-profile .user-info-container .user-info .template-usage-table .template-usage-row:nth-child(2n) {
+            body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table .template-usage-row:nth-child(2n) {
               background-color: #efefef; }
-          body .app-container .app .page-profile .user-info-container .user-info .comic-list {
+          body .app-container .app .page-profile .page-profile-inner .user-info .comic-list {
             margin-top: 32px; }
       body .app-container .app .page-how-to-play .how-to-play-image {
         margin: 0 auto;
@@ -1342,10 +1370,12 @@ body {
           -webkit-box-shadow: 6px 6px 6px #00000016;
           -moz-box-shadow: 6px 6px 6px #00000016; }
       body .app-container .app .page-settings .settings-row {
+        min-height: 40px;
         position: relative;
-        min-height: 100px; }
+        margin-bottom: 32px; }
         body .app-container .app .page-settings .settings-row > h2 {
-          margin-bottom: 16px; }
+          margin-bottom: 16px;
+          text-align: center; }
       body .app-container .app .app-inner {
         display: flex;
         flex-direction: column;
@@ -1356,7 +1386,7 @@ body {
           flex-direction: column;
           position: relative; }
           body .app-container .app .app-inner [class^="page-"] .page-title {
-            text-align: center; }
+            margin-bottom: 16px; }
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             text-align: center;
             margin: 8px auto;
@@ -1428,7 +1458,7 @@ body {
         top: 50%;
         animation: loader-spin 0.3s linear infinite; }
     body .app-container .hidden {
-      display: none; }
+      display: none !important; }
     body .app-container .disabled {
       opacity: 0.2;
       pointer-events: none; }
@@ -1477,6 +1507,9 @@ body {
       margin: 0;
       overflow-wrap: break-word;
       text-align: center; }
+      @media (min-width: 768px) {
+        body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
+          text-align: left; } }
     body .app-container h3 {
       color: #777777; }
     body .app-container h5 {

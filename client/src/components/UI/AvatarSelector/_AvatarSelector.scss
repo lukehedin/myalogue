@@ -1,4 +1,6 @@
 .avatar-selector {
+	@include loaderContainer;
+
 	> * {
 		margin: 0 auto;
 	}

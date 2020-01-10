@@ -1,8 +1,7 @@
 .page-profile {
 
-	.user-info-container {
-		position: relative;
-		min-height: 30vh;
+	.page-profile-inner {
+		@include loaderContainer;
 
 		.user-info {
 			display: flex;
@@ -54,13 +53,12 @@
 					
 				.user-stat {
 
-					h2 {
+					@include allHeadings {
 						text-align: center;
 					}
 
 					h5 {
 						color: $colour-grey-e;
-						text-align: center;
 					}
 
 					> * {

@@ -8,14 +8,14 @@ export default class TabbedPanels extends Component {
 		let urlParams = new URLSearchParams(window.location.search);
 		let tabId = urlParams.get('tabId');
 		if(tabId) {
-			let selectedTab = this.props.tabs.find(tab => tab.id === tabId);
+			let selectedTab = this.props.tabs.find(tab => tab.tabId === tabId);
 			selectedIdx = selectedTab
 				? this.props.tabs.indexOf(selectedTab)
 				: 0;
 		}
 
 		return <Tabs className="tabbed-panels" defaultIndex={selectedIdx}>
-			<TabList className="tabbed-panels-tabs">
+			<TabList className={`tabbed-panels-tabs ${this.props.tabs.length > 1 ? '' : 'hidden'}`}>
 				{this.props.tabs.map((tab, idx) => <Tab key={idx} className="tabbed-panels-tab"><h5 className="tab-title">{tab.title}</h5></Tab>)}
 			</TabList>
 			{this.props.tabs.map((tab, idx) => <TabPanel key={idx} className="tabbed-panels-panel">{tab.content}</TabPanel>)}

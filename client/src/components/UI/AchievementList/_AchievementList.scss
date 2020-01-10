@@ -1,6 +1,7 @@
 .achievement-list {
 	.table-title {
 		margin-bottom: $spacing-sm;
+		text-align: center;
 	}
 
 	.achievement-table {
@@ -29,9 +30,6 @@
 
 			.td-achievement-detail {
 				width: 100%;
-				@include allHeadings {
-					text-align: left;
-				}
 
 				p {
 					margin: 0;

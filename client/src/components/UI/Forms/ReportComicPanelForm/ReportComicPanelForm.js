@@ -22,7 +22,7 @@ export default asForm(ReportComicPanelForm, {
 	fields: {
 		reportComicPanelId: {
 			type: Util.enums.FieldType.Dropdown,
-			getOptions: formData => [...formData.comic.comicPanels.filter(comicPanel => !comicPanel.isCensored && (!comicPanel.user || comicPanel.user.userId !== Util.context.getUserId()))],
+			getOptions: formData => [...formData.comic.comicPanels.filter(comicPanel => !comicPanel.isCensored && (!comicPanel.user || Util.context.isUserId(comicPanel.user.userId)))],
 			valueProp: 'comicPanelId',
 			isBlankAllowed: true,
 			blankLabel: 'Select a panel to report',

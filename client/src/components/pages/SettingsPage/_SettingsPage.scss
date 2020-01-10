@@ -1,10 +1,11 @@
 .page-settings {
 	.settings-row {
-		position: relative;
-		min-height: 100px;
+		@include loaderContainer;
+		margin-bottom: $spacing-md;
 
 		> h2 {
 			margin-bottom: $spacing-sm;
+			text-align: center;
 		}
 	}
 }

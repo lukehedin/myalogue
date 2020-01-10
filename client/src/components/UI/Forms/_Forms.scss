@@ -29,6 +29,10 @@
 			> label {
 				font-size: 12px;
 				margin-bottom: $spacing-xxs;
+
+				.optional {
+					color: $colour-grey-d;
+				}
 			}
 			
 			&.error {

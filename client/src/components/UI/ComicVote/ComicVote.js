@@ -37,19 +37,17 @@ export default class ComicVote extends Component {
 		});
 	}
 	render() {
-		let isLoggedIn = !!Util.context.getUserId();
-
 		let getVoteButton = (value) => {
 			return <Button 
 				leftIcon={value > 0 ? Util.icon.like : Util.icon.dislike}
 				size="sm"
 				isHollow={value !== this.state.value}
 				colour={'grey'}
-				to={isLoggedIn
+				to={Util.context.isAuthenticated()
 					? null
 					: Util.route.register()
 				}
-				onClick={isLoggedIn
+				onClick={Util.context.isAuthenticated()
 					? () => this.setValue(this.state.value === value ? 0 : value)
 					: null}
 			/>

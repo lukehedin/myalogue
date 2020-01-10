@@ -5,7 +5,7 @@ import Util from '../../../Util';
 
 export default class ComicInfoLabel extends Component {
 	render() {
-		let template = Util.referenceData.getTemplateById(this.props.comic.templateId);
+		let template = Util.context.getTemplateById(this.props.comic.templateId);
 
 		let authors = [];
 		let anonCount = 0;

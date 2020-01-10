@@ -1,12 +1,11 @@
 .page-comic {
 	.comic-area {
-		position: relative;
-		min-height: 100px;
+		@include loaderContainer;
 		display: flex;
 		flex-direction: column;
 
 		.comic-info-label {
-			margin: $spacing-sm 0;
+			margin-bottom: $spacing-sm;
 		}
 
 		.progress-bar {

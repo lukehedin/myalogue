@@ -54,13 +54,13 @@ export default class ProfilePage extends Component {
 		});
 	}
 	render() {
-		let isMe = this.state.user && this.state.user.userId === Util.context.getUserId();
+		let isMe = this.state.user && Util.context.isUserId(this.state.user.userId);
 
 		return <div className="page-profile">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<div className="user-info-container">
+						<div className="page-profile-inner">
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: this.state.user
@@ -73,7 +73,7 @@ export default class ProfilePage extends Component {
 											</div>
 										</div>
 										<TabbedPanels tabs={[{
-											id: 'stats',
+											tabId: 'stats',
 											title: 'Stats',
 											content: <div className="user-stats">
 												<div className="user-stat">
@@ -98,11 +98,11 @@ export default class ProfilePage extends Component {
 												</div>
 											</div>
 										}, {
-											id: 'achievements',
+											tabId: 'achievements',
 											title: 'Achievements',
 											content: <AchievementList userAchievementInfo={this.state.userAchievementInfo} />
 										}, {
-											id: 'templates',
+											tabId: 'templates',
 											title: 'Templates',
 											content: <table className="template-usage-table">
 												<thead>
@@ -112,7 +112,7 @@ export default class ProfilePage extends Component {
 													</tr>
 												</thead>
 												<tbody>
-													{[...Util.referenceData.getTemplates()]
+													{[...Util.context.getTemplates()]
 													.sort((t1, t2) => {
 														return (this.state.userStats.templateUsageLookup[t2.templateId] || 0) - (this.state.userStats.templateUsageLookup[t1.templateId] || 0)
 													})

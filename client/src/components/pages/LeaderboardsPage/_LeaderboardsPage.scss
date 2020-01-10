@@ -1,8 +1,6 @@
 .page-leaderboards {
 	.leaderboards-inner {
-		position: relative;
-		min-height: 60vh;
-		margin-top: $spacing-sm;
+		@include loaderContainer;
 
 		.leaderboard-table {
 			border-collapse: collapse;
@@ -10,9 +8,6 @@
 	
 			.leaderboard-item {
 				text-align: left;
-				@include allHeadings {
-					text-align: left;
-				}
 
 				&:not(:last-child) {
 					border-bottom: 1px solid $colour-grey-a;

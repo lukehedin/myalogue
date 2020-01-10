@@ -31,6 +31,7 @@ export default class LeaderboardsPage extends Component {
 	}
 	render() {
 		let leaderboardTabs = [{
+			tabId: 'comics',
 			title: 'Comics',
 			content: Util.array.any(this.state.leaderboard.comics)
 				? <div>
@@ -38,7 +39,7 @@ export default class LeaderboardsPage extends Component {
 					<table className="leaderboard-table">
 						<tbody>
 							{this.state.leaderboard.comics.map((leaderboardComic, idx) => {
-								let template = Util.referenceData.getTemplateById(leaderboardComic.templateId);
+								let template = Util.context.getTemplateById(leaderboardComic.templateId);
 								return <tr key={leaderboardComic.comicId} className="leaderboard-item leaderboard-comic">
 									<td>
 										<h4>{idx + 1}.</h4>
@@ -56,6 +57,7 @@ export default class LeaderboardsPage extends Component {
 				</div>
 				: <p className="empty-text align-center">No leaderboard comics to show.</p>
 		}, {
+			tabId: 'users',
 			title: 'Users',
 			content: Util.array.any(this.state.leaderboard.users)
 				? <div>
@@ -88,6 +90,10 @@ export default class LeaderboardsPage extends Component {
 					</table>
 				</div>
 				: <p className="empty-text align-center">No leaderboard users to show.</p>
+		}, {
+			tabId: 'teams',
+			title: 'Teams',
+			content: <div>teams</div>
 		}];
 
 		return <div className="page-leaderboards">

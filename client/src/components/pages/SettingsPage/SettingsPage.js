@@ -3,26 +3,22 @@ import Util from '../../../Util';
 
 import AvatarSelector from '../../UI/AvatarSelector/AvatarSelector';
 import ChangePasswordForm from '../../UI/Forms/ChangePasswordForm/ChangePasswordForm';
+import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 
 //this.props.userId
 export default class ProfilePage extends Component {
 	render() {
 		return <div className="page-settings">
-			<div className="panel-inset">
-				<div className="container">
-					<div className="row">
-						<h1 className="page-title">Settings</h1>
-					</div>
-				</div>
-			</div>
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
+						<h1 className="page-title">Settings</h1>
 						<div className="settings-row">
 							<h2>Change avatar</h2>
-							<AvatarSelector />
+							<TabbedPanels tabs={[{
+								content: <AvatarSelector />
+							}]} />
 						</div>
-						<hr />
 						<div className="settings-row">
 							<h2>Change password</h2>
 							<ChangePasswordForm onSubmit={(form, formData) => {

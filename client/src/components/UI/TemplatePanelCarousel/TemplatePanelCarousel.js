@@ -48,7 +48,7 @@ export default class TemplatePanelCarousel extends Component {
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />;
 
-		let templates = [...Util.referenceData.getTemplates()].reverse();
+		let templates = [...Util.context.getTemplates()].reverse();
 
 		const settings = {
 			infinite: true,

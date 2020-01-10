@@ -40,7 +40,7 @@ body {
 					position: relative;
 
 					.page-title {
-						text-align: center;
+						margin-bottom: $spacing-sm;
 					}
 	
 					.page-subtitle {
@@ -147,7 +147,7 @@ body {
 		}
 	
 		.hidden {
-			display: none;
+			display: none !important;
 		}
 
 		.disabled {
@@ -203,7 +203,11 @@ body {
 		@include allHeadings {
 			margin: 0;
 			overflow-wrap: break-word;
+
 			text-align: center;
+			@include overmd {
+				text-align: left;
+			}
 		}
 
 		h3 {
@@ -233,7 +237,7 @@ body {
 
 			&:last-child {
 				margin-bottom: 0;
-			} 
+			}
 
 			&.center {
 				text-align: center;

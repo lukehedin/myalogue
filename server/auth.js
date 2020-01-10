@@ -26,7 +26,7 @@ const auth = {
 		let token = await auth._getJwtToken({ userId: user.userId });
 		//The authResult sent to a successfully authenticated user
 		return {
-			...user, //userid, username, avatar etc
+			user,
 			token
 		};
 	},

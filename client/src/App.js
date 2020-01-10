@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModal, closeAllModals } from './redux/actions';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import Util from './Util';
 import Div100vh from 'react-div-100vh';
+import moment from 'moment';
+import Util from './Util';
 
 import loaderFace from './images/face_black.png';
 
@@ -29,6 +30,10 @@ import TemplatesPage from './components/pages/TemplatesPage/TemplatesPage';
 import ComicPage from './components/pages/ComicPage/ComicPage';
 import PlayPage from './components/pages/PlayPage/PlayPage';
 import SettingsPage from './components/pages/SettingsPage/SettingsPage';
+import TeamPage from './components/pages/TeamPage/TeamPage';
+import TeamsPage from './components/pages/TeamsPage/TeamsPage';
+import TeamEditorPage from './components/pages/TeamEditorPage/TeamEditorPage';
+import AchievementsPage from './components/pages/AchievementsPage/AchievementsPage';
 
 class App extends Component {
 	constructor(props){
@@ -36,12 +41,20 @@ class App extends Component {
 
 		this.state = {
 			isLoading: true,
-			isUnderMaintenance: false
+			isUnderMaintenance: false,
+
+			lastPingAt: null
 		};
 
+		this.pingInterval = null;
+
 		this.authenticate = this.authenticate.bind(this);
+		this.ping = this.ping.bind(this);
 	}
 	componentWillUnmount() {
+		window.removeEventListener('focus', () => this.ping());
+		clearInterval(this.pingInterval);
+
 		this.unlisten();
 	}
 	componentDidMount() {
@@ -69,6 +82,10 @@ class App extends Component {
 					});
 				}
 
+				this.ping(true);
+				window.addEventListener('focus', () => this.ping());
+				this.pingInterval = setInterval(() => this.ping(), 15000);
+
 				Util.analytics.init();
 				Util.analytics.page();
 
@@ -81,6 +98,28 @@ class App extends Component {
 				//If a 500 error, try again in a few secs
 				setTimeout(this.authenticate, Util.isDev ? 200 : 5000);
 			});
+	}
+	ping(ignoreConditions = false) {
+		//If the document has focus and it has been more than a minute since last ping, do one now
+		if(ignoreConditions || (document.hasFocus() && this.state.lastPingAt < moment().subtract(1, 'minute').toDate())) {
+			this.setState({
+				lastPingAt: new Date()
+			});
+	
+			Util.api.post('/api/ping', {
+				existingTemplateIds: Util.context.getTemplates().map(template => template.templateId),
+
+			})
+			.then(result => {
+				if(!result.error) {
+					if(Util.array.any(result.newTemplates)) {
+						Util.context.set({
+							templates: [...Util.context.getTemplates(), ...result.newTemplates]
+						});
+					}
+				}
+			});
+		}
 	}
 	render() {
 		let ifAuthenticated = (component) => {
@@ -130,7 +169,13 @@ class App extends Component {
 						<Route exact path="/template/:templateId" render={({ match }) => <TemplatePage templateId={match.params.templateId} />} />
 
 						<Route exact path="/leaderboards" render={() => <LeaderboardsPage />} />
-						
+
+						<Route exact path="/achievements" render={() => <AchievementsPage />} />
+
+						<Route exact path="/team/:teamId" render={({ match }) => <TeamPage teamId={match.params.teamId} />} />
+						<Route exact path="/teams" render={() => <TeamsPage />} />
+						<Route exact path="/team-editor" render={() => <TeamEditorPage />} />
+
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUsername())} />)} />
 						<Route exact path="/profile/:userIdOrUserName" render={({ match }) => <ProfilePage userIdOrUserName={match.params.userIdOrUserName} />} />
 						

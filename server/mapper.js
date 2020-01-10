@@ -30,6 +30,8 @@ const mapper = {
 			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
 			leaderboardRating: dbComic.LeaderboardRating,
+			teamId: dbComic.TeamId,
+			team: dbComic.Team ? mapper.fromDbTeam(dbComic.Team) : null,
 			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
@@ -116,6 +118,24 @@ const mapper = {
 			textAlignHorizontal: dbTemplatePanel.TextAlignHorizontal,
 			textColour: dbTemplatePanel.TextColour
 		};
+	},
+
+	fromDbTeam: (dbTeam) => {
+		return {
+			teamId: dbTeam.TeamId,
+			name: dbTeam.Name,
+			description: dbTeam.Description,
+			teamUsers: (dbTeam.TeamUsers || []).map(mapper.fromDbTeamUser)
+		}
+	},
+
+	fromDbTeamUser: (dbTeamUser) => {
+		return {
+			teamUserId: dbTeamUser.TeamUserId,
+			userId: dbTeamUser.UserId,
+			teamId: dbTeamUser.TeamId,
+			user: dbTeamUser.User ? mapper.fromDbUser(dbTeamUser.User) : null
+		}
 	},
 
 	fromDbUserAchievement: (dbUserAchievement) => {

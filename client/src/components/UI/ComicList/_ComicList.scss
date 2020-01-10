@@ -1,29 +1,49 @@
 .comic-list {
 	position: relative;
 
-	.comic-list-filters {
+	.comic-list-upper {
+		margin: 0 auto;
+		margin-bottom: $spacing-sm;
+
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		margin: $spacing-sm auto;
-		&:first-child {
-			margin-top: 0;
+		@include overmd {
+			flex-direction: row;
 		}
 
-		> * {
-			&:not(:first-child) {
-				margin-left: $spacing-xs;
+		.comic-list-title {
+			flex: 1;
+
+			margin-bottom: $spacing-xs;
+			@include overmd {
+				margin-bottom: 0;
 			}
 		}
 
-		.anonymous-switch {
-			.checkmark {
-				top: 6px;
+		.comic-list-filters {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			&:first-child {
+				margin-top: 0;
 			}
-
-			.checkbox-label {
-				width: 110px;
+	
+			> * {
+				&:not(:first-child) {
+					margin-left: $spacing-xs;
+				}
+			}
+	
+			.anonymous-switch {
+				.checkmark {
+					top: 6px;
+				}
+	
+				.checkbox-label {
+					width: 110px;
+				}
 			}
 		}
 	}
@@ -38,8 +58,7 @@
 		}
 
 		.comic-list-bottom {
-			position: relative;
-			min-height: 100px; //this was 40vh, seemed excessive?
+			@include loaderContainer;
 		}
 	}
 

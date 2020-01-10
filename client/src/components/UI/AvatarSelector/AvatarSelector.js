@@ -70,7 +70,11 @@ export default class AvatarSelector extends Component {
 		});
 	}
 	render() {
-		if(this.state.isLoading) return <div className="loader"></div>;
+		if(this.state.isLoading) {
+			return <div className="avatar-selector">
+				<div className="loader"></div>
+			</div>;
+		}
 		
 		let expressionMax = Util.avatar.getExpressionCount();
 		let characterMax = Util.avatar.getCharacterCount();

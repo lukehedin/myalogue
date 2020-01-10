@@ -46,44 +46,79 @@ const Util = {
 		_tokenKey: 'auth-token',
 		_getToken: () => localStorage.getItem(Util.context._tokenKey),
 
-		_userId: null,
-		_username: null,
-		_avatar: null,
+		_user: null,
 
-		set: (authResult) => {
-			authResult.token
-				? localStorage.setItem(Util.context._tokenKey, authResult.token)
-				: localStorage.removeItem(Util.context._tokenKey);
+		_templates: null,
+		_templatePanelLookup: null,
+		
+		_achievements: null,
 
-			Util.context._userId = authResult.userId;
-			Util.context._username = authResult.username;
-			Util.context._avatar = authResult.avatar;
+		set: (newContext) => {
+			if(Util.isDev) document.title = 'DEV - ' + document.title;
 
-			if(authResult.referenceData) Util.referenceData.set(authResult.referenceData);
+			//The token will have an anonId or a userId
+			if(newContext.token) {
+				newContext.token
+					? localStorage.setItem(Util.context._tokenKey, newContext.token)
+					: localStorage.removeItem(Util.context._tokenKey);
+			}
 
-			Util.analytics.set('userId', authResult.userId);
+			if(newContext.user) {
+				Util.context._user = newContext.user;
+				Util.analytics.set('userId', newContext.user.userId);
+			}
 
-			if(Util.isDev) document.title = 'DEV - ' + document.title; 
+			if(newContext.templates) {
+				Util.context._templates = newContext.templates;
+				//Add a lookup of templatepanels to the context
+				Util.context._templatePanelLookup = {};
+				Util.context._templates.forEach(template => {
+					template.templatePanels.forEach(templatePanel => {
+						Util.context._templatePanelLookup[templatePanel.templatePanelId] = templatePanel;
+					});
+				});
+			}
+
+			if(newContext.achievements) {
+				Util.context._achievements = newContext.achievements;
+			}
 		},
 
 		clear: (noRefresh = false) => {
 			localStorage.removeItem(Util.context._tokenKey);
 
-			Util.context._userId = null;
-			Util.context._username = null;
-
+			Util.context._user = null;
 			Util.analytics.set('userId', null);
 			
 			if(!noRefresh) window.location.href = "/";
 		},
 
-		isAuthenticated: () => !!Util.context.getUserId(), // Cannot use token, as anons also use this
-		
-		getUserId: () => Util.context._userId,
-		getUsername: () => Util.context._username,
-		getUserAvatar: () => Util.context._avatar && Util.context._avatar.character && Util.context._avatar.expression && Util.context._avatar.colour
-			? Util.context._avatar
+		isAuthenticated: () => !!Util.context._user, // Cannot use token, as anons also use this
+		isUserId: (userId) => Util.context.isAuthenticated() && Util.context.getUserId() === userId,
+
+		getUserId: () => Util.context._user.userId,
+		getUsername: () => Util.context._user.username,
+		getUserAvatar: () => Util.context._user.avatar && Util.context._user.avatar.character && Util.context._user.avatar.expression && Util.context._user.avatar.colour
+			? Util.context._user.avatar
 			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
+
+		getTemplates: () => Util.context._templates,
+		getLatestTemplate: () => Util.context._templates[Util.context._templates.length - 1],
+		getTemplateById: (templateId) => {
+			let template = Util.context._templates.find(template => templateId === template.templateId);
+			if(!template) Util.context.clear(); //Context is outdated, do a refresh.
+	
+			return template;
+		},
+		getTemplatePanelById: (templatePanelId) => {
+			let templatePanel = Util.context._templatePanelLookup[templatePanelId];
+			if(!templatePanel) Util.context.clear(); //Context is outdated, do a refresh.
+	
+			return templatePanel;
+		},
+	
+		getAchievements: () => Util.context._achievements,
+		getAchievementByType: (achievementType) => Util.context.getAchievements().find(achievement => achievement.type === achievementType),
 
 		//localstored, device only settings (the ones that do not matter if cleared)
 		setting: {
@@ -99,47 +134,6 @@ const Util = {
 		//Device and browser info
 		isBrowserSupported: () => detectBrowser().name !== "ie",
 		isTouchDevice: () => isTouchDevice()
-	},
-
-	referenceData: {
-		_referenceData: null,
-	
-		set: (referenceData) => {
-			if(referenceData) {
-				//Add a lookup of templatepanels to the referencedata
-				referenceData.templatePanelLookup = {};
-				referenceData.templates.forEach(template => {
-					template.templatePanels.forEach(templatePanel => {
-						referenceData.templatePanelLookup[templatePanel.templatePanelId] = templatePanel;
-					});
-				});
-			}
-			Util.referenceData._referenceData = referenceData;
-		},
-
-		get: () => Util.referenceData._referenceData,
-
-		getTemplates: () => Util.referenceData._referenceData.templates,
-		getLatestTemplate: () => Util.referenceData._referenceData.templates[Util.referenceData._referenceData.templates.length - 1],
-		getTemplateById: (templateId) => {
-			let template = Util.referenceData._referenceData.templates.find(template => templateId === template.templateId);
-			if(!template) Util.context.clear(); //Reference data is outdated, do a refresh.
-	
-			return template;
-		},
-
-		getTemplatePanelById: (templatePanelId) => {
-			let templatePanel = Util.referenceData._referenceData.templatePanelLookup[templatePanelId];
-			if(!templatePanel) Util.context.clear(); //Reference data is outdated, do a refresh.
-	
-			return templatePanel;
-		},
-
-		getAchievements: () => Util.referenceData._referenceData.achievements,
-		getAchievementByType: (achievementType) => Util.referenceData.getAchievements().find(achievement => achievement.type === achievementType),
-		
-		getTopComic: () => Util.referenceData._referenceData.topComic, // Used for how to play page
-
 	},
 
 	// Functions and static data
@@ -441,10 +435,13 @@ const Util = {
 
 		home: () => `/`,
 		settings: () => `/settings`,
+		team: (teamId) => `/team/${teamId}`,
+		teams: () => `/teams`,
+		teamEditor: (teamId) => (teamId ? `/team-editor/${teamId}` : `/team-editor`),
 		templates: () => `/templates`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,
-		leaderboards: () => `/leaderboards`,
+		leaderboards: (tabId) => `/leaderboards` + (tabId ? `?tabId=${tabId}` : ``),
 		login: () => `/login`,
 		howToPlay: () => `/how-to-play`,
 		profile: (userId, tabId) => (userId ? `/profile/${userId}` : `/profile`) + (tabId ? `?tabId=${tabId}` : ``),

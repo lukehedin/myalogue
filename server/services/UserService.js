@@ -131,7 +131,7 @@ export default class UserService extends Service {
 			&& !common.config.ForbiddenUserNames.includes(username)
 			&& isNaN(username); //Can't have a username with just numbers, confuses profile page
 
-		if(!isValidEmail || !isValidUsername) throw 'Invalid email/username or username supplied.';
+		if(!isValidEmail || !isValidUsername) throw 'Invalid email or username supplied.';
 
 		//Check for existing username or email match
 		let dbExistingUser = await this.DbGetByUsernameEmailMatch(email, username);
@@ -306,6 +306,10 @@ export default class UserService extends Service {
 		});
 
 		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
+	}
+	async GetLastComicStartedAt(userId) {
+		let dbUser = this.DbGetById(userId);
+		return dbUser ? dbUser.LastComicStartedAt : null;
 	}
 	async GetUserAchievementInfo(userId, userStats) {
 		let dbUserAchievements = await this.models.UserAchievement.findAll({

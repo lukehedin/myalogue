@@ -109,7 +109,8 @@ export default class Database {
 			PermanentlyBannedAt: Sequelize.DATE,
 			BannedReason: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
-			LeaderboardRating: getIntegerNotNull()
+			LeaderboardRating: getIntegerNotNull(),
+			LastComicStartedAt: Sequelize.DATE
 		}, true);
 
 		defineTable('Notification', {
@@ -128,6 +129,23 @@ export default class Database {
 
 		defineTable('UserAchievement', {
 			Type: Sequelize.INTEGER
+		});
+
+		defineTable('Team', {
+			Name: Sequelize.STRING,
+			Description: Sequelize.TEXT,
+			LeaderboardTopAt: Sequelize.DATE,
+			LeaderboardRating: getIntegerNotNull()
+		});
+
+		defineTable('TeamUser', {
+			IsTeamAdmin: getBoooleanNotNull()
+		});
+
+		defineTable('TeamUserRequest', {
+			ApprovedAt: Sequelize.DATE,
+			DeniedAt: Sequelize.DATE,
+			Message: Sequelize.TEXT
 		});
 
 		defineTable('Template', {
@@ -247,6 +265,13 @@ export default class Database {
 		createOneToMany('User', 'ComicPanelReport');
 		createOneToMany('User', 'UserAchievement');
 		createOneToMany('User', 'Notification'); // Notification will link to user profile
+		createOneToMany('User', 'Team', 'CreatedByUser');
+		createOneToMany('User', 'TeamUser');
+		createOneToMany('User', 'TeamUserRequest');
+
+		createOneToMany('Team', 'TeamUser');
+		createOneToMany('Team', 'TeamUserRequest');
+		createOneToMany('Team', 'Comic');
 
 		console.log('Database: Database models loaded');
 	}

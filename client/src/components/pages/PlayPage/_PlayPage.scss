@@ -1,7 +1,6 @@
 .page-play {
 	.play-area {
-		position: relative;
-		min-height: 60vh;
+		@include loaderContainer;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

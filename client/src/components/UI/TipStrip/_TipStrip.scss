@@ -14,14 +14,19 @@
 		}
 
 		.tip-detail {
-			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			@include oversm {
+				align-items: flex-start;
+			}
 		}
 
 		.tip-image {
 			max-width: 200px;
 
 			&.vertical {
-				margin-top: $spacing-xs;
+				margin-bottom: $spacing-sm;
 			}
 
 			&.horizontal {

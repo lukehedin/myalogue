@@ -17,7 +17,7 @@ class Comic extends Component {
 		super(props);
 
 		this.initialComic = this.props.comic;
-		this.template = Util.referenceData.getTemplateById(this.props.comic.templateId);
+		this.template = Util.context.getTemplateById(this.props.comic.templateId);
 
 		this.state = {
 			isLoading: false,
@@ -120,12 +120,18 @@ class Comic extends Component {
 		let comicPanelsPairs = [];
 		let heldPanel = null;
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
+			let leftLabel = null;
+			if(idx === 0) leftLabel = `Comic #${comicPanel.comicId} ${Util.route.getHost()}`;
+			if(idx === this.state.comic.comicPanels.length - 1 && this.state.comic.team) leftLabel = this.state.comic.team.name;
+
+			let panel = <ComicPanel isColour={true} comicPanel={comicPanel} leftLabel={leftLabel} />
+
 			if(idx % 2 === 0) {
-				heldPanel = <ComicPanel isColour={true} comicPanel={comicPanel} includeComicId={idx === 0} />;
+				heldPanel = panel;
 			} else {
 				comicPanelsPairs.push(<ComicPanelPair key={idx}>
 					{heldPanel}
-					<ComicPanel isColour={true} comicPanel={comicPanel} />
+					{panel}
 				</ComicPanelPair>);
 				heldPanel = null;
 			}
@@ -138,7 +144,7 @@ class Comic extends Component {
 			this.state.comic.userAchievements.forEach(userAchievement => {
 				let panelByUser = this.state.comic.comicPanels.find(comicPanel => comicPanel.user && comicPanel.user.userId === userAchievement.userId);
 				let user = panelByUser ? panelByUser.user : null;
-				let achievement = Util.referenceData.getAchievementByType(userAchievement.type);
+				let achievement = Util.context.getAchievementByType(userAchievement.type);
 				
 				if(user && achievement) {
 					let existingUsernames = userAchievementLookup[achievement.name];

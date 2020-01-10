@@ -175,7 +175,7 @@ export default function asForm(WrappedForm, formConfig) {
 			let fieldError = this.state.formErrors[fieldName];
 
 			return <div className={`field-container ${!!fieldError ? 'error' : ''}`}>
-				{hideContainerLabel ? null : <label>{fieldConfig.label}</label>}
+				{hideContainerLabel ? null : <label>{fieldConfig.label}{fieldConfig.isOptional ? <span className="optional"> (optional)</span> : null}</label>}
 				{field}
 				{!!fieldError ? <div className="field-error">{fieldError}</div> : null}
 			</div>;

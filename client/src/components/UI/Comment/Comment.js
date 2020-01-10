@@ -58,7 +58,7 @@ class Comment extends Component {
 	}
 	render() {
 		let user = this.props.comment.user;
-		let isMe = user && user.userId === Util.context.getUserId();
+		let isMe = user && Util.context.isUserId(user.userId);
 
 		return <div className="comment">
 			{user 

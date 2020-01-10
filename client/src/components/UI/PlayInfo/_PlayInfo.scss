@@ -1,0 +1,13 @@
+.play-info {
+	color: $colour-grey-e;
+	margin-top: $spacing-xs;
+	text-align: center;
+	
+	> p {
+		margin: 0;
+	}
+
+	.start-new-info {
+		margin-top: $spacing-xs;
+	}
+}

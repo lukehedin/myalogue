@@ -9,6 +9,10 @@
 		h2 {
 			color: $colour-pink;
 		}
+
+		@include allHeadings {
+			text-align: center;
+		}
 	}
 
 	.button-container {

@@ -3,14 +3,14 @@
 		margin: 0 auto;
 	}
 
-	.page-title {
-		margin: $spacing-sm 0;
+	.template-name {
+		text-align: center;
+		margin-top: $spacing-sm;
 	}
 
 	.top-comic-container {
 		margin-top: $spacing-sm;
-		min-height: 100px;
-		position: relative;
+		@include loaderContainer;
 
 		h3 {
 			margin-bottom: $spacing-sm;

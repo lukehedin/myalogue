@@ -8,27 +8,18 @@ export default {
 			let userId = req.userId;
 			let anonId = req.anonId;
 
-			let referenceDataPromises = [
+			let authPromises = [
+				services.User.Authenticate(userId, anonId),
 				services.Template.GetAll(),
-				services.Achievement.GetAll(),
-				services.Comic.GetTopComic(null, userId)
+				services.Achievement.GetAll()
 			];
 	
-			let [templates, achievements, topComic] = await Promise.all(referenceDataPromises);
-
-			let result = {
-				referenceData: {
-					templates: templates,
-					achievements: achievements,
-					topComic: topComic
-				}
-			}
-
-			let authResult = await services.User.Authenticate(userId, anonId);
+			let [authResult, templates, achievements] = await Promise.all(authPromises);
 
 			return {
-				...result,
-				...authResult
+				...authResult,
+				templates,
+				achievements
 			};
 		},
 	
@@ -66,6 +57,32 @@ export default {
 			return await services.User.SetPassword(token, password);
 		},
 
+		ping: async (req, services) => {
+			//Checks if any reference data has updated
+			let existingTemplateIds = req.body.existingTemplateIds;
+
+			let newTemplates = await services.Template.GetNew(existingTemplateIds);
+
+			return {
+				newTemplates
+			};
+		},
+
+		getPlayInfo: async (req, services) => {
+			let userId = req.userId; //Might be null
+			
+			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
+			let lastComicStartedAt = null;
+			if (userId) {
+				lastComicStartedAt = await services.User.GetLastComicStartedAt(userId);
+			}
+
+			return {
+				comicsInProgress,
+				lastComicStartedAt
+			}
+		},
+
 		getComicById: async (req, services) => {
 			let userId = req.userId; //Might be null
 			let comicId = req.body.comicId;
@@ -99,6 +116,7 @@ export default {
 
 			let templateId = req.body.templateId;
 			let authorUserId = req.body.authorUserId;
+			let teamId = req.body.teamId;
 			let ignoreComicIds = req.body.ignoreComicIds;
 			let completedAtBefore = req.body.completedAtBefore;
 			let includeAnonymous = req.body.includeAnonymous;
@@ -106,7 +124,7 @@ export default {
 			let offset = req.body.offset;
 			let limit = req.body.limit;
 
-			return await services.Comic.GetComics(forUserId, templateId, authorUserId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
+			return await services.Comic.GetComics(forUserId, templateId, authorUserId, teamId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
 		},
 
 		getLeaderboard: async (req, services) => {
@@ -135,17 +153,14 @@ export default {
 			};
 		},
 
-		homeUpdate: async (req, services) => {
-			let userId = req.userId;
-			let existingTemplateIds = req.body.existingTemplateIds;
+		getTeams: async (req, services) => {
+			return await services.Team.GetAll();
+		},
 
-			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
-			let newTemplates = await services.Template.GetNew(existingTemplateIds);
+		getTeam: async (req, services) => {
+			let teamId = req.body.teamId;
 
-			return {
-				comicsInProgress,
-				newTemplates
-			};
+			return await services.Team.GetById(teamId);
 		},
 
 		//Gets a comic in progress or starts new
@@ -273,6 +288,14 @@ export default {
 			let newPassword = req.body.newPassword;
 			
 			return await services.User.ChangePassword(userId, currentPassword, newPassword);
+		},
+		
+		saveTeam: async (req, services) => {
+			let userId = req.userId;
+
+			let team = req.body.team;
+
+			return await services.Team.SaveTeam(userId, team);
 		}
 	}
 };

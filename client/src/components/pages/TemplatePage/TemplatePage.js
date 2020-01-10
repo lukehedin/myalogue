@@ -33,8 +33,8 @@ export default class TemplatePage extends Component {
 		let templateId = this.props.templateId ? parseInt(this.props.templateId, 10) : null;
 
 		let template = templateId 
-			? Util.referenceData.getTemplateById(templateId) 
-			: Util.referenceData.getLatestTemplate();
+			? Util.context.getTemplateById(templateId) 
+			: Util.context.getLatestTemplate();
 		
 		this.setState({
 			templateId: templateId,
@@ -62,7 +62,7 @@ export default class TemplatePage extends Component {
 				<div className="container">
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
-						<h1 className="page-title">{this.state.template.name}</h1>
+						<h1 className="page-title template-name">{this.state.template.name}</h1>
 						<div className="play-template button-container justify-center">
 							<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
 						</div>

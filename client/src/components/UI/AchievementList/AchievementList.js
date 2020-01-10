@@ -12,7 +12,7 @@ export default class AchievementList extends Component {
 		let lockedAchievements = [];
 		let unlockedAchievements = [];
 
-		Util.referenceData.getAchievements().forEach(achievement => {
+		Util.context.getAchievements().forEach(achievement => {
 			achievement.userAchievement = this.props.userAchievementInfo.userAchievements.find(userAchievement => userAchievement.type === achievement.type);
 			achievement.userAchievementProgress = this.props.userAchievementInfo.userAchievementProgress[achievement.type] || 0;
 			

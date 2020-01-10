@@ -6,7 +6,7 @@ import achievementsImage from './achievements.png';
 //this.props.achievementType
 export default class Avatar extends Component {
 	render() {
-		let achievementsCount = Util.referenceData.getAchievements().length;
+		let achievementsCount = Util.context.getAchievements().length;
 		const achievementImageSize = 128;
 		let imageWidth = achievementImageSize * achievementsCount;
 		let imageHeight = 128;

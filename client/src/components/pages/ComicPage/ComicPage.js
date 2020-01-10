@@ -89,7 +89,7 @@ export default class ComicPage extends Component {
 			</div>
 		} else if(this.state.isComicCompleted) {
 			content = <div>
-				<ComicInfoLabel className="center" comic={this.state.comic} />
+				<ComicInfoLabel comic={this.state.comic} />
 				<div className="comic-wrapper">
 					<Comic isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
