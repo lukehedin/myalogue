@@ -42,6 +42,8 @@ class Comic extends Component {
 		});
 	}
 	openShareComicModal(){
+		if(!this.props.comic.comicId) return;
+		
 		this.props.openModal({
 			type: Util.enums.ModalType.ShareComicModal,
 			comic: this.props.comic
@@ -121,7 +123,7 @@ class Comic extends Component {
 		let heldPanel = null;
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
 			let leftLabel = null;
-			if(idx === 0) leftLabel = `Comic #${comicPanel.comicId} ${Util.route.getHost()}`;
+			if(idx === 0 && comicPanel.comicId) leftLabel = `Comic #${comicPanel.comicId} ${Util.route.getHost()}`;
 			if(idx === this.state.comic.comicPanels.length - 1 && this.state.comic.team) leftLabel = this.state.comic.team.name;
 
 			let panel = <ComicPanel isColour={true} comicPanel={comicPanel} leftLabel={leftLabel} />
@@ -179,25 +181,28 @@ class Comic extends Component {
 				{comicPanelsPairs.map(comicPanelPair => comicPanelPair)}
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
 			</div>
-			<div className="comic-lower comic-width">
-				<div className="comic-lower-inner">
-					<div className="comic-lower-details">
-						<p className="sm"><b>Comic #{this.state.comic.comicId}</b></p>
-						<p className="sm">{moment(this.state.comic.completedAt).fromNow()}</p>
+			{this.state.comic.comicId
+				? <div className="comic-lower comic-width">
+					<div className="comic-lower-inner">
+						<div className="comic-lower-details">
+							<p className="sm"><b>Comic #{this.state.comic.comicId}</b></p>
+							<p className="sm">{moment(this.state.comic.completedAt).fromNow()}</p>
+						</div>
+						<div className="flex-spacer"></div>
+						<Button isHollow={!this.state.isCommentsVisible} size="sm" leftIcon={Util.icon.comment} onClick={this.toggleIsCommentsVisible} label={Util.array.any(this.state.comic.comicComments) ? this.state.comic.comicComments.length : null} colour="grey" />
+						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
 					</div>
-					<div className="flex-spacer"></div>
-					<Button isHollow={!this.state.isCommentsVisible} size="sm" leftIcon={Util.icon.comment} onClick={this.toggleIsCommentsVisible} label={Util.array.any(this.state.comic.comicComments) ? this.state.comic.comicComments.length : null} colour="grey" />
-					<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />
+					{this.state.isCommentsVisible
+						? <CommentThread comments={comments} 
+								onPostComment={this.postComicComment}
+								onUpdateComment={this.updateComicComment}
+								onDeleteComment={this.deleteComicComment}
+							/>
+						: null
+					}
 				</div>
-				{this.state.isCommentsVisible
-					? <CommentThread comments={comments} 
-							onPostComment={this.postComicComment}
-							onUpdateComment={this.updateComicComment}
-							onDeleteComment={this.deleteComicComment}
-						/>
-					: null
-				}
-			</div>
+				: null
+			}
 		</div>
 	}
 }

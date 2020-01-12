@@ -21,15 +21,8 @@
 				}
 			}
 
-			.header-subtitle {
-				font-size: 12px;
+			.page-subtitle {
 				text-align: center;
-				color: $colour-grey-d;
-				margin-top: $spacing-sm;
-
-				@include overmd {
-					font-size: 16px;
-				}
 			}
 		}
 

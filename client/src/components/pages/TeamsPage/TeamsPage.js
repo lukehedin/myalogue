@@ -12,8 +12,18 @@ export default class TeamsPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">Teams</h1>
-						<p><Link to={Util.route.teamEditor()}>Create a new team</Link> or request to join an existing one to make comics with other team members. Work together to get to the top of the <Link to={Util.route.leaderboards('teams')}>team leaderboard</Link>.</p>
+						<p className="page-subtitle"><Link to={Util.route.teamEditor()}>Create a new team</Link> or request to join an existing one to make comics with other team members. Work together to get to the top of the <Link to={Util.route.leaderboards('teams')}>team leaderboard</Link>.</p>
 						<TabbedPanels tabs={[{
+							tabId: 'teams',
+							title: 'Teams',
+							content: <TeamList />
+						}, {
+							tabId: 'invites',
+							title: 'Invites',
+							content: <TeamList />
+						}, {
+							tabId: 'requests',
+							title: 'Requests',
 							content: <TeamList />
 						}]} />
 					</div>

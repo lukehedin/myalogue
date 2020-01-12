@@ -22,6 +22,10 @@
 					}
 				}
 
+				&.leaderboard-highlight {
+					background-color: $colour-grey-a;
+				}
+
 				.leaderboard-item-detail {
 					> * {
 						&:not(:first-child) {

@@ -142,9 +142,21 @@ class App extends Component {
 			</div>;
 		};
 
+		let newsMessage = <p className="sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
+
 		let getApp = () => {
 			return <div className="app">
 				<AppHeader />
+				{newsMessage
+					? <div className="news-message">
+						<div className="container">
+							<div className="row">
+								{newsMessage}
+							</div>
+						</div>
+					</div>
+					: null
+				}
 				<div className="app-inner">
 					<Switch>
 						{/* If NOT authenticated */}

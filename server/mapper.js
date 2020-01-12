@@ -121,10 +121,15 @@ const mapper = {
 	},
 
 	fromDbTeam: (dbTeam) => {
+		let pendingTeamUserRequestAt = dbTeam.TeamUserRequests && dbTeam.TeamUserRequests.length > 0
+			? dbTeam.TeamUserRequests[0].CreatedAt
+			: null;
+
 		return {
 			teamId: dbTeam.TeamId,
 			name: dbTeam.Name,
 			description: dbTeam.Description,
+			pendingTeamUserRequestAt: pendingTeamUserRequestAt,
 			teamUsers: (dbTeam.TeamUsers || []).map(mapper.fromDbTeamUser)
 		}
 	},

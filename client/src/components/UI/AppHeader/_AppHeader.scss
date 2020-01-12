@@ -2,12 +2,12 @@
 	background: $colour-black;
 	color: $colour-white;
 	@include boxShadow(0px, 4px, 4px, #00000022);
-	padding: $spacing-xxs 0;
 
 	.app-header-inner {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		padding: $spacing-xxs 0;
 
 		.app-menu {
 			.app-menu-icon {

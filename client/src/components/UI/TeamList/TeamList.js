@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import HTMLEllipsis from 'react-lines-ellipsis/lib/html';
 import Util from '../../../Util';
-import Avatar from '../Avatar/Avatar';
+import Button from '../Button/Button';
 
 export default class TeamList extends Component {
 	constructor(props) {
@@ -26,18 +27,26 @@ export default class TeamList extends Component {
 	render() {
 		if(this.state.isLoading) return <div className="loader"></div>;
 
-		return <div className="teams-list">
+		return <div className="team-list">
 			{Util.array.any(this.state.teams)
 				? this.state.teams.map(team => {
 					return <div key={team.teamId} className="team-list-item">
-						<div className="team-detail">
-							<Link to={Util.route.team(team.teamId)}><p>{team.name}</p></Link>
-							<p className="sm">{team.description}</p>
-							<p className="sm">{team.teamUsers.length} {Util.format.pluralise(team.teamUsers, 'member')}</p>
-						</div>
-						<div>
-							{team.teamUsers.map(teamUser => <Avatar key={teamUser.teamUserId} size={32} user={teamUser.user} />)}
-						</div>
+						<Link to={Util.route.team(team.teamId)}><p>{team.name}</p></Link>
+						{team.description
+							? <HTMLEllipsis
+								className="description"
+								unsafeHTML={Util.format.userStringToSafeHtml(team.description)}
+								maxLine='3'
+								ellipsis='...'
+								basedOn='letters'
+							/>
+							: null
+						}
+						<p className="sm">{team.teamUsers.length} {Util.format.pluralise(team.teamUsers, 'member')}</p>
+						{Util.context.isInTeam(team.teamId)
+							? null
+							: <Button label="Request to join" />
+						}
 					</div>
 				})
 				: <p className="empty-text">No teams found.</p>

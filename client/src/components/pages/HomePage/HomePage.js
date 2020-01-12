@@ -35,8 +35,8 @@ export default class HomePage extends Component {
 		let homeHeader = <div className="home-header">
 			<img src={logo} className="app-logo" alt="logo" />
 			{Util.context.isAuthenticated()
-				? <p className="header-subtitle comic-panel-width"><span>Latest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
-				: <p className="header-subtitle comic-panel-width">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
+				? <p className="page-subtitle comic-panel-width"><span>Latest template: </span><Link to={Util.route.template(latestTemplate.templateId)}>{latestTemplate.name}</Link></p>
+				: <p className="page-subtitle comic-panel-width">A game of improvisation where players write dialogue for panels in a comic without having complete knowledge of the overall story.</p>
 			}
 		</div>
 

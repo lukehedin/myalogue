@@ -114,6 +114,9 @@ export default {
 		//The chance a new comic will be started instead of an existing game (1 in X, 0 for never)
 		ComicPlayNewChance: getIntegerEnvSettingOrDefault('COMIC_PLAY_NEW_CHANCE', 0),
 
+		//The length of time a team user request applies, before another can be made
+		TeamUserRequestDays: getIntegerEnvSettingOrDefault('TEAM_USER_REQUEST_DAYS', 7),
+
 		//The length of time a user is temporarily
 		UserTemporarilyBannedDays: getIntegerEnvSettingOrDefault('USER_TEMPORARILY_BANNED_DAYS', 2),
 		//The amount of temporary bans before a permanent one

@@ -75,7 +75,7 @@ export default class LeaderboardsPage extends Component {
 									}
 								}
 
-								return <tr key={leaderboardUser.userId} className="leaderboard-item leaderboard-user">
+								return <tr key={leaderboardUser.userId} className={`leaderboard-item leaderboard-user ${Util.context.isUserId(leaderboardUser.userId) ? 'leaderboard-highlight' : ''}`}>
 									<td>
 										<h4>{placement}.</h4>
 										<Avatar size={32} to={Util.route.profile(leaderboardUser.username)} user={leaderboardUser} />

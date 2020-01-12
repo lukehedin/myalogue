@@ -11,15 +11,17 @@ export default {
 			let authPromises = [
 				services.User.Authenticate(userId, anonId),
 				services.Template.GetAll(),
-				services.Achievement.GetAll()
+				services.Achievement.GetAll(),
+				services.Team.GetForUserId(userId)
 			];
 	
-			let [authResult, templates, achievements] = await Promise.all(authPromises);
+			let [authResult, templates, achievements, teams] = await Promise.all(authPromises);
 
 			return {
 				...authResult,
 				templates,
-				achievements
+				achievements,
+				teams
 			};
 		},
 	
@@ -58,12 +60,18 @@ export default {
 		},
 
 		ping: async (req, services) => {
+			let userId = req.userId; //May be null
+
 			//Checks if any reference data has updated
 			let existingTemplateIds = req.body.existingTemplateIds;
 
+			let teams = userId
+				? await services.Team.GetForUserId(userId)
+				: [];
 			let newTemplates = await services.Template.GetNew(existingTemplateIds);
 
 			return {
+				teams,
 				newTemplates
 			};
 		},
@@ -154,7 +162,9 @@ export default {
 		},
 
 		getTeams: async (req, services) => {
-			return await services.Team.GetAll();
+			let userId = req.userId; //May be null
+			
+			return await services.Team.GetAll(userId);
 		},
 
 		getTeam: async (req, services) => {

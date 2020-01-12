@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactHtmlParser from 'react-html-parser';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
@@ -20,7 +19,6 @@ class Comment extends Component {
 
 		this.setIsEditing = this.setIsEditing.bind(this);
 		this.deleteComment = this.deleteComment.bind(this);
-		this.getCommentValueAsComponent = this.getCommentValueAsComponent.bind(this);
 	}
 	setIsEditing(isEditing) {
 		this.setState({
@@ -39,22 +37,6 @@ class Comment extends Component {
 				if(this.props.onDelete) this.props.onDelete(this.props.comment);
 			}
 		});
-	}
-	getCommentValueAsComponent() {
-		let html = Util.format.userStringToSafeHtml(this.props.comment.value);
-		let components = ReactHtmlParser(html);
-
-		for(let i = 0; i < components.length; i++) {
-			let component = components[i];
-
-			if(component.type === "a" && Util.route.isLinkInternal(component.props.href)) {
-				components[i] = <Link key={i} to={Util.route.toInternalLink(component.props.href)}>{component.props.children}</Link>;
-			}
-		}
-
-		return <div className="comment-value">
-			{components}
-		</div>;
 	}
 	render() {
 		let user = this.props.comment.user;
@@ -92,7 +74,9 @@ class Comment extends Component {
 								this.setIsEditing(false);
 							}}
 						/>
-						: this.getCommentValueAsComponent()
+						: <div className="comment-value">
+							{Util.format.userStringToSafeComponent(this.props.comment.value, true)}
+						</div>
 					}
 					<div className="comment-actions">
 						{isMe && !this.state.isEditing

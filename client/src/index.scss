@@ -28,6 +28,15 @@ body {
 			@import './components/Pages/pages.scss';
 			height: 100%;
 
+			.news-message {
+				background: $colour-white;
+				color: $colour-black;
+				padding: $spacing-xxs 0;
+				@include boxShadow(0px, 2px, 4px, #00000022);
+				position: relative;
+				z-index: 1;
+			}
+
 			.app-inner {
 				display: flex;
 				flex-direction: column;
@@ -38,15 +47,19 @@ body {
 					display: flex;
 					flex-direction: column;
 					position: relative;
-
-					.page-title {
-						margin-bottom: $spacing-sm;
-					}
 	
 					.page-subtitle {
+						display: inline-block;
+						color: $colour-grey-d;
+		
+						font-size: 12px;
+						margin-top: $spacing-xs;
 						text-align: center;
-						margin: $spacing-xs auto;
-						color: $colour-grey-e;
+						@include overmd {
+							font-size: 16px;
+							margin-top: $spacing-sm;
+							text-align: left;
+						}
 					}
 
 					//Makes the last panel stretched to bottom

@@ -135,7 +135,8 @@ export default class Database {
 			Name: Sequelize.STRING,
 			Description: Sequelize.TEXT,
 			LeaderboardTopAt: Sequelize.DATE,
-			LeaderboardRating: getIntegerNotNull()
+			LeaderboardRating: getIntegerNotNull(),
+			IsPublic: getBoooleanNotNull()
 		});
 
 		defineTable('TeamUser', {

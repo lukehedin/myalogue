@@ -10,14 +10,29 @@ import Comic from '../../UI/Comic/Comic';
 
 export default class HowToPlayPage extends Component {
 	render() {
-		let topComic = Util.context.getTopComic();
-		if(!topComic) return <Redirect to={Util.route.register()} />; //Should not happen
+		let demoTemplate = Util.context.getTemplates()[0];
 
 		let demoPanel = {
-			...topComic.comicPanels[0],
-			userId: null,
-			username: null
-		}
+			templatePanelId: demoTemplate.templatePanels[0].templatePanelId,
+			value: 'You know, friends are sort of like bananas.'
+		};
+
+		let demoComic = {
+			templateId: demoTemplate.templateId,
+			comicComments: [],
+			comicPanels: [demoPanel, {
+				templatePanelId: demoTemplate.templatePanels[1].templatePanelId,
+				value: 'Because if you peel their skin and eat them, they die.'
+			}, {
+				templatePanelId: demoTemplate.templatePanels[3].templatePanelId,
+				value: 'I only did that one time...'
+			}, {
+				templatePanelId: demoTemplate.templatePanels[0].templatePanelId,
+				value: 'Well you should do it again, it was very satisfying to watch.'
+			}]
+		};
+
+		debugger;
 
 		return <div className="page-how-to-play">
 			<div className="panel-inset">
@@ -34,7 +49,7 @@ export default class HowToPlayPage extends Component {
 					<div className="row">
 						<ComicPanelPair>
 							<ComicPanel comicPanel={demoPanel} />
-							<ComicPanel templatePanelId={topComic.comicPanels[1].templatePanelId} />
+							<ComicPanel templatePanelId={demoTemplate.templatePanels[1].templatePanelId} />
 						</ComicPanelPair>
 					</div>
 				</div>
@@ -51,7 +66,7 @@ export default class HowToPlayPage extends Component {
 				<div className="container">
 					<div className="row">
 						<div className="comic-wrapper">
-							<Comic comic={topComic} />
+							<Comic comic={demoComic} />
 						</div>
 					</div>
 				</div>

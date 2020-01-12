@@ -31,9 +31,6 @@ export default class AppHeader extends Component {
 							label: 'Templates',
 							to: Util.route.templates()
 						}, {
-							label: 'Teams',
-							to: Util.route.teams()
-						}, {
 							label: 'Leaderboards',
 							to: Util.route.leaderboards()
 						}, {
@@ -55,8 +52,11 @@ export default class AppHeader extends Component {
 							? <ContextMenu align="right" className="profile-menu" 
 								content={<p className="username sm center">{Util.context.getUsername()}</p>}
 								menuItems={[{
-									label: 'My profile',
+									label: 'Profile',
 									to: Util.route.profile()
+								}, {
+									label: 'Teams',
+									to: Util.route.teams()
 								}, {
 									label: 'Settings',
 									to: Util.route.settings()

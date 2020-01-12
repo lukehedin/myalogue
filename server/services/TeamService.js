@@ -7,36 +7,84 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class TeamService extends Service {
-	async GetAll() {
+	async GetAll(forUserId = null) {
+		let teamWhere = [{
+			model: this.models.TeamUser,
+			as: 'TeamUsers',
+			include: [{
+				model: this.models.User,
+				as: 'User'
+			}]
+		}];
+
+		if(forUserId) {
+			//Also bring back a request this user has made to join
+			teamWhere.push({
+				model: this.models.TeamUserRequest,
+				as: 'TeamUserRequests',
+				where: {
+					UserId: forUserId,
+					CreatedAt: {
+						[Sequelize.Op.gt]: moment().subtract(common.config.TeamUserRequestDays, 'days').toDate()
+					},
+					ApprovedAt: {
+						[Sequelize.Op.eq]: null
+					}
+				}
+			});
+		}
+
 		let dbTeams = await this.models.Team.findAll({
+			include: teamWhere
+		});
+
+		return dbTeams.map(mapper.fromDbTeam);
+	}
+	async GetByIds(teamIds) {
+		let dbTeams = await this.models.Team.findAll({
+			where: {
+				TeamId: {
+					[Sequelize.Op.in]: teamIds
+				}
+			},
 			include: [{
 				model: this.models.TeamUser,
-				as: 'TeamUsers',
-				include: [{
-					model: this.models.User,
-					as: 'User'
-				}]
+				as: 'TeamUsers'
 			}]
 		});
 
 		return dbTeams.map(mapper.fromDbTeam);
 	}
 	async GetById(teamId) {
-		let dbTeam = await this.models.Team.findOne({
+		let dbTeams = this.GetByIds([teamId]);
+		return dbTeams.length === 1 ? mapper.fromDbTeam(dbTeams[0]) : null;
+	}
+	async GetForUserId(userId) {
+		if(!userId) return [];
+
+		let dbTeamUsers = await this.models.TeamUser.findAll({
 			where: {
-				TeamId: teamId
-			},
-			include: [{
-				model: this.models.TeamUser,
-				as: 'TeamUsers',
-				include: [{
-					model: this.models.User,
-					as: 'User'
-				}]
-			}]
+				UserId: userId
+			}
 		});
 
-		return dbTeam ? mapper.fromDbTeam(dbTeam) : null;
+		if(dbTeamUsers.length < 1) return []; 
+
+		let teamIds = dbTeamUsers.map(dbTeamUser => dbTeamUser.TeamId);
+
+		return await this.GetByIds(teamIds);
+	}
+	async SendInvite(fromTeamUserId, toUserId, teamId) {
+
+	}
+	async RequestToJoin(userId, teamId) {
+
+	}
+	async AcceptRequestToJoin(teamUserRequestId) {
+
+	}
+	async DenyRequestToJoin(teamUserRequestId) {
+
 	}
 	async SaveTeam(userId, team) {
 		let isValidName = validator.isLength(team.name, { min: 3, max: 20 });

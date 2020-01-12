@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactHtmlParser from 'react-html-parser';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ReactGA from 'react-ga';
 import { detect as detectBrowser } from 'detect-browser';
@@ -48,8 +51,10 @@ const Util = {
 
 		_user: null,
 
-		_templates: null,
-		_templatePanelLookup: null,
+		_teams: [],
+
+		_templates: [],
+		_templatePanelLookup: {},
 		
 		_achievements: null,
 
@@ -66,6 +71,10 @@ const Util = {
 			if(newContext.user) {
 				Util.context._user = newContext.user;
 				Util.analytics.set('userId', newContext.user.userId);
+			}
+
+			if(newContext.teams) {
+				Util.context._teams = newContext.teams;
 			}
 
 			if(newContext.templates) {
@@ -101,6 +110,9 @@ const Util = {
 		getUserAvatar: () => Util.context._user.avatar && Util.context._user.avatar.character && Util.context._user.avatar.expression && Util.context._user.avatar.colour
 			? Util.context._user.avatar
 			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
+
+		getTeamById: (teamId) => Util.context._teams.find(team => team.teamId === teamId),
+		isInTeam: (teamId) => !!Util.context.getTeamById(teamId),
 
 		getTemplates: () => Util.context._templates,
 		getLatestTemplate: () => Util.context._templates[Util.context._templates.length - 1],
@@ -357,7 +369,7 @@ const Util = {
 			return count === 1 ? singular : plural;
 		},
 
-		userStringToSafeHtml: (str = "") => {
+		userStringToSafeHtml: (str = "", allowMentions = false) => {
 			if(!str) return str;
 
 			// Most importantly, escape html.
@@ -367,10 +379,12 @@ const Util = {
 			//Everything below this point will be valid html
 
 			//Add user mention links (regex also on server)
-			str = str.replace(/\B@[a-z0-9]+/gi, (userMention) => {
-				let username = userMention.replace('@', '');
-				return `<a target="_self" href="${Util.route.profile(username)}">${userMention}</a>`;
-			});
+			if(allowMentions) {
+				str = str.replace(/\B@[a-z0-9]+/gi, (userMention) => {
+					let username = userMention.replace('@', '');
+					return `<a target="_self" href="${Util.route.profile(username)}">${userMention}</a>`;
+				});
+			}
 			
 			//Bold
 			str = str.replace(/\*\*(\S(.*?\S)?)\*\*/gm, '<b>$1</b>');
@@ -381,6 +395,21 @@ const Util = {
 				target: (href) => Util.route.isLinkInternal(href) ? '_self' : '_blank',
 				attributes: (href) =>  Util.route.isLinkInternal(href) ? {} : { rel: 'noopener nofollow' }
 			});
+		},
+
+		userStringToSafeComponent: (str = "", allowMentions = false) => {
+			let html = Util.format.userStringToSafeHtml(str, allowMentions = false);
+			let components = ReactHtmlParser(html);
+
+			for(let i = 0; i < components.length; i++) {
+				let component = components[i];
+	
+				if(component.type === "a" && Util.route.isLinkInternal(component.props.href)) {
+					components[i] = <Link key={i} to={Util.route.toInternalLink(component.props.href)}>{component.props.children}</Link>;
+				}
+			}
+	
+			return <div>{components}</div>;
 		}
 	},
 
