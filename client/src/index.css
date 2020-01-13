@@ -321,12 +321,38 @@ body {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        width: 100%;
-        max-width: 340px; }
+        width: 100%; }
         body .app-container .app .form-wrapper form {
           display: flex;
           flex-direction: column;
           align-items: stretch; }
+          body .app-container .app .form-wrapper form.auth-form {
+            box-shadow: 6px 6px 6px #00000016;
+            -webkit-box-shadow: 6px 6px 6px #00000016;
+            -moz-box-shadow: 6px 6px 6px #00000016;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            background-color: #fff;
+            border: 1px solid #c8c8c8;
+            overflow: hidden;
+            padding: 16px;
+            margin: 0 auto;
+            align-self: stretch;
+            max-width: 320px; }
+            @media (min-width: 576px) {
+              body .app-container .app .form-wrapper form.auth-form {
+                width: 100%; } }
+            body .app-container .app .form-wrapper form.auth-form h2 {
+              text-align: center;
+              margin-bottom: 8px; }
+            body .app-container .app .form-wrapper form.auth-form .button-container {
+              justify-content: center; }
+          body .app-container .app .form-wrapper form.flat-form .button-container {
+            justify-content: center; }
+            @media (min-width: 576px) {
+              body .app-container .app .form-wrapper form.flat-form .button-container {
+                justify-content: flex-start; } }
           body .app-container .app .form-wrapper form > *:not(:first-child) {
             margin-top: 8px; }
           body .app-container .app .form-wrapper form .field-container {
@@ -342,11 +368,19 @@ body {
                 color: #777777; }
             body .app-container .app .form-wrapper form .field-container.error input:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error input:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error select:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error select:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=radio]) {
               border-color: #f02100; }
+            body .app-container .app .form-wrapper form .field-container textarea {
+              min-height: 60px;
+              resize: vertical; }
           body .app-container .app .form-wrapper form .button-container {
             margin-top: 8px; }
             @media (min-width: 576px) {
               body .app-container .app .form-wrapper form .button-container {
                 margin-top: 16px; } }
+            body .app-container .app .form-wrapper form .button-container:not(:last-child) {
+              margin-bottom: 8px; }
+              @media (min-width: 576px) {
+                body .app-container .app .form-wrapper form .button-container:not(:last-child) {
+                  margin-bottom: 16px; } }
         body .app-container .app .form-wrapper .field-error {
           margin-top: 4px;
           color: #f02100;
@@ -359,6 +393,8 @@ body {
           text-align: center;
           font-size: 12px;
           margin: 8px 0; }
+          body .app-container .app .form-wrapper .form-message + .form-message {
+            margin-top: 0; }
       body .app-container .app .button {
         background: none;
         cursor: pointer;
@@ -689,7 +725,7 @@ body {
           text-align: center;
           font-weight: bold; }
       body .app-container .app .checkbox .checkbox-inner {
-        padding-left: calc(18px + 4px);
+        padding-left: 18px;
         font-size: 14px; }
         body .app-container .app .checkbox .checkbox-inner .checkmark {
           height: 18px;
@@ -707,7 +743,7 @@ body {
         left: calc(18px - calc(18px - 4px) - 2px); }
       @media (min-width: 576px) {
         body .app-container .app .checkbox .checkbox-inner {
-          padding-left: calc(20px + 4px);
+          padding-left: 20px;
           font-size: 16px; }
           body .app-container .app .checkbox .checkbox-inner .checkmark {
             height: 20px;
@@ -748,7 +784,8 @@ body {
           width: 0; }
         body .app-container .app .checkbox .checkbox-inner .checkbox-label {
           font-size: 12px;
-          margin-top: 4px; }
+          margin-top: 4px;
+          margin-left: 8px; }
         body .app-container .app .checkbox .checkbox-inner .checkmark {
           position: absolute;
           top: 0;
@@ -768,7 +805,7 @@ body {
       body .app-container .app .checkbox.checked:hover .checkmark {
         background-color: #ff1f67; }
       body .app-container .app .checkbox.switch .checkbox-inner {
-        padding-left: calc(30px + 4px);
+        padding-left: 30px;
         font-size: 16px; }
         body .app-container .app .checkbox.switch .checkbox-inner .checkmark {
           height: 20px;
@@ -840,8 +877,11 @@ body {
               body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover {
                 color: #ff0052;
                 text-decoration: none; }
-      body .app-container .app .timer.urgent {
-        color: #f02100; }
+      body .app-container .app .timer {
+        text-align: center;
+        display: inline-block; }
+        body .app-container .app .timer.urgent {
+          color: #f02100; }
       body .app-container .app .notification-menu {
         position: relative; }
         body .app-container .app .notification-menu .context-menu-content {
@@ -985,6 +1025,7 @@ body {
         border-radius: 4px;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
+        background-color: #fff;
         border: 1px solid #c8c8c8;
         overflow: hidden; }
         body .app-container .app .tabbed-panels .tabbed-panels-tabs {
@@ -1044,6 +1085,8 @@ body {
             opacity: 0.5; }
         body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail {
           width: 100%; }
+          body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h1, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h2, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h3, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h4, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h5, body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail h6 {
+            text-align: left; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail p {
             margin: 0; }
           body .app-container .app .achievement-list .achievement-table .achievement-row .td-achievement-detail .progress-bar {
@@ -1086,7 +1129,7 @@ body {
               display: none; }
             body .app-container .app .tip-strip .tip-strip-inner .tip-image.horizontal {
               display: block; } }
-      body .app-container .app .team-list .team-list-item .description {
+      body .app-container .app .group-list .group-item .description {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 12px; }
@@ -1240,14 +1283,30 @@ body {
             font-size: 12px; }
         body .app-container .app .page-play .play-area .tip-strip {
           margin-top: 64px; }
-      body .app-container .app .page-team-editor .team-editor {
+      body .app-container .app .page-group .group-info .group-info-header > * {
+        text-align: center; }
+      body .app-container .app .page-group .group-info .group-info-header .created-date {
+        margin: 4px 0;
+        color: #525252; }
+      body .app-container .app .page-group-editor .group-editor {
         min-height: 40px;
         position: relative; }
-      body .app-container .app .page-templates .tabbed-panels .templates ul {
-        padding-left: 0;
-        list-style-type: none; }
-        body .app-container .app .page-templates .tabbed-panels .templates ul li:not(:last-child) {
-          margin-bottom: 16px; }
+      body .app-container .app .page-templates .templates {
+        box-shadow: 6px 6px 6px #00000016;
+        -webkit-box-shadow: 6px 6px 6px #00000016;
+        -moz-box-shadow: 6px 6px 6px #00000016;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        background-color: #fff;
+        border: 1px solid #c8c8c8;
+        overflow: hidden;
+        padding: 16px; }
+        body .app-container .app .page-templates .templates ul {
+          padding-left: 0;
+          list-style-type: none; }
+          body .app-container .app .page-templates .templates ul li:not(:last-child) {
+            margin-bottom: 16px; }
       body .app-container .app .page-template .template-navigation {
         margin: 0 auto; }
       body .app-container .app .page-template .template-name {
@@ -1271,6 +1330,8 @@ body {
             text-align: left; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item:not(:last-child) {
               border-bottom: 1px solid #efefef; }
+            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h1, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h2, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h3, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h4, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h5, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h6 {
+              text-align: left; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-user td {
               align-items: center; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-highlight {
@@ -1370,10 +1431,39 @@ body {
       body .app-container .app .page-settings .settings-row {
         min-height: 40px;
         position: relative;
-        margin-bottom: 32px; }
+        margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
+        body .app-container .app .page-settings .settings-row .avatar-selector {
+          box-shadow: 6px 6px 6px #00000016;
+          -webkit-box-shadow: 6px 6px 6px #00000016;
+          -moz-box-shadow: 6px 6px 6px #00000016;
+          border-radius: 4px;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          background-color: #fff;
+          border: 1px solid #c8c8c8;
+          overflow: hidden;
+          padding: 16px;
+          position: relative; }
+          body .app-container .app .page-settings .settings-row .avatar-selector h2 {
+            text-align: center;
+            margin-bottom: 8px; }
         body .app-container .app .page-settings .settings-row > h2 {
           margin-bottom: 16px;
           text-align: center; }
+      body .app-container .app .page-achievements .achievements {
+        box-shadow: 6px 6px 6px #00000016;
+        -webkit-box-shadow: 6px 6px 6px #00000016;
+        -moz-box-shadow: 6px 6px 6px #00000016;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        background-color: #fff;
+        border: 1px solid #c8c8c8;
+        overflow: hidden;
+        padding: 16px; }
       body .app-container .app .news-message {
         background: #fff;
         color: #080808;
@@ -1392,6 +1482,8 @@ body {
           display: flex;
           flex-direction: column;
           position: relative; }
+          body .app-container .app .app-inner [class^="page-"] .page-title + * {
+            margin-top: 16px; }
           body .app-container .app .app-inner [class^="page-"] .page-subtitle {
             display: inline-block;
             color: #777777;
@@ -1451,7 +1543,7 @@ body {
         position: absolute;
         animation: loader-spin 1.6s linear infinite;
         left: 50%;
-        top: 50%;
+        top: calc(50% - 48px);
         width: 48px;
         height: 48px;
         margin-top: -24px;

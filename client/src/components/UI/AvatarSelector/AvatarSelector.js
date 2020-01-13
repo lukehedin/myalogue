@@ -87,6 +87,7 @@ export default class AvatarSelector extends Component {
 		};
 
 		return <div className="avatar-selector">
+			<h2>Change avatar</h2>
 			<Avatar user={{ 
 				avatar: {
 					character: this.state.character,

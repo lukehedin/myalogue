@@ -10,18 +10,18 @@ export default {
 
 			let authPromises = [
 				services.User.Authenticate(userId, anonId),
+				services.Group.GetGroups(userId),
 				services.Template.GetAll(),
-				services.Achievement.GetAll(),
-				services.Team.GetForUserId(userId)
+				services.Achievement.GetAll()
 			];
 	
-			let [authResult, templates, achievements, teams] = await Promise.all(authPromises);
+			let [authResult, groups, templates, achievements] = await Promise.all(authPromises);
 
 			return {
 				...authResult,
 				templates,
 				achievements,
-				teams
+				groups
 			};
 		},
 	
@@ -60,18 +60,18 @@ export default {
 		},
 
 		ping: async (req, services) => {
+			//Checks if any reference data has updated
 			let userId = req.userId; //May be null
 
-			//Checks if any reference data has updated
 			let existingTemplateIds = req.body.existingTemplateIds;
 
-			let teams = userId
-				? await services.Team.GetForUserId(userId)
-				: [];
-			let newTemplates = await services.Template.GetNew(existingTemplateIds);
+			let [groups, newTemplates] = await Promise.all([
+				services.Group.GetGroups(userId),
+				services.Template.GetNew(existingTemplateIds)
+			]);
 
 			return {
-				teams,
+				groups,
 				newTemplates
 			};
 		},
@@ -91,7 +91,7 @@ export default {
 			}
 		},
 
-		getComicById: async (req, services) => {
+		getComic: async (req, services) => {
 			let userId = req.userId; //Might be null
 			let comicId = req.body.comicId;
 
@@ -124,7 +124,7 @@ export default {
 
 			let templateId = req.body.templateId;
 			let authorUserId = req.body.authorUserId;
-			let teamId = req.body.teamId;
+			let groupId = req.body.groupId;
 			let ignoreComicIds = req.body.ignoreComicIds;
 			let completedAtBefore = req.body.completedAtBefore;
 			let includeAnonymous = req.body.includeAnonymous;
@@ -132,16 +132,14 @@ export default {
 			let offset = req.body.offset;
 			let limit = req.body.limit;
 
-			return await services.Comic.GetComics(forUserId, templateId, authorUserId, teamId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
+			return await services.Comic.GetComics(forUserId, templateId, authorUserId, groupId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
 		},
 
-		getLeaderboard: async (req, services) => {
-			return await services.Comic.getLeaderboard();
+		getLeaderboards: async (req, services) => {
+			return await services.Comic.getLeaderboards();
 		},
 
 		getUser: async (req, services) => {
-			let userId = req.userId;
-
 			let possibleRequestedUserId = req.body.requestedUserId; //do not confuse
 			let possibleRequestedUsername = req.body.requestedUsername;
 
@@ -161,16 +159,22 @@ export default {
 			};
 		},
 
-		getTeams: async (req, services) => {
-			let userId = req.userId; //May be null
-			
-			return await services.Team.GetAll(userId);
+		getGlobalAchievements: async (req, services) => {
+			return await services.Achievement.GetGlobalAchievements();
 		},
 
-		getTeam: async (req, services) => {
-			let teamId = req.body.teamId;
+		getGroup: async (req, services) => {
+			let groupId = req.body.groupId;
 
-			return await services.Team.GetById(teamId);
+			let group = await services.Group.GetById(groupId);
+			let groupUsers = await services.Group.GetGroupUsers(groupId);
+			let comicCount = await services.Group.GetGroupComicCount(groupId);
+
+			return {
+				...group,
+				groupUsers,
+				comicCount
+			};
 		},
 
 		//Gets a comic in progress or starts new
@@ -299,13 +303,20 @@ export default {
 			
 			return await services.User.ChangePassword(userId, currentPassword, newPassword);
 		},
+
+		getGroupsInfo: async(req, services) => {
+			//Returns a list of groups, pending requests and invites for a user
+			let userId = req.userId;
+			
+			return await services.Group.GetGroupsInfoForUser(userId);
+		},
 		
-		saveTeam: async (req, services) => {
+		saveGroup: async (req, services) => {
 			let userId = req.userId;
 
-			let team = req.body.team;
+			let group = req.body.group;
 
-			return await services.Team.SaveTeam(userId, team);
+			return await services.Group.SaveGroup(userId, group);
 		}
 	}
 };

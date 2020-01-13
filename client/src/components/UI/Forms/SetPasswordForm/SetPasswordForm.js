@@ -7,7 +7,9 @@ import Button from '../../Button/Button';
 
 class SetPasswordForm extends Component {
 	render() {
-		return <form onSubmit={this.props.submitForm}>
+		return <form className="auth-form" onSubmit={this.props.submitForm}>
+			<h2 className="page-title">Set new password</h2>
+			<p className="form-message">Enter a new password for your account.</p>
 			{this.props.getField('password')}
 			{this.props.getField('confirmPassword')}
 			<div className="button-container justify-center">

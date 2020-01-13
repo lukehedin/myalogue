@@ -124,7 +124,7 @@ class Comic extends Component {
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
 			let leftLabel = null;
 			if(idx === 0 && comicPanel.comicId) leftLabel = `Comic #${comicPanel.comicId} ${Util.route.getHost()}`;
-			if(idx === this.state.comic.comicPanels.length - 1 && this.state.comic.team) leftLabel = this.state.comic.team.name;
+			if(idx === this.state.comic.comicPanels.length - 1 && this.state.comic.group) leftLabel = this.state.comic.group.name;
 
 			let panel = <ComicPanel isColour={true} comicPanel={comicPanel} leftLabel={leftLabel} />
 

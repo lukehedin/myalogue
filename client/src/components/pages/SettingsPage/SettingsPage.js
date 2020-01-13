@@ -14,13 +14,9 @@ export default class ProfilePage extends Component {
 					<div className="row">
 						<h1 className="page-title">Settings</h1>
 						<div className="settings-row">
-							<h2>Change avatar</h2>
-							<TabbedPanels tabs={[{
-								content: <AvatarSelector />
-							}]} />
+							<AvatarSelector />
 						</div>
 						<div className="settings-row">
-							<h2>Change password</h2>
 							<ChangePasswordForm onSubmit={(form, formData) => {
 								form.setLoading(true);
 

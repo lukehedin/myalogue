@@ -9,7 +9,8 @@ import Button from '../../Button/Button';
 
 class RegisterForm extends Component {
 	render() {
-		return <form onSubmit={this.props.submitForm}>
+		return <form className="auth-form" onSubmit={this.props.submitForm}>
+			<h2>Create account</h2>
 			{this.props.getField('email')}
 			<p className="form-message">Your email is only used to verify your account.</p>
 			{this.props.getField('username')}
@@ -19,6 +20,7 @@ class RegisterForm extends Component {
 			<div className="button-container justify-center">
 				<Button type="submit" colour="pink" size="lg" label="Create account" />
 			</div>
+			<p className="form-message">Already have an account? <Link to={Util.route.login()}>Log in</Link></p>
 		</form>
 	}
 }

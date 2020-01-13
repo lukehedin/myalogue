@@ -32,8 +32,6 @@ export default class HowToPlayPage extends Component {
 			}]
 		};
 
-		debugger;
-
 		return <div className="page-how-to-play">
 			<div className="panel-inset">
 				<div className="container">

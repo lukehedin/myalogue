@@ -22,7 +22,6 @@ export default class ForgotPasswordPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">Forgot password</h1>
 						{this.state.isSubmitted
 							? <div>
 								<p className="page-subtitle">An email has been sent to you with instructions on how to reset your password.</p>
@@ -31,7 +30,6 @@ export default class ForgotPasswordPage extends Component {
 								</div>
 							</div>
 							: <div>
-								<p className="page-subtitle">Please provide the email address or username associated with your account. You'll receive an email with instructions on how to set a new password.</p>
 								<ForgotPasswordForm onSubmit={(form, formData) => {
 									Util.api.post('/api/forgotPassword', {
 										emailUsername: formData.emailUsername

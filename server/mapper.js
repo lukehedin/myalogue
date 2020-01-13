@@ -30,8 +30,8 @@ const mapper = {
 			panelCount: dbComic.PanelCount,
 			completedAt: dbComic.CompletedAt,
 			leaderboardRating: dbComic.LeaderboardRating,
-			teamId: dbComic.TeamId,
-			team: dbComic.Team ? mapper.fromDbTeam(dbComic.Team) : null,
+			groupId: dbComic.GroupId,
+			group: dbComic.Group ? mapper.fromDbGroup(dbComic.Group) : null,
 			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
@@ -120,26 +120,42 @@ const mapper = {
 		};
 	},
 
-	fromDbTeam: (dbTeam) => {
-		let pendingTeamUserRequestAt = dbTeam.TeamUserRequests && dbTeam.TeamUserRequests.length > 0
-			? dbTeam.TeamUserRequests[0].CreatedAt
+	fromDbGroup: (dbGroup) => {
+		let pendingGroupUserRequestAt = dbGroup.GroupUserRequests && dbGroup.GroupUserRequests.length > 0
+			? dbGroup.GroupUserRequests[0].CreatedAt
 			: null;
 
 		return {
-			teamId: dbTeam.TeamId,
-			name: dbTeam.Name,
-			description: dbTeam.Description,
-			pendingTeamUserRequestAt: pendingTeamUserRequestAt,
-			teamUsers: (dbTeam.TeamUsers || []).map(mapper.fromDbTeamUser)
+			groupId: dbGroup.GroupId,
+			name: dbGroup.Name,
+			createdAt: dbGroup.CreatedAt,
+			description: dbGroup.Description,
+			instruction: dbGroup.Instruction,
+			pendingGroupUserRequestAt: pendingGroupUserRequestAt,
+			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser)
 		}
 	},
 
-	fromDbTeamUser: (dbTeamUser) => {
+	fromDbGroupUser: (dbGroupUser) => {
 		return {
-			teamUserId: dbTeamUser.TeamUserId,
-			userId: dbTeamUser.UserId,
-			teamId: dbTeamUser.TeamId,
-			user: dbTeamUser.User ? mapper.fromDbUser(dbTeamUser.User) : null
+			groupUserId: dbGroupUser.GroupUserId,
+			userId: dbGroupUser.UserId,
+			groupId: dbGroupUser.GroupId,
+			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
+		}
+	},
+
+	fromDbGroupRequest: (dbGroupRequest) => {
+		return {
+			group: dbGroupRequest.Group ? mapper.fromDbGroup(dbGroupRequest.Group) : null,
+			message: dbGroupRequest.Message
+		}
+	},
+
+	fromDbGroupInvite: (dbGroupInvite) => {
+		return {
+			group: dbGroupInvite.Group ? mapper.fromDbGroup(dbGroupInvite.Group) : null,
+			message: dbGroupInvite.Message
 		}
 	},
 

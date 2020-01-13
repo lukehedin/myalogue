@@ -30,9 +30,9 @@ import TemplatesPage from './components/pages/TemplatesPage/TemplatesPage';
 import ComicPage from './components/pages/ComicPage/ComicPage';
 import PlayPage from './components/pages/PlayPage/PlayPage';
 import SettingsPage from './components/pages/SettingsPage/SettingsPage';
-import TeamPage from './components/pages/TeamPage/TeamPage';
-import TeamsPage from './components/pages/TeamsPage/TeamsPage';
-import TeamEditorPage from './components/pages/TeamEditorPage/TeamEditorPage';
+import GroupPage from './components/pages/GroupPage/GroupPage';
+import GroupsPage from './components/pages/GroupsPage/GroupsPage';
+import GroupEditorPage from './components/pages/GroupEditorPage/GroupEditorPage';
 import AchievementsPage from './components/pages/AchievementsPage/AchievementsPage';
 
 class App extends Component {
@@ -142,7 +142,8 @@ class App extends Component {
 			</div>;
 		};
 
-		let newsMessage = <p className="sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
+		let newsMessage = null;
+		//<p className="sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
 
 		let getApp = () => {
 			return <div className="app">
@@ -184,13 +185,13 @@ class App extends Component {
 
 						<Route exact path="/achievements" render={() => <AchievementsPage />} />
 
-						<Route exact path="/team/:teamId" render={({ match }) => <TeamPage teamId={match.params.teamId} />} />
-						<Route exact path="/teams" render={() => <TeamsPage />} />
-						<Route exact path="/team-editor" render={() => <TeamEditorPage />} />
+						<Route exact path="/group/:groupId" render={({ match }) => <GroupPage groupId={match.params.groupId} />} />
+						<Route exact path="/groups" render={() => <GroupsPage />} />
+						<Route exact path="/group-editor" render={() => <GroupEditorPage />} />
 
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUsername())} />)} />
 						<Route exact path="/profile/:userIdOrUserName" render={({ match }) => <ProfilePage userIdOrUserName={match.params.userIdOrUserName} />} />
-						
+
 						<Route exact path="/settings" render={() => ifAuthenticated(<SettingsPage />)} />
 
 						<Route exact path="/how-to-play" render={() => <HowToPlayPage />} />

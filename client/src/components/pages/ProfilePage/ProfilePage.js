@@ -73,8 +73,8 @@ export default class ProfilePage extends Component {
 											</div>
 										</div>
 										<TabbedPanels tabs={[{
-											tabId: 'stats',
-											title: 'Stats',
+											tabId: 'details',
+											title: 'Details',
 											content: <div className="user-stats">
 												<div className="user-stat">
 													<h5>Total comic rating</h5>

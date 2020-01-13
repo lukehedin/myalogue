@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import LoginForm from '../../UI/Forms/LoginForm/LoginForm';
@@ -10,7 +9,6 @@ export default class LoginPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">Login</h1>
 						<LoginForm onSubmit={(form, formData) => {
 							form.setLoading(true);
 							
@@ -28,8 +26,6 @@ export default class LoginPage extends Component {
 								}
 							});
 						}} />
-						<p className="center">Forgot your password? <Link to={Util.route.forgotPassword()}>Forgot password</Link></p>
-						<p className="center">Don't have an account? <Link to={Util.route.register()}>Register</Link></p>
 					</div>
 				</div>
 			</div>

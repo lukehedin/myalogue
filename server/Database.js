@@ -110,7 +110,8 @@ export default class Database {
 			BannedReason: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
-			LastComicStartedAt: Sequelize.DATE
+			LastComicStartedAt: Sequelize.DATE,
+			GroupInviteToken: Sequelize.STRING
 		}, true);
 
 		defineTable('Notification', {
@@ -131,23 +132,32 @@ export default class Database {
 			Type: Sequelize.INTEGER
 		});
 
-		defineTable('Team', {
+		defineTable('Group', {
 			Name: Sequelize.STRING,
 			Description: Sequelize.TEXT,
+			Instruction: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
 			IsPublic: getBoooleanNotNull()
 		});
 
-		defineTable('TeamUser', {
-			IsTeamAdmin: getBoooleanNotNull()
-		});
+		defineTable('GroupUser', {
+			IsGroupAdmin: getBoooleanNotNull()
+		}, true);
 
-		defineTable('TeamUserRequest', {
+		defineTable('GroupRequest', {
 			ApprovedAt: Sequelize.DATE,
 			DeniedAt: Sequelize.DATE,
+			CancelledAt: Sequelize.DATE,
 			Message: Sequelize.TEXT
 		});
+
+		defineTable('GroupInvite', {
+			AcceptedAt: Sequelize.DATE,
+			DeclinedAt: Sequelize.DATE,
+			Message: Sequelize.TEXT,
+			Token: Sequelize.STRING
+		}, true);
 
 		defineTable('Template', {
 			UnlockedAt: Sequelize.DATE,
@@ -183,7 +193,6 @@ export default class Database {
 
 		defineTable('Comic', {
 			CompletedAt: Sequelize.DATE,
-			Token: Sequelize.STRING, //If present, the comic is private
 			PanelCount: Sequelize.INTEGER,
 			Rating: getIntegerNotNull(),
 			HotRank: {
@@ -266,13 +275,17 @@ export default class Database {
 		createOneToMany('User', 'ComicPanelReport');
 		createOneToMany('User', 'UserAchievement');
 		createOneToMany('User', 'Notification'); // Notification will link to user profile
-		createOneToMany('User', 'Team', 'CreatedByUser');
-		createOneToMany('User', 'TeamUser');
-		createOneToMany('User', 'TeamUserRequest');
+		createOneToMany('User', 'Group', 'CreatedByUser', 'CreatedGroups');
+		createOneToMany('User', 'GroupUser');
+		createOneToMany('User', 'GroupRequest');
+		createOneToMany('User', 'GroupRequest', 'ActionedByUser', 'ActionedGroupRequests')
+		createOneToMany('User', 'GroupInvite');
+		createOneToMany('User', 'GroupInvite', 'InvitedByUser', 'SentGroupInvites');
 
-		createOneToMany('Team', 'TeamUser');
-		createOneToMany('Team', 'TeamUserRequest');
-		createOneToMany('Team', 'Comic');
+		createOneToMany('Group', 'GroupUser');
+		createOneToMany('Group', 'GroupRequest');
+		createOneToMany('Group', 'GroupInvite');
+		createOneToMany('Group', 'Comic');
 
 		console.log('Database: Database models loaded');
 	}

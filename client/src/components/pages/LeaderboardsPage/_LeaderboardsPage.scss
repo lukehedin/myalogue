@@ -13,7 +13,8 @@
 					border-bottom: 1px solid $colour-grey-a;
 				}
 
-				&.leaderboard-comic {
+				@include allHeadings {
+					text-align: left;
 				}
 				
 				&.leaderboard-user {

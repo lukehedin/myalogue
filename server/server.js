@@ -16,7 +16,7 @@ import CronService from './services/CronService';
 import EmailService from './services/EmailService';
 import NotificationService from './services/NotificationService';
 import PlayService from './services/PlayService';
-import TeamService from './services/TeamService';
+import GroupService from './services/GroupService';
 import TemplateService from './services/TemplateService';
 import UserService from './services/UserService';
 
@@ -53,7 +53,7 @@ const services = {
 	Email: new EmailService(db.models, () => services),
 	Notification: new NotificationService(db.models, () => services),
 	Play: new PlayService(db.models, () => services),
-	Team: new TeamService(db.models, () => services),
+	Group: new GroupService(db.models, () => services),
 	Template: new TemplateService(db.models, () => services),
 	User: new UserService(db.models, () => services)
 };

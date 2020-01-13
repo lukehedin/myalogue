@@ -68,7 +68,7 @@ export default class ComicList extends Component {
 			//Optional
 			templateId: templateId,
 			authorUserId: this.props.authorUserId,
-			teamId: this.props.teamId,
+			groupId: this.props.groupId,
 
 			completedAtBefore: this.state.completedAtBefore,
 			sortBy: this.state.sortBy,

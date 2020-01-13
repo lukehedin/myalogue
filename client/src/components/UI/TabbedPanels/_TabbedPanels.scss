@@ -1,9 +1,5 @@
 .tabbed-panels {
-	@include boxShadow(6px, 6px, 6px, #00000016);
-
-	@include borderRadius(4px);
-	border: 1px solid $colour-grey-b;
-	overflow: hidden;
+	@include raisedContainer;
 
 	.tabbed-panels-tabs {
 		display: flex;

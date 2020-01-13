@@ -6,7 +6,7 @@
 
 	@mixin scaleCheckbox($size-width, $size-height, $font-size) {
 		.checkbox-inner {
-			padding-left: calc(#{$size-width} + #{$spacing-xxs});
+			padding-left: $size-width;
 			font-size: $font-size;
 
 			.checkmark {
@@ -60,7 +60,8 @@
 
 		.checkbox-label {
 			font-size: 12px;
-			margin-top: 4px;
+			margin-top: $spacing-xxs;
+			margin-left: $spacing-xs;
 		}
 
 		.checkmark {

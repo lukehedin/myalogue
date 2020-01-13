@@ -55,8 +55,6 @@ export default class Timer extends Component {
 		if(this.props.onComplete) this.props.onComplete();
 	}
 	render() {
-		return <div className={`timer ${this.state.time < this.tenSeconds ? 'urgent' : ''}`}>
-			<h2>{moment(this.state.time).format('mm:ss')}</h2>
-		</div>
+		return <h2 className={`timer ${this.state.time < this.tenSeconds ? 'urgent' : ''}`}>{moment(this.state.time).format('mm:ss')}</h2>
 	}
 }

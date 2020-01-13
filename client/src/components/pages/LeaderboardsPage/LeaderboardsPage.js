@@ -16,7 +16,7 @@ export default class LeaderboardsPage extends Component {
 		}
 	}
 	componentDidMount() {
-		Util.api.post('/api/getLeaderboard')
+		Util.api.post('/api/getLeaderboards')
 			.then(result => {
 				if(!result.error) {
 					this.setState({
@@ -91,9 +91,9 @@ export default class LeaderboardsPage extends Component {
 				</div>
 				: <p className="empty-text align-center">No leaderboard users to show.</p>
 		}, {
-			tabId: 'teams',
-			title: 'Teams',
-			content: <div>teams</div>
+			tabId: 'groups',
+			title: 'Groups',
+			content: <div>groups</div>
 		}];
 
 		return <div className="page-leaderboards">

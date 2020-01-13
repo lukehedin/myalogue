@@ -6,6 +6,33 @@ import common from '../common';
 import Service from './Service';
 
 export default class AchievementService extends Service {
+	async GetGlobalAchievements() {
+		let [dbUserCount, dbUserAchievements] = await Promise.all([
+			await this.models.User.count({
+				where: {
+					LastLoginAt: {
+						[Sequelize.Op.ne]: null
+					}
+				}
+			}),
+			await this.models.UserAchievement.findAll()
+		]);
+
+		let userAchievementLookup = dbUserAchievements.reduce((lookup, dbUserAchievement) => {
+			lookup[dbUserAchievement.Type] = lookup[dbUserAchievement.Type]
+				? lookup[dbUserAchievement.Type] + 1
+				: 1;
+
+			return lookup;
+		}, {});
+
+		Object.keys(userAchievementLookup).forEach(achievementType => {
+			//Percent of users with achievement
+			userAchievementLookup[achievementType] = ((userAchievementLookup[achievementType] / dbUserCount) * 100).toFixed(1);
+		});
+
+		return userAchievementLookup;
+	}
 	async ProcessForTopComic(dbComic) {
 		let comicId = dbComic.ComicId;
 

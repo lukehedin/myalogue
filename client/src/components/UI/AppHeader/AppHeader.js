@@ -34,6 +34,9 @@ export default class AppHeader extends Component {
 							label: 'Leaderboards',
 							to: Util.route.leaderboards()
 						}, {
+							label: 'Achievements',
+							to: Util.route.achievements()
+						}, {
 							label: 'How to play',
 							to: Util.route.howToPlay()
 						}, {
@@ -55,8 +58,8 @@ export default class AppHeader extends Component {
 									label: 'Profile',
 									to: Util.route.profile()
 								}, {
-									label: 'Teams',
-									to: Util.route.teams()
+									label: 'Groups',
+									to: Util.route.groups()
 								}, {
 									label: 'Settings',
 									to: Util.route.settings()

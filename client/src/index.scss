@@ -47,6 +47,10 @@ body {
 					display: flex;
 					flex-direction: column;
 					position: relative;
+
+					.page-title + * {
+						margin-top: $spacing-sm;
+					}
 	
 					.page-subtitle {
 						display: inline-block;
@@ -133,7 +137,7 @@ body {
 					position: absolute;
 					animation: loader-spin 1.6s linear infinite;
 					left: 50%;
-					top: 50%;
+					top: calc(50% - 48px);
 					width: 48px;
 					height: 48px;
 					margin-top: -24px;

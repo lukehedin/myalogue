@@ -18,7 +18,7 @@ export default class RegisterPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">{this.state.isSubmitted ? 'Verify your account' : 'Create an account'}</h1>
+						{this.state.isSubmitted ? <h1 className="page-title">'Verify your account</h1> : null}
 						{this.state.isSubmitted
 							? <p className="center">You will receive an email with a link to verify your account. You may need to check your junk inbox.</p>
 							: <RegisterForm onSubmit={(form, formData) => {
@@ -45,7 +45,7 @@ export default class RegisterPage extends Component {
 							? <div className="button-container justify-center">
 								<Button label="Back to home" to={Util.route.home()} colour="black" size="md" />
 							</div>
-							: <p className="center">Already have an account? <Link to={Util.route.login()}>Log in</Link></p>
+							: null
 						}
 					</div>
 				</div>

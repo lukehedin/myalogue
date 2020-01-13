@@ -29,6 +29,14 @@
 	position: relative;
 }
 
+@mixin raisedContainer {
+	@include boxShadow(6px, 6px, 6px, #00000016);
+	@include borderRadius(4px);
+	background-color: $colour-white;
+	border: 1px solid $colour-grey-b;
+	overflow: hidden;
+}
+
 @mixin noSelect {
 	-webkit-user-drag: none;
 	-khtml-user-drag: none;

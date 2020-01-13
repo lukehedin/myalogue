@@ -51,7 +51,7 @@ const Util = {
 
 		_user: null,
 
-		_teams: [],
+		_groups: [],
 
 		_templates: [],
 		_templatePanelLookup: {},
@@ -73,8 +73,8 @@ const Util = {
 				Util.analytics.set('userId', newContext.user.userId);
 			}
 
-			if(newContext.teams) {
-				Util.context._teams = newContext.teams;
+			if(newContext.groups) {
+				Util.context._groups = newContext.groups;
 			}
 
 			if(newContext.templates) {
@@ -111,8 +111,8 @@ const Util = {
 			? Util.context._user.avatar
 			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
 
-		getTeamById: (teamId) => Util.context._teams.find(team => team.teamId === teamId),
-		isInTeam: (teamId) => !!Util.context.getTeamById(teamId),
+		getGroupById: (groupId) => Util.context._groups.find(group => group.groupId === groupId),
+		isInGroup: (groupId) => !!Util.context.getGroupById(groupId),
 
 		getTemplates: () => Util.context._templates,
 		getLatestTemplate: () => Util.context._templates[Util.context._templates.length - 1],
@@ -463,10 +463,11 @@ const Util = {
 		},
 
 		home: () => `/`,
+		achievements: () => `/achievements`,
 		settings: () => `/settings`,
-		team: (teamId) => `/team/${teamId}`,
-		teams: () => `/teams`,
-		teamEditor: (teamId) => (teamId ? `/team-editor/${teamId}` : `/team-editor`),
+		group: (groupId) => `/group/${groupId}`,
+		groups: () => `/groups`,
+		groupEditor: (groupId) => (groupId ? `/group-editor/${groupId}` : `/group-editor`),
 		templates: () => `/templates`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,

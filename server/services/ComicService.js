@@ -40,7 +40,7 @@ export default class ComicService extends Service {
 
 		return dbComics.length > 0 ? mapper.fromDbComic(dbComics[0]) : null;
 	}
-	async getLeaderboard() {
+	async getLeaderboards() {
 		let [dbLeaderboardComics, dbLeaderboardUsers] = await Promise.all([
 			this.models.Comic.findAll({
 				where: {
@@ -78,7 +78,7 @@ export default class ComicService extends Service {
 			users: dbLeaderboardUsers.map(mapper.fromDbUser)
 		};
 	}
-	async GetComics(forUserId = null, templateId = null, authorUserId = null, teamId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {
+	async GetComics(forUserId = null, templateId = null, authorUserId = null, groupId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {
 		let comicWhere = {
 			CompletedAt: { //Code below (sortBy === 4) relies on this being present
 				[Sequelize.Op.ne]: null,
@@ -133,7 +133,7 @@ export default class ComicService extends Service {
 			};
 		}
 
-		if(teamId) comicWhere.TeamId = teamId;
+		if(groupId) comicWhere.GroupId = groupId;
 		
 		let dbComics = await this.models.Comic.findAll({
 			where: comicWhere,
@@ -404,8 +404,8 @@ export default class ComicService extends Service {
 			model: this.models.UserAchievement,
 			as: 'UserAchievements'
 		}, {
-			model: this.models.Team,
-			as: 'Team'
+			model: this.models.Group,
+			as: 'Group'
 		}];
 		
 		if(forUserId) {

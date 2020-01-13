@@ -47,7 +47,7 @@ export default class ComicPage extends Component {
 			comic: null
 		});
 
-		Util.api.post('/api/getComicById', {
+		Util.api.post('/api/getComic', {
 			comicId: this.props.comicId
 		})
 		.then(result => {

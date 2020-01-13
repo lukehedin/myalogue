@@ -59,6 +59,7 @@ export default class AchievementList extends Component {
 				</div>
 				: null
 			}
+			<p className="sm">Curious about what achievements other users have? <Link to={Util.route.achievements()}>Visit the achievements page</Link>.</p>
 		</div>;
 	}
 }

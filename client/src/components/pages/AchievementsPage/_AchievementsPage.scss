@@ -1,0 +1,6 @@
+.page-achievements {
+	.achievements {
+		@include raisedContainer;
+		padding: $spacing-sm;
+	}
+}

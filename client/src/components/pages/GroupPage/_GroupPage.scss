@@ -1,0 +1,14 @@
+.page-group {
+	.group-info {
+		.group-info-header {
+			> * {
+				text-align: center;
+			}
+
+			.created-date {
+				margin: $spacing-xxs 0;
+				color: $colour-grey-e;
+			}
+		}
+	}
+}
