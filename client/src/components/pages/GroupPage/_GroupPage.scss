@@ -1,8 +1,16 @@
 .page-group {
+	.group-actions {
+		margin: $spacing-xs 0;
+	}
+
 	.group-info {
 		.group-info-header {
 			> * {
 				text-align: center;
+			}
+
+			.group-avatar {
+				margin: 0 auto;
 			}
 
 			.created-date {

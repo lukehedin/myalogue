@@ -8,12 +8,11 @@ import Button from '../../Button/Button';
 
 class GroupEditorForm extends Component {
 	render() {
-		return <form className="flat-form" onSubmit={this.props.submitForm}>
+		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('name')}
 			{this.props.getField('isPublic')}
 			{this.props.getField('description')}
 			{this.props.getField('instruction')}
-			{this.props.getField('avatar')}
 			<p className="form-message">A group instruction is displayed during play when making comics with the group. It is completely optional, must be 64 characters or less and can be changed later.</p>
 			<p className="form-message">eg. "only speak in rhyme", "make frequent puns about sea creatures" or "the author of the final panel must speak like Yoda".</p>
 			<div className="button-container">
@@ -24,6 +23,7 @@ class GroupEditorForm extends Component {
 }
 
 export default asForm(GroupEditorForm, {
+	class: 'flat-form',
 	fields: {
 		name: {
 			label: 'Name',
@@ -53,10 +53,6 @@ export default asForm(GroupEditorForm, {
 		isPublic: {
 			label: 'Allow users to join without approval (public group)',
 			type: Util.enums.FieldType.Checkbox
-		},
-		avatar: {
-			label: 'Group avatar',
-			type: Util.enums.FieldType.ImageUpload
 		}
 	}
 })

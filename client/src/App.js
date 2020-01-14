@@ -112,11 +112,10 @@ class App extends Component {
 			})
 			.then(result => {
 				if(!result.error) {
-					if(Util.array.any(result.newTemplates)) {
-						Util.context.set({
-							templates: [...Util.context.getTemplates(), ...result.newTemplates]
-						});
-					}
+					Util.context.set({
+						groupUsers: result.groupUsers, //Always update
+						templates: [...Util.context.getTemplates(), ...result.newTemplates]
+					});
 				}
 			});
 		}

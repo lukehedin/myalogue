@@ -129,13 +129,14 @@ if(common.config.IsDevelopmentScript) {
 			case `uploadUserAvatar`:
 			case `groupAvatar`:
 				upload = multer({ 
+					limits: { fileSize: 20000000 }, //20mb
 					storage: multerStorageCloudinary({
 						cloudinary: cloudinary,
-						folder: 'Uploads',
-						allowedFormats: ['jpg', 'png'],
-						transformation: ['avatar'], //make 256x256 jpg
 						params: function(req, file, cb) {
 							cb(undefined, {
+								folder: 'Uploads',
+								allowedFormats: ['jpg', 'png'],
+								transformation: ['avatar'], //make 256x256 jpg
 								tags: [`userId_${req.userId}`, `env_${process.env.NODE_ENV}`]
 							});
 						}

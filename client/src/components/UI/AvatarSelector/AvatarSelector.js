@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ReactSVG from 'react-svg'
 import Util from '../../../Util';
-import Avatar from '../Avatar/Avatar';
+import UserAvatar from '../UserAvatar/UserAvatar';
 import Button from '../Button/Button';
 import ImageUpload from '../ImageUpload/ImageUpload';
 
@@ -11,7 +11,7 @@ export default class AvatarSelector extends Component {
 		super(props);
 
 		//User is only able to use this component with themself
-		let avatar = Util.context.getAvatar();
+		let avatar = Util.context.getUserAvatar();
 		this.state = {
 			isLoading: false,
 
@@ -22,6 +22,7 @@ export default class AvatarSelector extends Component {
 			colour: avatar.colour
 		};
 
+		this.setLoading = this.setLoading.bind(this);
 		this.removeAvatar = this.removeAvatar.bind(this);
 		this.setCharacter = this.setCharacter.bind(this);
 		this.setColour = this.setColour.bind(this);
@@ -46,9 +47,9 @@ export default class AvatarSelector extends Component {
 	}
 	randomize() {
 		this.setState({
-			colour: Util.random.getRandomInt(1, Util.avatar.getColourCount()),
-			expression: Util.random.getRandomInt(1, Util.avatar.getExpressionCount()),
-			character: Util.random.getRandomInt(1, Util.avatar.getCharacterCount())
+			colour: Util.random.getRandomInt(1, Util.userAvatar.getColourCount()),
+			expression: Util.random.getRandomInt(1, Util.userAvatar.getExpressionCount()),
+			character: Util.random.getRandomInt(1, Util.userAvatar.getCharacterCount())
 		});
 	}
 	save() {
@@ -65,20 +66,23 @@ export default class AvatarSelector extends Component {
 		})
 		.then(() => window.location.reload());
 	}
+	setLoading(isLoading) {
+		this.setState({
+			isLoading: isLoading
+		});
+	}
 	removeAvatar() {
+		this.setState({
+			isLoading: true
+		});
+
 		Util.api.post('/api/removeUserAvatar')
 			.then(() => window.location.reload())
 	}
 	render() {
-		if(this.state.isLoading) {
-			return <div className="avatar-selector">
-				<div className="loader"></div>
-			</div>;
-		}
-		
-		let expressionMax = Util.avatar.getExpressionCount();
-		let characterMax = Util.avatar.getCharacterCount();
-		let colourMax = Util.avatar.getColourCount();
+		let expressionMax = Util.userAvatar.getExpressionCount();
+		let characterMax = Util.userAvatar.getCharacterCount();
+		let colourMax = Util.userAvatar.getColourCount();
 
 		let loopValIfNeeded = (val, max, callback) => {
 			if(val < 1) val = max;
@@ -87,9 +91,10 @@ export default class AvatarSelector extends Component {
 		};
 
 		return <div className="avatar-selector">
+			{this.state.isLoading ? <div className="loader masked"></div> : null}
 			<h2>Change avatar</h2>
-			<Avatar 
-				size={128}
+			<UserAvatar 
+				size={96}
 				user={{ 
 					avatar: {
 						url: this.state.url,
@@ -99,7 +104,7 @@ export default class AvatarSelector extends Component {
 					}
 			}} />
 			{this.state.url
-				? <Button label="Remove" onClick={this.removeAvatar} />
+				? null
 				: <div>
 					<div className="button-container justify-center">
 						<Button size="md" colour="black" isHollow={true} label="Randomize" onClick={this.randomize} />
@@ -124,9 +129,23 @@ export default class AvatarSelector extends Component {
 					<div className="button-container justify-center">
 						<Button size="md" colour="pink" label="Save avatar" onClick={this.save} />
 					</div>
+					<h5 className="or">or</h5>
 				</div>
 			}
-			<ImageUpload endpoint='/api/uploadUserAvatar' buttonLabel={this.state.url ? 'Change' : 'Upload'} onUpload={() => window.location.reload()} />
+			<div className="button-container justify-center">
+				<ImageUpload endpoint='/api/uploadUserAvatar' 
+					label={this.state.url ? 'Upload new image' : 'Upload image'} 
+					onUploaded={() => window.location.reload()} 
+					onUploadingStart={() => this.setLoading(true)} 
+					onUploadingEnd={() => this.setLoading(false)} 
+				/>
+			</div>
+			{this.state.url
+				? <div className="button-container justify-center">
+					<Button label="Remove image" onClick={this.removeAvatar} />
+				</div>
+				: null
+			}
 		</div>
 	}
 }

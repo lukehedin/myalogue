@@ -1,0 +1,12 @@
+.image-upload {
+	input {
+		display: none;
+	}
+	
+	.error {
+		margin-top: $spacing-xxs;
+		color: $colour-red;
+		font-size: 12px;
+		text-align: center;
+	}
+}

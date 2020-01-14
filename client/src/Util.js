@@ -107,7 +107,7 @@ const Util = {
 
 		getUserId: () => Util.context._user.userId,
 		getUsername: () => Util.context._user.username,
-		getAvatar: () => Util.avatar.getForUser(Util.context._user),
+		getUserAvatar: () => Util.userAvatar.getForUser(Util.context._user),
 
 		//TODO!!
 		isInGroup: (groupId) => true,
@@ -269,36 +269,6 @@ const Util = {
 			}
 		  
 			return arr;
-		}
-	},
-
-	avatar: {
-		getExpressionCount: () => 10,
-		getCharacterCount: () => 6,
-		getColourCount: () => Object.keys(Util.avatar.colourLookup).length,
-
-		getForUser: (user) => {
-			//If the user has a url, or the user has all 3 s4y avatar settings, it's good to go
-			return user && user.avatar && (user.avatar.url || (user.avatar.character && user.avatar.expression && user.avatar.colour))
-				? user.avatar
-				: Util.avatar.getPseudoAvatar(user.userId);
-		},
-		getPseudoAvatar: (userId) => {
-			return {
-				expression: (userId % Util.avatar.getExpressionCount()) + 1,
-				character: (userId % Util.avatar.getCharacterCount()) + 1,
-				colour: (userId % Util.avatar.getColourCount()) + 1
-			}
-		},
-
-		colourLookup: {
-			1: `e87e00`, //orange
-			2: `f0ba00`, //yellow
-			3: `00d131`, //green
-			4: `00b6e7`, //blue
-			5: `6600f2`, //purple
-			6: `c400b8`, //pink
-			7: `ff3600` //red
 		}
 	},
 
@@ -534,6 +504,33 @@ const Util = {
 		
 		getRootScrollElement: () => {
 			return document.getElementsByClassName('app-container')[0]; 
+		}
+	},
+
+	userAvatar: {
+		getExpressionCount: () => 10,
+		getCharacterCount: () => 6,
+		getColourCount: () => Object.keys(Util.userAvatar.colourLookup).length,
+
+		getForUser: (user) => {
+			//If the user has a url, or the user has all 3 s4y avatar settings, it's good to go
+			return user && user.avatar && (user.avatar.url || (user.avatar.character && user.avatar.expression && user.avatar.colour))
+				? user.avatar
+				: {
+					expression: (user.userId % Util.userAvatar.getExpressionCount()) + 1,
+					character: (user.userId % Util.userAvatar.getCharacterCount()) + 1,
+					colour: (user.userId % Util.userAvatar.getColourCount()) + 1
+				};
+		},
+
+		colourLookup: {
+			1: `e87e00`, //orange
+			2: `f0ba00`, //yellow
+			3: `00d131`, //green
+			4: `00b6e7`, //blue
+			5: `6600f2`, //purple
+			6: `c400b8`, //pink
+			7: `ff3600` //red
 		}
 	}
 };

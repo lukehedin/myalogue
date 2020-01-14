@@ -1,44 +1,42 @@
 .form-wrapper {
 	position: relative;
-    margin: 0 auto;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-	width: 100%;
+
+	&.auth-form {
+		@include raisedContainer;
+		padding: $spacing-sm;
+		margin: 0 auto;
+		align-self: stretch;
+		max-width: 320px;
+		@include oversm {
+			width: 100%;
+		}
+
+		h2 {
+			text-align: center;
+			margin-bottom: $spacing-xs;
+		}
+
+		.button-container {
+			justify-content: center;
+		}
+	}
+
+	&.flat-form {
+		.button-container {
+			justify-content: center;
+			@include oversm {
+				justify-content: flex-start;
+			}
+		}
+	}
 
 	form {
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
-
-		&.auth-form {
-			@include raisedContainer;
-			padding: $spacing-sm;
-			margin: 0 auto;
-			align-self: stretch;
-			max-width: 320px;
-			@include oversm {
-				width: 100%;
-			}
-
-			h2 {
-				text-align: center;
-				margin-bottom: $spacing-xs;
-			}
-
-			.button-container {
-				justify-content: center;
-			}
-		}
-
-		&.flat-form {
-			.button-container {
-				justify-content: center;
-				@include oversm {
-					justify-content: flex-start;
-				}
-			}
-		}
 
 		> * {
 			&:not(:first-child) {

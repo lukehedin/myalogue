@@ -66,7 +66,7 @@ class Comic extends Component {
 				result.user = {
 					userId: Util.context.getUserId(),
 					username: Util.context.getUsername(),
-					avatar: Util.context.getAvatar()
+					avatar: Util.context.getUserAvatar()
 				};
 
 				this.setState({

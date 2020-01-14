@@ -9,7 +9,7 @@ import Button from '../../Button/Button';
 
 class LoginForm extends Component {
 	render() {
-		return <form className="auth-form" onSubmit={this.props.submitForm}>
+		return <form onSubmit={this.props.submitForm}>
 			<h2>Login</h2>
 			{this.props.getField('emailUsername')}
 			{this.props.getField('password')}
@@ -23,6 +23,7 @@ class LoginForm extends Component {
 }
 
 export default asForm(LoginForm, {
+	class: 'auth-form',
 	fields: {
 		emailUsername: {
 			label: 'Email or username',

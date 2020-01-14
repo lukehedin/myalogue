@@ -172,7 +172,8 @@ export default class GroupService extends Service {
 
 			await this.models.GroupUser.create({
 				UserId: userId,
-				GroupId: dbNewGroup.GroupId
+				GroupId: dbNewGroup.GroupId,
+				IsGroupAdmin: true
 			});
 			 
 			return this.GetById(dbNewGroup.GroupId);

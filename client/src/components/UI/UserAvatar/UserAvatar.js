@@ -5,9 +5,9 @@ import Util from '../../../Util';
 import avatarsImage from '../../../images/avatars.png';
 
 //this.props.user
-export default class Avatar extends Component {
+export default class UserAvatar extends Component {
 	render() {
-		let className = "avatar";
+		let className = "user-avatar";
 		let size = this.props.size || 64;
 		let style = {
 			width: size,
@@ -17,8 +17,8 @@ export default class Avatar extends Component {
 		};
 
 		let avatar = this.props.user
-				? Util.avatar.getForUser(this.props.user)
-				: Util.context.getAvatar(); //Me
+				? Util.userAvatar.getForUser(this.props.user)
+				: Util.context.getUserAvatar(); //Me
 
 		if(avatar.url) {
 			style.backgroundImage = `url('${avatar.url}')`;
@@ -26,21 +26,21 @@ export default class Avatar extends Component {
 		} else {
 			const avatarImageSize = 96;
 
-			let imageWidth = avatarImageSize * Util.avatar.getExpressionCount();
-			let imageHeight = avatarImageSize * Util.avatar.getCharacterCount();
+			let imageWidth = avatarImageSize * Util.userAvatar.getExpressionCount();
+			let imageHeight = avatarImageSize * Util.userAvatar.getCharacterCount();
 			
-			let backgroundX = -((avatar.expression - 1) % (Util.avatar.getExpressionCount())) * size;
-			let backgroundY = -((avatar.character - 1) % (Util.avatar.getCharacterCount())) * size;
+			let backgroundX = -((avatar.expression - 1) % (Util.userAvatar.getExpressionCount())) * size;
+			let backgroundY = -((avatar.character - 1) % (Util.userAvatar.getCharacterCount())) * size;
 
 			style.backgroundSize = `${(size / avatarImageSize) * imageWidth}px ${(size / avatarImageSize) * imageHeight}px`;
 			style.backgroundImage = `url('${avatarsImage}')`;
 			style.backgroundPositionX = backgroundX;
 			style.backgroundPositionY = backgroundY;
-			style.backgroundColor = `#${Util.avatar.colourLookup[avatar.colour] || Util.avatar.colourLookup[1]}`;
+			style.backgroundColor = `#${Util.userAvatar.colourLookup[avatar.colour] || Util.userAvatar.colourLookup[1]}`;
 		}
 
 		return this.props.to
-			? <Link to={this.props.to} className={className} style={style}></Link>
+			? <Link className={className} style={style} to={this.props.to}></Link>
 			: <div className={className} style={style}></div>;
 	}
 }

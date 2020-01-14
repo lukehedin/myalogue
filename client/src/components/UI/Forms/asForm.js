@@ -161,12 +161,6 @@ export default function asForm(WrappedForm, formConfig) {
 					/>;
 					break;
 
-				case Util.enums.FieldType.ImageUpload:
-					field = <ImageUpload
-						buttonLabel={fieldConfig.buttonLabel || "Choose file"}
-					/>;
-					break;
-
 				default:
 					field = <input 
 						className={`${fieldConfig.isAutoFocus ? 'auto-focus' : ''}`}
@@ -188,7 +182,7 @@ export default function asForm(WrappedForm, formConfig) {
 			</div>;
 		}
 		render() {
-			return <div ref={this.formWrapperRef} className="form-wrapper">
+			return <div ref={this.formWrapperRef} className={`form-wrapper ${formConfig.class || 'flat-form'}`}>
 				{this.state.isLoading ? <div className="loader masked"></div> : null}
 				<WrappedForm 
 					formData={this.state.formData} 

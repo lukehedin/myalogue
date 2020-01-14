@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 
 import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
-import Avatar from '../../UI/Avatar/Avatar';
+import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 
 export default class LeaderboardsPage extends Component {
@@ -78,7 +78,7 @@ export default class LeaderboardsPage extends Component {
 								return <tr key={leaderboardUser.userId} className={`leaderboard-item leaderboard-user ${Util.context.isUserId(leaderboardUser.userId) ? 'leaderboard-highlight' : ''}`}>
 									<td>
 										<h4>{placement}.</h4>
-										<Avatar size={32} to={Util.route.profile(leaderboardUser.username)} user={leaderboardUser} />
+										<UserAvatar size={32} to={Util.route.profile(leaderboardUser.username)} user={leaderboardUser} />
 										<div className="leaderboard-item-detail">
 											<h4 className="username"><Link to={Util.route.profile(leaderboardUser.username)}>{leaderboardUser.username}</Link></h4>
 											<p className="sm rating"><b>Weekly rating</b>: {leaderboardUser.leaderboardRating}</p>

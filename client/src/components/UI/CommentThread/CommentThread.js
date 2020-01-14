@@ -4,7 +4,7 @@ import Util from '../../../Util';
 
 import CommentInput from '../CommentInput/CommentInput';
 import Comment from '../Comment/Comment';
-import Avatar from '../Avatar/Avatar';
+import UserAvatar from '../UserAvatar/UserAvatar';
 
 export default class CommentThread extends Component {
 	constructor(props){
@@ -71,7 +71,7 @@ export default class CommentThread extends Component {
 			}
 			{Util.context.isAuthenticated()
 				? <div className="comment-input-container">
-					<Avatar size={32} />
+					<UserAvatar size={32} />
 					<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
 				</div>
 				: <p className="empty-text">You need to <Link to={Util.route.register()}>create an account</Link> to make comments.</p>

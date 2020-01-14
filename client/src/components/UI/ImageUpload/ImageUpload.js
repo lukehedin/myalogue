@@ -10,26 +10,34 @@ export default class ImageUpload extends Component {
 		};
 
 		this.onChange = this.onChange.bind(this);
+		this.setIsUploading = this.setIsUploading.bind(this);
+	}
+	setIsUploading(isUploading) {
+		if(!this.state.isUploading && isUploading) {
+			if(this.props.onUploadingStart) this.props.onUploadingStart();
+		} else if(this.state.isUploading && !isUploading) {
+			if(this.props.onUploadingEnd) this.props.onUploadingEnd();
+		}
+
+		this.setState({
+			isUploading: isUploading
+		});
 	}
 	onChange(event) {
 		if(event.target.files.length > 0) {
-			this.setState({
-				isUploading: true
-			});
+			this.setIsUploading(true);
 
 			let image = event.target.files[0];
 
 			let formData = new FormData();
 			formData.append('image', image);
-			if(this.props.id) formData.append('id', this.props.id);
+
 			Util.api.postFormData(this.props.endpoint, formData)
 				.then(result => {
-					this.setState({
-						isUploading: false
-					});
+					this.setIsUploading(false);
 
 					if(!result.error) {
-						if(this.props.onUpload) this.props.onUpload(result);
+						if(this.props.onUploaded) this.props.onUploaded(result);
 					} else {
 						this.setState({
 							image: null,
@@ -40,15 +48,19 @@ export default class ImageUpload extends Component {
 				.catch(error => {
 					this.setState({
 						image: null,
-						error,
-						isUploading: false,
+						error
 					});
+
+					this.setIsUploading(false);
 				});
 		}
 	}
 	render() {
 		return <div className="image-upload">
-			<input disabled={this.state.isUploading} type="file" name="image" onChange={this.onChange}></input>
+			<label className="button button-md button-black" htmlFor="image-upload-input">
+				<span className="button-label">{this.props.label || 'Upload image'}</span>
+			</label>
+			<input id="image-upload-input" accept="image/*" disabled={this.state.isUploading} type="file" name="image" onChange={this.onChange}></input>
 			{this.state.error ? <p className="error">{this.state.error}</p> : null}
 		</div>
 	}

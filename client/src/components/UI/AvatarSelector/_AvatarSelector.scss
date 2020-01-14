@@ -1,12 +1,9 @@
 .avatar-selector {
 	@include loaderContainer;
+	position: relative;
 
 	> * {
 		margin: 0 auto;
-	}
-
-	.avatar {
-		margin-bottom: $spacing-xs;
 	}
 
 	.avatar-settings {
@@ -28,5 +25,14 @@
 			}
 		}
 
+	}
+
+	.or {
+		margin: $spacing-sm 0;
+		text-align: center;
+	}
+	
+	.button-container {
+		margin-top: $spacing-xs;
 	}
 }

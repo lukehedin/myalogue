@@ -65,13 +65,13 @@ export default {
 
 			let existingTemplateIds = req.body.existingTemplateIds;
 
-			let [groups, newTemplates] = await Promise.all([
+			let [groupUsers, newTemplates] = await Promise.all([
 				services.Group.GetGroupUsersForUserId(userId),
 				services.Template.GetNew(existingTemplateIds)
 			]);
 
 			return {
-				groups,
+				groupUsers,
 				newTemplates
 			};
 		},
@@ -329,6 +329,8 @@ export default {
 			let userId = req.userId;
 			let file = req.file;
 
+			console.log(file);
+
 			await services.User.SaveAvatarUrl(userId, file.url);
 
 			return file.url;
@@ -345,15 +347,26 @@ export default {
 
 	//Includes group permissions (adminOfGroupIds, memberOfGroupIds)
 	group: {
-		uploadGroupAvatar: async (req, services) => {
 
+		uploadGroupAvatar: async (req, services) => {
+			let userId = req.userId;
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			if(group.groupId && !adminOfGroupIds.includes[group.groupId]) throw 'Not a group admin';
+			
+			let file = req.file;
+
+			let groupId = req.body.groupId;
 		},
 
 		saveGroup: async (req, services) => {
 			let userId = req.userId;
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			if(group.groupId && !adminOfGroupIds.includes[group.groupId]) throw 'Not a group admin';
 
 			let group = req.body.group;
-
+			
 			return await services.Group.SaveGroup(userId, group);
 		}
 	}

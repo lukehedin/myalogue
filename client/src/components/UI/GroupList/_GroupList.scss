@@ -1,22 +1,29 @@
 .group-list {
 	.group-list-item {
-		.group-name {
-			font-weight: bold;
-			flex: 1;
-			@include singleLineEllipsis;
-		}
+		display: flex;
+		flex-direction: row;
 
-		.instruction {
-		}
-
-		.description {
-			overflow-wrap: break-word;
-			white-space: pre-line;
-			font-size: 12px;
-		}
-
-		.group-bottom {
-			color: $colour-grey-d;
+		.group-details {
+			margin-left: $spacing-xs;
+			
+			.group-name {
+				font-weight: bold;
+				flex: 1;
+				@include singleLineEllipsis;
+			}
+	
+			.instruction {
+			}
+	
+			.description {
+				overflow-wrap: break-word;
+				white-space: pre-line;
+				font-size: 12px;
+			}
+	
+			.group-bottom {
+				color: $colour-grey-d;
+			}
 		}
 	}
 }

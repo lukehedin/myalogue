@@ -140,7 +140,7 @@ export default class Database {
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
 			IsPublic: getBoooleanNotNull()
-		});
+		}, true);
 
 		defineTable('GroupUser', {
 			IsGroupAdmin: getBoooleanNotNull()

@@ -4,6 +4,7 @@ import Util from '../../../Util';
 
 import Button from '../../UI/Button/Button';
 import GroupEditorForm from '../../UI/Forms/GroupEditorForm/GroupEditorForm';
+import ImageUpload from '../../UI/ImageUpload/ImageUpload';
 
 export default class GroupEditorPage extends Component {
 	constructor(props) {
@@ -46,7 +47,7 @@ export default class GroupEditorPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">{this.props.groupId ? 'Manage group' : 'Create group'}</h1>
+						<h1 className="page-title">{this.props.groupId ? 'Edit group' : 'Create group'}</h1>
 						<div className="group-editor">
 							{this.state.isLoading
 								? <div className="loader"></div>
@@ -69,7 +70,9 @@ export default class GroupEditorPage extends Component {
 										}}
 									/>
 									{this.state.group && this.state.group.groupId
-										? <h2>Group members</h2>
+										? <div className="edit-only">
+											<ImageUpload endpoint='/api/uploadGroupAvatar' id={this.state.group.groupId} />
+										</div>
 										: null
 									}
 								</div>

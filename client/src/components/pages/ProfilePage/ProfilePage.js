@@ -5,7 +5,7 @@ import Util from '../../../Util';
 import moment from 'moment';
 
 import ComicList from '../../UI/ComicList/ComicList';
-import Avatar from '../../UI/Avatar/Avatar';
+import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import AchievementList from '../../UI/AchievementList/AchievementList';
 import GroupList from '../../UI/GroupList/GroupList';
@@ -71,7 +71,7 @@ export default class ProfilePage extends Component {
 								: this.state.user
 									? <div className="user-info">
 										<div className="user-info-header">
-											<Avatar className="avatar-lg" user={this.state.user} size={128} to={isMe ? Util.route.settings() : null} />
+											<UserAvatar className="avatar-lg" user={this.state.user} size={96} to={isMe ? Util.route.settings() : null} />
 											<div className="user-info-header-detail">
 												<h2 className="user-name">{this.state.user.username}</h2>
 												<p className="joined-date sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>

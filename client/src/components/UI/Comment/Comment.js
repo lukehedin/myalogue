@@ -5,7 +5,7 @@ import { openModal } from '../../../redux/actions';
 import moment from 'moment';
 import Util from '../../../Util';
 
-import Avatar from '../Avatar/Avatar';
+import UserAvatar from '../UserAvatar/UserAvatar';
 import CommentInput from '../CommentInput/CommentInput';
 
 //Note: a comment should be able to get by and render with nothing but a { value: '' }
@@ -44,7 +44,7 @@ class Comment extends Component {
 
 		return <div className="comment">
 			{user 
-				? <Avatar size={32} to={Util.route.profile(user.username)} user={user} />
+				? <UserAvatar size={32} to={Util.route.profile(user.username)} user={user} />
 				: <div className="empty-avatar"></div>
 			}
 			<div className="comment-inner">

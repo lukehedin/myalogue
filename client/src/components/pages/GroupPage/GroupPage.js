@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openModal } from '../../../redux/actions';
 import CountUp from 'react-countup';
 import moment from 'moment';
 import Util from '../../../Util';
@@ -6,8 +8,9 @@ import Util from '../../../Util';
 import Button from '../../UI/Button/Button';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import ComicList from '../../UI/ComicList/ComicList';
+import GroupAvatar from '../../UI/GroupAvatar/GroupAvatar';
 
-export default class GroupPage extends Component {
+class GroupPage extends Component {
 	constructor(props){
 		super(props);
 
@@ -15,6 +18,8 @@ export default class GroupPage extends Component {
 			isLoading: true,
 			group: null
 		}
+
+		this.leaveGroup = this.leaveGroup.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getGroup', {
@@ -32,6 +37,26 @@ export default class GroupPage extends Component {
 			});
 		})
 	}
+	leaveGroup() {
+		this.props.openModal({
+			type: Util.enums.ModalType.Confirm,
+			title: 'Leave group',
+			content: <p>Are you sure you want to leave the group "{this.state.group.name}"?</p>,
+			yesLabel: 'Yes, leave group',
+			noLabel: 'Cancel',
+			yesFn: () => {
+				let groupId = this.state.group.groupId;
+				//Server
+				Util.api.post('/api/leaveGroup', {
+					groupId
+				});
+				//Client
+				Util.context.set({
+					groupUsers: Util.context.getGroupUsers().filter(gu => gu.groupId !== groupId)
+				});
+			}
+		});
+	}
 	render() {
 		return <div className="page-group">
 			<div className="panel-standard">
@@ -43,11 +68,18 @@ export default class GroupPage extends Component {
 								: this.state.group 
 									? <div className="group-info">
 										<div className="group-info-header">
+											<GroupAvatar size={96} group={this.state.group} />
 											<h2>{this.state.group.name}</h2>
 											<p className="created-date sm">Created {moment(this.state.group.createdAt).fromNow()}</p>
-											<div className="button-container">
+											<div className="group-actions button-container justify-center">
 												{Util.context.isInGroup(this.state.group.groupId)
-													? <Button label="Leave group" />
+													? <div className="button-container justify-center">
+														{Util.context.isGroupAdmin(this.state.group.groupId)
+															? <Button size="sm" label="Edit group" to={Util.route.groupEditor(this.state.group.groupId)} />
+															: null
+														}
+														<Button size="sm" label="Leave group" onClick={this.leaveGroup} />
+													</div>
 													: this.state.group.isPublic
 														? <Button label="Join group" />
 														: <Button label="Request to join" />
@@ -83,7 +115,13 @@ export default class GroupPage extends Component {
 										}, {
 											tabId: 'members',
 											title: 'Members',
-											content: <div className=""></div>
+											content: <div className="member-list">
+												{this.state.group.groupUsers.map(groupUser => {
+													return <div className="member-list-item">
+														{groupUser.user.username}
+													</div>
+												})}
+											</div>
 										}]} />
 										<ComicList 
 											sortBy={Util.enums.ComicSortBy.Newest}
@@ -101,3 +139,5 @@ export default class GroupPage extends Component {
 		</div>;
 	}
 }
+
+export default connect(null, { openModal })(GroupPage);
