@@ -37,6 +37,12 @@
 	overflow: hidden;
 }
 
+@mixin singleLineEllipsis {
+	overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+}
+
 @mixin noSelect {
 	-webkit-user-drag: none;
 	-khtml-user-drag: none;
@@ -120,7 +126,7 @@
 
 @mixin textInputs {
 	input, select, textarea {
-		&:not([type=checkbox]), &:not([type=radio]) {
+		&:not([type=checkbox]):not([type=radio]):not([type=file]) {
 			@content;
 		}
 	}

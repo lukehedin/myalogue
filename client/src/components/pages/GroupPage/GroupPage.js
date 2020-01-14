@@ -45,6 +45,14 @@ export default class GroupPage extends Component {
 										<div className="group-info-header">
 											<h2>{this.state.group.name}</h2>
 											<p className="created-date sm">Created {moment(this.state.group.createdAt).fromNow()}</p>
+											<div className="button-container">
+												{Util.context.isInGroup(this.state.group.groupId)
+													? <Button label="Leave group" />
+													: this.state.group.isPublic
+														? <Button label="Join group" />
+														: <Button label="Request to join" />
+												}
+											</div>
 										</div>
 										<TabbedPanels tabs={[{
 											tabId: 'details',

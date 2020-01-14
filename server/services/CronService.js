@@ -10,11 +10,11 @@ export default class CronService extends Service {
 	RegisterJobs() {
 		const jobs = [{
 			name: 'Update hot ranks',
-			time: '2-59/10 * * * *', //At every 10th minute from 2 through 59 (10:02, 10:12, 10:22, 10:32, etc)
+			time: '2-59/5 * * * *', //At every 5th minute from 2 through 59 (10:02, 10:07, 10:12, 10:17, 10:22 etc)
 			fn: () => this.UpdateHotRanks()
 		}, {
 			name: 'Check rating achievements',
-			time: '* * * * *', //Every minute
+			time: '2-59/5 * * * *', //At every 5th minute from 3 through 59 (10:03, 10:08, 10:13, 10:18, 10:23 etc)
 			fn: () => this.CheckRatingAchievements()
 		}, {
 			name: 'Update leaderboards',

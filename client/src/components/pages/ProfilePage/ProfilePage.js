@@ -8,6 +8,7 @@ import ComicList from '../../UI/ComicList/ComicList';
 import Avatar from '../../UI/Avatar/Avatar';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import AchievementList from '../../UI/AchievementList/AchievementList';
+import GroupList from '../../UI/GroupList/GroupList';
 
 //this.props.userIdOrUserName
 export default class ProfilePage extends Component {
@@ -17,8 +18,10 @@ export default class ProfilePage extends Component {
 		this.state = {
 			isLoading: true,
 			user: null,
+			groups: null,
 			userStats: null,
-			userAchievementInfo: null
+			userAchievements: null,
+			userAchievementProgress: null
 		};
 	}
 	componentDidMount() {
@@ -43,8 +46,10 @@ export default class ProfilePage extends Component {
 			if(!result.error) {
 				this.setState({
 					user: result.user,
+					groups: result.groups,
 					userStats: result.userStats,
-					userAchievementInfo: result.userAchievementInfo
+					userAchievements: result.userAchievements,
+					userAchievementProgress: result.userAchievementProgress
 				});
 			}
 
@@ -66,7 +71,7 @@ export default class ProfilePage extends Component {
 								: this.state.user
 									? <div className="user-info">
 										<div className="user-info-header">
-											<Avatar className="avatar-lg" user={this.state.user} to={isMe ? Util.route.settings() : null} />
+											<Avatar className="avatar-lg" user={this.state.user} size={128} to={isMe ? Util.route.settings() : null} />
 											<div className="user-info-header-detail">
 												<h2 className="user-name">{this.state.user.username}</h2>
 												<p className="joined-date sm">Joined {moment(this.state.user.createdAt).fromNow()}</p>
@@ -80,27 +85,28 @@ export default class ProfilePage extends Component {
 													<h5>Total comic rating</h5>
 													<h1><CountUp end={this.state.userStats.comicTotalRating} /></h1>
 												</div>
-												<div className="user-stat">
-													<h5>Average comic rating</h5>
-													<h2><CountUp end={this.state.userStats.comicAverageRating} decimals={2}/></h2>
-												</div>
 												<div className="user-stats-row">
 													<div className="user-stat">
-														<h5>Created</h5>
 														<h2><CountUp end={this.state.userStats.panelCount} /></h2>
 														<h5>{Util.format.pluralise(this.state.userStats.panelCount, 'panel')}</h5>
 													</div>
 													<div className="user-stat">
-														<h5>Featured in</h5>
 														<h2><CountUp end={this.state.userStats.comicCount} /></h2>
 														<h5>{Util.format.pluralise(this.state.userStats.comicCount, 'comic')}</h5>
 													</div>
 												</div>
+												{Util.array.any(this.state.groups)
+													? <div className="user-stat">
+														<h5>Groups</h5>
+														<GroupList groups={this.state.groups} />
+													</div>
+													: null
+												}
 											</div>
 										}, {
 											tabId: 'achievements',
 											title: 'Achievements',
-											content: <AchievementList userAchievementInfo={this.state.userAchievementInfo} />
+											content: <AchievementList userAchievements={this.state.userAchievements} userAchievementProgress={this.state.userAchievementProgress} />
 										}, {
 											tabId: 'templates',
 											title: 'Templates',

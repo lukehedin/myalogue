@@ -7,7 +7,7 @@ import Button from '../../Button/Button';
 
 class ForgotPasswordForm extends Component {
 	render() {
-		return <form class="auth-form" onSubmit={this.props.submitForm}>
+		return <form className="auth-form" onSubmit={this.props.submitForm}>
 			<h2>Forgot password</h2>
 			<p className="form-message">Please provide the email address or username associated with your account. You'll receive an email with instructions on how to set a new password.</p>
 			{this.props.getField('emailUsername')}

@@ -1,9 +1,22 @@
 .group-list {
-	.group-item {
+	.group-list-item {
+		.group-name {
+			font-weight: bold;
+			flex: 1;
+			@include singleLineEllipsis;
+		}
+
+		.instruction {
+		}
+
 		.description {
 			overflow-wrap: break-word;
 			white-space: pre-line;
 			font-size: 12px;
+		}
+
+		.group-bottom {
+			color: $colour-grey-d;
 		}
 	}
 }

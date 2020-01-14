@@ -4,6 +4,9 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import enforce from 'express-sslify';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import multerStorageCloudinary from 'multer-storage-cloudinary';
+const cloudinary = require('cloudinary'); //Does not work as import
 
 import routes from './routes';
 import common from './common';
@@ -87,55 +90,98 @@ if(common.config.IsDevelopmentScript) {
 	});
 
 	//Register routes
-	const registerRoute = (route, isPublic = false) => {
-		app.post(`/api/${route}`, async (req, res) => {
-			let hasAuthenticationError = false;
+	const getRouteAuth = (includeGroups = false) => async (req, res, next) => {
+		try {
+			//The userId comes from the token, so sending up another one isn't an option
+			if(req.userId) {
+				//Ensure the user hasn't become banned since last user request (can't become unverified or anything else).
+				let dbUser = await services.User.DbGetByIdNotBanned(req.userId);
+				
+				if(dbUser) {
+					//The user is valid, Add isAdmin setting, then move along
+					req.isAdmin = dbUser.IsAdmin;
 
-			if(!isPublic) {
-				try {
-					//The userId comes from the token, so sending up another one isn't an option
-					if(req.userId) {
-						//Ensure the user hasn't become banned since last private request (can't become unverified or anything else).
-						let dbUser = await services.User.DbGetByIdNotBanned(req.userId);
-						
-						if(dbUser) {
-							//The user is valid.
-							//Add isAdmin setting, then flow down to next try/catch
-							req.isAdmin = dbUser.IsAdmin;
-						} else {
-							throw `UserId ${req.userId} supplied, but no valid db user found.`;
+					if(includeGroups) {
+						let groupUsers = await services.Group.GetGroupUsersForUserId(req.userId);
+
+						//Attach group user info to request
+						req.memberOfGroupIds = groupUsers.map(gu => gu.groupId);
+						req.adminOfGroupIds = groupUsers.filter(gu => gu.isGroupAdmin).map(gu => gu.groupId);
+					}
+
+					next();
+				} else {
+					throw `UserId ${req.userId} supplied, but no valid db user found.`;
+				}
+			} else {
+				throw `Anonymous user tried to access user route`;
+			}
+		} catch(error) {
+			//Authentication error (401) Always sends the same error to the user
+			db.LogError(error);
+			res.status(401).send({ error: 'Authentication failed. Please log in.' });
+		}
+	};
+	const getRouteUpload = (route) => async (req, res, next) => {
+		let upload = null;
+
+		switch(route) {
+			case `uploadUserAvatar`:
+			case `groupAvatar`:
+				upload = multer({ 
+					storage: multerStorageCloudinary({
+						cloudinary: cloudinary,
+						folder: 'Uploads',
+						allowedFormats: ['jpg', 'png'],
+						transformation: ['avatar'], //make 256x256 jpg
+						params: function(req, file, cb) {
+							cb(undefined, {
+								tags: [`userId_${req.userId}`, `env_${process.env.NODE_ENV}`]
+							});
 						}
-					} else {
-						throw `Anonymous user tried to access private route`;
-					}
-				} catch(error) {
-					hasAuthenticationError = true;
+					})
+				})
+				.single('image');
+			default:
+				//No upload
+		}
 
-					//Authentication error (401) Always sends the same error to the user
+		if(upload) {
+			upload(req, res, (error) => {
+				if (error) {
 					db.LogError(error);
-					res.status(401).send({ error: 'Authentication failed. Please log in.' });
+					res.json(common.getErrorResult(error.message || 'Upload failed. Please try again.'));
+				} else {
+					next();
 				}
+			})
+		} else {
+			next();
+		}
+	};
+	const getRoute = (route, type) => async (req, res, next) => {
+		try {
+			let result = await routes[type][route](req, services);
+			res.json(result);
+		} catch (error) {
+			//Only serious errors should hit this, validation/UI errors should use {error:}
+			db.LogError(error);
+			//There is a possibility an error occrrued on something asynchronus after res was sent
+			if(res && !res.headersSent) {
+				res.json(common.getErrorResult('Sorry, something went wrong. Please try again later.'));
 			}
-
-			if(!hasAuthenticationError) {
-				try {
-					let result = await routes[isPublic ? 'public' : 'private'][route](req, services);
-					res.json(result);
-				} catch (error) {
-					//Only serious errors should hit this, validation/UI errors should use {error:}
-					db.LogError(error);
-					//There is a possibility an error occrrued on something asynchronus after res was sent
-					if(res && !res.headersSent) {
-						res.json(common.getErrorResult('Sorry, something went wrong. Please try again later.'));
-					}
-				}
-			}
-		});
+		}
 	};
 
-	Object.keys(routes.public).forEach(route => registerRoute(route, true));
-	Object.keys(routes.private).forEach(route => registerRoute(route));
-  
+	//Public routes, accessible by anonymous and authenticated users, no additional checks before route
+	Object.keys(routes.public).forEach(route => app.post(`/api/${route}`, getRoute(route, 'public')));
+
+	//User routes, checks userId in token
+	Object.keys(routes.user).forEach(route => app.post(`/api/${route}`, getRouteAuth(), getRouteUpload(route), getRoute(route, 'user')));
+
+	//Group routes, checks userId in token and adds group permissions from DB
+	Object.keys(routes.group).forEach(route => app.post(`/api/${route}`, getRouteAuth(true), getRouteUpload(route), getRoute(route, 'group')));
+
 	const port = common.config.Port;
   
 	app.listen(port, () => `Server running on port ${port}`);

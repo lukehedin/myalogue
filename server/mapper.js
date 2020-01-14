@@ -8,6 +8,8 @@ const mapper = {
 			createdAt: dbUser.CreatedAt,
 			leaderboardRating: dbUser.LeaderboardRating,
 			avatar: {
+				url: dbUser.AvatarUrl,
+				//or
 				character: dbUser.AvatarCharacter,
 				expression: dbUser.AvatarExpression,
 				colour: dbUser.AvatarColour
@@ -141,6 +143,7 @@ const mapper = {
 			groupUserId: dbGroupUser.GroupUserId,
 			userId: dbGroupUser.UserId,
 			groupId: dbGroupUser.GroupId,
+			isGroupAdmin: dbGroupUser.IsGroupAdmin,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}
 	},

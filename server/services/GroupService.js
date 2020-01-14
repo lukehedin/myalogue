@@ -103,7 +103,7 @@ export default class GroupService extends Service {
 
 		return dbGroupUsers.map(mapper.fromDbGroupUser);
 	}
-	async GetGroups(userId) {
+	async GetGroupUsersForUserId(userId) {
 		if(!userId) return []; //Sometimes invoked for anon users for code cleanliness, bail out here
 
 		let dbGroupUsers = await this.models.GroupUser.findAll({
@@ -112,9 +112,11 @@ export default class GroupService extends Service {
 			}
 		});
 
-		if(dbGroupUsers.length < 1) return []; 
-
-		let groupIds = dbGroupUsers.map(dbGroupUser => dbGroupUser.GroupId);
+		return dbGroupUsers.map(mapper.fromDbGroupUser);
+	}
+	async GetGroups(userId) {
+		let groupUsers = await this.GetGroupUsersForUserId(userId);
+		let groupIds = groupUsers.map(groupUser => groupUser.groupId);
 
 		return await this.GetByIds(groupIds);
 	}

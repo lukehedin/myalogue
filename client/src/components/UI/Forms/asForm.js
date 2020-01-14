@@ -5,6 +5,7 @@ import Util from '../../../Util';
 
 import Dropdown from '../Dropdown/Dropdown';
 import Checkbox from '../Checkbox/Checkbox';
+import ImageUpload from '../ImageUpload/ImageUpload';
 
 export default function asForm(WrappedForm, formConfig) {
 	return class extends Component {
@@ -157,6 +158,12 @@ export default function asForm(WrappedForm, formConfig) {
 						onChange={(value) => this.updateFormData(fieldName, value)}
 						value={this.state.formData[fieldName]}
 						disabled={this.state.isLoading}
+					/>;
+					break;
+
+				case Util.enums.FieldType.ImageUpload:
+					field = <ImageUpload
+						buttonLabel={fieldConfig.buttonLabel || "Choose file"}
 					/>;
 					break;
 

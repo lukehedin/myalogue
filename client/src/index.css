@@ -366,7 +366,7 @@ body {
               margin-bottom: 4px; }
               body .app-container .app .form-wrapper form .field-container > label .optional {
                 color: #777777; }
-            body .app-container .app .form-wrapper form .field-container.error input:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error input:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error select:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error select:not([type=radio]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=checkbox]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=radio]) {
+            body .app-container .app .form-wrapper form .field-container.error input:not([type=checkbox]):not([type=radio]):not([type=file]), body .app-container .app .form-wrapper form .field-container.error select:not([type=checkbox]):not([type=radio]):not([type=file]), body .app-container .app .form-wrapper form .field-container.error textarea:not([type=checkbox]):not([type=radio]):not([type=file]) {
               border-color: #f02100; }
             body .app-container .app .form-wrapper form .field-container textarea {
               min-height: 60px;
@@ -1129,10 +1129,18 @@ body {
               display: none; }
             body .app-container .app .tip-strip .tip-strip-inner .tip-image.horizontal {
               display: block; } }
-      body .app-container .app .group-list .group-item .description {
+      body .app-container .app .group-list .group-list-item .group-name {
+        font-weight: bold;
+        flex: 1;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis; }
+      body .app-container .app .group-list .group-list-item .description {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 12px; }
+      body .app-container .app .group-list .group-list-item .group-bottom {
+        color: #777777; }
       body .app-container .app .play-info {
         color: #525252;
         margin-top: 8px;
@@ -1642,7 +1650,7 @@ body {
         cursor: pointer; }
         body .app-container a:not(.link-no-style):hover, body .app-container .faux-link:not(.link-no-style):hover {
           text-decoration: underline; }
-    body .app-container input:not([type=checkbox]), body .app-container input:not([type=radio]), body .app-container select:not([type=checkbox]), body .app-container select:not([type=radio]), body .app-container textarea:not([type=checkbox]), body .app-container textarea:not([type=radio]) {
+    body .app-container input:not([type=checkbox]):not([type=radio]):not([type=file]), body .app-container select:not([type=checkbox]):not([type=radio]):not([type=file]), body .app-container textarea:not([type=checkbox]):not([type=radio]):not([type=file]) {
       background-color: #fff;
       padding: 8px;
       border-radius: 4px;
@@ -1655,7 +1663,7 @@ body {
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none; }
-      body .app-container input:not([type=checkbox]):focus, body .app-container input:not([type=radio]):focus, body .app-container select:not([type=checkbox]):focus, body .app-container select:not([type=radio]):focus, body .app-container textarea:not([type=checkbox]):focus, body .app-container textarea:not([type=radio]):focus {
+      body .app-container input:not([type=checkbox]):not([type=radio]):not([type=file]):focus, body .app-container select:not([type=checkbox]):not([type=radio]):not([type=file]):focus, body .app-container textarea:not([type=checkbox]):not([type=radio]):not([type=file]):focus {
         border-color: #969696; }
     body .app-container .sorry-panel {
       margin: 0 auto;

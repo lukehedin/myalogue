@@ -34,6 +34,7 @@ export default class GroupEditorPage extends Component {
 		})
 		.then(group => {
 			this.setState({
+				isLoading: false,
 				group
 			});
 		})

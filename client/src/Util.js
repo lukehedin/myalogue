@@ -51,7 +51,7 @@ const Util = {
 
 		_user: null,
 
-		_groups: [],
+		_groupUsers: [],
 
 		_templates: [],
 		_templatePanelLookup: {},
@@ -73,8 +73,8 @@ const Util = {
 				Util.analytics.set('userId', newContext.user.userId);
 			}
 
-			if(newContext.groups) {
-				Util.context._groups = newContext.groups;
+			if(newContext.groupUsers) {
+				Util.context._groupUsers = newContext.groupUsers;
 			}
 
 			if(newContext.templates) {
@@ -107,12 +107,11 @@ const Util = {
 
 		getUserId: () => Util.context._user.userId,
 		getUsername: () => Util.context._user.username,
-		getUserAvatar: () => Util.context._user.avatar && Util.context._user.avatar.character && Util.context._user.avatar.expression && Util.context._user.avatar.colour
-			? Util.context._user.avatar
-			: Util.avatar.getPseudoAvatar(Util.context.getUserId()),
+		getAvatar: () => Util.avatar.getForUser(Util.context._user),
 
-		getGroupById: (groupId) => Util.context._groups.find(group => group.groupId === groupId),
-		isInGroup: (groupId) => !!Util.context.getGroupById(groupId),
+		//TODO!!
+		isInGroup: (groupId) => true,
+		isGroupAdmin: (groupId) => true,
 
 		getTemplates: () => Util.context._templates,
 		getLatestTemplate: () => Util.context._templates[Util.context._templates.length - 1],
@@ -220,6 +219,31 @@ const Util = {
 					}
 				});
 			});
+		},
+
+		postFormData: (endpoint, formData) => {
+			let token = Util.context._getToken();
+
+			return new Promise((resolve, reject) => {
+				axios.post(endpoint, formData, {
+					headers: {
+						Authorization: token,
+						'accept': 'application/json',
+						'Accept-Language': 'en-US,en;q=0.8',
+						'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+					}
+				})
+				.then(response => resolve(response.data))
+				.catch((err) => {
+					console.log(err);
+					if(err.response && err.response.status === 401) {
+						//Authentication failure, clear cache and refresh
+						Util.context.clear();
+					} else {
+						reject(err);
+					}
+				});
+			});
 		}
 	},
 
@@ -253,6 +277,12 @@ const Util = {
 		getCharacterCount: () => 6,
 		getColourCount: () => Object.keys(Util.avatar.colourLookup).length,
 
+		getForUser: (user) => {
+			//If the user has a url, or the user has all 3 s4y avatar settings, it's good to go
+			return user && user.avatar && (user.avatar.url || (user.avatar.character && user.avatar.expression && user.avatar.colour))
+				? user.avatar
+				: Util.avatar.getPseudoAvatar(user.userId);
+		},
 		getPseudoAvatar: (userId) => {
 			return {
 				expression: (userId % Util.avatar.getExpressionCount()) + 1,
@@ -279,7 +309,8 @@ const Util = {
 			Text: 1,
 			Textarea: 2,
 			Checkbox: 3,
-			Dropdown: 4
+			Dropdown: 4,
+			ImageUpload: 5
 		},
 		
 		ModalType: {

@@ -104,6 +104,7 @@ export default class Database {
 			AvatarCharacter: Sequelize.INTEGER,
 			AvatarExpression: Sequelize.INTEGER,
 			AvatarColour: Sequelize.INTEGER,
+			AvatarUrl: Sequelize.STRING,
 			TemporarilyBannedAt: Sequelize.DATE,
 			TemporarilyBannedCount: getIntegerNotNull(),
 			PermanentlyBannedAt: Sequelize.DATE,

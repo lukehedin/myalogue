@@ -10,7 +10,7 @@ export default {
 
 			let authPromises = [
 				services.User.Authenticate(userId, anonId),
-				services.Group.GetGroups(userId),
+				services.Group.GetGroupUsersForUserId(userId),
 				services.Template.GetAll(),
 				services.Achievement.GetAll()
 			];
@@ -66,7 +66,7 @@ export default {
 			let existingTemplateIds = req.body.existingTemplateIds;
 
 			let [groups, newTemplates] = await Promise.all([
-				services.Group.GetGroups(userId),
+				services.Group.GetGroupUsersForUserId(userId),
 				services.Template.GetNew(existingTemplateIds)
 			]);
 
@@ -149,13 +149,26 @@ export default {
 
 			if(!requestedUser) throw 'User not found.';
 
-			let userStats = await services.User.GetStatsForUser(requestedUser.userId);
-			let userAchievementInfo = await services.User.GetUserAchievementInfo(requestedUser.userId, userStats);
+			let [userStats, userAchievements, groups] = await Promise.all([
+				services.User.GetStatsForUser(requestedUser.userId),
+				services.User.GetUserAchievements(requestedUser.userId),
+				services.Group.GetGroups(requestedUser.userId)
+			]);
 
 			return {
 				user: requestedUser,
+				groups,
 				userStats,
-				userAchievementInfo
+				userAchievements,
+				userAchievementProgress: {
+					[common.enums.AchievementType.LotsOfTemplates]: Object.keys(userStats.templateUsageLookup).length,
+					[common.enums.AchievementType.LotsOfLastPanels]: userStats.lastPanelCount,
+					[common.enums.AchievementType.LotsOfFirstPanels]: userStats.firstPanelCount,
+					[common.enums.AchievementType.LotsOfComics]: userStats.comicCount,
+					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating,
+					[common.enums.AchievementType.LotsOfRatings]: userStats.ratingCount,
+					[common.enums.AchievementType.LotsOfRatingsForOthers]: userStats.ratingCountForOthers
+				}
 			};
 		},
 
@@ -207,8 +220,8 @@ export default {
 		}
 	},
 
-	private: {
-
+	//Includes userId
+	user: {
 		voteComic: async (req, services) => {
 			let userId = req.userId;
 			let comicId = req.body.comicId;
@@ -286,13 +299,6 @@ export default {
 			return;
 		},
 
-		saveAvatar: async (req, services) => {
-			let userId = req.userId;
-			
-			let avatar = req.body.avatar;
-
-			return await services.User.SaveAvatar(userId, avatar);
-		},
 
 		changePassword: async (req, services) => {
 			//Must be logged in
@@ -310,7 +316,39 @@ export default {
 			
 			return await services.Group.GetGroupsInfoForUser(userId);
 		},
+
+		saveUserAvatar: async (req, services) => {
+			let userId = req.userId;
+
+			let avatar = req.body.avatar;
+
+			return await services.User.SaveAvatar(userId, avatar);
+		},
 		
+		uploadUserAvatar: async (req, services) => {
+			let userId = req.userId;
+			let file = req.file;
+
+			await services.User.SaveAvatarUrl(userId, file.url);
+
+			return file.url;
+		},
+
+		removeUserAvatar: async (req, services) => {
+			let userId = req.userId;
+
+			await services.User.RemoveAvatarUrl(userId);
+
+			return;
+		}
+	},
+
+	//Includes group permissions (adminOfGroupIds, memberOfGroupIds)
+	group: {
+		uploadGroupAvatar: async (req, services) => {
+
+		},
+
 		saveGroup: async (req, services) => {
 			let userId = req.userId;
 

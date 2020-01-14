@@ -188,6 +188,7 @@ class App extends Component {
 						<Route exact path="/group/:groupId" render={({ match }) => <GroupPage groupId={match.params.groupId} />} />
 						<Route exact path="/groups" render={() => <GroupsPage />} />
 						<Route exact path="/group-editor" render={() => <GroupEditorPage />} />
+						<Route exact path="/group-editor/:groupId" render={({ match }) => <GroupEditorPage groupId={match.params.groupId} />} />
 
 						<Route exact path="/profile" render={() => ifAuthenticated(<Redirect to={Util.route.profile(Util.context.getUsername())} />)} />
 						<Route exact path="/profile/:userIdOrUserName" render={({ match }) => <ProfilePage userIdOrUserName={match.params.userIdOrUserName} />} />

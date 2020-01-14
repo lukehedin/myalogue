@@ -4,21 +4,25 @@ import ReactSVG from 'react-svg'
 import Util from '../../../Util';
 import Avatar from '../Avatar/Avatar';
 import Button from '../Button/Button';
+import ImageUpload from '../ImageUpload/ImageUpload';
 
 export default class AvatarSelector extends Component {
 	constructor(props){
 		super(props);
 
 		//User is only able to use this component with themself
-		let avatar = Util.context.getUserAvatar();
+		let avatar = Util.context.getAvatar();
 		this.state = {
 			isLoading: false,
+
+			url: avatar.url,
 
 			character: avatar.character,
 			expression: avatar.expression,
 			colour: avatar.colour
 		};
 
+		this.removeAvatar = this.removeAvatar.bind(this);
 		this.setCharacter = this.setCharacter.bind(this);
 		this.setColour = this.setColour.bind(this);
 		this.setExpression = this.setExpression.bind(this);
@@ -52,22 +56,18 @@ export default class AvatarSelector extends Component {
 			isLoading: true
 		});
 
-		Util.api.post('/api/saveAvatar', {
+		Util.api.post('/api/saveUserAvatar', {
 			avatar: {
 				character: this.state.character,
 				expression: this.state.expression,
 				colour: this.state.colour
 			}
 		})
-		.then(result => {
-			if(!result.error) {
-				window.location.reload();
-			} else {
-				this.setState({
-					isLoading: false
-				});
-			}
-		});
+		.then(() => window.location.reload());
+	}
+	removeAvatar() {
+		Util.api.post('/api/removeUserAvatar')
+			.then(() => window.location.reload())
 	}
 	render() {
 		if(this.state.isLoading) {
@@ -88,36 +88,45 @@ export default class AvatarSelector extends Component {
 
 		return <div className="avatar-selector">
 			<h2>Change avatar</h2>
-			<Avatar user={{ 
-				avatar: {
-					character: this.state.character,
-					expression: this.state.expression,
-					colour: this.state.colour
-				}
+			<Avatar 
+				size={128}
+				user={{ 
+					avatar: {
+						url: this.state.url,
+						character: this.state.character,
+						expression: this.state.expression,
+						colour: this.state.colour
+					}
 			}} />
-			<div className="button-container justify-center">
-				<Button size="md" colour="black" isHollow={true} label="Randomize" onClick={this.randomize} />
-			</div>
-			<div className="avatar-settings">
-				<div className="avatar-setting">
-					<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.character - 1, characterMax, this.setCharacter)} />
-					<p className="setting-label">Character</p>
-					<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.character + 1, characterMax, this.setCharacter)}/>
+			{this.state.url
+				? <Button label="Remove" onClick={this.removeAvatar} />
+				: <div>
+					<div className="button-container justify-center">
+						<Button size="md" colour="black" isHollow={true} label="Randomize" onClick={this.randomize} />
+					</div>
+					<div className="avatar-settings">
+						<div className="avatar-setting">
+							<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.character - 1, characterMax, this.setCharacter)} />
+							<p className="setting-label">Character</p>
+							<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.character + 1, characterMax, this.setCharacter)}/>
+						</div>
+						<div className="avatar-setting">
+							<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.expression - 1, expressionMax, this.setExpression)} />
+							<p className="setting-label">Expression</p>
+							<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.expression + 1, expressionMax, this.setExpression)} />
+						</div>
+						<div className="avatar-setting">
+							<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.colour - 1, colourMax, this.setColour)} />
+							<p className="setting-label">Background</p>
+							<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.colour + 1, colourMax, this.setColour)}/>
+						</div>
+					</div>
+					<div className="button-container justify-center">
+						<Button size="md" colour="pink" label="Save avatar" onClick={this.save} />
+					</div>
 				</div>
-				<div className="avatar-setting">
-					<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.expression - 1, expressionMax, this.setExpression)} />
-					<p className="setting-label">Expression</p>
-					<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.expression + 1, expressionMax, this.setExpression)} />
-				</div>
-				<div className="avatar-setting">
-					<Button isHollow={true} leftIcon={Util.icon.back} onClick={() => loopValIfNeeded(this.state.colour - 1, colourMax, this.setColour)} />
-					<p className="setting-label">Background</p>
-					<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.colour + 1, colourMax, this.setColour)}/>
-				</div>
-			</div>
-			<div className="button-container justify-center">
-				<Button size="md" colour="pink" label="Save avatar" onClick={this.save} />
-			</div>
+			}
+			<ImageUpload endpoint='/api/uploadUserAvatar' buttonLabel={this.state.url ? 'Change' : 'Upload'} onUpload={() => window.location.reload()} />
 		</div>
 	}
 }

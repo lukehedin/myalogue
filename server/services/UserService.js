@@ -293,6 +293,24 @@ export default class UserService extends Service {
 			}
 		});
 	}
+	async SaveAvatarUrl (userId, avatarUrl) {
+		return await this.models.User.update({
+			AvatarUrl: avatarUrl
+		}, {
+			where: {
+				UserId: userId
+			}
+		});
+	}
+	async RemoveAvatarUrl(userId) {
+		return await this.models.User.update({
+			AvatarUrl: null
+		}, {
+			where: {
+				UserId: userId
+			}
+		});
+	}
 	async PrepareForVerifyAccount(dbUser) {
 		let verificationToken = auth.getHexToken();
 
@@ -311,27 +329,14 @@ export default class UserService extends Service {
 		let dbUser = this.DbGetById(userId);
 		return dbUser ? dbUser.LastComicStartedAt : null;
 	}
-	async GetUserAchievementInfo(userId, userStats) {
+	async GetUserAchievements(userId) {
 		let dbUserAchievements = await this.models.UserAchievement.findAll({
 			where: {
 				UserId: userId
 			}
 		});
 
-		return {
-			userAchievements: dbUserAchievements.map(mapper.fromDbUserAchievement),
-			userAchievementProgress: userStats 
-				? {
-					[common.enums.AchievementType.LotsOfTemplates]: Object.keys(userStats.templateUsageLookup).length,
-					[common.enums.AchievementType.LotsOfLastPanels]: userStats.lastPanelCount,
-					[common.enums.AchievementType.LotsOfFirstPanels]: userStats.firstPanelCount,
-					[common.enums.AchievementType.LotsOfComics]: userStats.comicCount,
-					[common.enums.AchievementType.HighTotalRating]: userStats.comicTotalRating,
-					[common.enums.AchievementType.LotsOfRatings]: userStats.ratingCount,
-					[common.enums.AchievementType.LotsOfRatingsForOthers]: userStats.ratingCountForOthers
-				} 
-				: {}
-		};
+		return dbUserAchievements.map(mapper.fromDbUserAchievement);
 	}
 	async GetStatsForUser(userId) {
 		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
@@ -363,7 +368,6 @@ export default class UserService extends Service {
 		
 		let completedComicIds = dbComics.map(dbComic => dbComic.ComicId);
 		let comicTotalRating = dbComics.reduce((total, dbComic) => total + (dbComic.Rating > 0 ? dbComic.Rating : 0), 0);
-		let comicAverageRating = comicTotalRating / dbComics.length;
 		
 		let templateUsageLookup = dbComics.reduce((lookup, dbComic) => {
 			lookup[dbComic.TemplateId] = lookup[dbComic.TemplateId]
@@ -385,7 +389,6 @@ export default class UserService extends Service {
 			panelCount: dbComicPanels.filter(dbComicPanel => completedComicIds.includes(dbComicPanel.ComicId)).length,
 			comicCount: dbComics.length,
 			comicTotalRating: comicTotalRating,
-			comicAverageRating: comicAverageRating,
 
 			templateUsageLookup: templateUsageLookup,
 			firstPanelCount,

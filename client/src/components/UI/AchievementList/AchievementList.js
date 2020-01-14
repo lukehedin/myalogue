@@ -6,15 +6,15 @@ import AchievementImage from './AchievementImage/AchievementImage';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import moment from 'moment';
 
-//this.props.userAchievementInfo
+//this.props.userAchievements and //this.props.userAchievementProgress
 export default class AchievementList extends Component {
 	render() {
 		let lockedAchievements = [];
 		let unlockedAchievements = [];
 
 		Util.context.getAchievements().forEach(achievement => {
-			achievement.userAchievement = this.props.userAchievementInfo.userAchievements.find(userAchievement => userAchievement.type === achievement.type);
-			achievement.userAchievementProgress = this.props.userAchievementInfo.userAchievementProgress[achievement.type] || 0;
+			achievement.userAchievement = this.props.userAchievements.find(userAchievement => userAchievement.type === achievement.type);
+			achievement.userAchievementProgress = this.props.userAchievementProgress[achievement.type] || 0;
 			
 			achievement.userAchievement
 				? unlockedAchievements.push(achievement)

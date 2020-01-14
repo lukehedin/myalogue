@@ -7,7 +7,7 @@ import Button from '../../Button/Button';
 
 class ChangePasswordForm extends Component {
 	render() {
-		return <form class="auth-form" onSubmit={this.props.submitForm}>
+		return <form className="auth-form" onSubmit={this.props.submitForm}>
 			<h2>Change password</h2>
 			{this.props.getField('currentPassword')}
 			{this.props.getField('newPassword')}
