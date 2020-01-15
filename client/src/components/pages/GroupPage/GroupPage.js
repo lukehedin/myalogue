@@ -72,7 +72,7 @@ class GroupPage extends Component {
 				title: 'Details',
 				content: <div className="group-details">
 					{this.state.group.description 
-						? <p className="group-description">{this.state.group.description}</p> 
+						? <p className="group-description" dangerouslySetInnerHTML={{ __html: Util.format.userStringToSafeHtml(this.state.group.description) }}></p> 
 						: null
 					}
 					<div className="group-stats">
@@ -151,6 +151,10 @@ class GroupPage extends Component {
 											/>
 											<h2>{this.state.group.name}</h2>
 											<p className="created-date sm">Created {moment(this.state.group.createdAt).fromNow()}</p>
+											{/* {Util.context.isGroupAdmin(this.state.group.groupId)
+												? <p className="admin-message sm">You are an administrator of this group</p>
+												: null
+											} */}
 											{/* {this.state.group.instruction 
 												? <p className="group-instruction sm">{this.state.group.instruction}</p>
 												: null

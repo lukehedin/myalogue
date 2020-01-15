@@ -895,7 +895,8 @@ body {
             body .app-container .app .notification-menu .notification-content .notification.actionable {
               background-color: #ffedf3; }
             body .app-container .app .notification-menu .notification-content .notification .message {
-              white-space: pre-wrap; }
+              overflow-wrap: break-word;
+              white-space: pre-line; }
             body .app-container .app .notification-menu .notification-content .notification > p {
               margin: 0; }
               body .app-container .app .notification-menu .notification-content .notification > p:not(:first-child) {
@@ -1161,9 +1162,9 @@ body {
       body .app-container .app .group-avatar {
         display: block;
         overflow: hidden;
-        border-radius: 4px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px; }
+        border-radius: 6px;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px; }
       body .app-container .app .image-upload input {
         display: none; }
       body .app-container .app .image-upload .error {
@@ -1344,12 +1345,17 @@ body {
       body .app-container .app .page-group .group-info .group-info-header > * {
         text-align: center; }
       body .app-container .app .page-group .group-info .group-info-header .group-avatar {
-        margin: 0 auto; }
+        margin: 0 auto;
+        margin-bottom: 8px; }
       body .app-container .app .page-group .group-info .group-info-header .created-date {
         margin: 4px 0;
         color: #525252; }
       body .app-container .app .page-group .group-info .group-info-header .group-call-to-action {
         margin: 16px 0; }
+      body .app-container .app .page-group .group-info .group-description {
+        overflow-wrap: break-word;
+        white-space: pre-line;
+        font-size: 14px; }
       body .app-container .app .page-group .group-info .member-list {
         display: flex;
         flex-direction: column; }

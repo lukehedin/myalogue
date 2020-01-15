@@ -11,6 +11,7 @@
 
 			.group-avatar {
 				margin: 0 auto;
+				margin-bottom: $spacing-xs;
 			}
 
 			.created-date {
@@ -21,6 +22,12 @@
 			.group-call-to-action {
 				margin: $spacing-sm 0;
 			}
+		}
+
+		.group-description {
+			overflow-wrap: break-word;
+			white-space: pre-line;
+			font-size: 14px;
 		}
 
 		.member-list {

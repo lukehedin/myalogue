@@ -365,7 +365,7 @@ export default {
 			let group = req.body.group;
 
 			//This check only matters if the group has a groupId, otherwise it is a new group
-			if(group.groupId && !adminOfGroupIds.includes[group.groupId]) throw 'Not a group admin';
+			if(group.groupId && !adminOfGroupIds.includes(group.groupId)) throw 'Not a group admin';
 
 			return await services.Group.SaveGroup(userId, group);
 		},
@@ -374,12 +374,15 @@ export default {
 			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 
-			let groupId = req.body.groupId;
-			if(!groupId || !adminOfGroupIds.includes[groupId]) throw 'Not a group admin';
+			let groupId = parseInt(req.body.groupId);
+
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 			
 			let file = req.file;
 
-			return await services.Group.SaveAvatarUrl(userId, groupId, file.url);
+			await services.Group.SaveAvatarUrl(userId, groupId, file.url);
+			
+			return file.url;
 		},
 
 		createGroupChallenge: async(req, services) => {
@@ -387,7 +390,7 @@ export default {
 			let adminOfGroupIds = req.adminOfGroupIds;
 			
 			let groupId = req.body.groupId;
-			if(!groupId || !adminOfGroupIds.includes[groupId]) throw 'Not a group admin';
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 		}
 	}
 };

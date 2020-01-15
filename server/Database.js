@@ -139,6 +139,7 @@ export default class Database {
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
 			IsPublic: getBoooleanNotNull(),
+			AvatarUrl: Sequelize.STRING,
 			MemberCount: getIntegerNotNull(0)
 		}, true);
 

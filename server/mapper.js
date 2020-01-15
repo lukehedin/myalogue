@@ -130,6 +130,7 @@ const mapper = {
 		return {
 			groupId: dbGroup.GroupId,
 			name: dbGroup.Name,
+			avatarUrl: dbGroup.AvatarUrl,
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
 			memberCount: dbGroup.MemberCount,

@@ -15,20 +15,12 @@ export default class GroupEditorPage extends Component {
 			isLoading: !!this.props.groupId,
 
 			group: null
-		}
+		};
+
+		this.updateAvatarUrl = this.updateAvatarUrl.bind(this);
 	}
 	componentDidMount() {
 		if(this.props.groupId) this.fetchGroup();
-	}
-	getSnapshotBeforeUpdate(prevProps) {
-		return this.props.groupId !== prevProps.groupId;
-	}
-	componentDidUpdate(prevProps, prevState, isNewProps) {
-		if(isNewProps) {
-			this.setState({
-				isLoading: true
-			}, this.fetchGroup);
-		}
 	}
 	fetchGroup() {
 		Util.api.post('/api/getGroup', {
@@ -40,6 +32,14 @@ export default class GroupEditorPage extends Component {
 				group
 			});
 		})
+	}
+	updateAvatarUrl(url) {
+		this.setState({
+			group: {
+				...this.state.group,
+				avatarUrl: url
+			}
+		});
 	}
 	render() {
 		if(!Util.context.isAuthenticated()) return <Redirect to={Util.route.register()} />;
@@ -58,7 +58,7 @@ export default class GroupEditorPage extends Component {
 									{isEditing
 										? <div className="group-avatar-editor">
 											<GroupAvatar group={this.state.group} size={96} />
-											<ImageUpload endpoint='/api/uploadGroupAvatar' params={{ groupId: this.state.group.groupId }} />
+											<ImageUpload endpoint='/api/uploadGroupAvatar' params={{ groupId: this.state.group.groupId }} onUploaded={(url) => this.updateAvatarUrl(url)} />
 										</div>
 										: null
 									}
@@ -74,7 +74,8 @@ export default class GroupEditorPage extends Component {
 												this.setState({
 													group: updatedGroup
 												});
-												
+
+												form.setFormData(updatedGroup);
 												form.setLoading(false);
 											});
 										}}

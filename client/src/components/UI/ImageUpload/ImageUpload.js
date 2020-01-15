@@ -62,10 +62,11 @@ export default class ImageUpload extends Component {
 	}
 	render() {
 		return <div className="image-upload">
-			<label className="button button-md button-black" htmlFor="image-upload-input">
+			<label className={`button button-md button-black ${this.state.isUploading ? 'hidden' : ''}`} htmlFor="image-upload-input">
 				<span className="button-label">{this.props.label || 'Upload image'}</span>
 			</label>
-			<input id="image-upload-input" accept="image/*" disabled={this.state.isUploading} type="file" name="image" onChange={this.onChange}></input>
+			<input id="image-upload-input" accept="image/*" hidden={this.state.isUploading} type="file" name="image" onChange={this.onChange}></input>
+			{this.state.isUploading ? <p className="sm">Uploading...</p> : null}
 			{this.state.error ? <p className="error">{this.state.error}</p> : null}
 		</div>
 	}

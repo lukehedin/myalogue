@@ -124,10 +124,10 @@ if(common.config.IsDevelopmentScript) {
 	};
 	const getRouteUpload = (route) => async (req, res, next) => {
 		let upload = null;
-
+		
 		switch(route) {
 			case `uploadUserAvatar`:
-			case `groupAvatar`:
+			case `uploadGroupAvatar`:
 				upload = multer({ 
 					limits: { fileSize: 20000000 }, //20mb
 					storage: multerStorageCloudinary({
