@@ -15,13 +15,13 @@ export default {
 				services.Achievement.GetAll()
 			];
 	
-			let [authResult, groups, templates, achievements] = await Promise.all(authPromises);
+			let [authResult, groupUsers, templates, achievements] = await Promise.all(authPromises);
 
 			return {
 				...authResult,
 				templates,
 				achievements,
-				groups
+				groupUsers
 			};
 		},
 	
@@ -151,13 +151,11 @@ export default {
 
 			let [userStats, userAchievements, groups] = await Promise.all([
 				services.User.GetStatsForUser(requestedUser.userId),
-				services.User.GetUserAchievements(requestedUser.userId),
-				services.Group.GetGroups(requestedUser.userId)
+				services.User.GetUserAchievements(requestedUser.userId)
 			]);
 
 			return {
 				user: requestedUser,
-				groups,
 				userStats,
 				userAchievements,
 				userAchievementProgress: {
@@ -310,11 +308,23 @@ export default {
 			return await services.User.ChangePassword(userId, currentPassword, newPassword);
 		},
 
-		getGroupsInfo: async(req, services) => {
-			//Returns a list of groups, pending requests and invites for a user
+		getGroupRequests: async(req, services) => {
+			//Returns a list of pending requests and invites
 			let userId = req.userId;
 			
-			return await services.Group.GetGroupsInfoForUser(userId);
+			return await services.Group.getGroupRequests(userId);
+		},
+
+		getGroups: async (req, services) => {
+			let userId = req.userId;
+
+			let forUserId = req.body.forUserId; //Do not confuse
+			let search = req.body.search;
+			let sortBy = req.body.sortBy;
+			let offset = req.body.offset;
+			let limit = req.body.limit;
+
+			return await services.Group.GetGroups(userId, forUserId, search, sortBy, offset, limit);
 		},
 
 		saveUserAvatar: async (req, services) => {

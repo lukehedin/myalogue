@@ -46,7 +46,6 @@ export default class ProfilePage extends Component {
 			if(!result.error) {
 				this.setState({
 					user: result.user,
-					groups: result.groups,
 					userStats: result.userStats,
 					userAchievements: result.userAchievements,
 					userAchievementProgress: result.userAchievementProgress
@@ -95,13 +94,10 @@ export default class ProfilePage extends Component {
 														<h5>{Util.format.pluralise(this.state.userStats.comicCount, 'comic')}</h5>
 													</div>
 												</div>
-												{Util.array.any(this.state.groups)
-													? <div className="user-stat">
-														<h5>Groups</h5>
-														<GroupList groups={this.state.groups} />
-													</div>
-													: null
-												}
+												<div className="user-stat">
+													<h5>Groups</h5>
+													<GroupList forUserId={this.state.user.userId} />
+												</div>
 											</div>
 										}, {
 											tabId: 'achievements',

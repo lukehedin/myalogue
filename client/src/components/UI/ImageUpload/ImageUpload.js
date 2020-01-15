@@ -23,11 +23,11 @@ export default class ImageUpload extends Component {
 			isUploading: isUploading
 		});
 	}
-	onChange(event) {
-		if(event.target.files.length > 0) {
+	onChange(e) {
+		if(e.target.files.length > 0) {
 			this.setIsUploading(true);
 
-			let image = event.target.files[0];
+			let image = e.target.files[0];
 
 			let formData = new FormData();
 			formData.append('image', image);

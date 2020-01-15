@@ -65,6 +65,8 @@ class App extends Component {
 		});
 
 		this.authenticate();
+		
+		if(Util.isDev) document.title = 'DEV - ' + document.title;
 	}
 	authenticate() {
 		Util.api.post('/api/authenticate')

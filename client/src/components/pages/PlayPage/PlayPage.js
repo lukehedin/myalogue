@@ -25,6 +25,7 @@ export default class PlayPage extends Component {
 			// Play data
 			comicId: null,
 			templatePanelId: null,
+			groupInstruction: null,
 			currentComicPanel: null,
 
 			dialogue: ''
@@ -49,6 +50,7 @@ export default class PlayPage extends Component {
 			isPlaying: false,
 			comicId: null,
 			templatePanelId: null,
+			groupInstruction: null,
 			currentComicPanel: null,
 			dialogue: '',
 			completedPanelCount: null,
@@ -74,6 +76,7 @@ export default class PlayPage extends Component {
 					isLoading: false,
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
+					groupInstruction: result.groupInstruction,
 					currentComicPanel: result.currentComicPanel, //May be null
 
 					completedPanelCount: result.completedPanelCount,
@@ -148,7 +151,11 @@ export default class PlayPage extends Component {
 						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
 							? `Finish` 
 							: `Continue`
-						: `Begin`} the comic</p>
+						: `Begin`} the comic{this.state.groupInstruction ? `, but also:` : null}</p>
+					{this.state.groupInstruction
+						? <p className="group-instruction sm">{this.state.groupInstruction}</p>
+						: null
+					}
 					<ProgressBar 
 						className={this.state.dialogue ? `with-dialogue` : ``}
 						total={this.state.totalPanelCount} 

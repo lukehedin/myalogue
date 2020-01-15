@@ -68,35 +68,30 @@ class GroupPage extends Component {
 								: this.state.group 
 									? <div className="group-info">
 										<div className="group-info-header">
-											<GroupAvatar size={96} group={this.state.group} />
+											<GroupAvatar size={96} 
+												group={this.state.group} 
+												to={Util.context.isGroupAdmin(this.state.group.groupId) ? Util.route.groupEditor(this.state.group.groupId) : null}
+											/>
 											<h2>{this.state.group.name}</h2>
 											<p className="created-date sm">Created {moment(this.state.group.createdAt).fromNow()}</p>
-											<div className="group-actions button-container justify-center">
+											{this.state.group.instruction 
+												? <p className="group-instruction sm">{this.state.group.instruction}</p>
+												: null
+											}
+											<div className="button-container justify-center">
 												{Util.context.isInGroup(this.state.group.groupId)
-													? <div className="button-container justify-center">
-														{Util.context.isGroupAdmin(this.state.group.groupId)
-															? <Button size="sm" label="Edit group" to={Util.route.groupEditor(this.state.group.groupId)} />
-															: null
-														}
-														<Button size="sm" label="Leave group" onClick={this.leaveGroup} />
-													</div>
+													? <Button colour="pink" label="Play with this group" />
 													: this.state.group.isPublic
 														? <Button label="Join group" />
 														: <Button label="Request to join" />
 												}
+												
 											</div>
 										</div>
 										<TabbedPanels tabs={[{
 											tabId: 'details',
 											title: 'Details',
 											content: <div className="group-details">
-												{this.state.group.instruction 
-													? <div>
-														<h5>Group instruction:</h5>
-														<p className="group-instruction">{this.state.group.instruction}</p>
-													</div>
-													: null
-												}
 												{this.state.group.description 
 													? <p className="group-description">{this.state.group.description}</p> 
 													: null
@@ -123,6 +118,18 @@ class GroupPage extends Component {
 												})}
 											</div>
 										}]} />
+										<div className="group-actions button-container justify-center">
+											{Util.context.isInGroup(this.state.group.groupId)
+												? <div className="button-container justify-center">
+													{Util.context.isGroupAdmin(this.state.group.groupId)
+														? <Button size="sm" isHollow={true} label="Manage group" to={Util.route.groupEditor(this.state.group.groupId)} />
+														: null
+													}
+													<Button size="sm" isHollow={true} label="Leave group" onClick={this.leaveGroup} />
+												</div>
+												: null
+											}
+										</div>
 										<ComicList 
 											sortBy={Util.enums.ComicSortBy.Newest}
 											title={`Comics by ${this.state.group.name}`} 

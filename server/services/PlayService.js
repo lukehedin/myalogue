@@ -227,12 +227,26 @@ export default class PlayService extends Service {
 	
 		//Set the next template panel (this prevents people from submitting a panel that isn't in line with the one provided)
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
+
+		//If the comic has a groupId, attach the group's instrution, if there one
+		let groupInstruction = null;
+
+		if(dbComic.GroupId) {
+			let dbGroup = await this.models.Group.findOne({
+				where: {
+					GroupId: dbComic.GroupId
+				}
+			});
+
+			if(dbGroup && dbGroup.Instruction) groupInstruction = dbGroup.Instruction;
+		}
 	
 		await dbComic.save();
 
 		return {
 			comicId: dbComic.ComicId,
 			templatePanelId: dbComic.NextTemplatePanelId,
+			groupInstruction: groupInstruction,
 
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,

@@ -39,10 +39,9 @@ export default class GroupService extends Service {
 
 		return groups.length === 1 ? groups[0] : null;
 	}
-	async GetGroupsInfoForUser(userId) {
+	async getGroupRequests(userId) {
 		//Includes invites/requests
-		let [groups, dbGroupRequests, dbGroupInvites] = await Promise.all([
-			this.GetGroups(userId),
+		let [dbGroupRequests, dbGroupInvites] = await Promise.all([
 			this.models.GroupRequest.findAll({
 				where: {
 					UserId: userId,
@@ -85,7 +84,6 @@ export default class GroupService extends Service {
 		]);
 		
 		return {
-			groups,
 			requests: dbGroupRequests.map(mapper.fromDbGroupRequest),
 			invites: dbGroupInvites.map(mapper.fromDbGroupInvite)
 		};		
@@ -114,11 +112,69 @@ export default class GroupService extends Service {
 
 		return dbGroupUsers.map(mapper.fromDbGroupUser);
 	}
-	async GetGroups(userId) {
-		let groupUsers = await this.GetGroupUsersForUserId(userId);
-		let groupIds = groupUsers.map(groupUser => groupUser.groupId);
+	async GetGroups(userId, forUserId, search, sortBy, offset, limit) {
+		let groupWhere = {};
 
-		return await this.GetByIds(groupIds);
+		if(forUserId) {
+			//Filter by the forUser's groups
+			let groupUsers = await this.GetGroupUsersForUserId(userId);
+			let groupIds = groupUsers.map(groupUser => groupUser.groupId);
+
+			groupWhere.GroupId = {
+				[Sequelize.Op.in]: groupIds
+			};
+		}
+
+		//Mutual
+		if(sortBy === 4) {
+			//Filter by the REQESTING user's groups
+			let groupUsers = await this.models.GroupUser.findAll({
+				where: {
+					UserId: userId
+				}
+			});
+			let groupIds = groupUsers.map(groupUser => groupUser.groupId);
+
+			groupWhere.GroupId = {
+				...(groupWhere.GroupId || {}),
+				[Sequelize.Op.in]: groupIds
+			};
+		}
+
+		let groupOrder = [];
+
+		switch(sortBy) {
+			case 2: //Newest
+				break; // done by thenby
+			case 3: //Alphabetical
+				groupOrder.push(['Name']);
+				break;
+			default:
+				groupOrder.push(['MemberCount', 'DESC']); 
+		}
+		groupOrder.push(['CreatedAt']);//thenby
+
+		if(search) {
+			let lowerSearch = search.toLowerCase();
+			//Must be the last thing
+			groupWhere = [
+				Sequelize.where(Sequelize.fn('lower', Sequelize.col('Name')), {
+					[Sequelize.Op.like]: `%${lowerSearch}%`
+				}),
+				groupWhere
+			]
+		}
+
+		console.log(groupWhere);
+
+		let dbGroups = await this.models.Group.findAll({
+			where: groupWhere,
+			order: groupOrder,
+			offset: offset,
+			limit: limit
+		});
+
+		return dbGroups.map(mapper.fromDbGroup)
 	}
 	async GetGroupComicCount(groupId) {
 		return await this.models.Comic.count({
@@ -170,13 +226,39 @@ export default class GroupService extends Service {
 				CreatedByUserId: userId
 			});
 
-			await this.models.GroupUser.create({
-				UserId: userId,
-				GroupId: dbNewGroup.GroupId,
-				IsGroupAdmin: true
-			});
+			await this.AddUserToGroup(userId, dbNewGroup.GroupId);
 			 
 			return this.GetById(dbNewGroup.GroupId);
+		}
+	}
+	async AddUserToGroup(userId, groupId) {
+		await this.models.GroupUser.create({
+			UserId: userId,
+			GroupId: groupId,
+			IsGroupAdmin: true
+		});
+
+		await this.models.Group.increment('MemberCount', { 
+			where: { 
+				GroupId: groupId 
+			}
+		});
+	}
+	async RemoveUserFromGroup(groupUserId) {
+		let dbGroupUser = await this.models.GroupUser.findOne({
+			where: {
+				GroupUserId: groupUserId
+			}
+		});
+
+		if(dbGroupUser) {
+			await this.models.Group.decrement('MemberCount', {
+				where: {
+					GroupId: dbGroupUser.GroupId
+				}
+			});
+
+			await dbGroupUser.destroy();
 		}
 	}
 }

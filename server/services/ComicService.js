@@ -143,7 +143,7 @@ export default class ComicService extends Service {
 			include: this._GetFullIncludeForComic(forUserId)
 		});
 		
-		return dbComics.map(dbComic => mapper.fromDbComic(dbComic));
+		return dbComics.map(mapper.fromDbComic);
 	}
 	async GetComicsInProgress(userId) {
 		let comicWhere =  {

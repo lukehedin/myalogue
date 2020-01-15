@@ -47,10 +47,13 @@ export default class TemplatePage extends Component {
 		this.fetchTimeout = setTimeout(() => {
 			Util.api.post('/api/getTopComic', { templateId: templateId})
 				.then(topComic => {
-					if(topComic) this.setState({ topComic: topComic });
-					this.setState({
-						isLoading: false
-					})
+					//If the template is still the same, continue on
+					if(topComic.templateId === this.state.template.templateId) {
+						if(topComic) this.setState({ topComic: topComic });
+						this.setState({
+							isLoading: false
+						});
+					}
 				})
 		}, 700);
 	}

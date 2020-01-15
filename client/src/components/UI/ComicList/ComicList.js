@@ -64,7 +64,7 @@ export default class ComicList extends Component {
 		let isRandomSort = this.state.sortBy === Util.enums.ComicSortBy.Random;
 		let templateId = this.props.templateId;
 
-		Util.api.post('/api/getComics', {
+		let params = {
 			//Optional
 			templateId: templateId,
 			authorUserId: this.props.authorUserId,
@@ -79,12 +79,18 @@ export default class ComicList extends Component {
 				...(this.props.ignoreComicIds || []),
 				...(this.state.comics.map(comic => comic.comicId) || []) //Don't return any comics we already have
 			]
-		})
+		};
+
+		Util.api.post('/api/getComics', params)
 		.then(result => {
 			if(!result.error) {
 				//There is a reasonable chance the selected template has changed since the request began
 				//There will be another request lagging behind, so don't do anything and wait for that one
-				if(templateId === this.props.templateId) {
+				let paramsChanged = params.templateId !== this.props.templateId 
+					|| params.sortBy !== this.state.sortBy 
+					|| params.includeAnonymous !== this.state.includeAnonymous;
+
+				if(!paramsChanged) {
 					this.setState({
 						comics: [...this.state.comics, ...result],
 						isLoading: false,
@@ -97,47 +103,47 @@ export default class ComicList extends Component {
 	}
 	render() {
 		return <div className="comic-list">
-				<div className="comic-list-upper comic-width">
-					{this.props.title 
-						? <h3 className="comic-list-title">{this.props.title}</h3> 
-						: null
+			<div className="comic-list-upper comic-width">
+				{this.props.title 
+					? <h3 className="comic-list-title">{this.props.title}</h3> 
+					: null
+				}
+				<div className="comic-list-filters">
+					<Dropdown 
+						value={this.state.sortBy}
+						onChange={value => this.setSortBy(value)}
+						displayProp='label' 
+						valueProp='type' 
+						options={[{
+								type: Util.enums.ComicSortBy.Hot,
+								label: 'Hot'
+							}, {
+								type: Util.enums.ComicSortBy.Newest,
+								label: 'Newest'
+							}, {
+								type: Util.enums.ComicSortBy.TopToday,
+								label: 'Top (today)'
+							}, {
+								type: Util.enums.ComicSortBy.TopWeek,
+								label: 'Top (week)'
+							}, {
+							// 	type: Util.enums.ComicSortBy.TopMonth,
+							// 	label: 'Top (month)'
+							// }, {
+								type: Util.enums.ComicSortBy.TopAll,
+								label: 'Top (all)'
+							}, {
+								type: Util.enums.ComicSortBy.Random,
+								label: 'Random'
+							}
+						]} 
+					/>
+					{this.props.authorUserId
+						? null
+						: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
 					}
-					<div className="comic-list-filters">
-						<Dropdown 
-							value={this.state.sortBy}
-							onChange={value => this.setSortBy(value)}
-							displayProp='label' 
-							valueProp='type' 
-							options={[{
-									type: Util.enums.ComicSortBy.Hot,
-									label: 'Hot'
-								}, {
-									type: Util.enums.ComicSortBy.Newest,
-									label: 'Newest'
-								}, {
-									type: Util.enums.ComicSortBy.TopToday,
-									label: 'Top (today)'
-								}, {
-									type: Util.enums.ComicSortBy.TopWeek,
-									label: 'Top (week)'
-								}, {
-								// 	type: Util.enums.ComicSortBy.TopMonth,
-								// 	label: 'Top (month)'
-								// }, {
-									type: Util.enums.ComicSortBy.TopAll,
-									label: 'Top (all)'
-								}, {
-									type: Util.enums.ComicSortBy.Random,
-									label: 'Random'
-								}
-							]} 
-						/>
-						{this.props.authorUserId
-							? null
-							: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
-						}
-					</div>
 				</div>
+			</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {
 					return <Comic key={comic.comicId} comic={comic} />

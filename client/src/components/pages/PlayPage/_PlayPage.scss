@@ -6,19 +6,35 @@
 		align-items: center;
 
 		.play-area-top {
-			margin-bottom: $spacing-xs;
-		}
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 
-		.instruction {
-			margin: $spacing-xxs 0 $spacing-xs 0;
-		}
+			.timer {
+				text-align: center;
+			}
 
-		.progress-bar {
-			width: 240px;
+			.group-instruction {
+				background-color: $colour-pink;
+				color: $colour-white;
+				text-align: center;
+				padding: $spacing-xxs;
+				margin-top: $spacing-xxs;
+				margin-bottom: 0;
+			}
 
-			&.with-dialogue {
-				.progress-bar-inner {
-					background-color: $colour-pink;
+			.instruction {
+				margin: 0;
+			}
+
+			.progress-bar {
+				margin: $spacing-xs 0;
+				width: 240px;
+	
+				&.with-dialogue {
+					.progress-bar-inner {
+						background-color: $colour-pink;
+					}
 				}
 			}
 		}

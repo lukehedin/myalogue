@@ -133,6 +133,7 @@ const mapper = {
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
 			instruction: dbGroup.Instruction,
+			memberCount: dbGroup.MemberCount,
 			pendingGroupUserRequestAt: pendingGroupUserRequestAt,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser)
 		}

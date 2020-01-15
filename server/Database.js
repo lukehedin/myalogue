@@ -139,7 +139,8 @@ export default class Database {
 			Instruction: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
-			IsPublic: getBoooleanNotNull()
+			IsPublic: getBoooleanNotNull(),
+			MemberCount: getIntegerNotNull(0)
 		}, true);
 
 		defineTable('GroupUser', {

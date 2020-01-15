@@ -1,28 +1,51 @@
 .group-list {
-	.group-list-item {
+	.group-list-filters {
+		margin-bottom: $spacing-sm;
+
 		display: flex;
 		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		&:first-child {
+			margin-top: 0;
+		}
 
-		.group-details {
-			margin-left: $spacing-xs;
-			
-			.group-name {
-				font-weight: bold;
-				flex: 1;
-				@include singleLineEllipsis;
+		.search {
+			min-width: 100px;
+		}
+
+		> * {
+			&:not(:first-child) {
+				margin-left: $spacing-xs;
 			}
+		}
+	}
+
+	.group-list-inner {
+		@include loaderContainer;
+
+		.group-list-item {
+			display: flex;
+			flex-direction: row;
 	
-			.instruction {
-			}
-	
-			.description {
-				overflow-wrap: break-word;
-				white-space: pre-line;
-				font-size: 12px;
-			}
-	
-			.group-bottom {
-				color: $colour-grey-d;
+			.group-details {
+				margin-left: $spacing-xs;
+				
+				.group-name {
+					font-weight: bold;
+					flex: 1;
+					@include singleLineEllipsis;
+				}
+		
+				.description {
+					overflow-wrap: break-word;
+					white-space: pre-line;
+					font-size: 12px;
+				}
+		
+				.group-bottom {
+					color: $colour-grey-d;
+				}
 			}
 		}
 	}

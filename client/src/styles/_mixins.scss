@@ -125,10 +125,13 @@
 }
 
 @mixin textInputs {
-	input, select, textarea {
+	input {
 		&:not([type=checkbox]):not([type=radio]):not([type=file]) {
 			@content;
 		}
+	}
+	textarea, select {
+		@content;
 	}
 }
 

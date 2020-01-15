@@ -47,7 +47,7 @@ export default class GroupEditorPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">{this.props.groupId ? 'Edit group' : 'Create group'}</h1>
+						<h1 className="page-title">{this.props.groupId ? 'Manage group' : 'Create group'}</h1>
 						<div className="group-editor">
 							{this.state.isLoading
 								? <div className="loader"></div>

@@ -59,8 +59,6 @@ const Util = {
 		_achievements: null,
 
 		set: (newContext) => {
-			if(Util.isDev) document.title = 'DEV - ' + document.title;
-
 			//The token will have an anonId or a userId
 			if(newContext.token) {
 				newContext.token
@@ -109,9 +107,13 @@ const Util = {
 		getUsername: () => Util.context._user.username,
 		getUserAvatar: () => Util.userAvatar.getForUser(Util.context._user),
 
-		//TODO!!
-		isInGroup: (groupId) => true,
-		isGroupAdmin: (groupId) => true,
+		getGroupUsers: () => Util.context._groupUsers || [],
+		getGroupUserByGroupId: (groupId) => Util.context.getGroupUsers().find(gu => gu.groupId === groupId),
+		isInGroup: (groupId) => !!Util.context.getGroupUserByGroupId(groupId),
+		isGroupAdmin: (groupId) => {
+			let groupUser = Util.context.getGroupUserByGroupId(groupId);
+			return groupUser && groupUser.isGroupAdmin;
+		},
 
 		getTemplates: () => Util.context._templates,
 		getLatestTemplate: () => Util.context._templates[Util.context._templates.length - 1],
@@ -309,6 +311,13 @@ const Util = {
 			TopWeek: 5,
 			TopMonth: 6,
 			Hot: 7
+		},
+
+		GroupSortBy: {
+			Popular: 1,
+			Newest: 2,
+			Alphabetical: 3,
+			Mutual: 4
 		},
 
 		TextAlignVertical: {
