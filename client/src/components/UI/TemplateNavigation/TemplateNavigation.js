@@ -9,7 +9,7 @@ export default class TemplateNavigation extends Component {
 		let latestTemplateId = Util.context.getLatestTemplate().templateId;
 		
 		return <div className={`template-navigation ${this.props.className || ''}`}>
-			<div className="button-container">
+			<div className="button-container justify-start">
 				<Button 
 					to={this.props.toFn(1)} 
 					size="sm"
@@ -29,7 +29,7 @@ export default class TemplateNavigation extends Component {
 				<h5>Template</h5>
 				<h2>{templateId}</h2>
 			</div>
-			<div className="button-container">
+			<div className="button-container justify-end">
 				<Button 
 					to={this.props.toFn(templateId + 1)} 
 					size="sm"

@@ -188,6 +188,18 @@ export default {
 			};
 		},
 
+		getGroups: async (req, services) => {
+			let userId = req.userId; // May be null
+
+			let forUserId = req.body.forUserId; //Do not confuse
+			let search = req.body.search;
+			let sortBy = req.body.sortBy;
+			let offset = req.body.offset;
+			let limit = req.body.limit;
+
+			return await services.Group.GetGroups(userId, forUserId, search, sortBy, offset, limit);
+		},
+
 		//Gets a comic in progress or starts new
 		play: async (req, services) => {
 			let userId = req.userId;
@@ -315,18 +327,6 @@ export default {
 			return await services.Group.getGroupRequests(userId);
 		},
 
-		getGroups: async (req, services) => {
-			let userId = req.userId;
-
-			let forUserId = req.body.forUserId; //Do not confuse
-			let search = req.body.search;
-			let sortBy = req.body.sortBy;
-			let offset = req.body.offset;
-			let limit = req.body.limit;
-
-			return await services.Group.GetGroups(userId, forUserId, search, sortBy, offset, limit);
-		},
-
 		saveUserAvatar: async (req, services) => {
 			let userId = req.userId;
 
@@ -358,26 +358,36 @@ export default {
 	//Includes group permissions (adminOfGroupIds, memberOfGroupIds)
 	group: {
 
-		uploadGroupAvatar: async (req, services) => {
-			let userId = req.userId;
-			let adminOfGroupIds = req.adminOfGroupIds;
-
-			if(group.groupId && !adminOfGroupIds.includes[group.groupId]) throw 'Not a group admin';
-			
-			let file = req.file;
-
-			let groupId = req.body.groupId;
-		},
-
 		saveGroup: async (req, services) => {
 			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 
+			let group = req.body.group;
+
+			//This check only matters if the group has a groupId, otherwise it is a new group
 			if(group.groupId && !adminOfGroupIds.includes[group.groupId]) throw 'Not a group admin';
 
-			let group = req.body.group;
-			
 			return await services.Group.SaveGroup(userId, group);
+		},
+
+		uploadGroupAvatar: async (req, services) => {
+			let userId = req.userId;
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			let groupId = req.body.groupId;
+			if(!groupId || !adminOfGroupIds.includes[groupId]) throw 'Not a group admin';
+			
+			let file = req.file;
+
+			return await services.Group.SaveAvatarUrl(userId, groupId, file.url);
+		},
+
+		createGroupChallenge: async(req, services) => {
+			let userId = req.userId;
+			let adminOfGroupIds = req.adminOfGroupIds;
+			
+			let groupId = req.body.groupId;
+			if(!groupId || !adminOfGroupIds.includes[groupId]) throw 'Not a group admin';
 		}
 	}
 };

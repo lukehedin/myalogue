@@ -476,7 +476,7 @@ const Util = {
 		achievements: () => `/achievements`,
 		settings: () => `/settings`,
 		group: (groupId) => `/group/${groupId}`,
-		groups: () => `/groups`,
+		groups: (tabId) => `/groups` + (tabId ? `?tabId=${tabId}` : ``),
 		groupEditor: (groupId) => (groupId ? `/group-editor/${groupId}` : `/group-editor`),
 		templates: () => `/templates`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,

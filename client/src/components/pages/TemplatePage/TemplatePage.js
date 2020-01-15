@@ -66,16 +66,18 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
 						<h1 className="page-title template-name">{this.state.template.name}</h1>
-						<div className="play-template button-container justify-center">
+						<div className="play-template button-container">
 							<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
 						</div>
 						<div className="top-comic-container">
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: this.state.topComic 
-									? <div className="comic-wrapper">
+									? <div>
 										<h3>Top comic with this template</h3>
-										<Comic comic={this.state.topComic} />
+										<div className="comic-wrapper">
+											<Comic comic={this.state.topComic} />
+										</div>
 									</div>
 									: <p className="empty-text">No comics have been made using this template yet.</p>
 							}
@@ -83,7 +85,6 @@ export default class TemplatePage extends Component {
 						{this.state.isLoading || !this.state.topComic
 							? null
 							: <div>
-								<hr />
 								<ComicList
 									title={'More comics with this template'}
 									sortBy={Util.enums.ComicSortBy.TopAll}

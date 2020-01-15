@@ -13,7 +13,7 @@ class LoginForm extends Component {
 			<h2>Login</h2>
 			{this.props.getField('emailUsername')}
 			{this.props.getField('password')}
-			<div className="button-container justify-center">
+			<div className="button-container">
 				<Button type="submit" colour="pink" size="lg" label="Login" />
 			</div>
 			<p className="form-message">Forgot your password? <Link to={Util.route.forgotPassword()}>Forgot password</Link></p>

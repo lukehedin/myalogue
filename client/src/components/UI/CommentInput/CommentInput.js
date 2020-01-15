@@ -66,7 +66,7 @@ export default class CommentInput extends Component {
 		return <div className="comment-input">
 			{this.state.isLoading ? <div className="loader masked"></div> : null}
 			<Textarea inputRef={tag => (this.inputRef = tag)} placeholder={this.props.placeholder || 'Add a comment'} onChange={this.onInputChange} value={this.state.value} onTouchEnd={this.onInputTouchEnd} />
-			<div className="button-container">
+			<div className="button-container justify-end">
 				{this.props.onCancel 
 					? <Button onClick={this.props.onCancel} colour="black" size="sm" isHollow={true} label='Cancel' isDisabled={this.props.isLoading} />
 					: null

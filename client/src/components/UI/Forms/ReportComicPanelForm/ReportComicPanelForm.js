@@ -10,7 +10,7 @@ class ReportComicPanelForm extends Component {
 	render() {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('reportComicPanelId')}
-			<div className="button-container justify-center">
+			<div className="button-container">
 				<Button isHollow={true} label="Cancel" onClick={this.props.onCancel} />
 				<Button colour="black" label="Report" type="submit" />
 			</div>

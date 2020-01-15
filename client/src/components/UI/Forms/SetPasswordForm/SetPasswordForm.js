@@ -12,7 +12,7 @@ class SetPasswordForm extends Component {
 			<p className="form-message">Enter a new password for your account.</p>
 			{this.props.getField('password')}
 			{this.props.getField('confirmPassword')}
-			<div className="button-container justify-center">
+			<div className="button-container">
 				<Button size="lg" colour="pink" label="Save password" type="submit" />
 			</div>
 		</form>

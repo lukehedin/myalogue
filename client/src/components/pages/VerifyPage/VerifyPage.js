@@ -36,7 +36,7 @@ export default class VerifyPage extends Component {
 								: <div className="verify-message">
 										<h1 className="page-title">Sorry, something went wrong.</h1>
 										<p className="center">Could not verify account.</p>
-										<div className="button-container justify-center">
+										<div className="button-container">
 											<Button to={Util.route.home()} colour="black" size="md" label="Back to home" />
 										</div>
 									</div>

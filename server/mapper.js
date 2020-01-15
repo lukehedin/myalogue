@@ -132,10 +132,17 @@ const mapper = {
 			name: dbGroup.Name,
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
-			instruction: dbGroup.Instruction,
 			memberCount: dbGroup.MemberCount,
 			pendingGroupUserRequestAt: pendingGroupUserRequestAt,
-			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser)
+			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
+			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge)
+		}
+	},
+
+	fromDbGroupChallenge: (dbGroupChallenge) => {
+		return {
+			groupChallengeId: dbGroupChallenge.GroupChallengeId,
+			challenge: dbGroupChallenge.Challenge
 		}
 	},
 
@@ -144,6 +151,7 @@ const mapper = {
 			groupUserId: dbGroupUser.GroupUserId,
 			userId: dbGroupUser.UserId,
 			groupId: dbGroupUser.GroupId,
+			createdAt: dbGroupUser.CreatedAt,
 			isGroupAdmin: dbGroupUser.IsGroupAdmin,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}

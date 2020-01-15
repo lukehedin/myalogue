@@ -106,7 +106,7 @@ export default class AvatarSelector extends Component {
 			{this.state.url
 				? null
 				: <div>
-					<div className="button-container justify-center">
+					<div className="button-container">
 						<Button size="md" colour="black" isHollow={true} label="Randomize" onClick={this.randomize} />
 					</div>
 					<div className="avatar-settings">
@@ -126,13 +126,13 @@ export default class AvatarSelector extends Component {
 							<Button isHollow={true} leftIcon={Util.icon.next} onClick={() => loopValIfNeeded(this.state.colour + 1, colourMax, this.setColour)}/>
 						</div>
 					</div>
-					<div className="button-container justify-center">
+					<div className="button-container">
 						<Button size="md" colour="pink" label="Save avatar" onClick={this.save} />
 					</div>
 					<h5 className="or">or</h5>
 				</div>
 			}
-			<div className="button-container justify-center">
+			<div className="button-container">
 				<ImageUpload endpoint='/api/uploadUserAvatar' 
 					label={this.state.url ? 'Upload new image' : 'Upload image'} 
 					onUploaded={() => window.location.reload()} 
@@ -141,7 +141,7 @@ export default class AvatarSelector extends Component {
 				/>
 			</div>
 			{this.state.url
-				? <div className="button-container justify-center">
+				? <div className="button-container">
 					<Button label="Remove image" onClick={this.removeAvatar} />
 				</div>
 				: null

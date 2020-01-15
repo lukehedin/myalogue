@@ -12,7 +12,7 @@ export default class AboutPage extends Component {
 						<h1 className="page-title">About</h1>
 						<p>Two important sources of inspiration for <b>Speak<span className="pink">4</span>Yourself</b> are <a target="_blank" rel="noopener noreferrer" href="https://drawception.com/">Drawception</a> (a game of drawing and miscommunication) and <a target="_blank" rel="noopener noreferrer" href="http://www.qwantz.com/index.php">Dinosaur Comics</a> (a webcomic where every comic uses the same panels but different dialogue).</p>
 						<p>If you have questions, suggestions, issues or just feel like a chat:</p>
-						<div className="button-container">
+						<div className="button-container justify-start">
 							<Button size="sm" leftIcon={Util.icon.discord} label="Discord" href="https://discord.gg/TcQPjvf" />
 							<Button size="sm" leftIcon={Util.icon.twitter} label="Twitter" href="https://twitter.com/imdoodlir" />
 							<Button size="sm" leftIcon={Util.icon.facebook} label="Facebook" href="https://www.facebook.com/114737053250842" />

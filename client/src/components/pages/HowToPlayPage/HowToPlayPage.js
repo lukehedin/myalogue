@@ -84,7 +84,7 @@ export default class HowToPlayPage extends Component {
 							? <p>What are you waiting for?</p>
 							: <p>There are many other benefits for players who have an account, but there's nothing stopping you from playing anonymously if you wish!</p>
 						}
-						<div className="button-container justify-center">
+						<div className="button-container">
 							<Button to={Util.route.play()} colour="pink" size="lg" label="Play now" />
 						</div>
 					</div>

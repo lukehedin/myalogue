@@ -11,7 +11,7 @@ class ForgotPasswordForm extends Component {
 			<h2>Forgot password</h2>
 			<p className="form-message">Please provide the email address or username associated with your account. You'll receive an email with instructions on how to set a new password.</p>
 			{this.props.getField('emailUsername')}
-			<div className="button-container justify-center">
+			<div className="button-container">
 				<Button size="lg" colour="pink" label="Submit" type="submit" />
 			</div>
 		</form>

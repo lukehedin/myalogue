@@ -1,4 +1,11 @@
 .page-group-editor {
+	.group-avatar-editor {
+		margin-bottom: $spacing-md;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	
 	.group-editor {
 		@include loaderContainer;
 	}

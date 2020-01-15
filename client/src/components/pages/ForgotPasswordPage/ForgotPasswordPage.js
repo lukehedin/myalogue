@@ -25,7 +25,7 @@ export default class ForgotPasswordPage extends Component {
 						{this.state.isSubmitted
 							? <div>
 								<p className="page-subtitle">An email has been sent to you with instructions on how to reset your password.</p>
-								<div className="button-container justify-center">
+								<div className="button-container">
 									<Button label="Back to home" to={Util.route.home()} colour="black" size="md" />
 								</div>
 							</div>

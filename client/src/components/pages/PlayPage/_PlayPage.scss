@@ -14,17 +14,17 @@
 				text-align: center;
 			}
 
-			.group-instruction {
+			.instruction {
+				margin: 0;
+			}
+
+			.challenge {
 				background-color: $colour-pink;
 				color: $colour-white;
 				text-align: center;
 				padding: $spacing-xxs;
 				margin-top: $spacing-xxs;
 				margin-bottom: 0;
-			}
-
-			.instruction {
-				margin: 0;
 			}
 
 			.progress-bar {

@@ -96,7 +96,7 @@ export default class ProfilePage extends Component {
 												</div>
 												<div className="user-stat">
 													<h5>Groups</h5>
-													<GroupList forUserId={this.state.user.userId} />
+													<GroupList emptyText={`${this.state.user.username} isn't a member of any groups.`} forUserId={this.state.user.userId} />
 												</div>
 											</div>
 										}, {

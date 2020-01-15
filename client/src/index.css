@@ -968,7 +968,6 @@ body {
           align-self: stretch;
           resize: vertical; }
         body .app-container .app .comment-input .button-container {
-          align-self: flex-end;
           margin-top: 4px; }
       body .app-container .app .comment {
         display: flex;
@@ -1138,26 +1137,27 @@ body {
           min-width: 100px; }
         body .app-container .app .group-list .group-list-filters > *:not(:first-child) {
           margin-left: 8px; }
-      body .app-container .app .group-list .group-list-inner {
+      body .app-container .app .group-list .group-list-inner .group-list-item {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 8px; }
+        body .app-container .app .group-list .group-list-inner .group-list-item .group-details {
+          margin-left: 8px; }
+          body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-name {
+            font-weight: bold;
+            flex: 1;
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis; }
+          body .app-container .app .group-list .group-list-inner .group-list-item .group-details .description {
+            overflow-wrap: break-word;
+            white-space: pre-line;
+            font-size: 12px; }
+          body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-bottom {
+            color: #777777; }
+      body .app-container .app .group-list .group-list-bottom {
         min-height: 40px;
         position: relative; }
-        body .app-container .app .group-list .group-list-inner .group-list-item {
-          display: flex;
-          flex-direction: row; }
-          body .app-container .app .group-list .group-list-inner .group-list-item .group-details {
-            margin-left: 8px; }
-            body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-name {
-              font-weight: bold;
-              flex: 1;
-              overflow: hidden;
-              white-space: normal;
-              text-overflow: ellipsis; }
-            body .app-container .app .group-list .group-list-inner .group-list-item .group-details .description {
-              overflow-wrap: break-word;
-              white-space: pre-line;
-              font-size: 12px; }
-            body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-bottom {
-              color: #777777; }
       body .app-container .app .group-avatar {
         display: block;
         overflow: hidden;
@@ -1280,15 +1280,15 @@ body {
           align-items: center; }
           body .app-container .app .page-play .play-area .play-area-top .timer {
             text-align: center; }
-          body .app-container .app .page-play .play-area .play-area-top .group-instruction {
+          body .app-container .app .page-play .play-area .play-area-top .instruction {
+            margin: 0; }
+          body .app-container .app .page-play .play-area .play-area-top .challenge {
             background-color: #ff0052;
             color: #fff;
             text-align: center;
             padding: 4px;
             margin-top: 4px;
             margin-bottom: 0; }
-          body .app-container .app .page-play .play-area .play-area-top .instruction {
-            margin: 0; }
           body .app-container .app .page-play .play-area .play-area-top .progress-bar {
             margin: 8px 0;
             width: 240px; }
@@ -1340,7 +1340,7 @@ body {
         body .app-container .app .page-play .play-area .tip-strip {
           margin-top: 64px; }
       body .app-container .app .page-group .group-actions {
-        margin: 8px 0; }
+        margin-top: 16px; }
       body .app-container .app .page-group .group-info .group-info-header > * {
         text-align: center; }
       body .app-container .app .page-group .group-info .group-info-header .group-avatar {
@@ -1348,6 +1348,26 @@ body {
       body .app-container .app .page-group .group-info .group-info-header .created-date {
         margin: 4px 0;
         color: #525252; }
+      body .app-container .app .page-group .group-info .group-info-header .group-call-to-action {
+        margin: 16px 0; }
+      body .app-container .app .page-group .group-info .member-list {
+        display: flex;
+        flex-direction: column; }
+        body .app-container .app .page-group .group-info .member-list .member-list-item {
+          display: flex;
+          flex-direction: row; }
+          body .app-container .app .page-group .group-info .member-list .member-list-item:not(:last-child) {
+            margin-bottom: 16px; }
+          body .app-container .app .page-group .group-info .member-list .member-list-item .member-list-item-detail {
+            margin-left: 8px;
+            flex: 1; }
+      body .app-container .app .page-group .comic-list {
+        margin-top: 32px; }
+      body .app-container .app .page-group-editor .group-avatar-editor {
+        margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
       body .app-container .app .page-group-editor .group-editor {
         min-height: 40px;
         position: relative; }
@@ -1379,7 +1399,7 @@ body {
         body .app-container .app .page-template .top-comic-container h3 {
           margin-bottom: 16px; }
       body .app-container .app .page-template .comic-list {
-        margin-top: 16px; }
+        margin-top: 32px; }
       body .app-container .app .page-leaderboards .leaderboards-inner {
         min-height: 40px;
         position: relative; }
@@ -1398,6 +1418,8 @@ body {
               background-color: #efefef; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item .leaderboard-item-detail > *:not(:first-child) {
               margin-top: 8px; }
+            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item .leaderboard-item-detail .rating {
+              margin-top: 4px; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td {
               vertical-align: top;
               padding: 16px 0;
@@ -1405,16 +1427,6 @@ body {
               flex-direction: row; }
               body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td > :not(:last-child) {
                 margin-right: 8px; }
-              body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td.cell-button {
-                text-align: right;
-                min-width: 100px; }
-                @media (min-width: 576px) {
-                  body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td.cell-button {
-                    min-width: 160px; } }
-                body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td.cell-button .button-container {
-                  justify-content: flex-end; }
-                  body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td.cell-button .button-container:not(:first-child) {
-                    margin-top: 8px; }
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboards-note {
           margin-top: 16px;
           color: #777777; }
@@ -1645,11 +1657,19 @@ body {
     body .app-container .button-container {
       display: flex;
       flex-direction: row;
-      align-items: center; }
-      body .app-container .button-container.justify-center {
-        justify-content: center; }
+      align-items: center;
+      justify-content: center; }
+      body .app-container .button-container.justify-start {
+        justify-content: flex-start; }
+      body .app-container .button-container.justify-end {
+        justify-content: flex-end; }
       body .app-container .button-container > *:not(:first-child) {
         margin-left: 8px; }
+      body .app-container .button-container.direction-column {
+        flex-direction: column; }
+        body .app-container .button-container.direction-column > *:not(:first-child) {
+          margin-left: 0;
+          margin-top: 8px; }
     body .app-container .comic-wrapper {
       display: flex;
       flex-direction: column;
@@ -1675,7 +1695,9 @@ body {
         body .app-container h1, body .app-container h2, body .app-container h3, body .app-container h4, body .app-container h5, body .app-container h6 {
           text-align: left; } }
     body .app-container h3 {
-      color: #777777; }
+      font-size: 14px;
+      color: #525252;
+      padding: 4px; }
     body .app-container h5 {
       text-transform: uppercase; }
     body .app-container p, body .app-container ul, body .app-container ol {

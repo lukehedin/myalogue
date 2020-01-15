@@ -22,11 +22,10 @@
 	}
 
 	.group-list-inner {
-		@include loaderContainer;
-
 		.group-list-item {
 			display: flex;
 			flex-direction: row;
+			margin-bottom: $spacing-xs;
 	
 			.group-details {
 				margin-left: $spacing-xs;
@@ -48,5 +47,9 @@
 				}
 			}
 		}
+	}
+
+	.group-list-bottom {
+		@include loaderContainer;
 	}
 }

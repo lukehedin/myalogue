@@ -83,7 +83,7 @@ export default class ComicPage extends Component {
 			content = <div>
 				<p className="center">The bad news is that the requested comic no longer exists (or doesn't exist yet).</p>
 				<p className="center">The good news is that you can help make another one right now!</p>
-				<div className="button-container justify-center">
+				<div className="button-container">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
 				</div>
 			</div>
@@ -93,7 +93,7 @@ export default class ComicPage extends Component {
 				<div className="comic-wrapper">
 					<Comic isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
-				<div className="button-container justify-center">
+				<div className="button-container">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
 				</div>
 				<ComicList
@@ -112,7 +112,7 @@ export default class ComicPage extends Component {
 					label={`${this.state.completedPanelCount} of ${this.state.totalPanelCount} panels completed`}
 				/>
 				<p className="center">Why not make a panel for another comic while you wait?</p>	
-				<div className="button-container justify-center">
+				<div className="button-container">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
 				</div>
 			</div>

@@ -136,7 +136,6 @@ export default class Database {
 		defineTable('Group', {
 			Name: Sequelize.STRING,
 			Description: Sequelize.TEXT,
-			Instruction: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
 			IsPublic: getBoooleanNotNull(),
@@ -159,6 +158,11 @@ export default class Database {
 			DeclinedAt: Sequelize.DATE,
 			Message: Sequelize.TEXT,
 			Token: Sequelize.STRING
+		}, true);
+
+		defineTable('GroupChallenge', {
+			Challenge: Sequelize.STRING,
+			IsDisabled: getBoooleanNotNull()
 		}, true);
 
 		defineTable('Template', {
@@ -283,11 +287,15 @@ export default class Database {
 		createOneToMany('User', 'GroupRequest', 'ActionedByUser', 'ActionedGroupRequests')
 		createOneToMany('User', 'GroupInvite');
 		createOneToMany('User', 'GroupInvite', 'InvitedByUser', 'SentGroupInvites');
+		createOneToMany('User', 'GroupChallenge', 'CreatedByUser', 'CreatedGroupChallenges');
 
 		createOneToMany('Group', 'GroupUser');
 		createOneToMany('Group', 'GroupRequest');
 		createOneToMany('Group', 'GroupInvite');
+		createOneToMany('Group', 'GroupChallenge');
 		createOneToMany('Group', 'Comic');
+		
+		createOneToMany('GroupChallenge', 'Comic');
 
 		console.log('Database: Database models loaded');
 	}

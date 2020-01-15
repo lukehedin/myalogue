@@ -241,12 +241,11 @@ export default class AchievementService extends Service {
 		});
 
 		if(achievementsToCreate.length > 0) {
-			//No await
 			let newAchievementUserIds = achievementsToCreate.map(achievementToCreate => achievementToCreate.UserId);
 
 			await this.models.UserAchievement.bulkCreate(achievementsToCreate);
 
-			this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);
+			await this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);
 
 			console.log('Achievement unlocked:' + achievementType + ' for ' + newAchievementUserIds.length + ' users, on comic id ' + comicId);
 		}

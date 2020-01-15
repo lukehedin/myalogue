@@ -42,7 +42,7 @@ export default class RegisterPage extends Component {
 							}} />
 						}
 						{this.state.isSubmitted
-							? <div className="button-container justify-center">
+							? <div className="button-container">
 								<Button label="Back to home" to={Util.route.home()} colour="black" size="md" />
 							</div>
 							: null

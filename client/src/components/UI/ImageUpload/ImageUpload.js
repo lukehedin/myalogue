@@ -30,6 +30,11 @@ export default class ImageUpload extends Component {
 			let image = e.target.files[0];
 
 			let formData = new FormData();
+			if(this.props.params) {
+				Object.keys(this.props.params).forEach(key => {
+					formData.append(key, this.props.params[key]);
+				});
+			}
 			formData.append('image', image);
 
 			Util.api.postFormData(this.props.endpoint, formData)

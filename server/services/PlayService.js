@@ -8,16 +8,37 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class PlayService extends Service {
-	async Play(userId, anonId, templateId) {
+	async Play(userId, anonId, templateId, groupId, groupChallengeId) {
 		//Random chance to start new comic
 		let startNewComic = !!common.config.ComicPlayNewChance && common.getRandomInt(1, common.config.ComicPlayNewChance) === 1;
+		let userInGroupIds = [];
+
+		//Ensure user is in the group, if specified
+		if(groupId) {
+			let dbGroupUsers = await this.models.GroupUser.findAll({
+				where: {
+					UserId: userId
+				}
+			});
+			userInGroupIds = dbGroupUsers.map(dbGroupUser => dbGroupUser.GroupId);
+
+			//User is not in group, remove group params
+			if(!userInGroupIds.includes(groupId)) {
+				groupId = null;
+				groupChallengeId = null;
+			}
+		} else {
+			//Don't allow an challenge if groupId isn't provided
+			groupId = null;
+			groupChallengeId = null;
+		}
 
 		return startNewComic
-			? await this.CreateNewComic(userId, anonId, templateId)
-			: await this.FindRandomInProgressComic(userId, anonId, templateId);
+			? await this.CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId)
+			: await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
 
 	}
-	async CreateNewComic(userId, anonId, templateId) {
+	async CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId) {
 		let templateWhere = {
 			UnlockedAt: {
 				[Sequelize.Op.ne]: null,
@@ -38,16 +59,31 @@ export default class PlayService extends Service {
 		let startIdx = (userId || dbLatestTemplates.length === 1 ? 0 : 1);
 		let dbTemplate = dbLatestTemplates[common.getRandomInt(startIdx, dbLatestTemplates.length - 1)];
 
+		//By this point we have already made sure the user is in the group, but we must validate the challenge if provided
+		if(groupChallengeId) {
+			let dbGroupChallenge = await this.models.GroupChallenge.findOne({
+				where: {
+					GroupId: groupId,
+					GroupChallengeId: groupChallengeId
+				}
+			});
+
+			//Challenge not found, bail out
+			if(!dbGroupChallenge) groupChallengeId = null;
+		}
+
 		//Create a new comic with this template
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
 			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
-			IsAnonymous: !userId
+			IsAnonymous: !userId,
+			GroupId: groupId,
+			GroupChallengeId: groupChallengeId
 		});
 
 		return await this.PrepareDbComicForPlay(userId, anonId, dbNewComic);
 	}
-	async FindRandomInProgressComic(userId, anonId, templateId) {
+	async FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId) {
 		let comicWhere = {
 			CompletedAt: {
 				[Sequelize.Op.eq]: null //Incomplete comics
@@ -57,13 +93,21 @@ export default class PlayService extends Service {
 					[Sequelize.Op.lte]: this._GetComicLockWindow(),
 					[Sequelize.Op.eq]: null
 				}
+			},
+			GroupId: { // Let me stumble into my own group's comics, but not those by other groups
+				[Sequelize.Op.or]: {
+					[Sequelize.Op.in]: userInGroupIds,
+					[Sequelize.Op.eq]: null
+				}
 			}
 		};
 
 		//Where I wasn't the last author
 		if(userId) {
-			//Only logged in users can target a template
+			//Only logged in users can target a template and groups
 			if(templateId) comicWhere.TemplateId = templateId;
+			if(groupId) comicWhere.GroupId = groupId;
+			if(groupChallengeId) comicWhere.GroupChallengeId = groupChallengeId;
 
 			comicWhere.IsAnonymous = false;
 			comicWhere.LastAuthorUserId = {
@@ -129,7 +173,7 @@ export default class PlayService extends Service {
 				model: this.models.ComicPanel,
 				as: 'ComicPanels'
 			}],
-			order: [Sequelize.fn('RANDOM')]
+			order: [Sequelize.fn('RANDOM')] //Would be better if this also pushed groups to the front, but struggling to find out how
 		});
 
 		if(randomDbComics && randomDbComics.length === 1) {
@@ -137,7 +181,7 @@ export default class PlayService extends Service {
 			return await this.PrepareDbComicForPlay(userId, anonId, randomDbComics[0]);
 		} else {
 			//No comics found, make a new one
-			return await this.CreateNewComic(userId, anonId, templateId);
+			return await this.CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId);
 		}
 	}
 	async PrepareDbComicForPlay(userId, anonId, dbComic) {
@@ -228,25 +272,11 @@ export default class PlayService extends Service {
 		//Set the next template panel (this prevents people from submitting a panel that isn't in line with the one provided)
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
 
-		//If the comic has a groupId, attach the group's instrution, if there one
-		let groupInstruction = null;
-
-		if(dbComic.GroupId) {
-			let dbGroup = await this.models.Group.findOne({
-				where: {
-					GroupId: dbComic.GroupId
-				}
-			});
-
-			if(dbGroup && dbGroup.Instruction) groupInstruction = dbGroup.Instruction;
-		}
-	
 		await dbComic.save();
 
 		return {
 			comicId: dbComic.ComicId,
 			templatePanelId: dbComic.NextTemplatePanelId,
-			groupInstruction: groupInstruction,
 
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,

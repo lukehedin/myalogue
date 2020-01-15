@@ -117,7 +117,7 @@ export default class GroupService extends Service {
 
 		if(forUserId) {
 			//Filter by the forUser's groups
-			let groupUsers = await this.GetGroupUsersForUserId(userId);
+			let groupUsers = await this.GetGroupUsersForUserId(forUserId);
 			let groupIds = groupUsers.map(groupUser => groupUser.groupId);
 
 			groupWhere.GroupId = {
@@ -126,7 +126,7 @@ export default class GroupService extends Service {
 		}
 
 		//Mutual
-		if(sortBy === 4) {
+		if(sortBy === 4 && userId) {
 			//Filter by the REQESTING user's groups
 			let groupUsers = await this.models.GroupUser.findAll({
 				where: {
@@ -206,8 +206,7 @@ export default class GroupService extends Service {
 
 		let saveData = {
 			Name: group.name,
-			Description: group.description,
-			Instruction: group.instruction
+			Description: group.description
 		};
 
 		if(group.groupId) {
@@ -260,5 +259,14 @@ export default class GroupService extends Service {
 
 			await dbGroupUser.destroy();
 		}
+	}
+	async SaveAvatarUrl(userId, groupId, avatarUrl) {
+		await this.models.Group.update({
+			AvatarUrl: avatarUrl
+		}, {
+			where: {
+				GroupId: groupId
+			}
+		});
 	}
 }

@@ -25,7 +25,7 @@ export default class PlayPage extends Component {
 			// Play data
 			comicId: null,
 			templatePanelId: null,
-			groupInstruction: null,
+			challenge: null,
 			currentComicPanel: null,
 
 			dialogue: ''
@@ -50,7 +50,7 @@ export default class PlayPage extends Component {
 			isPlaying: false,
 			comicId: null,
 			templatePanelId: null,
-			groupInstruction: null,
+			challenge: null,
 			currentComicPanel: null,
 			dialogue: '',
 			completedPanelCount: null,
@@ -76,7 +76,7 @@ export default class PlayPage extends Component {
 					isLoading: false,
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
-					groupInstruction: result.groupInstruction,
+					challenge: result.challenge,
 					currentComicPanel: result.currentComicPanel, //May be null
 
 					completedPanelCount: result.completedPanelCount,
@@ -138,7 +138,7 @@ export default class PlayPage extends Component {
 			//Error
 			content = <div className="play-area">
 				<p className="empty-text center">{this.state.error}</p>
-				<div className="button-container justify-center">
+				<div className="button-container">
 					<Button label="Back to home" to={Util.route.home()} colour="black" size="md" />
 				</div>
 			</div>
@@ -151,9 +151,9 @@ export default class PlayPage extends Component {
 						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
 							? `Finish` 
 							: `Continue`
-						: `Begin`} the comic{this.state.groupInstruction ? `, but also:` : null}</p>
-					{this.state.groupInstruction
-						? <p className="group-instruction sm">{this.state.groupInstruction}</p>
+						: `Begin`} the comic{this.state.challenge ? `, but also:` : null}</p>
+					{this.state.challenge
+						? <p className="challenge sm">{this.state.challenge}</p>
 						: null
 					}
 					<ProgressBar 
@@ -170,7 +170,7 @@ export default class PlayPage extends Component {
 					}
 					<ComicPanel onDialogueChange={this.onDialogueChange} templatePanelId={this.state.templatePanelId} />
 				</ComicPanelPair> 
-				<div className="play-actions button-container justify-center">
+				<div className="play-actions button-container">
 					<Button onClick={() => this.playNew(this.state.comicId)} colour="black" label="Skip" isHollow={true} size="md" />
 					<Button onClick={() => this.submitComicPanel(this.state.dialogue)} className={this.state.dialogue ? '' : 'disabled'} colour="pink" label="I'm done!" size="md" />
 				</div>

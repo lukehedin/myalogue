@@ -188,14 +188,30 @@ body {
 			display: flex;
 			flex-direction: row;
 			align-items: center; 
+			justify-content: center;
 
-			&.justify-center {
-				justify-content: center;
+			&.justify-start {
+				justify-content: flex-start;
+			}
+
+			&.justify-end {
+				justify-content: flex-end;
 			}
 
 			> * {
 				&:not(:first-child) {
 					margin-left: $spacing-xs;
+				}
+			}
+
+			&.direction-column {
+				flex-direction: column;
+
+				> * {
+					&:not(:first-child) {
+						margin-left: 0;
+						margin-top: $spacing-xs;
+					}
 				}
 			}
 		}
@@ -228,7 +244,9 @@ body {
 		}
 
 		h3 {
-			color: $colour-grey-d;
+			font-size: 14px;
+			color: $colour-grey-e;
+			padding: $spacing-xxs;
 		}
 
 		h5 {

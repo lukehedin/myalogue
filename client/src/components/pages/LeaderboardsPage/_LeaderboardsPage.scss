@@ -33,6 +33,10 @@
 							margin-top: $spacing-xs;
 						}
 					}
+
+					.rating {
+						margin-top: $spacing-xxs;
+					}
 				}
 	
 				td {
@@ -43,22 +47,6 @@
 
 					>:not(:last-child) {
 						margin-right: $spacing-xs;
-					}
-		
-					&.cell-button {
-						text-align: right;
-						min-width: 100px;
-						@include oversm {
-							min-width: 160px;
-						}
-
-						.button-container {
-							justify-content: flex-end;
-							
-							&:not(:first-child) {
-								margin-top: $spacing-xs;
-							}
-						}
 					}
 				}
 			}

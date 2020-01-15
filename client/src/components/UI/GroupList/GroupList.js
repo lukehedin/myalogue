@@ -5,6 +5,7 @@ import Util from '../../../Util';
 
 import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import Dropdown from '../Dropdown/Dropdown';
+import Button from '../Button/Button';
 
 export default class GroupList extends Component {
 	constructor(props){
@@ -13,10 +14,15 @@ export default class GroupList extends Component {
 		this.state = {
 			isLoading: true,
 			
+			forUserId: this.props.forUserId,
 			sortBy: this.props.sortBy || Util.enums.GroupSortBy.Popular,
 			search: '',
+			
+			limit: 10,
+			offset: 0,
 
-			groups: []
+			groups: [],
+			isNoMore: false
 		};
 		
 		this.searchTimeout = null;
@@ -69,7 +75,10 @@ export default class GroupList extends Component {
 			forUserId: this.props.forUserId,
 
 			sortBy: this.state.sortBy,
-			search: this.state.search
+			search: this.state.search,
+
+			limit: this.state.limit,
+			offset: this.state.offset
 		}
 
 		Util.api.post('/api/getGroups', params)
@@ -81,7 +90,7 @@ export default class GroupList extends Component {
 
 					if(!paramsChanged) {
 						this.setState({
-							groups: result,
+							groups: [...this.state.groups, ...result],
 							isLoading: false,
 							offset: this.state.offset + this.state.limit,
 							isNoMore: result.length < this.state.limit
@@ -95,18 +104,23 @@ export default class GroupList extends Component {
 			type: Util.enums.GroupSortBy.Popular,
 			label: 'Popular'
 		}, {
-			type: Util.enums.GroupSortBy.Newest,
-			label: 'Newest'
-		}, {
 			type: Util.enums.GroupSortBy.Alphabetical,
 			label: 'Alphabetical'
 		}];
 
-		if(Util.context.isAuthenticated()) {
+		if(!Util.context.isUserId(this.props.forUserId)) {
+			//Viewing my groups
 			sortOptions.push({
-				type: Util.enums.GroupSortBy.Mutual,
-				label: 'Mutual'
-			});
+				type: Util.enums.GroupSortBy.Newest,
+				label: 'Newest'
+			})
+		} else {
+			if(Util.context.isAuthenticated()) {
+				sortOptions.push({
+					type: Util.enums.GroupSortBy.Mutual,
+					label: 'Mutual'
+				});
+			}
 		}
 
 		return <div className="group-list">
@@ -122,31 +136,42 @@ export default class GroupList extends Component {
 				/>
 			</div>
 			<div className="group-list-inner">
-				{this.state.isLoading
-					? <div className="loader"></div>
-					: Util.array.any(this.state.groups)
-						? this.state.groups.map(group => {
-							return <div key={group.groupId} className="group-list-item">
-								<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
-								<div className="group-details">
-									<Link className="group-name" to={Util.route.group(group.groupId)}>{group.name}</Link>
-									{!this.props.hideDescription && group.description
-										? <HTMLEllipsis
-											className="description"
-											unsafeHTML={Util.format.userStringToSafeHtml(group.description)}
-											maxLine='3'
-											ellipsis='...'
-											basedOn='letters'
-										/>
-										: null
-									}
-									<p className="group-bottom sm">{group.groupUsers.length} {Util.format.pluralise(group.groupUsers, 'member')}{group.instruction ? ` - ${group.instruction}` : null}</p>
-								</div>
+				{Util.array.any(this.state.groups)
+					? this.state.groups.map(group => {
+						return <div key={group.groupId} className="group-list-item">
+							<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
+							<div className="group-details">
+								<Link className="group-name" to={Util.route.group(group.groupId)}>{group.name}</Link>
+								{!this.props.hideDescription && group.description
+									? <HTMLEllipsis
+										className="description"
+										unsafeHTML={Util.format.userStringToSafeHtml(group.description)}
+										maxLine='3'
+										ellipsis='...'
+										basedOn='letters'
+									/>
+									: null
+								}
+								<p className="group-bottom sm">{group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
 							</div>
-						})
-						: <p className="empty-text">No groups found.</p>
+						</div>
+					})
+					: null
 				}
 			</div>
+			{this.state.isNoMore
+				? Util.array.none(this.state.groups)
+					? <p className="empty-text">{this.props.emptyText || `No groups found.`}</p>
+					: null
+				: <div className="group-list-bottom">
+					{this.state.isLoading 
+						? <div className="loader"></div> 
+						: <div className="button-container direction-column">
+							<Button label="Load more" colour="pink" onClick={() => this.fetchData()} />
+						</div>
+					}
+				</div>
+			}
 		</div>
 	}
 }

@@ -5,6 +5,7 @@ import Util from '../../../Util';
 import Button from '../../UI/Button/Button';
 import GroupEditorForm from '../../UI/Forms/GroupEditorForm/GroupEditorForm';
 import ImageUpload from '../../UI/ImageUpload/ImageUpload';
+import GroupAvatar from '../../UI/GroupAvatar/GroupAvatar';
 
 export default class GroupEditorPage extends Component {
 	constructor(props) {
@@ -43,15 +44,24 @@ export default class GroupEditorPage extends Component {
 	render() {
 		if(!Util.context.isAuthenticated()) return <Redirect to={Util.route.register()} />;
 
+		let isEditing = this.props.groupId || (this.state.group && this.state.group.groupId);
+
 		return <div className="page-group-editor">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">{this.props.groupId ? 'Manage group' : 'Create group'}</h1>
+						<h1 className="page-title">{isEditing ? 'Edit group' : 'Create group'}</h1>
 						<div className="group-editor">
 							{this.state.isLoading
 								? <div className="loader"></div>
 								: <div className="group-editor-inner">
+									{isEditing
+										? <div className="group-avatar-editor">
+											<GroupAvatar group={this.state.group} size={96} />
+											<ImageUpload endpoint='/api/uploadGroupAvatar' params={{ groupId: this.state.group.groupId }} />
+										</div>
+										: null
+									}
 									<GroupEditorForm 
 										formData={this.state.group || {}}
 										onSubmit={(form, formData) => {
@@ -69,12 +79,6 @@ export default class GroupEditorPage extends Component {
 											});
 										}}
 									/>
-									{this.state.group && this.state.group.groupId
-										? <div className="edit-only">
-											<ImageUpload endpoint='/api/uploadGroupAvatar' id={this.state.group.groupId} />
-										</div>
-										: null
-									}
 								</div>
 							}
 						</div>

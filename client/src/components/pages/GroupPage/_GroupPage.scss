@@ -1,6 +1,6 @@
 .page-group {
 	.group-actions {
-		margin: $spacing-xs 0;
+		margin-top: $spacing-sm;
 	}
 
 	.group-info {
@@ -17,6 +17,33 @@
 				margin: $spacing-xxs 0;
 				color: $colour-grey-e;
 			}
+
+			.group-call-to-action {
+				margin: $spacing-sm 0;
+			}
 		}
+
+		.member-list {
+			display: flex;
+			flex-direction: column;
+	
+			.member-list-item {
+				display: flex;
+				flex-direction: row;
+				
+				&:not(:last-child) {
+					margin-bottom: $spacing-sm;
+				}
+	
+				.member-list-item-detail {
+					margin-left: $spacing-xs;
+					flex: 1;
+				}
+			}
+		}
+	}
+
+	.comic-list {
+		margin-top: $spacing-md;
 	}
 }

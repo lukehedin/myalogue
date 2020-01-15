@@ -46,7 +46,7 @@ class Modal extends Component {
 				modalClass = "modal-confirm";
 				modalContent = <div>
 					{modalContent}
-					<div className="button-container">
+					<div className="button-container justify-end">
 						<Button isHollow={true} label={modal.noLabel || 'No'} onClick={() => {
 							this.close();
 							if(modal.noFn) modal.noFn();
