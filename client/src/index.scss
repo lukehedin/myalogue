@@ -246,7 +246,6 @@ body {
 		h3 {
 			font-size: 14px;
 			color: $colour-grey-e;
-			padding: $spacing-xxs;
 		}
 
 		h5 {
@@ -322,6 +321,10 @@ body {
 			align-items: center;
 			text-align: center;
 			margin-top: $spacing-md;
+
+			@include allHeadings {
+				text-align: center;
+			}
 		}
 
 

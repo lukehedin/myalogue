@@ -329,7 +329,6 @@ body {
           -moz-border-radius: 4px;
           background-color: #fff;
           border: 1px solid #c8c8c8;
-          overflow: hidden;
           padding: 16px;
           margin: 0 auto;
           align-self: stretch;
@@ -1023,8 +1022,7 @@ body {
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
         background-color: #fff;
-        border: 1px solid #c8c8c8;
-        overflow: hidden; }
+        border: 1px solid #c8c8c8; }
         body .app-container .app .tabbed-panels .tabbed-panels-tabs {
           display: flex;
           flex-direction: row;
@@ -1059,7 +1057,9 @@ body {
               body .app-container .app .tabbed-panels .tabbed-panels-tabs .tabbed-panels-tab:not(.react-tabs__tab--selected):hover {
                 background-color: #969696; }
         body .app-container .app .tabbed-panels .tabbed-panels-panel {
-          background-color: #fff; }
+          background-color: #fff;
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px; }
           body .app-container .app .tabbed-panels .tabbed-panels-panel.react-tabs__tab-panel--selected {
             min-height: 40px;
             position: relative;
@@ -1145,8 +1145,10 @@ body {
       body .app-container .app .group-list .group-list-inner .group-list-item {
         display: flex;
         flex-direction: row;
+        align-items: flex-start;
         margin-bottom: 16px; }
         body .app-container .app .group-list .group-list-inner .group-list-item .group-details {
+          flex: 1;
           margin-left: 8px; }
           body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-name {
             font-weight: bold;
@@ -1195,12 +1197,13 @@ body {
         body .app-container .app .play-info .start-new-info {
           margin-top: 8px; }
       body .app-container .app .stats-summary:not(:last-child) {
-        margin-bottom: 32px; }
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #efefef; }
       body .app-container .app .stats-summary > *:not(:last-child) {
-        border-bottom: 1px solid #efefef;
-        padding-bottom: 16px; }
+        padding-bottom: 8px; }
       body .app-container .app .stats-summary > *:not(:first-child) {
-        padding-top: 16px; }
+        padding-top: 8px; }
       body .app-container .app .stats-summary .stats-row {
         display: flex;
         flex-direction: row; }
@@ -1223,6 +1226,29 @@ body {
         body .app-container .app .button-input .button {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0; }
+      body .app-container .app .group-pending-info-user > *:not(:last-child) {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #efefef; }
+      body .app-container .app .group-pending-info-user .pending-info-heading {
+        text-align: left;
+        margin-bottom: 16px; }
+      body .app-container .app .group-pending-info-user .empty-text {
+        text-align: left; }
+      body .app-container .app .group-pending-info-user .group-invites .group-invite {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start; }
+        body .app-container .app .group-pending-info-user .group-invites .group-invite:not(:last-child) {
+          margin-bottom: 16px; }
+        body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail {
+          flex: 1;
+          margin: 0 8px; }
+          body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail .group-name {
+            margin-bottom: 4px;
+            font-weight: bold; }
+          body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail .group-invited-by {
+            margin: 0; }
       body .app-container .app .page-comic .comic-area {
         min-height: 40px;
         position: relative;
@@ -1389,6 +1415,8 @@ body {
         color: #525252; }
       body .app-container .app .page-group .group-info .group-info-header .group-call-to-action {
         margin: 16px 0; }
+        body .app-container .app .page-group .group-info .group-info-header .group-call-to-action .join-info {
+          color: #ff0052; }
       body .app-container .app .page-group .group-info .group-details .group-description {
         overflow-wrap: break-word;
         white-space: pre-line;
@@ -1432,7 +1460,6 @@ body {
         -moz-border-radius: 4px;
         background-color: #fff;
         border: 1px solid #c8c8c8;
-        overflow: hidden;
         padding: 16px; }
         body .app-container .app .page-templates .templates ul {
           padding-left: 0;
@@ -1552,7 +1579,6 @@ body {
           -moz-border-radius: 4px;
           background-color: #fff;
           border: 1px solid #c8c8c8;
-          overflow: hidden;
           padding: 16px;
           position: relative; }
           body .app-container .app .page-settings .settings-row .avatar-selector h2 {
@@ -1570,7 +1596,6 @@ body {
         -moz-border-radius: 4px;
         background-color: #fff;
         border: 1px solid #c8c8c8;
-        overflow: hidden;
         padding: 16px; }
       body .app-container .app .news-message {
         background: #fff;
@@ -1732,8 +1757,7 @@ body {
           text-align: left; } }
     body .app-container h3 {
       font-size: 14px;
-      color: #525252;
-      padding: 4px; }
+      color: #525252; }
     body .app-container h5 {
       text-transform: uppercase; }
     body .app-container p, body .app-container ul, body .app-container ol {
@@ -1798,6 +1822,8 @@ body {
       align-items: center;
       text-align: center;
       margin-top: 32px; }
+      body .app-container .sorry-panel h1, body .app-container .sorry-panel h2, body .app-container .sorry-panel h3, body .app-container .sorry-panel h4, body .app-container .sorry-panel h5, body .app-container .sorry-panel h6 {
+        text-align: center; }
     body .app-container .comic-panel {
       height: calc(450px * 0.48);
       width: calc(540px * 0.48); }

@@ -124,8 +124,8 @@ const mapper = {
 	},
 
 	fromDbGroup: (dbGroup) => {
-		let pendingGroupRequestAt = dbGroup.GroupRequests && dbGroup.GroupRequests.length > 0
-			? dbGroup.GroupRequests[0].CreatedAt
+		let pendingGroupRequest = dbGroup.GroupRequests && dbGroup.GroupRequests.length > 0
+			? mapper.fromDbGroupRequest(dbGroup.GroupRequests[0])
 			: null;
 
 		return {
@@ -135,7 +135,8 @@ const mapper = {
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
 			memberCount: dbGroup.MemberCount,
-			pendingGroupRequestAt: pendingGroupRequestAt,
+			//The user's current request to join, if any
+			pendingGroupRequest: pendingGroupRequest,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge)
 		}
@@ -162,13 +163,20 @@ const mapper = {
 	},
 
 	fromDbGroupRequest: (dbGroupRequest) => {
+		//Do not return approved/denied here, only for backend use
 		return {
-			group: dbGroupRequest.Group ? mapper.fromDbGroup(dbGroupRequest.Group) : null,
-			message: dbGroupRequest.Message
+			groupRequestId: dbGroupRequest.GroupRequestId,
+			userId: dbGroupRequest.UserId,
+			groupId: dbGroupRequest.GroupId,
+			createdAt: dbGroupRequest.CreatedAt,
+			message: dbGroupRequest.Message,
+			user: dbGroupRequest.User ? mapper.fromDbUser(dbGroupRequest.User) : null,
+			group: dbGroupRequest.Group ? mapper.fromDbGroup(dbGroupRequest.Group) : null
 		}
 	},
 
 	fromDbGroupInvite: (dbGroupInvite) => {
+		//Do not return accepted/declined here, only for backend use
 		return {
 			groupInviteId: dbGroupInvite.GroupInviteId,
 			groupId: dbGroupInvite.GroupId,

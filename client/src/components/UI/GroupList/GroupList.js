@@ -6,6 +6,7 @@ import Util from '../../../Util';
 import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import Dropdown from '../Dropdown/Dropdown';
 import Button from '../Button/Button';
+import ContextMenu from '../ContextMenu/ContextMenu';
 
 export default class GroupList extends Component {
 	constructor(props){
@@ -109,7 +110,7 @@ export default class GroupList extends Component {
 		}];
 
 		if(!Util.context.isUserId(this.props.forUserId)) {
-			//Viewing my groups
+			//Viewing your groups
 			sortOptions.push({
 				type: Util.enums.GroupSortBy.Newest,
 				label: 'Newest'
@@ -138,6 +139,22 @@ export default class GroupList extends Component {
 			<div className="group-list-inner">
 				{Util.array.any(this.state.groups)
 					? this.state.groups.map(group => {
+						let contextMenuItems = [];
+
+						if(this.props.showContextMenu && Util.context.isUserId(this.state.forUserId)) {
+							if(Util.context.isGroupAdmin(group.groupId)) {
+								contextMenuItems.push({
+									label: 'Edit group'
+								});
+							}
+							contextMenuItems.push({
+								label: 'Unfollow group'
+							});
+							contextMenuItems.push({
+								label: 'Leave group'
+							});
+						}
+
 						return <div key={group.groupId} className="group-list-item">
 							<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
 							<div className="group-details">
@@ -157,6 +174,10 @@ export default class GroupList extends Component {
 									{Util.context.isGroupAdmin(group.groupId) ? <p className="group-bottom sm">You are an admin of this group</p> : null}
 								</div>
 							</div>
+							{Util.array.any(contextMenuItems) 
+								? <ContextMenu align="right" menuItems={contextMenuItems} />
+								: null
+							}
 						</div>
 					})
 					: null

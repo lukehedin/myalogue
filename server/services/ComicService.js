@@ -206,24 +206,24 @@ export default class ComicService extends Service {
 
 		let comicRatingAdjustment = 0;
 
-		let existingDbComicVote = dbComic.ComicVotes && dbComic.ComicVotes[0]
+		let dbExistingComicVote = dbComic.ComicVotes && dbComic.ComicVotes[0]
 			? dbComic.ComicVotes[0]
 			: null;
 
 		let votePromises = [];
 
-		if(existingDbComicVote) {
+		if(dbExistingComicVote) {
 			//No need to do anything if the value is the same for some reason
-			if(existingDbComicVote.Value !== value) {
+			if(dbExistingComicVote.Value !== value) {
 				//Incoming value subtract the existing value (maths!)
-				comicRatingAdjustment = value - existingDbComicVote.Value;
+				comicRatingAdjustment = value - dbExistingComicVote.Value;
 
 				votePromises.push(
 					this.models.ComicVote.update({
 						Value: value
 					}, {
 						where: {
-							ComicVoteId: existingDbComicVote.ComicVoteId
+							ComicVoteId: dbExistingComicVote.ComicVoteId
 						}
 					})
 				);

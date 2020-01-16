@@ -34,7 +34,7 @@
 	@include borderRadius(4px);
 	background-color: $colour-white;
 	border: 1px solid $colour-grey-b;
-	overflow: hidden;
+	//Do not put overflow hidden here or context menus will be stuck inside
 }
 
 @mixin singleLineEllipsis {

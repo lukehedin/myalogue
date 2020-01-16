@@ -50,7 +50,7 @@ export default class UserService extends Service {
 		let cleanEmail = email.trim().toLowerCase();
 		let cleanUsername = username.trim().toLowerCase();
 		
-		let existingDbUser = await this.models.User.findOne({
+		let dbExistingUser = await this.models.User.findOne({
 			where: {
 				...additionalWhere,
 				[Sequelize.Op.or]: [
@@ -60,7 +60,7 @@ export default class UserService extends Service {
 			}
 		});
 
-		return existingDbUser;
+		return dbExistingUser;
 	}
 	async DbGetByIdNotBanned(userId) {
 		return await this.DbGetById(userId, this._GetUserNotBannedWhere())

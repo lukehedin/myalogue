@@ -1,0 +1,44 @@
+.group-pending-info-user {
+	> * {
+		&:not(:last-child) {
+			margin-bottom: $spacing-sm;
+			padding-bottom: $spacing-sm;
+			border-bottom: 1px solid $colour-grey-a;
+		}
+	}
+
+	.pending-info-heading {
+		text-align: left;
+		margin-bottom: $spacing-sm;
+	}
+
+	.empty-text {
+		text-align: left;
+	}
+
+	.group-invites {
+		.group-invite {
+			display: flex;
+			flex-direction: row;
+			align-items: flex-start;
+
+			&:not(:last-child) {
+				margin-bottom: $spacing-sm;
+			}
+
+			.group-invite-detail {
+				flex: 1;
+				margin: 0 $spacing-xs;
+
+				.group-name {
+					margin-bottom: $spacing-xxs;
+					font-weight: bold;
+				}
+
+				.group-invited-by {
+					margin: 0;
+				}
+			}
+		}
+	}
+}

@@ -1,15 +1,16 @@
 .stats-summary {
 	&:not(:last-child) {
-		margin-bottom: $spacing-md;
+		margin-bottom: $spacing-sm;
+		padding-bottom: $spacing-sm;
+		border-bottom: 1px solid $colour-grey-a;
 	}
 	
 	> * {
 		&:not(:last-child) {
-			border-bottom: 1px solid $colour-grey-a;
-			padding-bottom: $spacing-sm;
+			padding-bottom: $spacing-xs;
 		}
 		&:not(:first-child) {
-			padding-top: $spacing-sm;
+			padding-top: $spacing-xs;
 		}
 	}
 

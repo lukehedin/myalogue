@@ -4,7 +4,7 @@ import Util from '../../../Util';
 
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import GroupList from '../../UI/GroupList/GroupList';
-import GroupPendingInfo from '../../UI/GroupPendingInfo/GroupPendingInfo';
+import GroupPendingInfoUser from '../../UI/GroupPendingInfoUser/GroupPendingInfoUser';
 
 export default class GroupsPage extends Component {
 	render() {
@@ -14,11 +14,15 @@ export default class GroupsPage extends Component {
 			tabs.push({
 				tabId: 'groups',
 				title: 'My groups',
-				content: <GroupList emptyText="You aren't a member of any groups." forUserId={Util.context.getUserId()} />
+				content: <GroupList 
+					emptyText="You aren't a member of any groups." 
+					forUserId={Util.context.getUserId()}
+					showContextMenu={true}
+				/>
 			}, {
 				tabId: 'requests',
 				title: 'Requests', //Also contains invites but this wording works
-				content: <GroupPendingInfo />
+				content: <GroupPendingInfoUser />
 			})
 		}
 

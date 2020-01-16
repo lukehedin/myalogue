@@ -221,17 +221,17 @@ export default class NotificationService extends Service {
 	async SendGroupRequestNotification(userId, requestToJoinGroupId) {
 		//Sends to the group admins, takes the user to the group page member tab
 	}
-	async SendGroupInvitationNotification(userId, groupName) {
+	async SendGroupInviteNotification(userId, groupName) {
 		//"You were invited to join "cooolcomics" and 1 other group. Click here to view your invites."
 		
-		//All group invitation notifications take the user to the same place, so it uses a SINGLETON notification
+		//All group invite notifications take the user to the same place, so it uses a SINGLETON notification
 		//With varying UserNotifications
 
 
-		// Find or create an invitation notification for this userId
+		// Find or create an invite notification for this userId
 		// let [dbNotification, wasCreated] = await this.models.Notification.findOrCreate({
 		// 	where: {
-		// 		Type: common.enums.NotificationType.GroupInvitation,
+		// 		Type: common.enums.NotificationType.GroupInvite,
 		// 		UserId: userId,
 		// 		SeenAt: {
 		// 			[Sequelize.Op.eq]: null
@@ -243,7 +243,7 @@ export default class NotificationService extends Service {
 		// });
 	
 		// if(!wasCreated) {
-		// 	//If an existing invitation notification was found, increment the invite count
+		// 	//If an existing invitate notification was found, increment the invite count
 		// 	await dbNotification.update({
 		// 		ValueInt: dbNotification.ValueInt ? dbNotification.ValueInt + 1 : 1
 		// 	}, {

@@ -344,7 +344,7 @@ export default class PlayService extends Service {
 	
 		if(!isComicValid || !isDialogueValid) throw 'Invalid dialogue supplied.';
 			
-		let newDbComicPanel = await this.models.ComicPanel.create({
+		let dbNewComicPanel = await this.models.ComicPanel.create({
 			TemplatePanelId: dbComic.NextTemplatePanelId, //We use the server's recorded nexttemplatepanelid, not one sent from the client
 			ComicId: dbComic.ComicId,
 			Value: dialogue,
@@ -353,7 +353,7 @@ export default class PlayService extends Service {
 		});
 
 		//Add the newly created panel to our dbComic object for the code below, and acihevement service
-		dbComic.ComicPanels.push(newDbComicPanel);
+		dbComic.ComicPanels.push(dbNewComicPanel);
 		
 		let isComicCompleted = dbComic.ComicPanels.length === dbComic.PanelCount;
 				

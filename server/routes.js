@@ -171,10 +171,11 @@ export default {
 		},
 
 		getGroup: async (req, services) => {
+			let userId = req.userId; // May be null
 			let groupId = req.body.groupId;
 
 			let [group, groupUsers, groupStats] = await Promise.all([
-				await services.Group.GetById(groupId),
+				await services.Group.GetById(groupId, userId),
 				await services.Group.GetGroupUsers(groupId),
 				await services.Group.GetStatsForGroup(groupId)
 			]);
@@ -426,6 +427,7 @@ export default {
 		},
 
 		joinGroup: async (req, services) => {
+			let userId = req.userId;
 			let memberOfGroupIds = req.memberOfGroupIds;
 
 			let groupId = req.body.groupId;
@@ -433,7 +435,7 @@ export default {
 			//RARE: checking if we ARE NOT ALREADY in the group
 			if(memberOfGroupIds.includes(groupId)) throw 'Already a group member';
 			
-			await services.Group.JoinGroup(userId, groupId);
+			return await services.Group.JoinGroup(userId, groupId);
 		}
 	}
 };

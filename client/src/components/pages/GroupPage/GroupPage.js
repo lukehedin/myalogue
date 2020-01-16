@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
 import { Link } from 'react-router-dom';
-import CountUp from 'react-countup';
 import moment from 'moment';
 import Util from '../../../Util';
 
@@ -25,7 +24,9 @@ class GroupPage extends Component {
 			groupUsers: null,
 			groupStats: null,
 
-			inviteResult: null
+			isJoining: false,
+
+			inviteResult: null //Feedback message when a user is invited in member list
 		}
 
 		this.leaveGroup = this.leaveGroup.bind(this);
@@ -66,12 +67,41 @@ class GroupPage extends Component {
 		});
 	}
 	joinGroup() {
+		this.setState({
+			isJoining: true
+		});
+
 		Util.api.post('/api/joinGroup', {
 			groupId: this.state.group.groupId
 		})
 		.then(result => {
-
-				//todo
+			if(!result.error) {
+				if(result.groupUserId) {
+					//If the result is a groupUser, we joind the public group
+					Util.context.set({
+						groupUsers: [...Util.context.getGroupUsers(), result]
+					});
+	
+					this.setState({
+						groupUsers: [
+							...this.state.groupUsers,
+							result
+						]
+					});
+				} else if(result.groupRequestId) {
+					//If the result is a groupRequest, we requested to join
+					this.setState({
+						group: {
+							...this.state.group,
+							pendingGroupRequest: result
+						}
+					});
+				}
+			}
+			
+			this.setState({
+				isJoining: false
+			});
 		});
 	}
 	inviteUserToGroup(value) {
@@ -86,7 +116,7 @@ class GroupPage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					inviteResult: `An invitation was sent to ${value}.`
+					inviteResult: `An invite was sent to ${value}.`
 				});
 			} else {
 				this.setState({
@@ -154,7 +184,7 @@ class GroupPage extends Component {
 					}
 					{Util.array.any(this.state.groupUsers)
 						? this.state.groupUsers.map(groupUser => {
-							return <div className="member-list-item">
+							return <div key={groupUser.groupUserId} className="member-list-item">
 								<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
 								<div className="member-list-item-detail">
 									<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
@@ -174,7 +204,7 @@ class GroupPage extends Component {
 					content: <div className="group-challenge-list">
 						{Util.array.any(this.state.group.groupChallenges)
 							? this.state.group.groupChallenges.map(groupChallenge => {
-								return <div className="group-challenge-item">
+								return <div key={groupChallenge.groupChallengeId} className="group-challenge-item">
 									{groupChallenge.challenge}
 								</div>;
 							})
@@ -216,7 +246,11 @@ class GroupPage extends Component {
 												? <div className="button-container group-call-to-action direction-column">
 													{Util.context.isInGroup(this.state.group.groupId)
 														? <Button colour="pink" label="Play with this group" to={Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId })} />
-														: <Button colour="pink" label={this.state.group.isPublic ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
+														: this.state.group.pendingGroupRequest
+															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequest.createdAt).fromNow()}.</p>
+															: this.state.isJoining
+																? <p className="join-info sm">{this.state.isPublic ? 'Joining...' : 'Requesting to join...'}</p>
+																: <Button colour="pink" label={this.state.group.isPublic ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
 													}
 													{Util.context.isGroupAdmin(this.state.group.groupId)
 														? <Button size="sm" label="Edit group" to={Util.route.groupEditor(this.state.group.groupId)} />

@@ -68,7 +68,7 @@ export default {
 
 			GroupRequest: 9, //For group admins
 			GroupRequestAccepted: 10,
-			GroupInvitation: 11,
+			GroupInvite: 11,
 			GroupUserJoined: 12 //For group admins, public join OR invite accept
 		},
 

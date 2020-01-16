@@ -70,12 +70,17 @@ export default class GroupEditorPage extends Component {
 											Util.api.post('/api/saveGroup', {
 												group: formData
 											})
-											.then(updatedGroup => {
-												this.setState({
-													group: updatedGroup
-												});
+											.then(result => {
+												if(!result.error) {
+													this.setState({
+														group: result
+													});
+	
+													form.setFormData(result);
+												} else {
+													form.setOverallError(result.error);
+												}
 
-												form.setFormData(updatedGroup);
 												form.setLoading(false);
 											});
 										}}
