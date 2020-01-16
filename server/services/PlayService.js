@@ -200,7 +200,7 @@ export default class PlayService extends Service {
 		});
 
 		if(!randomDbComics || randomDbComics.length === 0) {
-			//No incomplete comics found, make a new one
+			//No incomplete comics found, make a new one (it will be created with a lock)
 			return await this.CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId);
 		} else {
 			let dbComic = randomDbComics[0];

@@ -263,60 +263,78 @@ export default class GroupService extends Service {
 	async JoinGroup(userId, groupId) {
 		let group = await this.GetById(groupId);
 
-		if(group.isPublic) {
-			//This will check if they're already a member
-			let newGroupUser = await this.AddUserToGroup(userId, groupId);
+		//Check if they already have a pending invite from this group
+		let dbExistingGroupInvite = await this.models.GroupInvite.findOne({
+			where: {
+				...this._GetPendingGroupInviteWhere,
+				GroupId: groupId,
+				UserId: userId,
+				DeclinedAt: {
+					[Sequelize.Op.eq]: null
+				}
+			}
+		});
 
-			//TODO: Send user joined notification to group admins
-
-			return newGroupUser;
+		if(dbExistingGroupInvite) {
+			//If we're requesting to join a group we have an invite for, just accept the invite
+			return await this.ActionGroupInvite(userId, dbExistingGroupInvite.GroupInviteId, true);
 		} else {
-			//Check if they are already a group member
-			let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
-			if(dbExistingGroupUser) return common.getErrorResult(`User is already a member.`);
-		
-			//Check if they've already requested
-			let dbExistingRequest = await this.models.GroupRequest.findOne({
-				where: {
-					...this._GetPendingGroupRequestWhere,
+			if(group.isPublic) {
+				//This will check if they're already a member
+				let newGroupUser = await this.AddUserToGroup(userId, groupId);
+	
+				//TODO: Send user joined notification to group admins
+	
+				return newGroupUser;
+			} else {
+				//Check if they are already a group member
+				let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
+				if(dbExistingGroupUser) return common.getErrorResult(`User is already a member.`);
+			
+				//Check if they already have a pending request
+				let dbExistingGroupRequest = await this.models.GroupRequest.findOne({
+					where: {
+						...this._GetPendingGroupRequestWhere,
+						GroupId: groupId,
+						UserId: userId
+					}
+				});
+				if(dbExistingGroupRequest) return common.getErrorResult('You have already requested to join this group.');
+	
+				let dbNewGroupRequest = await this.models.GroupRequest.create({
 					GroupId: groupId,
 					UserId: userId
-				}
-			});
-			if(dbExistingRequest) return common.getErrorResult('You have already requested to join this group.');
-
-			let dbNewGroupRequest = await this.models.GroupRequest.create({
-				GroupId: groupId,
-				UserId: userId
-			});
-
-			//TODO: Send user request notifiation to group admins
-
-			return mapper.fromDbGroupRequest(dbNewGroupRequest);
+				});
+	
+				//TODO: Send user request notifiation to group admins
+				return mapper.fromDbGroupRequest(dbNewGroupRequest);
+			}
 		}
 	}
-	async AcceptRequestToJoin(groupRequestId) {
+	async ActionGroupRequest(groupId, groupRequestId, isApproving = false) {
 		let dbPendingGroupRequest = await this.models.GroupRequest.findOne({
 			where: {
 				...this._GetPendingGroupRequestWhere(),
+				GroupId: groupId, //CRUCIAL - this is what we checked permissions on
 				GroupRequestId: groupRequestId,
 				DeniedAt: {
 					[Sequelize.Op.eq]: null
 				}
 			}
 		});
-		
-		if(!dbPendingGroupRequest) throw 'Invalid request';
+		if(!dbPendingGroupRequest) throw 'Invalid pending group request';
 
-		//Approve the request first, in case the below fails (don't want it stuck in limbo, would rather keep making requests)
-		dbPendingGroupRequest.ApprovedAt = new Date();
-		dbPendingGroupRequest.save();
+		if(isApproving) {
+			//Approve the request first, in case the below fails
+			dbPendingGroupRequest.ApprovedAt = new Date();
+			await dbPendingGroupRequest.save();
 
-		//Add them to the group (even if already in it, the request will be gone)
-		return await this.AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
-	}
-	async DenyRequestToJoin(groupRequestId) {
-		
+			return await this.AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
+			//TODO notify user of accepted
+		} else {
+			dbPendingGroupRequest.DeniedAt = new Date();
+			await dbPendingGroupRequest.save();
+		}
 	}
 	async InviteToGroupByUsername(fromUserId, username, groupId) {
 		let group = await this.GetById(groupId); //Also used for notification below
@@ -350,6 +368,31 @@ export default class GroupService extends Service {
 		this.services.Notification.SendGroupInviteNotification(dbUser.UserId, group.name);
 		
 		return;
+	}
+	async ActionGroupInvite(userId, groupInviteId, isAccepting = false) {
+		let dbPendingGroupInvite = await this.models.GroupInvite.findOne({
+			where: {
+				...this._GetPendingGroupInviteWhere(),
+				UserId: userId, //CRUCIAL - this is what we checked permissions on
+				GroupInviteId: groupInviteId,
+				DeclinedAt: {
+					[Sequelize.Op.eq]: null
+				}
+			}
+		});
+		if(!dbPendingGroupInvite) throw 'Invalid pending group invite';
+
+		if(isAccepting) {
+			//Accept the invite first, in case below fails
+			dbPendingGroupInvite.AcceptedAt = new Date();
+			dbPendingGroupInvite.save();
+
+			return await this.AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
+			//TODO notify admins of join
+		} else {
+			dbPendingGroupInvite.DeclinedAt = new Date();
+			await dbPendingGroupInvite.save();
+		}
 	}
 	async SaveGroup(userId, group) {
 		let isValidName = validator.isLength(group.name, { min: 3, max: 20 });
@@ -385,8 +428,8 @@ export default class GroupService extends Service {
 	}
 	async AddUserToGroup(userId, groupId, isGroupAdmin = false) {
 		//Check if user is already part of group
-		let dbExistingUser = await this.DbGetGroupUser(userId, groupId);
-		if(dbExistingUser) throw 'User is already in group';
+		let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
+		if(dbExistingGroupUser) throw 'User is already in group';
 
 		let dbNewGroupUser = await this.models.GroupUser.create({
 			UserId: userId,
@@ -403,22 +446,18 @@ export default class GroupService extends Service {
 		//Note: notifications should not happen here, as its used by various means of adding
 		return mapper.fromDbGroupUser(dbNewGroupUser);
 	}
-	async RemoveUserFromGroup(groupUserId) {
-		let dbGroupUser = await this.models.GroupUser.findOne({
+	async RemoveUserFromGroup(userId, groupId) {
+		//Make sure user is part of group
+		let dbGroupUser = await this.DbGetGroupUser(userId, groupId);
+		if(!dbGroupUser) return; // No need to error, could have been removed at the same time as leaving
+			
+		await dbGroupUser.destroy();
+
+		await this.models.Group.decrement('MemberCount', {
 			where: {
-				GroupUserId: groupUserId
+				GroupId: groupId
 			}
 		});
-
-		if(dbGroupUser) {
-			await this.models.Group.decrement('MemberCount', {
-				where: {
-					GroupId: dbGroupUser.GroupId
-				}
-			});
-
-			await dbGroupUser.destroy();
-		}
 	}
 	async SaveAvatarUrl(userId, groupId, avatarUrl) {
 		await this.models.Group.update({

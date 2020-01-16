@@ -107,7 +107,7 @@ class GroupList extends Component {
 		this.props.openModal({
 			type: Util.enums.ModalType.Confirm,
 			title: 'Leave group',
-			content: <p>Are you sure you want to leave the group "{group.name}"?</p>,
+			content: <p className="center">Are you sure you want to leave the group <b>{group.name}</b>?</p>,
 			yesLabel: 'Yes, leave group',
 			noLabel: 'Cancel',
 			yesFn: () => {

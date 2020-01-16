@@ -7,17 +7,13 @@
 		}
 	}
 
-	.pending-info-heading {
-		text-align: left;
-		margin-bottom: $spacing-sm;
-	}
+	.group-pending-info {
+		.group-pending-info-heading {
+			text-align: left;
+			margin-bottom: $spacing-sm;
+		}
 
-	.empty-text {
-		text-align: left;
-	}
-
-	.group-invites {
-		.group-invite {
+		.group-pending-info-item {
 			display: flex;
 			flex-direction: row;
 			align-items: flex-start;
@@ -26,19 +22,23 @@
 				margin-bottom: $spacing-sm;
 			}
 
-			.group-invite-detail {
+			.item-details {
 				flex: 1;
 				margin: 0 $spacing-xs;
 
-				.group-name {
+				.item-name {
 					margin-bottom: $spacing-xxs;
 					font-weight: bold;
 				}
 
-				.group-invited-by {
+				.item-subtitle {
 					margin: 0;
 				}
 			}
+		}
+
+		.empty-text {
+			text-align: left;
 		}
 	}
 }

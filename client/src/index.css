@@ -625,12 +625,14 @@ body {
         body .app-container .app .modal .modal-content {
           padding: 8px; }
         body .app-container .app .modal.modal-confirm {
-          max-width: 500px; }
+          max-width: 400px; }
           body .app-container .app .modal.modal-confirm .button-container {
+            margin-top: 16px;
             justify-content: flex-end; }
         body .app-container .app .modal.modal-alert {
           max-width: 300px; }
           body .app-container .app .modal.modal-alert .button-container {
+            margin-top: 16px;
             justify-content: center; }
         body .app-container .app .modal.modal-share-comic {
           max-width: 300px; }
@@ -1232,25 +1234,25 @@ body {
         margin-bottom: 16px;
         padding-bottom: 16px;
         border-bottom: 1px solid #efefef; }
-      body .app-container .app .group-pending-info-user .pending-info-heading {
+      body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-heading {
         text-align: left;
         margin-bottom: 16px; }
-      body .app-container .app .group-pending-info-user .empty-text {
-        text-align: left; }
-      body .app-container .app .group-pending-info-user .group-invites .group-invite {
+      body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-item {
         display: flex;
         flex-direction: row;
         align-items: flex-start; }
-        body .app-container .app .group-pending-info-user .group-invites .group-invite:not(:last-child) {
+        body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-item:not(:last-child) {
           margin-bottom: 16px; }
-        body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail {
+        body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-item .item-details {
           flex: 1;
           margin: 0 8px; }
-          body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail .group-name {
+          body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-item .item-details .item-name {
             margin-bottom: 4px;
             font-weight: bold; }
-          body .app-container .app .group-pending-info-user .group-invites .group-invite .group-invite-detail .group-invited-by {
+          body .app-container .app .group-pending-info-user .group-pending-info .group-pending-info-item .item-details .item-subtitle {
             margin: 0; }
+      body .app-container .app .group-pending-info-user .group-pending-info .empty-text {
+        text-align: left; }
       body .app-container .app .page-comic .comic-area {
         min-height: 40px;
         position: relative;

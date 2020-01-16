@@ -396,10 +396,6 @@ export default {
 
 		},
 
-		removeGroupChallenge: async(req, services) => {
-
-		},
-
 		inviteUserToGroup: async (req, services) => {
 			let userId = req.userId;
 			let memberOfGroupIds = req.memberOfGroupIds;
@@ -423,6 +419,40 @@ export default {
 			if(memberOfGroupIds.includes(groupId)) throw 'Already a group member';
 			
 			return await services.Group.JoinGroup(userId, groupId);
+		},
+
+		actionGroupRequest: async (req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+			
+			let groupId = req.body.groupId;
+			
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			let groupRequestId = req.body.groupRequestId;
+			let isApproving = req.body.isApproving;
+
+			return await services.Group.ActionGroupRequest(groupId, groupRequestId, isApproving);
+		},
+
+		//Does not need group permissions but currently will remain here for cleanliness
+		actionGroupInvite: async (req, services) => {
+			let userId = req.userId;
+
+			let groupInviteId = req.body.groupInviteId;
+			let isAccepting = req.body.isAccepting;
+
+			return await services.Group.ActionGroupInvite(userId, groupInviteId, isAccepting);
+		},
+
+		leaveGroup: async (req, services) => {
+			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
+			
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			return await services.Group.RemoveUserFromGroup(userId, groupId);
 		}
 	}
 };
