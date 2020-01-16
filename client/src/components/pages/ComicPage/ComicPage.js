@@ -117,7 +117,6 @@ export default class ComicPage extends Component {
 				</div>
 			</div>
 		}
-		
 
 		return <div className="page-comic">
 			<div className="panel-standard">

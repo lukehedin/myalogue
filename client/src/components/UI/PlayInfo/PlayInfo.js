@@ -10,8 +10,7 @@ export default class PlayInfo extends Component {
 
 		this.state = {
 			comicsInProgress: {},
-			previousComicsInProgress: {},
-			lastComicStartedAt: null
+			previousComicsInProgress: {}
 		};
 
 		this.playInfoInterval = null;
@@ -28,8 +27,7 @@ export default class PlayInfo extends Component {
 				if(!result.error) {
 					this.setState({
 						comicsInProgress: result.comicsInProgress,
-						previousComicsInProgress: this.state.comicsInProgress,
-						lastComicStartedAt: result.lastComicStartedAt
+						previousComicsInProgress: this.state.comicsInProgress
 					});
 				}
 					
@@ -46,15 +44,6 @@ export default class PlayInfo extends Component {
 			{Util.context.isAuthenticated()
 				? <p className="sm">(you've made panels for <b>{this.state.comicsInProgress.myComicsInProgressCount ? <CountUp start={this.state.previousComicsInProgress.myComicsInProgressCount || 0} end={this.state.comicsInProgress.myComicsInProgressCount} /> : 'none'}</b> of them)</p>
 				: <p className="sm">(<CountUp start={this.state.previousComicsInProgress.anonComicsInProgressCount || 0} end={this.state.comicsInProgress.anonComicsInProgressCount || 0} /> anonymous)</p>
-			}
-			{Util.context.isAuthenticated()
-				? <div className="start-new-info">
-					{!this.state.lastComicStartedAt || moment.duration(moment(this.state.lastComicStartedAt).diff(now)).asHours() <= 6
-						? <p className="sm">You can <Link to={Util.route.home()}>start a new comic</Link> now!</p>
-						: <p className="sm">You can start a new comic in {moment(this.state.lastComicStartedAt).fromNow()}</p>
-					}
-				</div>
-				: null
 			}
 		</div>
 	}

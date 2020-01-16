@@ -24,15 +24,30 @@
 			}
 		}
 
-		.group-description {
-			overflow-wrap: break-word;
-			white-space: pre-line;
-			font-size: 14px;
+		.group-details {
+			.group-description {
+				overflow-wrap: break-word;
+				white-space: pre-line;
+				font-size: 14px;
+			}
+
+			.group-actions {
+				display: flex;
+				flex-direction: row;
+
+				.switch {
+					max-width: 150px;
+				}
+			}
 		}
 
 		.member-list {
 			display: flex;
 			flex-direction: column;
+
+			.invite-bar {
+				margin-bottom: $spacing-sm;
+			}
 	
 			.member-list-item {
 				display: flex;
@@ -45,6 +60,10 @@
 				.member-list-item-detail {
 					margin-left: $spacing-xs;
 					flex: 1;
+					
+					.username {
+						text-align: left;
+					}
 				}
 			}
 		}

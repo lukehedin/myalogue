@@ -128,7 +128,7 @@ export default class NotificationButton extends Component {
 						: null;
 
 					if(!link && notification.type === Util.enums.NotificationType.AchievementUnlocked) {
-						link = Util.route.profile(Util.context.getUsername(), 'achievements')
+						link = Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'achievements' })
 					}
 
 					let className = `notification ${notification.isActionable ? 'actionable' : ''} ${link ? 'linked' : ''}`;

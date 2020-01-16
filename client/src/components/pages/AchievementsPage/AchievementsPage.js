@@ -26,7 +26,7 @@ export default class AchievementsPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">Achievements</h1>
-						<p className="page-subtitle">A list containing each achievement along with the percent of users who have unlocked it. {Util.context.isAuthenticated() ? <span>For your own achievements, <Link to={Util.route.profile(Util.context.getUserId(), 'achievements')}>visit your profile</Link>.</span> : <span>To start unlocking achievements, <Link to={Util.route.register()}>create an account</Link>.</span>}</p>
+						<p className="page-subtitle">A list containing each achievement along with the percent of users who have unlocked it. {Util.context.isAuthenticated() ? <span>For your own achievements, <Link to={Util.route.withQueryParams(Util.route.profile(Util.context.getUserId()), { tabId: 'achievements' })}>visit your profile</Link>.</span> : <span>To start unlocking achievements, <Link to={Util.route.register()}>create an account</Link>.</span>}</p>
 						<div className="achievements">
 							{this.state.isLoading
 								? <div className="loader"></div>

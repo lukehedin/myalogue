@@ -31,44 +31,6 @@
 				}
 			}
 
-			.user-stats {
-				> * {
-					&:not(:last-child) {
-						border-bottom: 1px solid $colour-grey-b;
-						padding-bottom: $spacing-sm;
-					}
-					&:not(:first-child) {
-						padding-top: $spacing-sm;
-					}
-				}
-
-				.user-stats-row {
-					display: flex;
-					flex-direction: row;
-
-					.user-stat {
-						flex: 1;
-					}
-				}
-					
-				.user-stat {
-
-					@include allHeadings {
-						text-align: center;
-					}
-
-					h5 {
-						color: $colour-grey-e;
-					}
-
-					> * {
-						&:not(:first-child) {
-							margin-top: $spacing-xs;
-						}
-					}
-				}
-			}
-
 			.template-usage-table {
 				border-collapse:collapse;
 

@@ -78,16 +78,12 @@ export default {
 
 		getPlayInfo: async (req, services) => {
 			let userId = req.userId; //Might be null
-			
-			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
-			let lastComicStartedAt = null;
-			if (userId) {
-				lastComicStartedAt = await services.User.GetLastComicStartedAt(userId);
-			}
 
+			let comicsInProgress = await services.Comic.GetComicsInProgress(userId);
+
+			//Can hold additional play info
 			return {
-				comicsInProgress,
-				lastComicStartedAt
+				comicsInProgress
 			}
 		},
 
@@ -177,14 +173,16 @@ export default {
 		getGroup: async (req, services) => {
 			let groupId = req.body.groupId;
 
-			let group = await services.Group.GetById(groupId);
-			let groupUsers = await services.Group.GetGroupUsers(groupId);
-			let comicCount = await services.Group.GetGroupComicCount(groupId);
+			let [group, groupUsers, groupStats] = await Promise.all([
+				await services.Group.GetById(groupId),
+				await services.Group.GetGroupUsers(groupId),
+				await services.Group.GetStatsForGroup(groupId)
+			]);
 
 			return {
-				...group,
+				group,
 				groupUsers,
-				comicCount
+				groupStats
 			};
 		},
 
@@ -206,11 +204,15 @@ export default {
 			let anonId = req.anonId;
 
 			let skippedComicId = req.body.skippedComicId;
-			let templateId = userId ? req.body.templateId : null; //Only use templateId if logged in
+
+			//Only use options if logged in
+			let templateId = userId ? req.body.templateId : null;
+			let groupId = userId ? req.body.groupId : null;
+			let groupChallengeId = userId ? req.body.groupChallengeId : null;
 
 			if(!userId && !anonId) throw 'No identity id supplied';
 
-			let playBundle = await services.Play.Play(userId, anonId, templateId);
+			let playBundle = await services.Play.Play(userId, anonId, templateId, groupId, groupChallengeId);
 			
 			//We process a skipped comic after the play so that our existing lock remains until after the above
 			//The await here is debatable, but it will ensure the skip is processed before another one comes through
@@ -320,11 +322,11 @@ export default {
 			return await services.User.ChangePassword(userId, currentPassword, newPassword);
 		},
 
-		getGroupRequests: async(req, services) => {
+		getPendingGroupInfoForUser: async(req, services) => {
 			//Returns a list of pending requests and invites
 			let userId = req.userId;
 			
-			return await services.Group.getGroupRequests(userId);
+			return await services.Group.GetPendingGroupInfoForUser(userId);
 		},
 
 		saveUserAvatar: async (req, services) => {
@@ -338,8 +340,6 @@ export default {
 		uploadUserAvatar: async (req, services) => {
 			let userId = req.userId;
 			let file = req.file;
-
-			console.log(file);
 
 			await services.User.SaveAvatarUrl(userId, file.url);
 
@@ -391,6 +391,49 @@ export default {
 			
 			let groupId = req.body.groupId;
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+
+		},
+
+		removeGroupChallenge: async(req, services) => {
+
+		},
+
+		setIsFollowingGroup: async(req, services) => {
+			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			let isFollowing = req.body.isFollowing;
+			
+			await services.Group.SetIsFollowingGroup(userId, groupId, isFollowing);
+		},
+
+		inviteUserToGroup: async (req, services) => {
+			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			let username = req.body.username;
+
+			return await services.Group.InviteToGroupByUsername(userId, username, groupId);
+		},
+
+		joinGroup: async (req, services) => {
+			let memberOfGroupIds = req.memberOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			//RARE: checking if we ARE NOT ALREADY in the group
+			if(memberOfGroupIds.includes(groupId)) throw 'Already a group member';
+			
+			await services.Group.JoinGroup(userId, groupId);
 		}
 	}
 };

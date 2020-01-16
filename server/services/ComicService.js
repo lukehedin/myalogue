@@ -406,6 +406,9 @@ export default class ComicService extends Service {
 		}, {
 			model: this.models.Group,
 			as: 'Group'
+		}, {
+			model: this.models.GroupChallenge,
+			as: 'GroupChallenge'
 		}];
 		
 		if(forUserId) {

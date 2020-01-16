@@ -26,7 +26,7 @@ export default class ComicInfoLabel extends Component {
 		}
 
 		return <div className="comic-info-label">
-			<p className={this.props.className || ''}>Completed {moment(this.props.comic.completedAt).fromNow()} with the <Link to={Util.route.template(template.templateId)}>{template.name}</Link> template.</p>
+			<p className={this.props.className || ''}>Completed {moment(this.props.comic.completedAt).fromNow()} using the <Link to={Util.route.template(template.templateId)}>{template.name}</Link> template.</p>
 			<p className={this.props.className || ''}>Panels by {authors.map((author, idx) => {
 					return author.anonCount
 						? <span key={idx}>{Util.format.pluralise(author.anonCount, 'an anonymous user', 'anonymous users')}</span>

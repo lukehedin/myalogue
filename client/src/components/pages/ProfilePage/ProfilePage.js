@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import CountUp from 'react-countup';
 import { Link } from 'react-router-dom';
 import Util from '../../../Util';
 import moment from 'moment';
@@ -9,6 +8,7 @@ import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import AchievementList from '../../UI/AchievementList/AchievementList';
 import GroupList from '../../UI/GroupList/GroupList';
+import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 
 //this.props.userIdOrUserName
 export default class ProfilePage extends Component {
@@ -79,25 +79,13 @@ export default class ProfilePage extends Component {
 										<TabbedPanels tabs={[{
 											tabId: 'details',
 											title: 'Details',
-											content: <div className="user-stats">
-												<div className="user-stat">
-													<h5>Total comic rating</h5>
-													<h1><CountUp end={this.state.userStats.comicTotalRating} /></h1>
-												</div>
-												<div className="user-stats-row">
-													<div className="user-stat">
-														<h2><CountUp end={this.state.userStats.panelCount} /></h2>
-														<h5>{Util.format.pluralise(this.state.userStats.panelCount, 'panel')}</h5>
-													</div>
-													<div className="user-stat">
-														<h2><CountUp end={this.state.userStats.comicCount} /></h2>
-														<h5>{Util.format.pluralise(this.state.userStats.comicCount, 'comic')}</h5>
-													</div>
-												</div>
-												<div className="user-stat">
-													<h5>Groups</h5>
-													<GroupList emptyText={`${this.state.user.username} isn't a member of any groups.`} forUserId={this.state.user.userId} />
-												</div>
+											content: <div className="user-details">
+												<StatsSummary 
+													totalRating={this.state.userStats.comicTotalRating} 
+													panelCount={this.state.userStats.panelCount}
+													comicCount={this.state.userStats.comicCount}
+												/>
+												<GroupList limit={5} emptyText={`${this.state.user.username} isn't a member of any groups.`} forUserId={this.state.user.userId} />
 											</div>
 										}, {
 											tabId: 'achievements',

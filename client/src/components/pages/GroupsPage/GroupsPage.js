@@ -4,7 +4,7 @@ import Util from '../../../Util';
 
 import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import GroupList from '../../UI/GroupList/GroupList';
-import GroupRequestsList from '../../UI/GroupRequestsList/GroupRequestsList';
+import GroupPendingInfo from '../../UI/GroupPendingInfo/GroupPendingInfo';
 
 export default class GroupsPage extends Component {
 	render() {
@@ -17,8 +17,8 @@ export default class GroupsPage extends Component {
 				content: <GroupList emptyText="You aren't a member of any groups." forUserId={Util.context.getUserId()} />
 			}, {
 				tabId: 'requests',
-				title: 'Requests',
-				content: <GroupRequestsList />
+				title: 'Requests', //Also contains invites but this wording works
+				content: <GroupPendingInfo />
 			})
 		}
 
@@ -34,7 +34,7 @@ export default class GroupsPage extends Component {
 					<div className="row">
 						<div className="groups-page-inner">
 							<h1 className="page-title">Groups</h1>
-							<p className="page-subtitle"><Link to={Util.route.groupEditor()}>Create a new group</Link> or browse existing groups to join and make comics with other group members. Work together to get to the top of the <Link to={Util.route.leaderboards('groups')}>group leaderboard</Link>.</p>
+							<p className="page-subtitle"><Link to={Util.route.groupEditor()}>Create a new group</Link> or browse existing groups to join and make comics with other group members. Work together to get to the top of the <Link to={Util.route.withQueryParams(Util.route.leaderboards(), { tabId: 'groups' })}>group leaderboard</Link>.</p>
 							<TabbedPanels tabs={tabs} />
 						</div>
 					</div>

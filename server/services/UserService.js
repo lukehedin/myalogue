@@ -137,11 +137,9 @@ export default class UserService extends Service {
 		let dbExistingUser = await this.DbGetByUsernameEmailMatch(email, username);
 		
 		if(dbExistingUser) {
-			return { 
-				error: dbExistingUser.Email === email
+			return common.getErrorResult(dbExistingUser.Email === email
 					? 'Email is already in use. Please log in with your existing account or reset your password.'
-					: 'Username is already in use. Please choose another username.'
-			};
+					: 'Username is already in use. Please choose another username.');
 		}
 
 		//Check for disposable email
@@ -325,10 +323,6 @@ export default class UserService extends Service {
 
 		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
 	}
-	async GetLastComicStartedAt(userId) {
-		let dbUser = this.DbGetById(userId);
-		return dbUser ? dbUser.LastComicStartedAt : null;
-	}
 	async GetUserAchievements(userId) {
 		let dbUserAchievements = await this.models.UserAchievement.findAll({
 			where: {
@@ -353,8 +347,7 @@ export default class UserService extends Service {
 				CompletedAt: {
 					[Sequelize.Op.ne]: null
 				}
-			},
-			order: [[ 'Rating', 'DESC' ], ['CompletedAt', 'DESC']]
+			}
 		});
 
 		let dbComicVotes = await this.models.ComicVote.findAll({

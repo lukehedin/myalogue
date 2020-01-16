@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Util from '../../../Util';
+import Button from '../Button/Button';
+import GroupAvatar from '../GroupAvatar/GroupAvatar';
 
-export default class GroupRequestsList extends Component {
+export default class GroupPendingInfo extends Component {
 	constructor(props) {
 		super(props);
 
@@ -13,7 +16,7 @@ export default class GroupRequestsList extends Component {
 		};
 	}
 	componentDidMount() {
-		Util.api.post('/api/getGroupRequests')
+		Util.api.post('/api/getPendingGroupInfoForUser')
 			.then(groupInfo => {
 				this.setState({
 					isLoading: false,
@@ -46,7 +49,15 @@ export default class GroupRequestsList extends Component {
 			<div className="group-invites">
 				{this.state.invites.map(invite => {
 					return <div className="group-invite">
-						
+						<GroupAvatar group={invite.group} />
+						<div className="invite-detail">
+							<p className="group-name"><Link to={Util.route.group(invite.group.groupId)}>{invite.group.name}</Link></p>
+							<p className="invited-by"><Link to={Util.route.profile(invite.invitedByUser.username)}>{invite.invitedByUser.username}</Link> invited you to join.</p>
+						</div>
+						<div className="button-container direction-column">
+							<Button label="Accept" size="sm" />
+							<Button label="Decline" size="sm" isHollow={true} />
+						</div>
 					</div>
 				})}
 			</div>

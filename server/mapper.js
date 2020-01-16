@@ -34,6 +34,7 @@ const mapper = {
 			leaderboardRating: dbComic.LeaderboardRating,
 			groupId: dbComic.GroupId,
 			group: dbComic.Group ? mapper.fromDbGroup(dbComic.Group) : null,
+			groupChallenge: dbComic.GroupChallenge ? mapper.fromDbGroupChallenge(dbComic.GroupChallenge) : null,
 			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
@@ -123,8 +124,8 @@ const mapper = {
 	},
 
 	fromDbGroup: (dbGroup) => {
-		let pendingGroupUserRequestAt = dbGroup.GroupUserRequests && dbGroup.GroupUserRequests.length > 0
-			? dbGroup.GroupUserRequests[0].CreatedAt
+		let pendingGroupRequestAt = dbGroup.GroupRequests && dbGroup.GroupRequests.length > 0
+			? dbGroup.GroupRequests[0].CreatedAt
 			: null;
 
 		return {
@@ -134,7 +135,7 @@ const mapper = {
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
 			memberCount: dbGroup.MemberCount,
-			pendingGroupUserRequestAt: pendingGroupUserRequestAt,
+			pendingGroupRequestAt: pendingGroupRequestAt,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge)
 		}
@@ -154,6 +155,8 @@ const mapper = {
 			groupId: dbGroupUser.GroupId,
 			createdAt: dbGroupUser.CreatedAt,
 			isGroupAdmin: dbGroupUser.IsGroupAdmin,
+			isFollowing: true,
+			groupName: dbGroupUser.Group ? dbGroupUser.Group.Name : null,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}
 	},
@@ -167,8 +170,13 @@ const mapper = {
 
 	fromDbGroupInvite: (dbGroupInvite) => {
 		return {
-			group: dbGroupInvite.Group ? mapper.fromDbGroup(dbGroupInvite.Group) : null,
-			message: dbGroupInvite.Message
+			groupInviteId: dbGroupInvite.GroupInviteId,
+			groupId: dbGroupInvite.GroupId,
+			userId: dbGroupInvite.UserId,
+			createdAt: dbGroupInvite.CreatedAt,
+			message: dbGroupInvite.Message,
+			invitedByUser: dbGroupInvite.InvitedByUser ? mapper.fromDbUser(dbGroupInvite.InvitedByUser) : null,
+			group: dbGroupInvite.Group ? mapper.fromDbGroup(dbGroupInvite.Group) : null
 		}
 	},
 

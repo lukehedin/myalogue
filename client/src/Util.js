@@ -476,15 +476,15 @@ const Util = {
 		achievements: () => `/achievements`,
 		settings: () => `/settings`,
 		group: (groupId) => `/group/${groupId}`,
-		groups: (tabId) => `/groups` + (tabId ? `?tabId=${tabId}` : ``),
+		groups: () => `/groups`,
 		groupEditor: (groupId) => (groupId ? `/group-editor/${groupId}` : `/group-editor`),
 		templates: () => `/templates`,
 		template: (templateId) => templateId ? `/template/${templateId}` : `/template`,
 		comic: (comicId) => `/comic/${comicId}`,
-		leaderboards: (tabId) => `/leaderboards` + (tabId ? `?tabId=${tabId}` : ``),
+		leaderboards: () => `/leaderboards`,
 		login: () => `/login`,
 		howToPlay: () => `/how-to-play`,
-		profile: (userId, tabId) => (userId ? `/profile/${userId}` : `/profile`) + (tabId ? `?tabId=${tabId}` : ``),
+		profile: (userId) => (userId ? `/profile/${userId}` : `/profile`),
 		register: () => `/register`,
 		forgotPassword: () => `/forgot-password`,
 		setPassword: (token) => `/set-password/${token}`,
@@ -492,7 +492,18 @@ const Util = {
 		about: () => `/about`,
 		termsOfService: () => `/terms-of-service`,
 		privacyPolicy: () => `/privacy-policy`,
-		play: (templateId) => templateId ? `/play/${templateId}` : `/play`
+		play: () => `/play`,
+
+		withQueryParams: (route, queryParams) => {
+			let queryString = '';
+
+			Object.keys(queryParams).forEach(key => {
+				if(queryString !== '') queryString += '&';
+				queryString += key + '=' + queryParams[key]; 
+			});
+
+			return queryString ? `${route}?${queryString}` : route; 
+		}
 	},
 
 	random: {

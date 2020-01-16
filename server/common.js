@@ -64,7 +64,12 @@ export default {
 			ComicComment: 5, // valueInteger = number of OTHER commenters, valueString = latest commenter
 			PanelCensored: 6, // valueInteger = comicId, valueString = dialogue from reported panel
 			ComicCommentMention: 7, //valueString = name of user who tagged you
-			AchievementUnlocked: 8 //valueString = achievement name, valueInteger = achievmentType
+			AchievementUnlocked: 8, //valueString = achievement name, valueInteger = achievmentType
+
+			GroupRequest: 9, //For group admins
+			GroupRequestAccepted: 10,
+			GroupInvitation: 11,
+			GroupUserJoined: 12 //For group admins, public join OR invite accept
 		},
 
 		PanelGroupBehaviour: {
@@ -114,8 +119,8 @@ export default {
 		//The chance a new comic will be started instead of an existing game (1 in X, 0 for never)
 		ComicPlayNewChance: getIntegerEnvSettingOrDefault('COMIC_PLAY_NEW_CHANCE', 0),
 
-		//The length of time a group user request applies, before another can be made
-		GroupUserRequestDays: getIntegerEnvSettingOrDefault('TEAM_USER_REQUEST_DAYS', 7),
+		//The length of time a group user request OR INVITE applies, before another can be made
+		GroupRequestDays: getIntegerEnvSettingOrDefault('GROUP_REQUEST_DAYS', 7),
 
 		//The length of time a user is temporarily
 		UserTemporarilyBannedDays: getIntegerEnvSettingOrDefault('USER_TEMPORARILY_BANNED_DAYS', 2),

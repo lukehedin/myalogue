@@ -1,0 +1,41 @@
+.stats-summary {
+	&:not(:last-child) {
+		margin-bottom: $spacing-md;
+	}
+	
+	> * {
+		&:not(:last-child) {
+			border-bottom: 1px solid $colour-grey-a;
+			padding-bottom: $spacing-sm;
+		}
+		&:not(:first-child) {
+			padding-top: $spacing-sm;
+		}
+	}
+
+	.stats-row {
+		display: flex;
+		flex-direction: row;
+
+		.stat {
+			flex: 1;
+		}
+	}
+		
+	.stat {
+
+		@include allHeadings {
+			text-align: center;
+		}
+
+		h5 {
+			color: $colour-grey-e;
+		}
+
+		> * {
+			&:not(:first-child) {
+				margin-top: $spacing-xs;
+			}
+		}
+	}
+}

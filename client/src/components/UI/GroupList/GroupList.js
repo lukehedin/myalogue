@@ -18,7 +18,7 @@ export default class GroupList extends Component {
 			sortBy: this.props.sortBy || Util.enums.GroupSortBy.Popular,
 			search: '',
 			
-			limit: 10,
+			limit: this.props.limit || 20,
 			offset: 0,
 
 			groups: [],
@@ -105,7 +105,7 @@ export default class GroupList extends Component {
 			label: 'Popular'
 		}, {
 			type: Util.enums.GroupSortBy.Alphabetical,
-			label: 'Alphabetical'
+			label: 'A to Z'
 		}];
 
 		if(!Util.context.isUserId(this.props.forUserId)) {
@@ -141,7 +141,7 @@ export default class GroupList extends Component {
 						return <div key={group.groupId} className="group-list-item">
 							<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
 							<div className="group-details">
-								<Link className="group-name" to={Util.route.group(group.groupId)}>{group.name}</Link>
+								<p className="group-name"><Link to={Util.route.group(group.groupId)}>{group.name}</Link></p>
 								{!this.props.hideDescription && group.description
 									? <HTMLEllipsis
 										className="description"
@@ -152,7 +152,10 @@ export default class GroupList extends Component {
 									/>
 									: null
 								}
-								<p className="group-bottom sm">{group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
+								<div className="group-bottom">
+									<p className="sm">{group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
+									{Util.context.isGroupAdmin(group.groupId) ? <p className="group-bottom sm">You are an admin of this group</p> : null}
+								</div>
 							</div>
 						</div>
 					})

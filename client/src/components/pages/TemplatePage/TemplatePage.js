@@ -67,7 +67,7 @@ export default class TemplatePage extends Component {
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
 						<h1 className="page-title template-name">{this.state.template.name}</h1>
 						<div className="play-template button-container">
-							<Button label="Play with this template" colour="pink" to={Util.route.play(this.state.template.templateId)} />
+							<Button label="Play using this template" colour="pink" to={Util.route.withQueryParams(Util.route.play(), { templateId: this.state.template.templateId })} />
 						</div>
 						<div className="top-comic-container">
 							{this.state.isLoading

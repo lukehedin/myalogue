@@ -15,12 +15,23 @@ export default class PlayPage extends Component {
 	constructor(props) {
 		super(props);
 
+		let urlParams = new URLSearchParams(window.location.search);
+
+		let templateId = Util.context.isAuthenticated() ? urlParams.get('templateId') : null;
+		let groupId = Util.context.isAuthenticated() ? urlParams.get('groupId') : null;
+		let groupChallengeId = Util.context.isAuthenticated() ? urlParams.get('groupChallengeId') : null;
+
 		this.state = {
 			isLoading: true,
 			error: null,
 			isPlaying: false,
 			isSubmitted: false,
 			redirectToComicId: null,
+
+			//Play options
+			templateId: templateId ? parseInt(templateId) : null,
+			groupId: groupId ? parseInt(groupId) : null,
+			groupChallengeId: groupChallengeId ? parseInt(groupChallengeId) : null,
 
 			// Play data
 			comicId: null,
@@ -35,13 +46,21 @@ export default class PlayPage extends Component {
 		this.submitComicPanel = this.submitComicPanel.bind(this);
 		this.onDialogueChange = this.onDialogueChange.bind(this);
 		this.resetPlayData = this.resetPlayData.bind(this);
+		this.clearOptions = this.clearOptions.bind(this);
 	}
 	componentDidMount() {
-		this.playNew(null, this.props.templateId, this.props.token);
+		this.playNew(null);
 	}
 	onDialogueChange(value) {
 		this.setState({
 			dialogue: value
+		});
+	}
+	clearOptions() {
+		this.setState({
+			templateId: null,
+			groupId: null,
+			groupChallengeId: null
 		});
 	}
 	resetPlayData() {
@@ -57,7 +76,7 @@ export default class PlayPage extends Component {
 			totalPanelCount: null
 		}, Util.selector.getRootScrollElement().scrollTo(0, 0));
 	}
-	playNew(skippedComicId, templateId, token) {
+	playNew(skippedComicId) {
 		this.resetPlayData();
 		this.setState({
 			isLoading: true
@@ -66,8 +85,10 @@ export default class PlayPage extends Component {
 		Util.api.post('/api/play', {
 			// all optional
 			skippedComicId: skippedComicId,
-			templateId: templateId,
-			token: token
+			
+			templateId: this.state.templateId,
+			groupId: this.state.groupId,
+			groupChallengeId: this.state.groupChallengeId
 		})
 		.then(result => {
 			if(!result.error) {
@@ -125,8 +146,15 @@ export default class PlayPage extends Component {
 		});
 	}
 	render() {
-		if(this.state.redirectToComicId) return <Redirect to={Util.route.comic(this.state.redirectToComicId)} />;
-		if(this.props.templateId && !Util.context.isAuthenticated()) return <Redirect to={Util.route.register()} />;
+		let hasOptions = this.state.templateId || this.state.groupId || this.state.groupChallengeId;
+		if(this.state.redirectToComicId) {
+			let queryParams = {};
+			if(this.state.templateId) queryParams.templateId = this.state.templateId;
+			if(this.state.groupId) queryParams.groupId = this.state.groupId;
+			if(this.state.groupChallengeId) queryParams.groupChallengeId = this.state.groupChallengeId;
+			return <Redirect to={Util.route.withQueryParams(Util.route.comic(this.state.redirectToComicId), queryParams)} />;
+			//TODO, if i complete a comic, make the play button on the comic page continue with these options
+		}
 		let content = null;
 
 		if(this.state.isLoading) {
@@ -180,7 +208,7 @@ export default class PlayPage extends Component {
 			//Not in progress, must have submitted or ran out of time
 			content = <div className="play-area">
 				{this.state.isSubmitted 
-					 ?<div>
+					 ? <div>
 						<h1 className="page-title">Panel created!</h1>
 						{Util.context.isAuthenticated()
 							? <p className="center">Your created a panel for <Link to={Util.route.comic(this.state.comicId)}>comic #{this.state.comicId}</Link>. You'll get a notification when your comic is completed.</p>
@@ -207,9 +235,24 @@ export default class PlayPage extends Component {
 						</ul>
 					</div>
 				}
-				<div className="end-buttons button-container">
-					<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
-					<Button colour="black" label="Back to home" size="md" to={Util.route.home()} />
+				<div className="button-container direction-column play-actions">
+				<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
+					{/* TODO This sentence is perfect because you have the team and template id but not the challenge, so forget that. */}
+					{hasOptions
+						? <p className="sm game-settings">Playing {this.state.groupChallengeId 
+							? <span> (with a challenge)</span> 
+							: ''}{this.state.groupId 
+								? <span> with the group <Link to={Util.route.group(this.state.groupId)}>{Util.context.getGroupUserByGroupId(this.state.groupId).groupName}</Link></span>
+								: ''}{this.state.templateId 
+									? <span> using the template <Link to={Util.route.template(this.state.templateId)}>"{Util.context.getTemplateById(this.state.templateId).name}</Link>"</span> 
+									: ''}.</p>
+						: null
+					}
+					{hasOptions
+						? <Button colour="pink" isHollow={true} label="Switch to regular play" size="md" onClick={this.clearOptions} />
+						: null
+					}
+					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />
 				</div>
 				<TipStrip />
 			</div>

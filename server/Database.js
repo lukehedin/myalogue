@@ -71,11 +71,11 @@ export default class Database {
 			});
 		};
 		
-		const getBoooleanNotNull = () => {
+		const getBoooleanNotNull = (defaultValue = false) => {
 			return {
 				type: Sequelize.BOOLEAN,
 				allowNull: false,
-				defaultValue: false
+				defaultValue: defaultValue
 			};
 		};
 		const getIntegerNotNull = (defaultValue = 0) => {
@@ -111,7 +111,6 @@ export default class Database {
 			BannedReason: Sequelize.STRING,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
-			LastComicStartedAt: Sequelize.DATE,
 			GroupInviteToken: Sequelize.STRING
 		}, true);
 
@@ -144,7 +143,8 @@ export default class Database {
 		}, true);
 
 		defineTable('GroupUser', {
-			IsGroupAdmin: getBoooleanNotNull()
+			IsGroupAdmin: getBoooleanNotNull(),
+			IsFollowing: getBoooleanNotNull(true)
 		}, true);
 
 		defineTable('GroupRequest', {

@@ -60,23 +60,37 @@ export default class PlayService extends Service {
 		let dbTemplate = dbLatestTemplates[common.getRandomInt(startIdx, dbLatestTemplates.length - 1)];
 
 		//By this point we have already made sure the user is in the group, but we must validate the challenge if provided
-		if(groupChallengeId) {
-			let dbGroupChallenge = await this.models.GroupChallenge.findOne({
-				where: {
-					GroupId: groupId,
-					GroupChallengeId: groupChallengeId
-				}
-			});
+		if(groupId) {
+			if(groupChallengeId) {
+				let dbGroupChallenge = await this.models.GroupChallenge.findOne({
+					where: {
+						GroupId: groupId,
+						GroupChallengeId: groupChallengeId
+					}
+				});
+	
+				//Challenge not found, bail out
+				if(!dbGroupChallenge) groupChallengeId = null;
+			} else {
+				let dbGroupChallenges = await this.models.GroupChallenge.findAll({
+					where: {
+						GroupId: groupId
+					},
+					limit: 1,
+					order: [Sequelize.fn('RANDOM')]
+				});
 
-			//Challenge not found, bail out
-			if(!dbGroupChallenge) groupChallengeId = null;
+				if(dbGroupChallenges.length > 0) groupChallengeId = dbGroupChallenges[0].GroupChallengeId;
+			}
 		}
 
-		//Create a new comic with this template
+		//Create a new comic with these properties
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
+			
 			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
 			IsAnonymous: !userId,
+
 			GroupId: groupId,
 			GroupChallengeId: groupChallengeId
 		});
@@ -172,6 +186,9 @@ export default class PlayService extends Service {
 			include: [{ //Don't return comments, ratings, etc for this one, just panels
 				model: this.models.ComicPanel,
 				as: 'ComicPanels'
+			}, {
+				model: this.models.GroupChallenge,
+				as: 'GroupChallenge'
 			}],
 			order: [Sequelize.fn('RANDOM')] //Would be better if this also pushed groups to the front, but struggling to find out how
 		});
@@ -273,13 +290,17 @@ export default class PlayService extends Service {
 		dbComic.NextTemplatePanelId = dbTemplatePanel.TemplatePanelId;
 
 		await dbComic.save();
-
+		
 		return {
 			comicId: dbComic.ComicId,
 			templatePanelId: dbComic.NextTemplatePanelId,
 
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,
+
+			challenge: dbComic.GroupChallenge
+				? dbComic.GroupChallenge.challenge
+				: null,
 
 			currentComicPanel: currentComicPanel 
 				? mapper.fromDbComicPanel(currentComicPanel) 
