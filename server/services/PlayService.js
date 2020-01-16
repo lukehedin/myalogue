@@ -84,7 +84,7 @@ export default class PlayService extends Service {
 			}
 		}
 
-		//Create a new comic with these properties
+		//Create a new comic with these properties, and have it locked right away
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
 			
@@ -92,7 +92,12 @@ export default class PlayService extends Service {
 			IsAnonymous: !userId,
 
 			GroupId: groupId,
-			GroupChallengeId: groupChallengeId
+			GroupChallengeId: groupChallengeId,
+
+			//Important- without this, a user may pick up the comic before it's prepared for play
+			LockedAt: new Date(),
+			LockedByUserId: userId,
+			LockedByAnonId: anonId
 		});
 
 		return await this.PrepareDbComicForPlay(userId, anonId, dbNewComic);
@@ -179,7 +184,7 @@ export default class PlayService extends Service {
 			};
 		}
 
-		//Get random incomplete comic
+		//Try to find a random incomplete comic
 		let randomDbComics = await this.models.Comic.findAll({
 			limit: 1,
 			where: comicWhere,
@@ -190,29 +195,48 @@ export default class PlayService extends Service {
 				model: this.models.GroupChallenge,
 				as: 'GroupChallenge'
 			}],
-			order: [Sequelize.fn('RANDOM')] //Would be better if this also pushed groups to the front, but struggling to find out how
+			//Might be better if this also pushed groups to the front
+			order: [Sequelize.fn('RANDOM')]
 		});
 
-		if(randomDbComics && randomDbComics.length === 1) {
-			//We found a comic, prepare it for play
-			return await this.PrepareDbComicForPlay(userId, anonId, randomDbComics[0]);
-		} else {
-			//No comics found, make a new one
+		if(!randomDbComics || randomDbComics.length === 0) {
+			//No incomplete comics found, make a new one
 			return await this.CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId);
+		} else {
+			let dbComic = randomDbComics[0];
+
+			//Before anything else: Lock the comic!
+			//We specifically do an update that AGAIN checks the lock status, because it MIGHT have changed
+			//Below, we check affectedRows and if this comic was not affected, it WAS LOCKED!
+			let [affectedRows] = await this.models.Comic.update({
+				LockedAt: new Date(),
+				LockedByUserId: userId,
+				LockedByAnonId: anonId
+			}, {
+				returning: true,
+				where: {
+					ComicId: dbComic.ComicId,
+					LockedAt: {
+						[Sequelize.Op.or]: {
+							[Sequelize.Op.lte]: this._GetComicLockWindow(),
+							[Sequelize.Op.eq]: null
+						}
+					}
+				}
+			});
+
+			if(affectedRows !== 1) {
+				//Recursion!
+				console.log('Comic aquired a lock already (attempted locking by user ID:' + userId + '), finding another instead.');
+				return await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
+			} else {
+				//We have locked the comic, prepare it for play
+				return await this.PrepareDbComicForPlay(userId, anonId, dbComic);
+			}
 		}
 	}
 	async PrepareDbComicForPlay(userId, anonId, dbComic) {
-		// Once a dbComic has been found or created, this function is called to prepare it for play.
-
-		//FIRST: Lock the comic- even if something goes wrong below the lock will expire.
-		dbComic.LockedAt = new Date();
-		if(userId) {
-			dbComic.LockedByUserId = userId;
-		} else {
-			dbComic.LockedByAnonId = anonId;
-		}
-		await dbComic.save();
-		
+		// Once a dbComic has been found or created AND IS LOCKED, this function is called to prepare it for play.
 		let completedComicPanels = dbComic.ComicPanels || [];
 		let currentComicPanel = completedComicPanels.length > 0
 			? completedComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[completedComicPanels.length - 1]

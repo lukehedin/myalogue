@@ -239,17 +239,16 @@ export default class PlayPage extends Component {
 				<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
 					{/* TODO This sentence is perfect because you have the team and template id but not the challenge, so forget that. */}
 					{hasOptions
-						? <p className="sm game-settings">Playing {this.state.groupChallengeId 
+						? <div className="play-options">
+							<p className="sm">Playing {this.state.groupChallengeId 
 							? <span> (with a challenge)</span> 
 							: ''}{this.state.groupId 
 								? <span> with the group <Link to={Util.route.group(this.state.groupId)}>{Util.context.getGroupUserByGroupId(this.state.groupId).groupName}</Link></span>
 								: ''}{this.state.templateId 
 									? <span> using the template <Link to={Util.route.template(this.state.templateId)}>"{Util.context.getTemplateById(this.state.templateId).name}</Link>"</span> 
 									: ''}.</p>
-						: null
-					}
-					{hasOptions
-						? <Button colour="pink" isHollow={true} label="Switch to regular play" size="md" onClick={this.clearOptions} />
+							<Button size="sm" colour="pink" isHollow={true} label="Switch to regular play" onClick={this.clearOptions} />
+						</div>
 						: null
 					}
 					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />

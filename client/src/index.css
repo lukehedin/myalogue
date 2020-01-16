@@ -1371,6 +1371,11 @@ body {
           -moz-box-shadow: 6px 6px 6px #00000016; }
         body .app-container .app .page-play .play-area .play-actions {
           margin-top: 16px; }
+        body .app-container .app .page-play .play-area .play-options {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 16px; }
         body .app-container .app .page-play .play-area .start-help {
           margin-top: 64px;
           color: #969696; }
