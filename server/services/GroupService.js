@@ -314,10 +314,8 @@ export default class GroupService extends Service {
 			where: {
 				...this._GetPendingGroupRequestWhere(),
 				GroupId: groupId, //CRUCIAL - this is what we checked permissions on
-				GroupRequestId: groupRequestId,
-				DeniedAt: {
-					[Sequelize.Op.eq]: null
-				}
+				GroupRequestId: groupRequestId
+				//We include requests that may have been denied (as long as theyre in the timeframe)
 			}
 		});
 		if(!dbPendingGroupRequest) throw 'Invalid pending group request';
@@ -356,16 +354,31 @@ export default class GroupService extends Service {
 		});
 		if(dbExistingGroupInvite) return common.getErrorResult(`${username} has already been invited.`);
 
-		//If all checks ok, send invite
-		await this.models.GroupInvite.create({
-			UserId: dbUser.UserId,
-			GroupId: groupId,
-			InvitedByUserId: fromUserId
+		//Check if they have already requested to join
+		let dbExistingGroupRequest = await this.models.GroupRequest.findOne({
+			where: {
+				...this._GetPendingGroupRequestWhere,
+				GroupId: groupId,
+				UserId: dbUser.UserId
+				//We include requests that may have been denied (as long as theyre in the timeframe)
+			}
 		});
 
-		this.services.Notification.SendGroupInviteNotification(dbUser.UserId, group.name);
-		
-		return;
+		if(dbExistingGroupRequest) {
+			//If we're inviting someone who has already requested, just approve the request
+			return await this.ActionGroupRequest(groupId, dbExistingGroupRequest.GroupRequestId, true);
+		} else {
+			//If all checks ok, send invite
+			await this.models.GroupInvite.create({
+				UserId: dbUser.UserId,
+				GroupId: groupId,
+				InvitedByUserId: fromUserId
+			});
+
+			this.services.Notification.SendGroupInviteNotification(dbUser.UserId, group.name);
+
+			return;
+		}
 	}
 	async ActionGroupInvite(userId, groupInviteId, isAccepting = false) {
 		let dbPendingGroupInvite = await this.models.GroupInvite.findOne({

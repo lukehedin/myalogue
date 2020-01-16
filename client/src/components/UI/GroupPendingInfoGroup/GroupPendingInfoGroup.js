@@ -7,6 +7,7 @@ import Util from '../../../Util';
 
 import UserAvatar from '../UserAvatar/UserAvatar';
 import ContextMenu from '../ContextMenu/ContextMenu';
+import ButtonInput from '../../UI/ButtonInput/ButtonInput';
 
 class GroupPendingInfoGroup extends Component {
 	constructor(props) {
@@ -16,11 +17,14 @@ class GroupPendingInfoGroup extends Component {
 			isLoading: true,
 
 			groupRequests: null,
-			groupInvites: null
+			groupInvites: null,
+
+			inviteResult: null, //Feedback message when a user is invited in member list
 		};
 
 		this.approveGroupRequest = this.approveGroupRequest.bind(this);
 		this.denyGroupRequest = this.denyGroupRequest.bind(this);
+		this.inviteUserToGroup = this.inviteUserToGroup.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getPendingGroupInfoForGroup', {
@@ -34,6 +38,34 @@ class GroupPendingInfoGroup extends Component {
 				groupInvites: groupInfo.groupInvites
 			});
 		});
+	}
+	inviteUserToGroup(value) {
+		this.setState({
+			inviteResult: null
+		});
+
+		Util.api.post('/api/inviteUserToGroup', {
+			username: value,
+			groupId: this.props.groupId
+		})
+		.then(result => {
+			if(!result.error) {
+				if(result.groupUserId) {
+					//If a group user was sent back (edge casey but can happen)
+					this.setState({
+						inviteResult: `${value} previously made a request to join, so they have been added to the group.`
+					});
+				} else {
+					this.setState({
+						inviteResult: `An invite was sent to ${value}.`
+					});
+				}
+			} else {
+				this.setState({
+					inviteResult: result.error
+				});
+			}
+		})
 	}
 	denyGroupRequest(groupRequest) {
 		this.props.openModal({
@@ -84,6 +116,10 @@ class GroupPendingInfoGroup extends Component {
 		if(this.state.isLoading) return <div className="loader"></div>;
 
 		return <div className="group-pending-info-group">
+			<div className="invite-bar">
+				<ButtonInput placeholder="Invite by username" buttonLabel="Invite" onSubmit={this.inviteUserToGroup} />
+				{this.state.inviteResult ? <p className="sm">{this.state.inviteResult}</p> : null}
+			</div>
 			<div className="group-pending-info">
 				<h3 className="group-pending-info-heading">Pending group requests</h3>
 				{Util.array.any(this.state.groupRequests)

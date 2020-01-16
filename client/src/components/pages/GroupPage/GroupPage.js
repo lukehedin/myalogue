@@ -11,7 +11,6 @@ import ComicList from '../../UI/ComicList/ComicList';
 import GroupAvatar from '../../UI/GroupAvatar/GroupAvatar';
 import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import StatsSummary from '../../UI/StatsSummary/StatsSummary';
-import ButtonInput from '../../UI/ButtonInput/ButtonInput';
 import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingInfoGroup';
 
 class GroupPage extends Component {
@@ -26,13 +25,10 @@ class GroupPage extends Component {
 
 			redirectTo: null,
 
-			isJoining: false,
-
-			inviteResult: null, //Feedback message when a user is invited in member list
+			isJoining: false
 		}
 
 		this.setRedirectToPlayWithGroup = this.setRedirectToPlayWithGroup.bind(this);
-		this.inviteUserToGroup = this.inviteUserToGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
 		this.appendNewGroupUser = this.appendNewGroupUser.bind(this);
 	}
@@ -98,27 +94,6 @@ class GroupPage extends Component {
 			]
 		});
 	}
-	inviteUserToGroup(value) {
-		this.setState({
-			inviteResult: null
-		});
-
-		Util.api.post('/api/inviteUserToGroup', {
-			username: value,
-			groupId: this.state.group.groupId
-		})
-		.then(result => {
-			if(!result.error) {
-				this.setState({
-					inviteResult: `An invite was sent to ${value}.`
-				});
-			} else {
-				this.setState({
-					inviteResult: result.error
-				});
-			}
-		})
-	}
 	setRedirectToPlayWithGroup() {
 		const minPlayers = 3;
 		let redirectTo = Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId });
@@ -168,16 +143,10 @@ class GroupPage extends Component {
 				title: 'Members',
 				content: <div className="members">
 					{Util.context.isGroupAdmin(this.state.group.groupId) && !this.state.group.isPublic
-						? <div className="admin-member-manage">
-							<div className="invite-bar">
-								<ButtonInput placeholder="Invite by username" buttonLabel="Invite" onSubmit={this.inviteUserToGroup} />
-								{this.state.inviteResult ? <p className="sm">{this.state.inviteResult}</p> : null}
-							</div>
-							<GroupPendingInfoGroup groupId={this.state.group.groupId} onNewGroupUser={this.appendNewGroupUser} />
-							<h3 className="members-heading">Members</h3>
-						</div>
+						? <GroupPendingInfoGroup groupId={this.state.group.groupId} onNewGroupUser={this.appendNewGroupUser} />
 						: null
 					}
+					<h3 className="members-heading">Members</h3>
 					<div className="member-list">
 						{Util.array.any(this.state.groupUsers)
 							? this.state.groupUsers.map(groupUser => {

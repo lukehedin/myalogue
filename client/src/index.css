@@ -1236,6 +1236,8 @@ body {
         margin-bottom: 16px;
         padding-bottom: 16px;
         border-bottom: 1px solid #efefef; }
+      body .app-container .app .group-pending-info-group .invite-bar .button-input {
+        max-width: 300px; }
       body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-heading {
         text-align: left;
         margin-bottom: 16px; }
@@ -1453,10 +1455,6 @@ body {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 14px; }
-      body .app-container .app .page-group .group-info .members .invite-bar {
-        margin-bottom: 16px; }
-        body .app-container .app .page-group .group-info .members .invite-bar .button-input {
-          max-width: 300px; }
       body .app-container .app .page-group .group-info .members .group-pending-info-group {
         margin-bottom: 16px;
         padding-bottom: 16px;
