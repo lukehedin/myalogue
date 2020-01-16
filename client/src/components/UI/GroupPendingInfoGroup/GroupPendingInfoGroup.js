@@ -55,9 +55,13 @@ class GroupPendingInfoGroup extends Component {
 					this.setState({
 						inviteResult: `${value} previously made a request to join, so they have been added to the group.`
 					});
-				} else {
+				} else if(result.groupInviteId) {
 					this.setState({
-						inviteResult: `An invite was sent to ${value}.`
+						inviteResult: `An invite was sent to ${value}.`,
+						groupInvites: [...this.state.groupInvites, {
+							...result,
+							invitedByUser: Util.context.getUser()
+						}]
 					});
 				}
 			} else {

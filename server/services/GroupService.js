@@ -369,7 +369,7 @@ export default class GroupService extends Service {
 			return await this.ActionGroupRequest(groupId, dbExistingGroupRequest.GroupRequestId, true);
 		} else {
 			//If all checks ok, send invite
-			await this.models.GroupInvite.create({
+			let dbNewGroupInvite = await this.models.GroupInvite.create({
 				UserId: dbUser.UserId,
 				GroupId: groupId,
 				InvitedByUserId: fromUserId
@@ -377,7 +377,18 @@ export default class GroupService extends Service {
 
 			this.services.Notification.SendGroupInviteNotification(dbUser.UserId, group.name);
 
-			return;
+			//Used on client
+			let dbGroupInviteWithUser = await this.models.GroupInvite.findOne({
+				where: {
+					GroupInviteId: dbNewGroupInvite.GroupInviteId
+				},
+				include: [{
+					model: this.models.User,
+					as: 'User'
+				}]
+			});
+
+			return mapper.fromDbGroupInvite(dbGroupInviteWithUser);
 		}
 	}
 	async ActionGroupInvite(userId, groupInviteId, isAccepting = false) {
