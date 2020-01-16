@@ -156,7 +156,7 @@ export default class Database {
 
 		defineTable('GroupInvite', {
 			AcceptedAt: Sequelize.DATE,
-			DeclinedAt: Sequelize.DATE,
+			IgnoredAt: Sequelize.DATE,
 			Message: Sequelize.TEXT,
 			Token: Sequelize.STRING
 		}, true);

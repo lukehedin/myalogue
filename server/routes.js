@@ -312,7 +312,6 @@ export default {
 			return;
 		},
 
-
 		changePassword: async (req, services) => {
 			//Must be logged in
 			let userId = req.userId;
@@ -387,13 +386,23 @@ export default {
 		},
 
 		createGroupChallenge: async(req, services) => {
-			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 			
 			let groupId = req.body.groupId;
+			
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 
 
+		},
+
+		getPendingGroupInfoForGroup: async (req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			return await services.Group.GetPendingGroupInfoForGroup(groupId);
 		},
 
 		inviteUserToGroup: async (req, services) => {

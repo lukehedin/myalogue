@@ -32,10 +32,7 @@
 			}
 		}
 
-		.member-list {
-			display: flex;
-			flex-direction: column;
-
+		.members {
 			.invite-bar {
 				margin-bottom: $spacing-sm;
 				
@@ -43,21 +40,36 @@
 					max-width: 300px;
 				}
 			}
-	
-			.member-list-item {
+
+			.group-pending-info-group {
+				margin-bottom: $spacing-sm;
+				padding-bottom: $spacing-sm;
+				border-bottom: 1px solid $colour-grey-a;
+			}
+
+			.members-heading {
+				margin-bottom: $spacing-sm;
+			}
+
+			.member-list {
 				display: flex;
-				flex-direction: row;
-				
-				&:not(:last-child) {
-					margin-bottom: $spacing-sm;
-				}
-	
-				.member-list-item-detail {
-					margin-left: $spacing-xs;
-					flex: 1;
+				flex-direction: column;
+		
+				.member-list-item {
+					display: flex;
+					flex-direction: row;
 					
-					.username {
-						text-align: left;
+					&:not(:last-child) {
+						margin-bottom: $spacing-sm;
+					}
+		
+					.member-list-item-detail {
+						margin-left: $spacing-xs;
+						flex: 1;
+						
+						.username {
+							text-align: left;
+						}
 					}
 				}
 			}

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { openModal } from '../../../redux/actions';
 import moment from 'moment';
 import Util from '../../../Util';
 
@@ -8,11 +10,11 @@ import TabbedPanels from '../../UI/TabbedPanels/TabbedPanels';
 import ComicList from '../../UI/ComicList/ComicList';
 import GroupAvatar from '../../UI/GroupAvatar/GroupAvatar';
 import UserAvatar from '../../UI/UserAvatar/UserAvatar';
-import Checkbox from '../../UI/Checkbox/Checkbox';
 import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 import ButtonInput from '../../UI/ButtonInput/ButtonInput';
+import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingInfoGroup';
 
-export default class GroupPage extends Component {
+class GroupPage extends Component {
 	constructor(props){
 		super(props);
 
@@ -22,13 +24,17 @@ export default class GroupPage extends Component {
 			groupUsers: null,
 			groupStats: null,
 
+			redirectTo: null,
+
 			isJoining: false,
 
-			inviteResult: null //Feedback message when a user is invited in member list
+			inviteResult: null, //Feedback message when a user is invited in member list
 		}
 
+		this.setRedirectToPlayWithGroup = this.setRedirectToPlayWithGroup.bind(this);
 		this.inviteUserToGroup = this.inviteUserToGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
+		this.appendNewGroupUser = this.appendNewGroupUser.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getGroup', {
@@ -63,15 +69,10 @@ export default class GroupPage extends Component {
 					Util.context.set({
 						groupUsers: [...Util.context.getGroupUsers(), result]
 					});
-	
-					this.setState({
-						groupUsers: [
-							...this.state.groupUsers,
-							{
-								...result,
-								user: Util.context.getUser() //Slap on user deets
-							}
-						]
+
+					this.appendNewGroupUser({
+						...result,
+						user: Util.context.getUser() //Slap on user deets
 					});
 				} else if(result.groupRequestId) {
 					//If the result is a groupRequest, we requested to join
@@ -87,6 +88,14 @@ export default class GroupPage extends Component {
 			this.setState({
 				isJoining: false
 			});
+		});
+	}
+	appendNewGroupUser(newGroupUser) {
+		this.setState({
+			groupUsers: [
+				newGroupUser,
+				...this.state.groupUsers
+			]
 		});
 	}
 	inviteUserToGroup(value) {
@@ -110,7 +119,35 @@ export default class GroupPage extends Component {
 			}
 		})
 	}
+	setRedirectToPlayWithGroup() {
+		const minPlayers = 3;
+		let redirectTo = Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId });
+
+		if(this.state.groupUsers.length < minPlayers) {
+			this.props.openModal({
+				type: Util.enums.ModalType.Confirm,
+				title: 'Group comics will not complete',
+				content: <div>
+						<p className="center">Groups with less than {minPlayers} members cannot complete comics. You can still begin making comics for the group, but they will remain incomplete until more members join.</p>
+						<p className="center">Would you still like to play with this group?</p>
+					</div>,
+				yesLabel: 'Yes, play anyway',
+				noLabel: 'Cancel',
+				yesFn: () => {
+					this.setState({
+						redirectTo
+					});
+				}
+			});
+		} else {
+			this.setState({
+				redirectTo
+			});
+		}
+	}
 	render() {
+		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />
+
 		let getTabs = () => {
 			let tabs = [{
 				tabId: 'details',
@@ -129,26 +166,32 @@ export default class GroupPage extends Component {
 			}, {
 				tabId: 'members',
 				title: 'Members',
-				content: <div className="member-list">
-					{Util.context.isGroupAdmin(this.state.group.groupId)
-						? <div className="invite-bar">
-							<ButtonInput placeholder="Invite by username" buttonLabel="Invite" onSubmit={this.inviteUserToGroup} />
-							{this.state.inviteResult ? <p className="sm">{this.state.inviteResult}</p> : null}
+				content: <div className="members">
+					{Util.context.isGroupAdmin(this.state.group.groupId) && !this.state.group.isPublic
+						? <div className="admin-member-manage">
+							<div className="invite-bar">
+								<ButtonInput placeholder="Invite by username" buttonLabel="Invite" onSubmit={this.inviteUserToGroup} />
+								{this.state.inviteResult ? <p className="sm">{this.state.inviteResult}</p> : null}
+							</div>
+							<GroupPendingInfoGroup groupId={this.state.group.groupId} onNewGroupUser={this.appendNewGroupUser} />
+							<h3 className="members-heading">Members</h3>
 						</div>
 						: null
 					}
-					{Util.array.any(this.state.groupUsers)
-						? this.state.groupUsers.map(groupUser => {
-							return <div key={groupUser.groupUserId} className="member-list-item">
-								<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
-								<div className="member-list-item-detail">
-									<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
-									<p className="sm rating">Joined {moment(groupUser.createdAt).fromNow()}</p>
-								</div>
-							</div>;
-						})
-						: <p className="empty-text">This group doesn't have any members.</p>
-					}
+					<div className="member-list">
+						{Util.array.any(this.state.groupUsers)
+							? this.state.groupUsers.map(groupUser => {
+								return <div key={groupUser.groupUserId} className="member-list-item">
+									<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
+									<div className="member-list-item-detail">
+										<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
+										<p className="sm rating">Joined {moment(groupUser.createdAt).fromNow()}</p>
+									</div>
+								</div>;
+							})
+							: <p className="empty-text">This group doesn't have any members.</p>
+						}
+					</div>
 				</div>
 			}];
 
@@ -188,7 +231,7 @@ export default class GroupPage extends Component {
 												to={Util.context.isGroupAdmin(this.state.group.groupId) ? Util.route.groupEditor(this.state.group.groupId) : null}
 											/>
 											<h2>{this.state.group.name}</h2>
-											<p className="created-date sm">{this.state.groupUsers.length} {Util.format.pluralise(this.state.groupUsers, 'member')} - Created {moment(this.state.group.createdAt).fromNow()}</p>
+											<p className="created-date sm">{this.state.group.isPublic ? 'Public' : 'Private'} group • {this.state.groupUsers.length} {Util.format.pluralise(this.state.groupUsers, 'member')} • Created {moment(this.state.group.createdAt).fromNow()}</p>
 											{/* {Util.context.isGroupAdmin(this.state.group.groupId)
 												? <p className="admin-message sm">You are an administrator of this group</p>
 												: null
@@ -200,7 +243,7 @@ export default class GroupPage extends Component {
 											{Util.context.isAuthenticated()
 												? <div className="button-container group-call-to-action direction-column">
 													{Util.context.isInGroup(this.state.group.groupId)
-														? <Button colour="pink" label="Play with this group" to={Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId })} />
+														? <Button colour="pink" label="Play with this group" onClick={this.setRedirectToPlayWithGroup} />
 														: this.state.group.pendingGroupRequest
 															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequest.createdAt).fromNow()}.</p>
 															: this.state.isJoining
@@ -232,3 +275,5 @@ export default class GroupPage extends Component {
 		</div>;
 	}
 }
+
+export default connect(null, { openModal })(GroupPage);

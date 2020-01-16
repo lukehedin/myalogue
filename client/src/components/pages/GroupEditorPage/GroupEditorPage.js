@@ -26,11 +26,13 @@ export default class GroupEditorPage extends Component {
 		Util.api.post('/api/getGroup', {
 			groupId: this.props.groupId
 		})
-		.then(group => {
-			this.setState({
-				isLoading: false,
-				group
-			});
+		.then(result => {
+			if(!result.error) {
+				this.setState({
+					isLoading: false,
+					group: result.group
+				});
+			}
 		})
 	}
 	updateAvatarUrl(url) {

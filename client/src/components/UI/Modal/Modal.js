@@ -132,7 +132,7 @@ class Modal extends Component {
 			{modalTitle || modalIcon 
 				? <div className="modal-header">
 					{modalIcon ? <ReactSVG className="modal-icon" src={modalIcon} /> : null}
-					{modalTitle ? <h5 className="modal-title">{modalTitle}</h5> : null}
+					{modalTitle ? <h3 className="modal-title">{modalTitle}</h3> : null}
 					<div className="flex-spacer"></div>
 					<ReactSVG className="modal-close-icon" src={Util.icon.cancel} onClick={this.close} />
 				</div> 

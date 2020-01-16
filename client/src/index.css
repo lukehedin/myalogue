@@ -607,6 +607,8 @@ body {
           flex-direction: row;
           align-items: center;
           padding: 4px 8px; }
+          body .app-container .app .modal .modal-header .modal-title {
+            color: #fff; }
           body .app-container .app .modal .modal-header .modal-icon {
             height: 16px;
             width: 16px;
@@ -1230,6 +1232,29 @@ body {
         body .app-container .app .button-input .button {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0; }
+      body .app-container .app .group-pending-info-group > *:not(:last-child) {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #efefef; }
+      body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-heading {
+        text-align: left;
+        margin-bottom: 16px; }
+      body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start; }
+        body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item:not(:last-child) {
+          margin-bottom: 16px; }
+        body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details {
+          flex: 1;
+          margin: 0 8px; }
+          body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details .item-name {
+            margin-bottom: 4px;
+            font-weight: bold; }
+          body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details .item-subtitle {
+            margin: 0; }
+      body .app-container .app .group-pending-info-group .group-pending-info .empty-text {
+        text-align: left; }
       body .app-container .app .group-pending-info-user > *:not(:last-child) {
         margin-bottom: 16px;
         padding-bottom: 16px;
@@ -1428,22 +1453,28 @@ body {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 14px; }
-      body .app-container .app .page-group .group-info .member-list {
+      body .app-container .app .page-group .group-info .members .invite-bar {
+        margin-bottom: 16px; }
+        body .app-container .app .page-group .group-info .members .invite-bar .button-input {
+          max-width: 300px; }
+      body .app-container .app .page-group .group-info .members .group-pending-info-group {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #efefef; }
+      body .app-container .app .page-group .group-info .members .members-heading {
+        margin-bottom: 16px; }
+      body .app-container .app .page-group .group-info .members .member-list {
         display: flex;
         flex-direction: column; }
-        body .app-container .app .page-group .group-info .member-list .invite-bar {
-          margin-bottom: 16px; }
-          body .app-container .app .page-group .group-info .member-list .invite-bar .button-input {
-            max-width: 300px; }
-        body .app-container .app .page-group .group-info .member-list .member-list-item {
+        body .app-container .app .page-group .group-info .members .member-list .member-list-item {
           display: flex;
           flex-direction: row; }
-          body .app-container .app .page-group .group-info .member-list .member-list-item:not(:last-child) {
+          body .app-container .app .page-group .group-info .members .member-list .member-list-item:not(:last-child) {
             margin-bottom: 16px; }
-          body .app-container .app .page-group .group-info .member-list .member-list-item .member-list-item-detail {
+          body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail {
             margin-left: 8px;
             flex: 1; }
-            body .app-container .app .page-group .group-info .member-list .member-list-item .member-list-item-detail .username {
+            body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .username {
               text-align: left; }
       body .app-container .app .page-group .comic-list {
         margin-top: 32px; }

@@ -55,7 +55,7 @@ export default asForm(GroupEditorForm, {
 		// 	}
 		// },
 		isPublic: {
-			label: 'Public group (allow users to join without approval)',
+			label: 'Public group (users can join without approval)',
 			type: Util.enums.FieldType.Checkbox
 		}
 	}

@@ -179,13 +179,14 @@ const mapper = {
 	},
 
 	fromDbGroupInvite: (dbGroupInvite) => {
-		//Do not return accepted/declined here, only for backend use
+		//Do not return accepted/ignored here, only for backend use
 		return {
 			groupInviteId: dbGroupInvite.GroupInviteId,
 			groupId: dbGroupInvite.GroupId,
 			userId: dbGroupInvite.UserId,
 			createdAt: dbGroupInvite.CreatedAt,
 			message: dbGroupInvite.Message,
+			user: dbGroupInvite.User ? mapper.fromDbUser(dbGroupInvite.User) : null,
 			invitedByUser: dbGroupInvite.InvitedByUser ? mapper.fromDbUser(dbGroupInvite.InvitedByUser) : null,
 			group: dbGroupInvite.Group ? mapper.fromDbGroup(dbGroupInvite.Group) : null
 		}

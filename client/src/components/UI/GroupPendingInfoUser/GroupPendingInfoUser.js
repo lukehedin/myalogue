@@ -20,7 +20,7 @@ class GroupPendingInfoUser extends Component {
 		};
 
 		this.acceptGroupInvite = this.acceptGroupInvite.bind(this);
-		this.declineGroupInvite = this.declineGroupInvite.bind(this);
+		this.ignoreGroupInvite = this.ignoreGroupInvite.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getPendingGroupInfoForUser')
@@ -33,15 +33,15 @@ class GroupPendingInfoUser extends Component {
 				});
 			});
 	}
-	declineGroupInvite(groupInvite) {
+	ignoreGroupInvite(groupInvite) {
 		this.props.openModal({
 			type: Util.enums.ModalType.Confirm,
-			title: 'Decline invite',
+			title: 'Ignore invite',
 			content: <div>
 				<p className="center">Are you sure you want to ignore the invite to <b>{groupInvite.group.name}</b>?</p>
 				<p className="center">You won't be able to receive another invite to the group for a while.</p>
 			</div>,
-			yesLabel: 'Yes, decline',
+			yesLabel: 'Yes, ignore',
 			noLabel: 'Cancel',
 			yesFn: () => {
 				//Server
@@ -80,7 +80,7 @@ class GroupPendingInfoUser extends Component {
 
 		return <div className="group-pending-info-user">
 			<div className="group-pending-info">
-				<h3 className="group-pending-info-heading">Group invites</h3>
+				<h3 className="group-pending-info-heading">Pending group invites</h3>
 				{Util.array.any(this.state.groupInvites)
 					? this.state.groupInvites.map(groupInvite => {
 						return <div key={groupInvite.groupInviteId} className="group-pending-info-item">
@@ -94,11 +94,11 @@ class GroupPendingInfoUser extends Component {
 								onClick: () => this.acceptGroupInvite(groupInvite)
 							}, {
 								label: 'Ignore',
-								onClick: () => this.declineGroupInvite(groupInvite)
+								onClick: () => this.ignoreGroupInvite(groupInvite)
 							}]} />
 						</div>
 					})
-					: <p className="empty-text">You don't have any group invitations.</p>
+					: <p className="empty-text">You don't have any group invites.</p>
 				}
 			</div>
 			<div className="group-pending-info">

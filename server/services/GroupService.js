@@ -47,7 +47,7 @@ export default class GroupService extends Service {
 	}
 	async GetPendingGroupInfoForGroup(groupId) {
 		// Removes requests DENIED by the group
-		// Includes invites DECLINED by the user
+		// Includes invites IGNORED by the user
 
 		//Both come with USER associated data
 		let [groupRequests, groupInvites] = await Promise.all([
@@ -96,7 +96,7 @@ export default class GroupService extends Service {
 	}
 	async GetPendingGroupInfoForUser(userId) {
 		// Includes requests DENIED by the group
-		// Removes invites DECLINED by the user
+		// Removes invites IGNORED by the user
 
 		//Both come with GROUP associated data
 		let [groupRequests, groupInvites] = await Promise.all([
@@ -128,7 +128,7 @@ export default class GroupService extends Service {
 			where: {
 				...this._GetPendingGroupInviteWhere(),
 				UserId: userId,
-				DeclinedAt: { //User doesn't need to see invites they declined
+				IgnoredAt: { //User doesn't need to see invites they ignored
 					[Sequelize.Op.eq]: null
 				}
 			},
@@ -263,15 +263,13 @@ export default class GroupService extends Service {
 	async JoinGroup(userId, groupId) {
 		let group = await this.GetById(groupId);
 
-		//Check if they already have a pending invite from this group
+		//Check if they already have an invite from this group
 		let dbExistingGroupInvite = await this.models.GroupInvite.findOne({
 			where: {
 				...this._GetPendingGroupInviteWhere,
 				GroupId: groupId,
-				UserId: userId,
-				DeclinedAt: {
-					[Sequelize.Op.eq]: null
-				}
+				UserId: userId
+				//We include invites that may have been ignored (as long as theyre in the timeframe)
 			}
 		});
 
@@ -374,10 +372,8 @@ export default class GroupService extends Service {
 			where: {
 				...this._GetPendingGroupInviteWhere(),
 				UserId: userId, //CRUCIAL - this is what we checked permissions on
-				GroupInviteId: groupInviteId,
-				DeclinedAt: {
-					[Sequelize.Op.eq]: null
-				}
+				GroupInviteId: groupInviteId
+				//We include invites that may have been ignored (as long as theyre in the timeframe)
 			}
 		});
 		if(!dbPendingGroupInvite) throw 'Invalid pending group invite';
@@ -390,7 +386,7 @@ export default class GroupService extends Service {
 			return await this.AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
 			//TODO notify admins of join
 		} else {
-			dbPendingGroupInvite.DeclinedAt = new Date();
+			dbPendingGroupInvite.IgnoredAt = new Date();
 			await dbPendingGroupInvite.save();
 		}
 	}
@@ -487,7 +483,7 @@ export default class GroupService extends Service {
 			AcceptedAt: {
 				[Sequelize.Op.eq]: null
 			}
-			//Don't remove DeclinedAt = null, we don't want to alert the group that they denied 
+			//Don't remove IgnoredAt = null, we don't want to alert the group that they ignored 
 		}
 	}
 }
