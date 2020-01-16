@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { openModal } from '../../../redux/actions';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Util from '../../../Util';
@@ -14,7 +12,7 @@ import Checkbox from '../../UI/Checkbox/Checkbox';
 import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 import ButtonInput from '../../UI/ButtonInput/ButtonInput';
 
-class GroupPage extends Component {
+export default class GroupPage extends Component {
 	constructor(props){
 		super(props);
 
@@ -29,8 +27,6 @@ class GroupPage extends Component {
 			inviteResult: null //Feedback message when a user is invited in member list
 		}
 
-		this.leaveGroup = this.leaveGroup.bind(this);
-		this.setIsFollowing = this.setIsFollowing.bind(this);
 		this.inviteUserToGroup = this.inviteUserToGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
 	}
@@ -52,20 +48,6 @@ class GroupPage extends Component {
 			});
 		})
 	}
-	setIsFollowing() {
-		let newIsFollowing = !this.state.group.isFollwing;
-
-		this.setState({
-			group: {
-				...this.state.group,
-				isFollowing: newIsFollowing
-			}
-		}, () => {
-			Util.api.post('/api/setIsFollowingGroup', {
-				isFollowing: newIsFollowing
-			})
-		});
-	}
 	joinGroup() {
 		this.setState({
 			isJoining: true
@@ -85,7 +67,10 @@ class GroupPage extends Component {
 					this.setState({
 						groupUsers: [
 							...this.state.groupUsers,
-							result
+							{
+								...result,
+								user: Util.context.getUser() //Slap on user deets
+							}
 						]
 					});
 				} else if(result.groupRequestId) {
@@ -125,26 +110,6 @@ class GroupPage extends Component {
 			}
 		})
 	}
-	leaveGroup() {
-		this.props.openModal({
-			type: Util.enums.ModalType.Confirm,
-			title: 'Leave group',
-			content: <p>Are you sure you want to leave the group "{this.state.group.name}"?</p>,
-			yesLabel: 'Yes, leave group',
-			noLabel: 'Cancel',
-			yesFn: () => {
-				let groupId = this.state.group.groupId;
-				//Server
-				Util.api.post('/api/leaveGroup', {
-					groupId
-				});
-				//Client
-				Util.context.set({
-					groupUsers: Util.context.getGroupUsers().filter(gu => gu.groupId !== groupId)
-				});
-			}
-		});
-	}
 	render() {
 		let getTabs = () => {
 			let tabs = [{
@@ -160,16 +125,6 @@ class GroupPage extends Component {
 						? <p className="group-description" dangerouslySetInnerHTML={{ __html: Util.format.userStringToSafeHtml(this.state.group.description) }}></p> 
 						: null
 					}
-					<div className="group-actions button-container">
-						{Util.context.isInGroup(this.state.group.groupId)
-							? <div className="button-container">
-								<Button size="sm" label="Leave group" onClick={this.leaveGroup} />
-							</div>
-							: null
-						}
-						<div className="flex-spacer"></div>
-						<Checkbox isSwitch={true} value={this.state.includeAnonymous} label="Follow this group" onChange={this.setIsFollowing} />
-					</div>
 				</div>
 			}, {
 				tabId: 'members',
@@ -249,7 +204,7 @@ class GroupPage extends Component {
 														: this.state.group.pendingGroupRequest
 															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequest.createdAt).fromNow()}.</p>
 															: this.state.isJoining
-																? <p className="join-info sm">{this.state.isPublic ? 'Joining...' : 'Requesting to join...'}</p>
+																? <p className="join-info sm">{this.state.group.isPublic ? 'Joining...' : 'Requesting to join...'}</p>
 																: <Button colour="pink" label={this.state.group.isPublic ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
 													}
 													{Util.context.isGroupAdmin(this.state.group.groupId)
@@ -277,5 +232,3 @@ class GroupPage extends Component {
 		</div>;
 	}
 }
-
-export default connect(null, { openModal })(GroupPage);

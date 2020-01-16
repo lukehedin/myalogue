@@ -260,16 +260,6 @@ export default class GroupService extends Service {
 			comicTotalRating: comicTotalRating
 		};
 	}
-	async SetIsFollowingGroup(userId, groupId, isFollowing) {
-		return await this.models.GroupUser.update({
-			IsFollowing: isFollowing
-		}, {
-			where: {
-				UserId: userId,
-				GroupId: groupId
-			}
-		});
-	}
 	async JoinGroup(userId, groupId) {
 		let group = await this.GetById(groupId);
 
@@ -388,12 +378,12 @@ export default class GroupService extends Service {
 				CreatedByUserId: userId
 			});
 
-			await this.AddUserToGroup(userId, dbNewGroup.GroupId);
+			await this.AddUserToGroup(userId, dbNewGroup.GroupId, true);
 			 
 			return this.GetById(dbNewGroup.GroupId);
 		}
 	}
-	async AddUserToGroup(userId, groupId) {
+	async AddUserToGroup(userId, groupId, isGroupAdmin = false) {
 		//Check if user is already part of group
 		let dbExistingUser = await this.DbGetGroupUser(userId, groupId);
 		if(dbExistingUser) throw 'User is already in group';
@@ -401,7 +391,7 @@ export default class GroupService extends Service {
 		let dbNewGroupUser = await this.models.GroupUser.create({
 			UserId: userId,
 			GroupId: groupId,
-			IsGroupAdmin: true
+			IsGroupAdmin: isGroupAdmin
 		});
 
 		await this.models.Group.increment('MemberCount', { 

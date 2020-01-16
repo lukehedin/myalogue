@@ -63,7 +63,7 @@ export default class GroupEditorPage extends Component {
 										: null
 									}
 									<GroupEditorForm 
-										formData={this.state.group || {}}
+										formData={this.state.group || { isPublic: true }}
 										onSubmit={(form, formData) => {
 											form.setLoading(true);
 

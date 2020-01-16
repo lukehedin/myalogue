@@ -62,12 +62,7 @@ class Comic extends Component {
 		})
 		.then(result => {
 			if(!result.error) {
-				//Slap on this user's details
-				result.user = {
-					userId: Util.context.getUserId(),
-					username: Util.context.getUsername(),
-					avatar: Util.context.getUserAvatar()
-				};
+				result.user = Util.context.getUser(); //Slap on this user's deets
 
 				this.setState({
 					comic: {

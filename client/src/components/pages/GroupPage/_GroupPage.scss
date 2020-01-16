@@ -1,8 +1,4 @@
 .page-group {
-	.group-actions {
-		margin-top: $spacing-sm;
-	}
-
 	.group-info {
 		.group-info-header {
 			> * {
@@ -34,15 +30,6 @@
 				white-space: pre-line;
 				font-size: 14px;
 			}
-
-			.group-actions {
-				display: flex;
-				flex-direction: row;
-
-				.switch {
-					max-width: 150px;
-				}
-			}
 		}
 
 		.member-list {
@@ -51,6 +38,10 @@
 
 			.invite-bar {
 				margin-bottom: $spacing-sm;
+				
+				.button-input {
+					max-width: 300px;
+				}
 			}
 	
 			.member-list-item {

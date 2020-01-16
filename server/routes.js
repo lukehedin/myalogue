@@ -400,19 +400,6 @@ export default {
 
 		},
 
-		setIsFollowingGroup: async(req, services) => {
-			let userId = req.userId;
-			let memberOfGroupIds = req.memberOfGroupIds;
-
-			let groupId = req.body.groupId;
-
-			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
-
-			let isFollowing = req.body.isFollowing;
-			
-			await services.Group.SetIsFollowingGroup(userId, groupId, isFollowing);
-		},
-
 		inviteUserToGroup: async (req, services) => {
 			let userId = req.userId;
 			let memberOfGroupIds = req.memberOfGroupIds;

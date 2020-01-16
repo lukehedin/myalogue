@@ -370,6 +370,8 @@ body {
             body .app-container .app .form-wrapper form .field-container textarea {
               min-height: 60px;
               resize: vertical; }
+            body .app-container .app .form-wrapper form .field-container .checkbox {
+              margin: 8px 0; }
           body .app-container .app .form-wrapper form .button-container {
             margin-top: 8px; }
             @media (min-width: 576px) {
@@ -1403,8 +1405,6 @@ body {
             font-size: 12px; }
         body .app-container .app .page-play .play-area .tip-strip {
           margin-top: 64px; }
-      body .app-container .app .page-group .group-actions {
-        margin-top: 16px; }
       body .app-container .app .page-group .group-info .group-info-header > * {
         text-align: center; }
       body .app-container .app .page-group .group-info .group-info-header .group-avatar {
@@ -1421,16 +1421,13 @@ body {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 14px; }
-      body .app-container .app .page-group .group-info .group-details .group-actions {
-        display: flex;
-        flex-direction: row; }
-        body .app-container .app .page-group .group-info .group-details .group-actions .switch {
-          max-width: 150px; }
       body .app-container .app .page-group .group-info .member-list {
         display: flex;
         flex-direction: column; }
         body .app-container .app .page-group .group-info .member-list .invite-bar {
           margin-bottom: 16px; }
+          body .app-container .app .page-group .group-info .member-list .invite-bar .button-input {
+            max-width: 300px; }
         body .app-container .app .page-group .group-info .member-list .member-list-item {
           display: flex;
           flex-direction: row; }

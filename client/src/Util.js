@@ -103,6 +103,14 @@ const Util = {
 		isAuthenticated: () => !!Util.context._user, // Cannot use token, as anons also use this
 		isUserId: (userId) => Util.context.isAuthenticated() && Util.context.getUserId() === userId,
 
+		getUser: () => {
+			//A basic user object useful for updating client side UI (so the name, avatar etc can still be shown)
+			return {
+				userId: Util.context.getUserId(),
+				username: Util.context.getUsername(),
+				avatar: Util.context.getUserAvatar()
+			};
+		},
 		getUserId: () => Util.context._user.userId,
 		getUsername: () => Util.context._user.username,
 		getUserAvatar: () => Util.userAvatar.getForUser(Util.context._user),

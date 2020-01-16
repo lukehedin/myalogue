@@ -5,8 +5,11 @@ const mapper = {
 		let user = {
 			userId: dbUser.UserId,
 			username: dbUser.Username,
+			
+			//Used on specific pages but often not required
 			createdAt: dbUser.CreatedAt,
 			leaderboardRating: dbUser.LeaderboardRating,
+
 			avatar: {
 				url: dbUser.AvatarUrl,
 				//or
@@ -135,6 +138,7 @@ const mapper = {
 			createdAt: dbGroup.CreatedAt,
 			description: dbGroup.Description,
 			memberCount: dbGroup.MemberCount,
+			isPublic: dbGroup.IsPublic,
 			//The user's current request to join, if any
 			pendingGroupRequest: pendingGroupRequest,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
@@ -156,7 +160,6 @@ const mapper = {
 			groupId: dbGroupUser.GroupId,
 			createdAt: dbGroupUser.CreatedAt,
 			isGroupAdmin: dbGroupUser.IsGroupAdmin,
-			isFollowing: true,
 			groupName: dbGroupUser.Group ? dbGroupUser.Group.Name : null,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}

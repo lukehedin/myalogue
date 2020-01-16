@@ -38,7 +38,7 @@ export default class GroupsPage extends Component {
 					<div className="row">
 						<div className="groups-page-inner">
 							<h1 className="page-title">Groups</h1>
-							<p className="page-subtitle"><Link to={Util.route.groupEditor()}>Create a new group</Link> or browse existing groups to join and make comics with other group members. Work together to get to the top of the <Link to={Util.route.withQueryParams(Util.route.leaderboards(), { tabId: 'groups' })}>group leaderboard</Link>.</p>
+							<p className="page-subtitle"><Link to={Util.route.groupEditor()}>Create a new group</Link> or browse existing groups to join and make exclusive comics with other group members. Work together to get to the top of the <Link to={Util.route.withQueryParams(Util.route.leaderboards(), { tabId: 'groups' })}>group leaderboard</Link>.</p>
 							<TabbedPanels tabs={tabs} />
 						</div>
 					</div>

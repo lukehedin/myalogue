@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openModal } from '../../../redux/actions';
 import { Link } from 'react-router-dom';
 import HTMLEllipsis from 'react-lines-ellipsis/lib/html';
 import Util from '../../../Util';
@@ -8,7 +10,7 @@ import Dropdown from '../Dropdown/Dropdown';
 import Button from '../Button/Button';
 import ContextMenu from '../ContextMenu/ContextMenu';
 
-export default class GroupList extends Component {
+class GroupList extends Component {
 	constructor(props){
 		super(props);
 
@@ -28,6 +30,7 @@ export default class GroupList extends Component {
 		
 		this.searchTimeout = null;
 
+		this.leaveGroup = this.leaveGroup.bind(this);
 		this.searchChanged = this.searchChanged.bind(this);
 		this.setSortBy = this.setSortBy.bind(this);
 	}
@@ -100,6 +103,29 @@ export default class GroupList extends Component {
 				}
 			});
 	}
+	leaveGroup(group) {
+		this.props.openModal({
+			type: Util.enums.ModalType.Confirm,
+			title: 'Leave group',
+			content: <p>Are you sure you want to leave the group "{group.name}"?</p>,
+			yesLabel: 'Yes, leave group',
+			noLabel: 'Cancel',
+			yesFn: () => {
+				let groupId = group.groupId;
+				//Server
+				Util.api.post('/api/leaveGroup', {
+					groupId
+				});
+				//Client
+				Util.context.set({
+					groupUsers: Util.context.getGroupUsers().filter(gu => gu.groupId !== groupId)
+				});
+				this.setState({
+					groups: this.state.groups.filter(group => group.groupId !== groupId)
+				});
+			}
+		});
+	}
 	render() {
 		let sortOptions = [{
 			type: Util.enums.GroupSortBy.Popular,
@@ -144,14 +170,13 @@ export default class GroupList extends Component {
 						if(this.props.showContextMenu && Util.context.isUserId(this.state.forUserId)) {
 							if(Util.context.isGroupAdmin(group.groupId)) {
 								contextMenuItems.push({
-									label: 'Edit group'
+									label: 'Edit group',
+									to: Util.route.groupEditor(group.groupId)
 								});
 							}
 							contextMenuItems.push({
-								label: 'Unfollow group'
-							});
-							contextMenuItems.push({
-								label: 'Leave group'
+								label: 'Leave group',
+								onClick: () => this.leaveGroup(group)
 							});
 						}
 
@@ -199,3 +224,5 @@ export default class GroupList extends Component {
 		</div>
 	}
 }
+
+export default connect(null, { openModal })(GroupList);
