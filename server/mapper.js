@@ -150,6 +150,7 @@ const mapper = {
 	fromDbGroupChallenge: (dbGroupChallenge) => {
 		return {
 			groupChallengeId: dbGroupChallenge.GroupChallengeId,
+			groupId: dbGroupChallenge.GroupId,
 			challenge: dbGroupChallenge.Challenge
 		}
 	},

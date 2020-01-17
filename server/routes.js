@@ -174,15 +174,17 @@ export default {
 			let userId = req.userId; // May be null
 			let groupId = req.body.groupId;
 
-			let [group, groupUsers, groupStats] = await Promise.all([
+			let [group, groupUsers, groupChallenges, groupStats] = await Promise.all([
 				await services.Group.GetById(groupId, userId),
 				await services.Group.GetGroupUsers(groupId),
+				await services.Group.GetGroupChallenges(groupId),
 				await services.Group.GetStatsForGroup(groupId)
 			]);
 
 			return {
 				group,
 				groupUsers,
+				groupChallenges,
 				groupStats
 			};
 		},
@@ -358,7 +360,7 @@ export default {
 			let userId = req.userId;
 			let file = req.file;
 
-			await services.User.SaveAvatarUrl(userId, file.url);
+			await services.User.SaveUserAvatarUrl(userId, file.url);
 
 			return file.url;
 		},
@@ -388,7 +390,6 @@ export default {
 		},
 
 		uploadGroupAvatar: async (req, services) => {
-			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 
 			let groupId = req.body.groupId;
@@ -397,17 +398,9 @@ export default {
 			
 			let file = req.file;
 
-			await services.Group.SaveAvatarUrl(userId, groupId, file.url);
+			await services.Group.SaveGroupAvatarUrl(groupId, file.url);
 			
 			return file.url;
-		},
-
-		createGroupChallenge: async(req, services) => {
-			let adminOfGroupIds = req.adminOfGroupIds;
-			
-			let groupId = req.body.groupId;
-			
-			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 		},
 
 		getPendingGroupInfoForGroup: async (req, services) => {
@@ -477,7 +470,31 @@ export default {
 
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 
-			return await await services.Group.GetById(groupId);
+			return await services.Group.GetById(groupId);
 		},
+
+		createGroupChallenge: async(req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+			
+			let groupId = req.body.groupId;
+			
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			let challenge = req.body.challenge;
+
+			return await services.Group.CreateGroupChallenge(groupId, challenge);
+		},
+
+		removeGroupChallenge: async(req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+			
+			let groupId = req.body.groupId;
+			
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			let groupChallengeId = req.body.groupChallengeId;
+
+			return await services.Group.RemoveGroupChallenge(groupId, groupChallengeId);
+		}
 	}
 };

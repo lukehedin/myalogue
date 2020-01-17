@@ -13,6 +13,7 @@ import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingInfoGroup';
 import ContextMenu from '../../UI/ContextMenu/ContextMenu';
+import ButtonInput from '../../UI/ButtonInput/ButtonInput';
 
 class GroupPage extends Component {
 	constructor(props){
@@ -23,6 +24,7 @@ class GroupPage extends Component {
 			group: null,
 			groupUsers: null,
 			groupStats: null,
+			groupChallenges: null,
 
 			redirectTo: null,
 
@@ -33,6 +35,9 @@ class GroupPage extends Component {
 		this.joinGroup = this.joinGroup.bind(this);
 		this.removeGroupUser = this.removeGroupUser.bind(this);
 		this.appendNewGroupUser = this.appendNewGroupUser.bind(this);
+
+		this.createGroupChallenge = this.createGroupChallenge.bind(this);
+		this.removeGroupChallenge = this.removeGroupChallenge.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getGroup', {
@@ -43,7 +48,8 @@ class GroupPage extends Component {
 				this.setState({
 					group: result.group,
 					groupUsers: result.groupUsers,
-					groupStats: result.groupStats
+					groupStats: result.groupStats,
+					groupChallenges: result.groupChallenges
 				});
 			}
 
@@ -119,16 +125,18 @@ class GroupPage extends Component {
 			}
 		});
 	}
-	setRedirectToPlayWithGroup() {
-		const minPlayers = 3;
-		let redirectTo = Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId });
+	setRedirectToPlayWithGroup(groupChallengeId) {
+		const minUsers = 3;
+		let params = { groupId: this.state.group.groupId };
+		if(groupChallengeId) params.groupChallengeId = groupChallengeId;
+		let redirectTo = Util.route.withQueryParams(Util.route.play(), params);
 
-		if(this.state.groupUsers.length < minPlayers) {
+		if(this.state.groupUsers.length < minUsers) {
 			this.props.openModal({
 				type: Util.enums.ModalType.Confirm,
 				title: 'Group comics will not complete',
 				content: <div>
-						<p className="center">Groups with less than {minPlayers} members cannot complete comics. You can still begin making comics for the group, but they will remain incomplete until more members join.</p>
+						<p className="center">Groups with less than {minUsers} members cannot complete comics. You can still begin making comics for the group, but they will remain incomplete until more members join.</p>
 						<p className="center">Would you still like to play with this group?</p>
 					</div>,
 				yesLabel: 'Yes, play anyway',
@@ -145,10 +153,49 @@ class GroupPage extends Component {
 			});
 		}
 	}
+	createGroupChallenge(challenge) {
+		//Server
+		Util.api.post('/api/createGroupChallenge', {
+			groupId: this.state.group.groupId,
+			challenge
+		})
+		.then(result => {
+			if(!result.error) {
+				this.setState({
+					groupChallenges: [result, ...this.state.groupChallenges]
+				});
+			}
+		});
+	}
+	removeGroupChallenge(groupChallenge) {
+		this.props.openModal({
+			type: Util.enums.ModalType.Confirm,
+			title: 'Remove group challenge',
+			content: <div>
+					<p className="center">Are you sure you want to remove "{groupChallenge.challenge}" from the group's challenges?</p>
+					<p className="center">This will not remove the challenge from any existing comics.</p>
+				</div>,
+			yesLabel: 'Yes, remove',
+			noLabel: 'Cancel',
+			yesFn: () => {
+				//Server
+				Util.api.post('/api/removeGroupChallenge', {
+					groupId: this.state.group.groupId,
+					groupChallengeId: groupChallenge.groupChallengeId
+				});
+
+				//Client
+				this.setState({
+					groupChallenges: this.state.groupChallenges.filter(gc => gc.groupChallengeId !== groupChallenge.groupChallengeId)
+				});
+			}
+		});
+	}
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />
 
 		let isAdmin = this.state.group && Util.context.isGroupAdmin(this.state.group.groupId);
+		let isInGroup = this.state.group && Util.context.isInGroup(this.state.group.groupId);
 
 		let getTabs = () => {
 			let tabs = [{
@@ -198,17 +245,36 @@ class GroupPage extends Component {
 				</div>
 			}];
 
-			if(Util.array.any(this.state.group.groupChallenges) || isAdmin) {
+			if(Util.array.any(this.state.groupChallenges) || isAdmin) {
 				tabs.push({
 					tabId: 'challenges',
 					title: 'challenges',
-					content: <div className="group-challenge-list">
-						{Util.array.any(this.state.group.groupChallenges)
-							? this.state.group.groupChallenges.map(groupChallenge => {
-								return <div key={groupChallenge.groupChallengeId} className="group-challenge-item">
-									{groupChallenge.challenge}
-								</div>;
-							})
+					content: <div className="challenges">
+						<p className="center sm">Challenges add variations to the rules when making a comic. For example: "make your dialogue rhyme", "make as many ocean-based puns as possible" or "the author of the last panel must speak like Yoda".</p>
+						{isAdmin 
+							? <ButtonInput placeholder="Enter a new challenge" maxLength={64} buttonLabel="Add" onSubmit={this.createGroupChallenge} />
+							: null}
+						{Util.array.any(this.state.groupChallenges)
+							? <div className="group-challenges-list">
+								{this.state.groupChallenges.map(groupChallenge => {
+									return <div key={groupChallenge.groupChallengeId} className="group-challenge-item">
+										<div className="challenge-detail">
+											<p>{groupChallenge.challenge}</p>
+											{isInGroup
+												? <Button colour="pink" size="sm" label="Play with this challenge" onClick={() => this.setRedirectToPlayWithGroup(groupChallenge.groupChallengeId)} />
+												: null
+											}
+										</div>
+										{isAdmin 
+											? <ContextMenu menuItems={[{
+												label: 'Remove',
+												onClick: () => this.removeGroupChallenge(groupChallenge)
+											}]} />
+											: null
+										}
+									</div>;
+								})}
+							</div>
 							: <p className="empty-text">This group has no challenges.</p>
 						}
 					</div>
@@ -245,8 +311,8 @@ class GroupPage extends Component {
 											} */}
 											{Util.context.isAuthenticated()
 												? <div className="button-container group-call-to-action direction-column">
-													{Util.context.isInGroup(this.state.group.groupId)
-														? <Button colour="pink" label="Play with this group" onClick={this.setRedirectToPlayWithGroup} />
+													{isInGroup
+														? <Button colour="pink" label="Play with this group" onClick={() => this.setRedirectToPlayWithGroup()} />
 														: this.state.group.pendingGroupRequest
 															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequest.createdAt).fromNow()}.</p>
 															: this.state.isJoining

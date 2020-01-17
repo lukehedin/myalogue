@@ -118,48 +118,53 @@ class GroupPendingInfoGroup extends Component {
 		});
 	}
 	render() {
-		if(this.state.isLoading) return <div className="loader"></div>;
-
 		return <div className="group-pending-info-group">
 			<div className="invite-bar">
-				<ButtonInput placeholder="Invite by username" buttonLabel="Invite" onSubmit={this.inviteUserToGroup} />
+				<ButtonInput placeholder="Invite by username" buttonLabel="Invite" maxLength={20} onSubmit={this.inviteUserToGroup} />
 				{this.state.inviteResult ? <p className="sm">{this.state.inviteResult}</p> : null}
 			</div>
-			<div className="group-pending-info">
-				<h3 className="group-pending-info-heading">Pending group requests</h3>
-				{Util.array.any(this.state.groupRequests)
-					? this.state.groupRequests.map(groupRequest => {
-						return <div key={groupRequest.groupRequestId} className="group-pending-info-item">
-							<UserAvatar size={32} user={groupRequest.user} />
-							<div className="item-details">
-								<p className="item-name"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link></p>
-								<p className="item-subtitle sm"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link> requested to join {moment(groupRequest.createdAt).fromNow()}.</p>
-							</div>
-							<ContextMenu align="right" menuItems={[{
-								label: 'Approve',
-								onClick: () => this.approveGroupRequest(groupRequest)
-							}, {
-								label: 'Deny',
-								onClick: () => this.denyGroupRequest(groupRequest)
-							}]} />
+			<div className="group-pending-info-inner">
+				{this.state.isLoading
+					? <div className="loader"></div>
+					: <div>
+						<div className="group-pending-info">
+							<h3 className="group-pending-info-heading">Pending group requests</h3>
+							{Util.array.any(this.state.groupRequests)
+								? this.state.groupRequests.map(groupRequest => {
+									return <div key={groupRequest.groupRequestId} className="group-pending-info-item">
+										<UserAvatar size={32} user={groupRequest.user} />
+										<div className="item-details">
+											<p className="item-name"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link></p>
+											<p className="item-subtitle sm"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link> requested to join {moment(groupRequest.createdAt).fromNow()}.</p>
+										</div>
+										<ContextMenu align="right" menuItems={[{
+											label: 'Approve',
+											onClick: () => this.approveGroupRequest(groupRequest)
+										}, {
+											label: 'Deny',
+											onClick: () => this.denyGroupRequest(groupRequest)
+										}]} />
+									</div>
+								})
+								: <p className="empty-text">This group doesn't have any pending requests.</p>
+							}
 						</div>
-					})
-					: <p className="empty-text">This group doesn't have any pending requests.</p>
-				}
-			</div>
-			<div className="group-pending-info">
-				<h3 className="group-pending-info-heading">Pending group invites</h3>
-				{Util.array.any(this.state.groupInvites)
-					? this.state.groupInvites.map(groupInvite => {
-						return <div key={groupInvite.groupInviteId} className="group-pending-info-item">
-							<UserAvatar size={32} user={groupInvite.user} />
-							<div className="item-details">
-								<p className="item-name"><Link to={Util.route.profile(groupInvite.user.username)}>{groupInvite.user.username}</Link></p>
-								<p className="item-subtitle sm"><Link to={Util.route.profile(groupInvite.invitedByUser.username)}>{groupInvite.invitedByUser.username}</Link> invited <Link to={Util.route.profile(groupInvite.user.username)}>{groupInvite.user.username}</Link> to join {moment(groupInvite.createdAt).fromNow()}.</p>
-							</div>
+						<div className="group-pending-info">
+							<h3 className="group-pending-info-heading">Pending group invites</h3>
+							{Util.array.any(this.state.groupInvites)
+								? this.state.groupInvites.map(groupInvite => {
+									return <div key={groupInvite.groupInviteId} className="group-pending-info-item">
+										<UserAvatar size={32} user={groupInvite.user} />
+										<div className="item-details">
+											<p className="item-name"><Link to={Util.route.profile(groupInvite.user.username)}>{groupInvite.user.username}</Link></p>
+											<p className="item-subtitle sm"><Link to={Util.route.profile(groupInvite.invitedByUser.username)}>{groupInvite.invitedByUser.username}</Link> invited <Link to={Util.route.profile(groupInvite.user.username)}>{groupInvite.user.username}</Link> to join {moment(groupInvite.createdAt).fromNow()}.</p>
+										</div>
+									</div>
+								})
+								: <p className="empty-text">This group doesn't have any pending invites.</p>
+							}
 						</div>
-					})
-					: <p className="empty-text">This group doesn't have any pending invites.</p>
+					</div>
 				}
 			</div>
 		</div>;

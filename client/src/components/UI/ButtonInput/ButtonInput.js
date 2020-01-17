@@ -35,7 +35,7 @@ export default class ButtonInput extends Component {
 	}
 	render() {
 		return <div className="button-input">
-			<input value={this.state.value} placeholder={this.props.placeholder || ''} onChange={this.onChange} onKeyDown={this.onKeyDown}></input>
+			<input maxLength={this.props.maxLength} value={this.state.value} placeholder={this.props.placeholder || ''} onChange={this.onChange} onKeyDown={this.onKeyDown}></input>
 			<Button onClick={this.submit} isDisabled={!this.state.value} label={this.props.buttonLabel || 'Submit'} />
 		</div>;
 	}

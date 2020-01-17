@@ -1,5 +1,5 @@
 .group-pending-info-group {
-	> * {
+	.group-pending-info, .invite-bar {
 		&:not(:last-child) {
 			margin-bottom: $spacing-sm;
 			padding-bottom: $spacing-sm;
@@ -12,33 +12,38 @@
 			max-width: 300px;
 		}
 	}
+	
+	.group-pending-info-inner {
+		@include loaderContainer;
 
-	.group-pending-info {
-		.group-pending-info-heading {
-			text-align: left;
-			margin-bottom: $spacing-sm;
-		}
+		.group-pending-info {
 
-		.group-pending-info-item {
-			display: flex;
-			flex-direction: row;
-			align-items: flex-start;
-
-			&:not(:last-child) {
+			.group-pending-info-heading {
+				text-align: left;
 				margin-bottom: $spacing-sm;
 			}
-
-			.item-details {
-				flex: 1;
-				margin: 0 $spacing-xs;
-
-				.item-name {
-					margin-bottom: $spacing-xxs;
-					font-weight: bold;
+	
+			.group-pending-info-item {
+				display: flex;
+				flex-direction: row;
+				align-items: flex-start;
+	
+				&:not(:last-child) {
+					margin-bottom: $spacing-sm;
 				}
-
-				.item-subtitle {
-					margin: 0;
+	
+				.item-details {
+					flex: 1;
+					margin: 0 $spacing-xs;
+	
+					.item-name {
+						margin-bottom: $spacing-xxs;
+						font-weight: bold;
+					}
+	
+					.item-subtitle {
+						margin: 0;
+					}
 				}
 			}
 		}

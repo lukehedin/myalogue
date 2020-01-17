@@ -337,6 +337,8 @@ export default class PlayService extends Service {
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,
 
+			//While we do have the group names on the client, it's not unlikely that you could be
+			//added to a new group during play. Safer to send it with the comic.
 			groupName: dbComic.Group
 				? dbComic.Group.Name
 				: null,

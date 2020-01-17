@@ -291,7 +291,7 @@ export default class UserService extends Service {
 			}
 		});
 	}
-	async SaveAvatarUrl (userId, avatarUrl) {
+	async SaveUserAvatarUrl (userId, avatarUrl) {
 		return await this.models.User.update({
 			AvatarUrl: avatarUrl
 		}, {

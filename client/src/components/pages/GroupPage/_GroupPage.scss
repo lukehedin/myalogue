@@ -74,6 +74,34 @@
 		}
 	}
 
+	.challenges {
+		.group-challenges-list {
+			border-top: 1px solid $colour-grey-a;
+			padding-top: $spacing-md;
+			margin-top: $spacing-md;
+			
+			.group-challenge-item {
+				display: flex;
+				flex-direction: row;
+				align-items: flex-start;
+
+				&:not(:last-child) {
+					margin-bottom: $spacing-md;
+				}
+
+				.challenge-detail {
+					flex: 1;
+
+					p {
+						font-size: 14px;
+						font-style: italic;
+						margin-bottom: $spacing-xxs;
+					}
+				}
+			}
+		}
+	}
+
 	.comic-list {
 		margin-top: $spacing-md;
 	}

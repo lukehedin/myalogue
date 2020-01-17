@@ -1244,31 +1244,34 @@ body {
         body .app-container .app .button-input .button {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0; }
-      body .app-container .app .group-pending-info-group > *:not(:last-child) {
+      body .app-container .app .group-pending-info-group .group-pending-info:not(:last-child), body .app-container .app .group-pending-info-group .invite-bar:not(:last-child) {
         margin-bottom: 16px;
         padding-bottom: 16px;
         border-bottom: 1px solid #efefef; }
       body .app-container .app .group-pending-info-group .invite-bar .button-input {
         max-width: 300px; }
-      body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-heading {
-        text-align: left;
-        margin-bottom: 16px; }
-      body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start; }
-        body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item:not(:last-child) {
+      body .app-container .app .group-pending-info-group .group-pending-info-inner {
+        min-height: 40px;
+        position: relative; }
+        body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-heading {
+          text-align: left;
           margin-bottom: 16px; }
-        body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details {
-          flex: 1;
-          margin: 0 8px; }
-          body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details .item-name {
-            margin-bottom: 4px;
-            font-weight: bold; }
-          body .app-container .app .group-pending-info-group .group-pending-info .group-pending-info-item .item-details .item-subtitle {
-            margin: 0; }
-      body .app-container .app .group-pending-info-group .group-pending-info .empty-text {
-        text-align: left; }
+        body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-item {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start; }
+          body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-item:not(:last-child) {
+            margin-bottom: 16px; }
+          body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-item .item-details {
+            flex: 1;
+            margin: 0 8px; }
+            body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-item .item-details .item-name {
+              margin-bottom: 4px;
+              font-weight: bold; }
+            body .app-container .app .group-pending-info-group .group-pending-info-inner .group-pending-info .group-pending-info-item .item-details .item-subtitle {
+              margin: 0; }
+        body .app-container .app .group-pending-info-group .group-pending-info-inner .empty-text {
+          text-align: left; }
       body .app-container .app .group-pending-info-user > *:not(:last-child) {
         margin-bottom: 16px;
         padding-bottom: 16px;
@@ -1390,7 +1393,8 @@ body {
           body .app-container .app .page-play .play-area .play-area-top .instruction {
             margin: 0;
             margin-top: 4px;
-            font-size: 12px; }
+            font-size: 12px;
+            max-width: 300px; }
             body .app-container .app .page-play .play-area .play-area-top .instruction .play-tag {
               color: #ff0052;
               font-weight: bold; }
@@ -1488,6 +1492,22 @@ body {
               margin-bottom: 4px; }
             body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .joined-at {
               margin: 0; }
+      body .app-container .app .page-group .challenges .group-challenges-list {
+        border-top: 1px solid #efefef;
+        padding-top: 32px;
+        margin-top: 32px; }
+        body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start; }
+          body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item:not(:last-child) {
+            margin-bottom: 32px; }
+          body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item .challenge-detail {
+            flex: 1; }
+            body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item .challenge-detail p {
+              font-size: 14px;
+              font-style: italic;
+              margin-bottom: 4px; }
       body .app-container .app .page-group .comic-list {
         margin-top: 32px; }
       body .app-container .app .page-group-editor .group-avatar-editor {

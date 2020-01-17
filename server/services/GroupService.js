@@ -480,12 +480,37 @@ export default class GroupService extends Service {
 			}
 		});
 	}
-	async SaveAvatarUrl(userId, groupId, avatarUrl) {
+	async SaveGroupAvatarUrl(groupId, avatarUrl) {
 		await this.models.Group.update({
 			AvatarUrl: avatarUrl
 		}, {
 			where: {
 				GroupId: groupId
+			}
+		});
+	}
+	async GetGroupChallenges(groupId) {
+		let dbGroupChallenges = await this.models.GroupChallenge.findAll({
+			where: {
+				GroupId: groupId
+			}
+		});
+
+		return dbGroupChallenges.map(mapper.fromDbGroupChallenge);
+	}
+	async CreateGroupChallenge(groupId, challenge) {
+		let dbNewGroupChallenge = await this.models.GroupChallenge.create({
+			GroupId: groupId,
+			Challenge: challenge
+		});
+
+		return mapper.fromDbGroupChallenge(dbNewGroupChallenge);
+	}
+	async RemoveGroupChallenge(groupId, groupChallengeId) {
+		return await this.models.GroupChallenge.destroy({
+			where: {
+				GroupId: groupId,
+				GroupChallengeId: groupChallengeId
 			}
 		});
 	}
