@@ -179,15 +179,12 @@ class Comic extends Component {
 			{this.props.isUpperInfoHidden
 				? null
 				: <div className="comic-upper comic-width">
-					<p>{createdByInfo}</p>
-					{this.state.comic.challenge
-						? <p><i>{this.state.comic.challenge}</i></p>
+					<p><b>Comic #{this.state.comic.comicId} - Completed {moment(this.state.comic.completedAt).fromNow()}</b></p>
+					<p>{createdByInfo}{this.state.comic.challenge
+						? <span> - {this.state.comic.challenge}</span>
 						: null
-					}
-					<div className="comic-upper-details">
-						<p><b>Comic #{this.state.comic.comicId}</b></p>
-						<p>{moment(this.state.comic.completedAt).fromNow()}</p>
-					</div>
+					}</p>
+					
 				</div>
 			}
 			<div className="comic-content no-select"

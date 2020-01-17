@@ -187,11 +187,6 @@ body {
         body .app-container .app .comic .comic-upper {
           font-size: 10px;
           color: #969696; }
-          body .app-container .app .comic .comic-upper .comic-upper-details {
-            display: flex;
-            flex-direction: row; }
-            body .app-container .app .comic .comic-upper .comic-upper-details :first-child {
-              flex: 1; }
           body .app-container .app .comic .comic-upper p {
             margin: 0;
             margin-bottom: 1px; }
