@@ -231,7 +231,7 @@ export default {
 			if(!userId && !anonId) throw 'No identity id supplied';
 
 			let playBundle = await services.Play.Play(userId, anonId, templateId, groupId, groupChallengeId);
-			
+
 			//We process a skipped comic after the play so that our existing lock remains until after the above
 			//The await here is debatable, but it will ensure the skip is processed before another one comes through
 			if(skippedComicId) await services.Play.SkipComic(userId, anonId, skippedComicId);

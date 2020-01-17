@@ -9,12 +9,10 @@ import Service from './Service';
 
 export default class PlayService extends Service {
 	async Play(userId, anonId, templateId, groupId, groupChallengeId) {
-		//Random chance to start new comic
-		let startNewComic = !!common.config.ComicPlayNewChance && common.getRandomInt(1, common.config.ComicPlayNewChance) === 1;
 		let userInGroupIds = [];
 
-		//Ensure user is in the group, if specified
-		if(groupId) {
+		if(userId) {
+			//Find the user's groups they can play with
 			let dbGroupUsers = await this.models.GroupUser.findAll({
 				where: {
 					UserId: userId
@@ -22,21 +20,27 @@ export default class PlayService extends Service {
 			});
 			userInGroupIds = dbGroupUsers.map(dbGroupUser => dbGroupUser.GroupId);
 
-			//User is not in group, remove group params
-			if(!userInGroupIds.includes(groupId)) {
+			//if groupId specified, ensure user is in the group,
+			if(groupId && !userInGroupIds.includes(groupId)) {
+				//User is not in group, remove group params
 				groupId = null;
 				groupChallengeId = null;
 			}
 		} else {
-			//Don't allow an challenge if groupId isn't provided
+			//Don't allow groups/challenges if userId isn't provided
 			groupId = null;
 			groupChallengeId = null;
 		}
 
-		return startNewComic
+		return await this.FindOrCreateNewComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId)
+	}
+	async FindOrCreateNewComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId) {
+		//Random chance to start new comic
+		let createNewComic = !!common.config.ComicPlayNewChance && common.getRandomInt(1, common.config.ComicPlayNewChance) === 1;
+
+		return createNewComic
 			? await this.CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId)
 			: await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
-
 	}
 	async CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId) {
 		let templateWhere = {
@@ -100,7 +104,7 @@ export default class PlayService extends Service {
 			LockedByAnonId: anonId
 		});
 
-		return await this.PrepareDbComicForPlay(userId, anonId, dbNewComic);
+		return await this.PrepareDbComicForPlay(dbNewComic.ComicId);
 	}
 	async FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId) {
 		let comicWhere = {
@@ -188,13 +192,6 @@ export default class PlayService extends Service {
 		let randomDbComics = await this.models.Comic.findAll({
 			limit: 1,
 			where: comicWhere,
-			include: [{ //Don't return comments, ratings, etc for this one, just panels
-				model: this.models.ComicPanel,
-				as: 'ComicPanels'
-			}, {
-				model: this.models.GroupChallenge,
-				as: 'GroupChallenge'
-			}],
 			//Might be better if this also pushed groups to the front
 			order: [Sequelize.fn('RANDOM')]
 		});
@@ -231,11 +228,29 @@ export default class PlayService extends Service {
 				return await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
 			} else {
 				//We have locked the comic, prepare it for play
-				return await this.PrepareDbComicForPlay(userId, anonId, dbComic);
+				return await this.PrepareDbComicForPlay(dbComic.ComicId);
 			}
 		}
 	}
-	async PrepareDbComicForPlay(userId, anonId, dbComic) {
+	async PrepareDbComicForPlay(comicId) {
+		//We specifically parse in a comicId instead of a dbComic here, to make sure we have the associated data for both found/created comics.
+		//The comic must already be locked before this function is called. Again, because found/created comics do this differently.
+		let dbComic = await this.models.Comic.findOne({
+			where: {
+				ComicId: comicId
+			},
+			include: [{ //Don't return comments, ratings, etc for this one, just what is neccessary for the play bundle
+				model: this.models.ComicPanel,
+				as: 'ComicPanels'
+			}, {
+				model: this.models.Group,
+				as: 'Group'
+			}, {
+				model: this.models.GroupChallenge,
+				as: 'GroupChallenge'
+			}]
+		});
+
 		// Once a dbComic has been found or created AND IS LOCKED, this function is called to prepare it for play.
 		let completedComicPanels = dbComic.ComicPanels || [];
 		let currentComicPanel = completedComicPanels.length > 0
@@ -273,7 +288,7 @@ export default class PlayService extends Service {
 				where: templatePanelWhere
 			})
 		];
-		//If we have a currentComicPanel, also fetch that so we can check if it has a PanelGroup
+		//If we have a currentComicPanel, also fetch it's template panel that so we can check if it has a PanelGroup
 		if(currentComicPanel) {
 			templatePanelPromises.push(
 				this.models.TemplatePanel.findOne({
@@ -322,8 +337,11 @@ export default class PlayService extends Service {
 			totalPanelCount: dbComic.PanelCount,
 			completedPanelCount: completedComicPanels.length,
 
+			groupName: dbComic.Group
+				? dbComic.Group.Name
+				: null,
 			challenge: dbComic.GroupChallenge
-				? dbComic.GroupChallenge.challenge
+				? dbComic.GroupChallenge.Challenge
 				: null,
 
 			currentComicPanel: currentComicPanel 

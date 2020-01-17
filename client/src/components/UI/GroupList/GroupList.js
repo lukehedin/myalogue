@@ -176,20 +176,18 @@ class GroupList extends Component {
 							<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
 							<div className="group-details">
 								<p className="group-name"><Link to={Util.route.group(group.groupId)}>{group.name}</Link></p>
-								{Util.context.isGroupAdmin(group.groupId) ? <p className="group-bottom sm">You are an admin of this group</p> : null}
+								<p className="group-subtitle sm">{group.isPublic ? 'Public' : 'Private'} group • {group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
+								{Util.context.isGroupAdmin(group.groupId) ? <p className="group-subtitle sm">You are an admin of this group</p> : null}
 								{!this.props.hideDescription && group.description
 									? <HTMLEllipsis
 										className="description"
 										unsafeHTML={Util.format.userStringToSafeHtml(group.description)}
-										maxLine='3'
+										maxLine='1'
 										ellipsis='...'
 										basedOn='letters'
 									/>
 									: null
 								}
-								<div className="group-bottom">
-									<p className="sm">{group.isPublic ? 'Public' : 'Private'} group • {group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
-								</div>
 							</div>
 							{Util.array.any(contextMenuItems) 
 								? <ContextMenu align="right" menuItems={contextMenuItems} />

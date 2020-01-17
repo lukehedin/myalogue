@@ -16,15 +16,13 @@
 
 			.instruction {
 				margin: 0;
-			}
-
-			.challenge {
-				background-color: $colour-pink;
-				color: $colour-white;
-				text-align: center;
-				padding: $spacing-xxs;
 				margin-top: $spacing-xxs;
-				margin-bottom: 0;
+				font-size: 12px;
+
+				.play-tag {
+					color: $colour-pink;
+					font-weight: bold;
+				}
 			}
 
 			.progress-bar {
@@ -51,7 +49,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			margin-bottom: $spacing-sm;
+			margin: $spacing-md 0;
 		}
 
 		.start-help {
@@ -99,7 +97,7 @@
 		}
 
 		.tip-strip {
-			margin-top: $spacing-lg;
+			margin-top: $spacing-xl * 2;
 		}
 	}
 }

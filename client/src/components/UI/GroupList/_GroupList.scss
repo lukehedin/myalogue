@@ -39,19 +39,16 @@
 					margin-bottom: $spacing-xxs;
 				}
 		
+				.group-subtitle {
+					margin-top: $spacing-xxs;
+					margin-bottom: $spacing-xxs;
+				}
+		
 				.description {
+					color: $colour-grey-d;
 					overflow-wrap: break-word;
 					white-space: pre-line;
 					font-size: 12px;
-				}
-		
-				.group-bottom {
-					margin-top: $spacing-xxs;
-					color: $colour-grey-d;
-
-					p {
-						margin: 0;
-					}
 				}
 			}
 		}

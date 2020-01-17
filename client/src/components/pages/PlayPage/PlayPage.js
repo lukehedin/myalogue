@@ -28,14 +28,15 @@ export default class PlayPage extends Component {
 			isSubmitted: false,
 			redirectToComicId: null,
 
-			//Play options
+			//Play options (used to find comics to play with)
 			templateId: templateId ? parseInt(templateId) : null,
 			groupId: groupId ? parseInt(groupId) : null,
 			groupChallengeId: groupChallengeId ? parseInt(groupChallengeId) : null,
 
-			// Play data
+			// Play data (for the current comic)
 			comicId: null,
 			templatePanelId: null,
+			groupName: null,
 			challenge: null,
 			currentComicPanel: null,
 
@@ -69,6 +70,7 @@ export default class PlayPage extends Component {
 			isPlaying: false,
 			comicId: null,
 			templatePanelId: null,
+			groupName: null,
 			challenge: null,
 			currentComicPanel: null,
 			dialogue: '',
@@ -97,6 +99,7 @@ export default class PlayPage extends Component {
 					isLoading: false,
 					comicId: result.comicId,
 					templatePanelId: result.templatePanelId,
+					groupName: result.groupName,
 					challenge: result.challenge,
 					currentComicPanel: result.currentComicPanel, //May be null
 
@@ -175,15 +178,11 @@ export default class PlayPage extends Component {
 			content = <div className="play-area">
 				<div className="play-area-top">
 					<Timer autoStart={{ minutes: playTimerMins, seconds: 0 }} onComplete={this.resetPlayData} />
-					<p className="instruction center sm">{this.state.currentComicPanel
+					<p className="instruction center">{this.state.currentComicPanel
 						? this.state.totalPanelCount === this.state.completedPanelCount + 1 
 							? `Finish` 
 							: `Continue`
-						: `Begin`} the comic{this.state.challenge ? `, but also:` : null}</p>
-					{this.state.challenge
-						? <p className="challenge sm">{this.state.challenge}</p>
-						: null
-					}
+						: `Begin`} the comic{this.state.groupName ? <span> for <span className="play-tag">{this.state.groupName}</span></span> : null}{this.state.challenge ? <span>, but also <span className="play-tag">{this.state.challenge}</span></span> : null}</p>
 					<ProgressBar 
 						className={this.state.dialogue ? `with-dialogue` : ``}
 						total={this.state.totalPanelCount} 

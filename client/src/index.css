@@ -169,7 +169,7 @@ body {
             min-height: 40px;
             position: relative; }
         body .app-container .app .comic-list .tip-strip {
-          margin-top: 64px; }
+          margin-top: 128px; }
       body .app-container .app .comic-vote {
         display: flex;
         flex-direction: row;
@@ -1163,15 +1163,14 @@ body {
             white-space: normal;
             text-overflow: ellipsis;
             margin-bottom: 4px; }
+          body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-subtitle {
+            margin-top: 4px;
+            margin-bottom: 4px; }
           body .app-container .app .group-list .group-list-inner .group-list-item .group-details .description {
+            color: #777777;
             overflow-wrap: break-word;
             white-space: pre-line;
             font-size: 12px; }
-          body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-bottom {
-            margin-top: 4px;
-            color: #777777; }
-            body .app-container .app .group-list .group-list-inner .group-list-item .group-details .group-bottom p {
-              margin: 0; }
       body .app-container .app .group-list .group-list-bottom {
         min-height: 40px;
         position: relative; }
@@ -1377,14 +1376,12 @@ body {
           body .app-container .app .page-play .play-area .play-area-top .timer {
             text-align: center; }
           body .app-container .app .page-play .play-area .play-area-top .instruction {
-            margin: 0; }
-          body .app-container .app .page-play .play-area .play-area-top .challenge {
-            background-color: #ff0052;
-            color: #fff;
-            text-align: center;
-            padding: 4px;
+            margin: 0;
             margin-top: 4px;
-            margin-bottom: 0; }
+            font-size: 12px; }
+            body .app-container .app .page-play .play-area .play-area-top .instruction .play-tag {
+              color: #ff0052;
+              font-weight: bold; }
           body .app-container .app .page-play .play-area .play-area-top .progress-bar {
             margin: 8px 0;
             width: 240px; }
@@ -1405,7 +1402,7 @@ body {
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin-bottom: 16px; }
+          margin: 32px 0; }
         body .app-container .app .page-play .play-area .start-help {
           margin-top: 64px;
           color: #969696; }
@@ -1439,7 +1436,7 @@ body {
             text-align: left;
             font-size: 12px; }
         body .app-container .app .page-play .play-area .tip-strip {
-          margin-top: 64px; }
+          margin-top: 256px; }
       body .app-container .app .page-group .group-info .group-info-header > * {
         text-align: center; }
       body .app-container .app .page-group .group-info .group-info-header .group-avatar {
