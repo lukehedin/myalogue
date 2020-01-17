@@ -37,7 +37,7 @@ const mapper = {
 			leaderboardRating: dbComic.LeaderboardRating,
 			groupId: dbComic.GroupId,
 			group: dbComic.Group ? mapper.fromDbGroup(dbComic.Group) : null,
-			groupChallenge: dbComic.GroupChallenge ? mapper.fromDbGroupChallenge(dbComic.GroupChallenge) : null,
+			challenge: dbComic.GroupChallenge ? dbComic.GroupChallenge.Challenge : null,
 			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))

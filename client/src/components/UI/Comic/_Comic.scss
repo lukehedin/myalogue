@@ -2,6 +2,24 @@
 	position: relative;
 	overflow: visible;
 
+	.comic-upper {
+		font-size: 10px;
+		color: $colour-grey-c;
+		.comic-upper-details {
+			display: flex;
+			flex-direction: row;
+			
+			:first-child {
+				flex: 1;
+			}
+		}
+
+		p {
+			margin: 0;
+			margin-bottom: 1px;
+		}
+	}
+
 	.comic-content {
 		cursor: pointer;
 		position: relative;

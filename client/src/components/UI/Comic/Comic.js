@@ -119,7 +119,6 @@ class Comic extends Component {
 		this.state.comic.comicPanels.forEach((comicPanel, idx) => {
 			let leftLabel = null;
 			if(idx === 0 && comicPanel.comicId) leftLabel = `Comic #${comicPanel.comicId} ${Util.route.getHost()}`;
-			if(idx === this.state.comic.comicPanels.length - 1 && this.state.comic.group) leftLabel = this.state.comic.group.name;
 
 			let panel = <ComicPanel isColour={true} comicPanel={comicPanel} leftLabel={leftLabel} />
 
@@ -168,7 +167,26 @@ class Comic extends Component {
 			}), ...comments]
 		}
 
+		let createdByInfo = 'Anonymous users';
+		if(this.state.comic.group) {
+			createdByInfo = this.state.comic.group.name;
+		} else if(!this.state.comic.isAnonymous) {
+			let userCount = [...new Set(this.state.comic.comicPanels.filter(cp => cp.user).map(cp => cp.user.userId))].length;
+			createdByInfo = `${userCount} ${Util.format.pluralise(userCount, 'user')}`;
+		}
+
 		return <div className="comic">
+			<div className="comic-upper comic-width">
+				<p>{createdByInfo}</p>
+				{this.state.comic.challenge
+					? <p><i>{this.state.comic.challenge}</i></p>
+					: null
+				}
+				<div className="comic-upper-details">
+					<p><b>Comic #{this.state.comic.comicId}</b></p>
+					<p>{moment(this.state.comic.completedAt).fromNow()}</p>
+				</div>
+			</div>
 			<div className="comic-content no-select"
 				ref={this.comicContentRef}
 				onClick={() => this.openShareComicModal()}
@@ -179,10 +197,6 @@ class Comic extends Component {
 			{this.state.comic.comicId
 				? <div className="comic-lower comic-width">
 					<div className="comic-lower-inner">
-						<div className="comic-lower-details">
-							<p className="sm"><b>Comic #{this.state.comic.comicId}</b></p>
-							<p className="sm">{moment(this.state.comic.completedAt).fromNow()}</p>
-						</div>
 						<div className="flex-spacer"></div>
 						<Button isHollow={!this.state.isCommentsVisible} size="sm" leftIcon={Util.icon.comment} onClick={this.toggleIsCommentsVisible} label={Util.array.any(this.state.comic.comicComments) ? this.state.comic.comicComments.length : null} colour="grey" />
 						<ComicVote comicId={this.state.comic.comicId} defaultRating={this.state.comic.rating} defaultValue={this.state.comic.voteValue} />

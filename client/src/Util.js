@@ -416,7 +416,7 @@ const Util = {
 		},
 
 		userStringToSafeComponent: (str = "", allowMentions = false) => {
-			let html = Util.format.userStringToSafeHtml(str, allowMentions = false);
+			let html = Util.format.userStringToSafeHtml(str, allowMentions);
 			let components = ReactHtmlParser(html);
 
 			for(let i = 0; i < components.length; i++) {
