@@ -54,6 +54,10 @@ export default {
 			HighTotalRating: 7, //Reach a total comic rating of 5000 or more (acc)
 			LotsOfRatings: 21, //Rate 1000 comics
 			LotsOfRatingsForOthers: 22, //Rate 1000 comics you aren't featured in
+
+			FirstGroupComic: 23, //Made a group comic
+			TopPublicGroup: 24, //In a public group on top of the leaderboard
+			TopPrivateGroup: 25 // In a private group on top of the leaderboard
 		},
 		
 		NotificationType: {

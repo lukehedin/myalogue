@@ -199,6 +199,23 @@ export default {
 			return await services.Group.GetGroups(userId, forUserId, search, sortBy, offset, limit);
 		},
 
+		joinGroup: async (req, services) => {
+			let userId = req.userId;
+
+			let groupId = req.body.groupId;
+			
+			return await services.Group.JoinGroup(userId, groupId);
+		},
+
+		actionGroupInvite: async (req, services) => {
+			let userId = req.userId;
+
+			let groupInviteId = req.body.groupInviteId;
+			let isAccepting = req.body.isAccepting;
+
+			return await services.Group.ActionGroupInvite(userId, groupInviteId, isAccepting);
+		},
+
 		//Gets a comic in progress or starts new
 		play: async (req, services) => {
 			let userId = req.userId;
@@ -374,7 +391,7 @@ export default {
 			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 
-			let groupId = parseInt(req.body.groupId);
+			let groupId = req.body.groupId;
 
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 			
@@ -391,8 +408,6 @@ export default {
 			let groupId = req.body.groupId;
 			
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
-
-
 		},
 
 		getPendingGroupInfoForGroup: async (req, services) => {
@@ -418,18 +433,6 @@ export default {
 			return await services.Group.InviteToGroupByUsername(userId, username, groupId);
 		},
 
-		joinGroup: async (req, services) => {
-			let userId = req.userId;
-			let memberOfGroupIds = req.memberOfGroupIds;
-
-			let groupId = req.body.groupId;
-
-			//RARE: checking if we ARE NOT ALREADY in the group
-			if(memberOfGroupIds.includes(groupId)) throw 'Already a group member';
-			
-			return await services.Group.JoinGroup(userId, groupId);
-		},
-
 		actionGroupRequest: async (req, services) => {
 			let adminOfGroupIds = req.adminOfGroupIds;
 			
@@ -443,16 +446,6 @@ export default {
 			return await services.Group.ActionGroupRequest(groupId, groupRequestId, isApproving);
 		},
 
-		//Does not need group permissions but currently will remain here for cleanliness
-		actionGroupInvite: async (req, services) => {
-			let userId = req.userId;
-
-			let groupInviteId = req.body.groupInviteId;
-			let isAccepting = req.body.isAccepting;
-
-			return await services.Group.ActionGroupInvite(userId, groupInviteId, isAccepting);
-		},
-
 		leaveGroup: async (req, services) => {
 			let userId = req.userId;
 			let memberOfGroupIds = req.memberOfGroupIds;
@@ -462,6 +455,29 @@ export default {
 			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
 
 			return await services.Group.RemoveUserFromGroup(userId, groupId);
-		}
+		},
+
+		removeUserFromGroup: async (req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			let removeUserId = req.body.removeUserId;
+
+			return await services.Group.RemoveUserFromGroup(removeUserId, groupId);
+		},
+		
+
+		getGroupForEdit: async (req, services) => {
+			let adminOfGroupIds = req.adminOfGroupIds;
+
+			let groupId = req.body.groupId;
+
+			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
+
+			return await await services.Group.GetById(groupId);
+		},
 	}
 };

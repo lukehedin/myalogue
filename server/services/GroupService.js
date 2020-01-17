@@ -266,7 +266,7 @@ export default class GroupService extends Service {
 		//Check if they already have an invite from this group
 		let dbExistingGroupInvite = await this.models.GroupInvite.findOne({
 			where: {
-				...this._GetPendingGroupInviteWhere,
+				...this._GetPendingGroupInviteWhere(),
 				GroupId: groupId,
 				UserId: userId
 				//We include invites that may have been ignored (as long as theyre in the timeframe)
@@ -292,7 +292,7 @@ export default class GroupService extends Service {
 				//Check if they already have a pending request
 				let dbExistingGroupRequest = await this.models.GroupRequest.findOne({
 					where: {
-						...this._GetPendingGroupRequestWhere,
+						...this._GetPendingGroupRequestWhere(),
 						GroupId: groupId,
 						UserId: userId
 					}
@@ -347,7 +347,7 @@ export default class GroupService extends Service {
 		//Check if they already have been invited
 		let dbExistingGroupInvite = await this.models.GroupInvite.findOne({
 			where: {
-				...this._GetPendingGroupInviteWhere,
+				...this._GetPendingGroupInviteWhere(),
 				GroupId: groupId,
 				UserId: dbUser.UserId
 			}
@@ -357,7 +357,7 @@ export default class GroupService extends Service {
 		//Check if they have already requested to join
 		let dbExistingGroupRequest = await this.models.GroupRequest.findOne({
 			where: {
-				...this._GetPendingGroupRequestWhere,
+				...this._GetPendingGroupRequestWhere(),
 				GroupId: groupId,
 				UserId: dbUser.UserId
 				//We include requests that may have been denied (as long as theyre in the timeframe)
@@ -438,7 +438,8 @@ export default class GroupService extends Service {
 		} else {
 			let dbNewGroup = await this.models.Group.create({
 				...saveData,
-				CreatedByUserId: userId
+				CreatedByUserId: userId,
+				IsPublic: group.isPublic //Setting is permanent
 			});
 
 			await this.AddUserToGroup(userId, dbNewGroup.GroupId, true);

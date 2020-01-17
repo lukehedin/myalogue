@@ -139,6 +139,7 @@ const mapper = {
 			description: dbGroup.Description,
 			memberCount: dbGroup.MemberCount,
 			isPublic: dbGroup.IsPublic,
+			leaderboardRating: dbGroup.LeaderboardRating,
 			//The user's current request to join, if any
 			pendingGroupRequest: pendingGroupRequest,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
@@ -248,7 +249,7 @@ const mapper = {
 
 			case common.enums.NotificationType.AchievementUnlocked:
 				title = `Achievement unlocked!`
-				message = `You unlocked the achievement ${valueString}! Click here to view your achievements.`;
+				message = `You unlocked the achievement "${valueString}"! Click here to view your achievements.`;
 				isActionable = true;
 				break;
 

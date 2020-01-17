@@ -58,10 +58,11 @@ class GroupPendingInfoGroup extends Component {
 				} else if(result.groupInviteId) {
 					this.setState({
 						inviteResult: `An invite was sent to ${value}.`,
-						groupInvites: [...this.state.groupInvites, {
-							...result,
-							invitedByUser: Util.context.getUser()
-						}]
+						groupInvites: [{
+								...result,
+								invitedByUser: Util.context.getUser()
+							}, 
+							...this.state.groupInvites]
 					});
 				}
 			} else {

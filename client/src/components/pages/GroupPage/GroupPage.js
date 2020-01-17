@@ -12,6 +12,7 @@ import GroupAvatar from '../../UI/GroupAvatar/GroupAvatar';
 import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingInfoGroup';
+import ContextMenu from '../../UI/ContextMenu/ContextMenu';
 
 class GroupPage extends Component {
 	constructor(props){
@@ -30,6 +31,7 @@ class GroupPage extends Component {
 
 		this.setRedirectToPlayWithGroup = this.setRedirectToPlayWithGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
+		this.removeGroupUser = this.removeGroupUser.bind(this);
 		this.appendNewGroupUser = this.appendNewGroupUser.bind(this);
 	}
 	componentDidMount() {
@@ -94,6 +96,29 @@ class GroupPage extends Component {
 			]
 		});
 	}
+	removeGroupUser(groupUser) {
+		this.props.openModal({
+			type: Util.enums.ModalType.Confirm,
+			title: 'Remove from group',
+			content: <div>
+					<p className="center">Are you sure you want to remove {groupUser.user.username} from the group?</p>
+				</div>,
+			yesLabel: 'Yes, remove',
+			noLabel: 'Cancel',
+			yesFn: () => {
+				//Server
+				Util.api.post('/api/removeUserFromGroup', {
+					groupId: this.state.group.groupId,
+					removeUserId: groupUser.userId
+				});
+
+				//Client
+				this.setState({
+					groupUsers: this.state.groupUsers.filter(gu => gu.groupUserId !== groupUser.groupUserId)
+				});
+			}
+		});
+	}
 	setRedirectToPlayWithGroup() {
 		const minPlayers = 3;
 		let redirectTo = Util.route.withQueryParams(Util.route.play(), { groupId: this.state.group.groupId });
@@ -123,6 +148,8 @@ class GroupPage extends Component {
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />
 
+		let isAdmin = this.state.group && Util.context.isGroupAdmin(this.state.group.groupId);
+
 		let getTabs = () => {
 			let tabs = [{
 				tabId: 'details',
@@ -142,7 +169,7 @@ class GroupPage extends Component {
 				tabId: 'members',
 				title: 'Members',
 				content: <div className="members">
-					{Util.context.isGroupAdmin(this.state.group.groupId) && !this.state.group.isPublic
+					{isAdmin && !this.state.group.isPublic
 						? <GroupPendingInfoGroup groupId={this.state.group.groupId} onNewGroupUser={this.appendNewGroupUser} />
 						: null
 					}
@@ -154,8 +181,15 @@ class GroupPage extends Component {
 									<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
 									<div className="member-list-item-detail">
 										<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
-										<p className="sm rating">Joined {moment(groupUser.createdAt).fromNow()}</p>
+										<p className="joined-at sm">Joined {moment(groupUser.createdAt).fromNow()}</p>
 									</div>
+									{isAdmin
+										? <ContextMenu menuItems={[{
+											label: 'Remove',
+											onClick: () => this.removeGroupUser(groupUser)
+										}]} />
+										: null
+									}
 								</div>;
 							})
 							: <p className="empty-text">This group doesn't have any members.</p>
@@ -164,7 +198,7 @@ class GroupPage extends Component {
 				</div>
 			}];
 
-			if(Util.array.any(this.state.group.groupChallenges) || Util.context.isGroupAdmin(this.state.group.groupId)) {
+			if(Util.array.any(this.state.group.groupChallenges) || isAdmin) {
 				tabs.push({
 					tabId: 'challenges',
 					title: 'challenges',
@@ -197,11 +231,11 @@ class GroupPage extends Component {
 										<div className="group-info-header">
 											<GroupAvatar size={96} 
 												group={this.state.group} 
-												to={Util.context.isGroupAdmin(this.state.group.groupId) ? Util.route.groupEditor(this.state.group.groupId) : null}
+												to={isAdmin ? Util.route.groupEditor(this.state.group.groupId) : null}
 											/>
 											<h2>{this.state.group.name}</h2>
 											<p className="created-date sm">{this.state.group.isPublic ? 'Public' : 'Private'} group • {this.state.groupUsers.length} {Util.format.pluralise(this.state.groupUsers, 'member')} • Created {moment(this.state.group.createdAt).fromNow()}</p>
-											{/* {Util.context.isGroupAdmin(this.state.group.groupId)
+											{/* {isAdmin
 												? <p className="admin-message sm">You are an administrator of this group</p>
 												: null
 											} */}
@@ -219,7 +253,7 @@ class GroupPage extends Component {
 																? <p className="join-info sm">{this.state.group.isPublic ? 'Joining...' : 'Requesting to join...'}</p>
 																: <Button colour="pink" label={this.state.group.isPublic ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
 													}
-													{Util.context.isGroupAdmin(this.state.group.groupId)
+													{isAdmin
 														? <Button size="sm" label="Edit group" to={Util.route.groupEditor(this.state.group.groupId)} />
 														: null
 													}

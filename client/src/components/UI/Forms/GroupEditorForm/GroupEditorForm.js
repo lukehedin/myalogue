@@ -11,7 +11,14 @@ class GroupEditorForm extends Component {
 		return <form onSubmit={this.props.submitForm}>
 			{this.props.getField('name')}
 			{this.props.getField('description')}
-			{this.props.getField('isPublic')}
+			{this.props.formData.groupId
+				? <p className="form-message">{this.props.formData.isPublic ? 'This a public group.' : 'This is a private group.'}</p>
+				: this.props.getField('isPublic')
+			}
+			{this.props.formData.groupId
+				? null
+				: <p className="form-message"><b>The public/private group setting is permanent!</b> Users can join <b>public</b> groups without making a request or being invited. Keep the group <b>private</b> if you want to make sure group members abide by group rules and challenges.</p>
+			}
 			{/* <p className="form-message">A group instruction is displayed during play when making comics with the group. It is completely optional, must be 64 characters or less and can be changed later.</p>
 			<p className="form-message">eg. "only speak in rhyme", "make frequent puns about sea creatures" or "the author of the final panel must speak like Yoda".</p> */}
 			<div className="button-container direction-column">
@@ -55,7 +62,7 @@ export default asForm(GroupEditorForm, {
 		// 	}
 		// },
 		isPublic: {
-			label: 'Public group (users can join without approval)',
+			label: 'Public group',
 			type: Util.enums.FieldType.Checkbox
 		}
 	}

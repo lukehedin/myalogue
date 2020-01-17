@@ -84,7 +84,7 @@ class GroupPendingInfoUser extends Component {
 				{Util.array.any(this.state.groupInvites)
 					? this.state.groupInvites.map(groupInvite => {
 						return <div key={groupInvite.groupInviteId} className="group-pending-info-item">
-							<GroupAvatar size={32} group={groupInvite.group} />
+							<GroupAvatar size={32} group={groupInvite.group} to={Util.route.group(groupInvite.groupId)} />
 							<div className="item-details">
 								<p className="item-name"><Link to={Util.route.group(groupInvite.group.groupId)}>{groupInvite.group.name}</Link></p>
 								<p className="item-subtitle sm"><Link to={Util.route.profile(groupInvite.invitedByUser.username)}>{groupInvite.invitedByUser.username}</Link> invited you to join {moment(groupInvite.createdAt).fromNow()}.</p>
@@ -106,7 +106,7 @@ class GroupPendingInfoUser extends Component {
 				{Util.array.any(this.state.groupRequests)
 					? this.state.groupRequests.map(groupRequest => {
 						return <div key={groupRequest.groupRequestId} className="group-pending-info-item">
-							<GroupAvatar size={32} group={groupRequest.group} />
+							<GroupAvatar size={32} group={groupRequest.group} to={Util.route.group(groupRequest.groupId)} />
 							<div className="item-details">
 								<p className="item-name"><Link to={Util.route.group(groupRequest.group.groupId)}>{groupRequest.group.name}</Link></p>
 								<p className="item-subtitle sm">You requested to join {moment(groupRequest.createdAt).fromNow()}.</p>

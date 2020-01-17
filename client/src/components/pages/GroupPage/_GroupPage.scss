@@ -41,6 +41,7 @@
 
 			.members-heading {
 				margin-bottom: $spacing-sm;
+				text-align: left;
 			}
 
 			.member-list {
@@ -61,6 +62,11 @@
 						
 						.username {
 							text-align: left;
+							margin-bottom: $spacing-xxs;
+						}
+
+						.joined-at {
+							margin: 0;
 						}
 					}
 				}

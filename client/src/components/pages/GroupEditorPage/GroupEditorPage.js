@@ -23,14 +23,14 @@ export default class GroupEditorPage extends Component {
 		if(this.props.groupId) this.fetchGroup();
 	}
 	fetchGroup() {
-		Util.api.post('/api/getGroup', {
-			groupId: this.props.groupId
+		Util.api.post('/api/getGroupForEdit', {
+			groupId: parseInt(this.props.groupId)
 		})
 		.then(result => {
 			if(!result.error) {
 				this.setState({
 					isLoading: false,
-					group: result.group
+					group: result
 				});
 			}
 		})
@@ -65,7 +65,7 @@ export default class GroupEditorPage extends Component {
 										: null
 									}
 									<GroupEditorForm 
-										formData={this.state.group || { isPublic: true }}
+										formData={this.state.group || {}}
 										onSubmit={(form, formData) => {
 											form.setLoading(true);
 

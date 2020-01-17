@@ -41,7 +41,7 @@ export default class ComicService extends Service {
 		return dbComics.length > 0 ? mapper.fromDbComic(dbComics[0]) : null;
 	}
 	async getLeaderboards() {
-		let [dbLeaderboardComics, dbLeaderboardUsers] = await Promise.all([
+		let [dbLeaderboardComics, dbLeaderboardUsers, dbLeaderboardGroups] = await Promise.all([
 			this.models.Comic.findAll({
 				where: {
 					LeaderboardRating: {
@@ -70,12 +70,25 @@ export default class ComicService extends Service {
 					['CreatedAt', 'ASC'] //Newer users will show up higher on the leaderboard if they have the same rating as an older one
 				],
 				limit: 10
+			}),
+			this.models.Group.findAll({
+				where: {
+					LeaderboardRating: {
+						[Sequelize.Op.gt]: 0
+					}
+				},
+				order: [
+					['LeaderboardRating', 'DESC'],
+					['CreatedAt', 'ASC'] //Newer groups will show up higher on the leaderboard if they have the same rating as an older one
+				],
+				limit: 10
 			})
 		]);
 
 		return {
 			comics: dbLeaderboardComics.map(mapper.fromDbComic),
-			users: dbLeaderboardUsers.map(mapper.fromDbUser)
+			users: dbLeaderboardUsers.map(mapper.fromDbUser),
+			groups: dbLeaderboardGroups.map(mapper.fromDbGroup)
 		};
 	}
 	async GetComics(forUserId = null, templateId = null, authorUserId = null, groupId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {

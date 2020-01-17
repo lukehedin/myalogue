@@ -137,7 +137,7 @@ export default class Database {
 			Description: Sequelize.TEXT,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
-			IsPublic: getBoooleanNotNull(true),
+			IsPublic: getBoooleanNotNull(),
 			AvatarUrl: Sequelize.STRING,
 			MemberCount: getIntegerNotNull(0)
 		}, true);

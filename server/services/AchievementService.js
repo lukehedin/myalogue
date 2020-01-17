@@ -80,8 +80,9 @@ export default class AchievementService extends Service {
 
 		//If anyone doesn't have firstcomic achievement, unlock it
 		await this._UnlockAchievement(common.enums.AchievementType.FirstComic, distinctUserIds, comicId);
-		
-		let dbOtherComicUsingTemplate = await this.models.Comic.findOne({
+		if(dbComic.GroupId) await this._UnlockAchievement(common.enums.AchievementType.FirstGroupComic, distinctUserIds, comicId);
+
+		let otherComicsWithTemplateCount = await this.models.Comic.count({
 			where: {
 				ComicId: {
 					[Sequelize.Op.ne]: dbComic.ComicId
@@ -92,7 +93,7 @@ export default class AchievementService extends Service {
 				TemplateId: dbComic.TemplateId
 			}
 		});
-		if(!dbOtherComicUsingTemplate) {
+		if(otherComicsWithTemplateCount === 0) {
 			await this._UnlockAchievement(common.enums.AchievementType.FirstTemplateUsage, distinctUserIds, comicId);
 		}
 
@@ -213,6 +214,26 @@ export default class AchievementService extends Service {
 	}
 	async ProcessForTopUsers(userIds) {
 		this._UnlockAchievement(common.enums.AchievementType.TopUser, userIds);
+	}
+	async ProcessForTopGroups(groupIds) {
+		let dbGroups = await this.models.Group.findAll({
+			where: {
+				GroupId: {
+					[Sequelize.Op.in]: groupIds
+				}
+			},
+			include: [{
+				model: this.models.GroupUser,
+				as: 'GroupUsers'
+			}]
+		});
+		
+		dbGroups.forEach(async dbGroup => {
+			let userIds = [...new Set(dbGroup.GroupUsers.map(dbGroupUser => dbGroupUser.UserId))];
+			await this._UnlockAchievement(dbGroup.IsPublic 
+				? common.enums.AchievementType.TopPublicGroup 
+				: common.enums.AchievementType.TopPrivateGroup, userIds);
+		});
 	}
 	async _UnlockAchievement(achievementType, userIds, comicId) {
 		//Get all the relevant userachievements matching this type and these userids
@@ -353,6 +374,18 @@ export default class AchievementService extends Service {
 			description: 'Rate 500 comics that you aren\'t featured in',
 			targetValue: 500,
 			getValue: userStats => userStats.ratingCountForOthers
+		}, {
+			type: common.enums.AchievementType.FirstGroupComic,
+			name: `Let's stick together`,
+			description: 'Make a comic with a group'
+		}, {
+			type: common.enums.AchievementType.TopPublicGroup,
+			name: `Nothing's gonna stop us now`,
+			description: 'Be a member of a public group on top of the group leaderboard'
+		}, {
+			type: common.enums.AchievementType.TopPrivateGroup,
+			name: `We are the champions`,
+			description: 'Be a member of a private group on top of the group leaderboard'
 		}];
 	}
 	GetByType(achievementType) {

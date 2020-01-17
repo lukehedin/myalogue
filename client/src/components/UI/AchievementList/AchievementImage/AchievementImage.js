@@ -7,9 +7,8 @@ import achievementsImage from './achievements.png';
 export default class Avatar extends Component {
 	render() {
 		let achievementsCount = Util.context.getAchievements().length;
-		const achievementImageSize = 128;
+		const achievementImageSize = 96;
 		let imageWidth = achievementImageSize * achievementsCount;
-		let imageHeight = 128;
 		
 		let size = this.props.size || 48;
 		let backgroundX = -((this.props.achievementType - 1) % achievementsCount) * size;
@@ -19,7 +18,7 @@ export default class Avatar extends Component {
 			height: size,
 			minWidth: size,
 			minHeight: size,
-			backgroundSize: `${(size / achievementImageSize) * imageWidth}px ${(size / achievementImageSize) * imageHeight}px`,
+			backgroundSize: `${(size / achievementImageSize) * imageWidth}px ${(size / achievementImageSize) * achievementImageSize}px`,
 			backgroundImage: `url('${achievementsImage}')`, 
 			backgroundPositionX: backgroundX, 
 			backgroundPositionY: 0

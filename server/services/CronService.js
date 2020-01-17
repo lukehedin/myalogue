@@ -18,7 +18,7 @@ export default class CronService extends Service {
 			fn: () => this.CheckRatingAchievements()
 		}, {
 			name: 'Update leaderboards',
-			time: '0 * * * *', //At minute 0 (hourly)
+			time: '* * * * *', //At minute 0 (hourly)
 			fn: () => this.UpdateLeaderboards()
 		}];
 
@@ -133,19 +133,20 @@ export default class CronService extends Service {
 				await this.services.Achievement.ProcessForTopComic(dbTopComic);
 			}
 
+			//For users and groups, we only need to look at comics with a rating above 0 (negative score comics don't matter)
+			let dbWeeklyComicsWithRating = dbWeeklyComics.filter(dbWeeklyComic => dbWeeklyComic.Rating > 0);
+
 			//Calculate user leaderboard from these comics
 			let userScoreLookup = {};
-			dbWeeklyComics.forEach(dbWeeklyComic => {
-				if(dbWeeklyComic.Rating > 0) {
-					dbWeeklyComic.ComicPanels.forEach(dbComicPanel => {
+			dbWeeklyComicsWithRating.forEach(dbComic => {
+				dbComic.ComicPanels
+					.filter(dbComicPanel => dbComicPanel.UserId)
+					.forEach(dbComicPanel => {
 						let userId = dbComicPanel.UserId;
-						if(userId) {
-							userScoreLookup[userId] = userScoreLookup[userId] 
-								? userScoreLookup[userId] + dbWeeklyComic.Rating 
-								: dbWeeklyComic.Rating;
-						}
-					})
-				}
+						userScoreLookup[userId] = userScoreLookup[userId] 
+							? userScoreLookup[userId] + dbComic.Rating 
+							: dbComic.Rating;
+				});
 			});
 
 			let weeklyUserIds = Object.keys(userScoreLookup);
@@ -173,14 +174,10 @@ export default class CronService extends Service {
 				]);
 
 				let topUserRating = weeklyUserIds.reduce((max, userId) => userScoreLookup[userId] > max ? userScoreLookup[userId] : max, 0);
-				
-				let dbTopUsers = await this.models.User.findAll({
-					where: {
-						LeaderboardRating: topUserRating
-					}
+				let topUserIds = [];
+				Object.keys(userScoreLookup).forEach(key => {
+					if(userScoreLookup[key] === topUserRating) topUserIds.push(parseInt(key))
 				});
-
-				let topUserIds = dbTopUsers.map(dbTopUser => dbTopUser.UserId);
 
 				//Record as the first time the user got leaderboardtop, if they havent already
 				await this.models.User.update({
@@ -197,6 +194,64 @@ export default class CronService extends Service {
 				});
 
 				this.services.Achievement.ProcessForTopUsers(topUserIds);
+			}
+
+			//Calculate group leaderboard from these comics
+			let groupScoreLookup = {};
+			dbWeeklyComicsWithRating
+				.filter(dbComic => !!dbComic.GroupId)
+				.forEach(dbComic => {
+					let groupId = dbComic.GroupId;
+					groupScoreLookup[groupId] = groupScoreLookup[groupId] 
+						? groupScoreLookup[groupId] + dbComic.Rating 
+						: dbComic.Rating;
+				}); 
+			
+			let weeklyGroupIds = Object.keys(groupScoreLookup);
+
+			if(weeklyGroupIds.length > 0) {
+				//Update group leaderboard ratings and reset all other groups leaderboardrating to 0
+				await Promise.all([
+					this.models.Group.bulkCreate(weeklyGroupIds.map(groupId => {
+						return {
+							GroupId: groupId,
+							LeaderboardRating: groupScoreLookup[groupId]
+						}
+					}), {
+						updateOnDuplicate: ['LeaderboardRating']
+					}),
+					this.models.Group.update({
+						LeaderboardRating: 0
+					}, {
+						where: {
+							GroupId: {
+								[Sequelize.Op.notIn]: weeklyGroupIds
+							}
+						}
+					})
+				]);
+
+				let topGroupRating = weeklyGroupIds.reduce((max, groupId) => groupScoreLookup[groupId] > max ? groupScoreLookup[groupId] : max, 0);
+				let topGroupIds = [];
+				Object.keys(groupScoreLookup).forEach(key => {
+					if(groupScoreLookup[key] === topGroupRating) topGroupIds.push(parseInt(key));
+				});
+
+				//Record as the first time the group got leaderboardtop, if they havent already
+				await this.models.Group.update({
+					LeaderboardTopAt: new Date()
+				}, {
+					where: {
+						GroupId: {
+							[Sequelize.Op.in]: topGroupIds
+						},
+						LeaderboardTopAt: {
+							[Sequelize.Op.eq]: null
+						}
+					}
+				});
+
+				this.services.Achievement.ProcessForTopGroups(topGroupIds);
 			}
 		}
 	}

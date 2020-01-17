@@ -1228,7 +1228,8 @@ body {
           flex: 1;
           min-width: 100px;
           border-top-right-radius: 0 !important;
-          border-bottom-right-radius: 0 !important; }
+          border-bottom-right-radius: 0 !important;
+          border-right: none; }
         body .app-container .app .button-input .button {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0; }
@@ -1460,7 +1461,8 @@ body {
         padding-bottom: 16px;
         border-bottom: 1px solid #efefef; }
       body .app-container .app .page-group .group-info .members .members-heading {
-        margin-bottom: 16px; }
+        margin-bottom: 16px;
+        text-align: left; }
       body .app-container .app .page-group .group-info .members .member-list {
         display: flex;
         flex-direction: column; }
@@ -1473,7 +1475,10 @@ body {
             margin-left: 8px;
             flex: 1; }
             body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .username {
-              text-align: left; }
+              text-align: left;
+              margin-bottom: 4px; }
+            body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .joined-at {
+              margin: 0; }
       body .app-container .app .page-group .comic-list {
         margin-top: 32px; }
       body .app-container .app .page-group-editor .group-avatar-editor {
@@ -1515,16 +1520,24 @@ body {
       body .app-container .app .page-leaderboards .leaderboards-inner {
         min-height: 40px;
         position: relative; }
+        body .app-container .app .page-leaderboards .leaderboards-inner .tabbed-panels-panel {
+          padding: 0; }
+          body .app-container .app .page-leaderboards .leaderboards-inner .tabbed-panels-panel .table-info {
+            padding: 8px 16px;
+            margin: 0;
+            text-align: center; }
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table {
           border-collapse: collapse;
           width: 100%; }
           body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item {
             text-align: left; }
+            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td {
+              margin: 0 16px; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item:not(:last-child) {
               border-bottom: 1px solid #efefef; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h1, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h2, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h3, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h4, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h5, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item h6 {
               text-align: left; }
-            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-user td {
+            body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-user td, body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-group td {
               align-items: center; }
             body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item.leaderboard-highlight {
               background-color: #efefef; }
@@ -1540,6 +1553,7 @@ body {
               body .app-container .app .page-leaderboards .leaderboards-inner .leaderboard-table .leaderboard-item td > :not(:last-child) {
                 margin-right: 8px; }
         body .app-container .app .page-leaderboards .leaderboards-inner .leaderboards-note {
+          text-align: center;
           margin-top: 16px;
           color: #777777; }
       body .app-container .app .page-profile .page-profile-inner {

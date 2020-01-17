@@ -127,28 +127,20 @@ class GroupList extends Component {
 		});
 	}
 	render() {
+		let isMyGroupList = this.props.forUserId && Util.context.isUserId(this.props.forUserId);
 		let sortOptions = [{
 			type: Util.enums.GroupSortBy.Popular,
 			label: 'Popular'
 		}, {
 			type: Util.enums.GroupSortBy.Alphabetical,
 			label: 'A to Z'
+		}, {
+			type: Util.enums.GroupSortBy.Newest,
+			label: 'Newest'
+		// }, {
+		// 	type: Util.enums.GroupSortBy.Mutual,
+		// 	label: 'Mutual'
 		}];
-
-		if(!Util.context.isUserId(this.props.forUserId)) {
-			//Viewing your groups
-			sortOptions.push({
-				type: Util.enums.GroupSortBy.Newest,
-				label: 'Newest'
-			})
-		} else {
-			if(Util.context.isAuthenticated()) {
-				sortOptions.push({
-					type: Util.enums.GroupSortBy.Mutual,
-					label: 'Mutual'
-				});
-			}
-		}
 
 		return <div className="group-list">
 			<div className="group-list-filters">
@@ -167,7 +159,7 @@ class GroupList extends Component {
 					? this.state.groups.map(group => {
 						let contextMenuItems = [];
 
-						if(this.props.showContextMenu && Util.context.isUserId(this.state.forUserId)) {
+						if(this.props.showContextMenu && isMyGroupList) {
 							if(Util.context.isGroupAdmin(group.groupId)) {
 								contextMenuItems.push({
 									label: 'Edit group',
@@ -184,6 +176,7 @@ class GroupList extends Component {
 							<GroupAvatar size={48} group={group} to={Util.route.group(group.groupId)} />
 							<div className="group-details">
 								<p className="group-name"><Link to={Util.route.group(group.groupId)}>{group.name}</Link></p>
+								{Util.context.isGroupAdmin(group.groupId) ? <p className="group-bottom sm">You are an admin of this group</p> : null}
 								{!this.props.hideDescription && group.description
 									? <HTMLEllipsis
 										className="description"
@@ -195,8 +188,7 @@ class GroupList extends Component {
 									: null
 								}
 								<div className="group-bottom">
-									<p className="sm">{group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
-									{Util.context.isGroupAdmin(group.groupId) ? <p className="group-bottom sm">You are an admin of this group</p> : null}
+									<p className="sm">{group.isPublic ? 'Public' : 'Private'} group • {group.memberCount} {Util.format.pluralise(group.memberCount, 'member')}</p>
 								</div>
 							</div>
 							{Util.array.any(contextMenuItems) 

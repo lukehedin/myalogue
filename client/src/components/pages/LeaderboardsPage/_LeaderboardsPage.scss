@@ -2,12 +2,26 @@
 	.leaderboards-inner {
 		@include loaderContainer;
 
+		.tabbed-panels-panel {
+			padding: 0;
+
+			.table-info {
+				padding: $spacing-xs $spacing-sm;
+				margin: 0;
+				text-align: center;
+			}
+		}
+		
 		.leaderboard-table {
 			border-collapse: collapse;
 			width: 100%;
 	
 			.leaderboard-item {
 				text-align: left;
+
+				td {
+					margin: 0 $spacing-sm;
+				}
 
 				&:not(:last-child) {
 					border-bottom: 1px solid $colour-grey-a;
@@ -17,7 +31,7 @@
 					text-align: left;
 				}
 				
-				&.leaderboard-user {
+				&.leaderboard-user, &.leaderboard-group {
 					td {
 						align-items: center;
 					}
@@ -53,6 +67,7 @@
 		}
 
 		.leaderboards-note {
+			text-align: center;
 			margin-top: $spacing-sm;
 			color: $colour-grey-d;
 		}

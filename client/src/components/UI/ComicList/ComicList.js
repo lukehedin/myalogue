@@ -138,7 +138,7 @@ export default class ComicList extends Component {
 							}
 						]} 
 					/>
-					{this.props.authorUserId
+					{this.props.authorUserId || this.props.groupId
 						? null
 						: <Checkbox className="anonymous-switch" isSwitch={true} value={this.state.includeAnonymous} label="Show comics with anonymous authors" onChange={this.setIncludeAnonymous} />
 					}
