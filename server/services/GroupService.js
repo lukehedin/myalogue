@@ -494,6 +494,15 @@ export default class GroupService extends Service {
 			}
 		});
 	}
+	async GetGroupComments(groupId) {
+		let dbGroupComments = await this.models.GroupComment.findAll({
+			where: {
+				GroupId: groupId
+			}
+		});
+
+		return dbGroupComments.map(mapper.fromDbGroupComment);
+	}
 	async GetGroupChallenges(groupId) {
 		let dbGroupChallenges = await this.models.GroupChallenge.findAll({
 			where: {

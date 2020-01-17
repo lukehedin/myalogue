@@ -166,6 +166,10 @@ export default class Database {
 			IsDisabled: getBoooleanNotNull()
 		}, true);
 
+		defineTable('GroupComment', {
+			Value: Sequelize.TEXT
+		}, true);
+
 		defineTable('Template', {
 			UnlockedAt: Sequelize.DATE,
 			Name: Sequelize.STRING,
@@ -289,12 +293,14 @@ export default class Database {
 		createOneToMany('User', 'GroupInvite');
 		createOneToMany('User', 'GroupInvite', 'InvitedByUser', 'SentGroupInvites');
 		createOneToMany('User', 'GroupChallenge', 'CreatedByUser', 'CreatedGroupChallenges');
+		createOneToMany('User', 'GroupComment');
 
 		createOneToMany('Group', 'GroupUser');
 		createOneToMany('Group', 'GroupRequest');
 		createOneToMany('Group', 'GroupInvite');
 		createOneToMany('Group', 'GroupChallenge');
 		createOneToMany('Group', 'Comic');
+		createOneToMany('Group', 'GroupComment');
 		createOneToMany('Group', 'Notification'); // Notification will link to groupId
 		
 		createOneToMany('GroupChallenge', 'Comic');

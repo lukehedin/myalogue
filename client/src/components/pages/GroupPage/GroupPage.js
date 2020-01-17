@@ -14,6 +14,7 @@ import StatsSummary from '../../UI/StatsSummary/StatsSummary';
 import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingInfoGroup';
 import ContextMenu from '../../UI/ContextMenu/ContextMenu';
 import ButtonInput from '../../UI/ButtonInput/ButtonInput';
+import CommentThread from '../../UI/CommentThread/CommentThread';
 
 class GroupPage extends Component {
 	constructor(props){
@@ -24,6 +25,7 @@ class GroupPage extends Component {
 			group: null,
 			groupUsers: null,
 			groupStats: null,
+			groupComments: null,
 			groupChallenges: null,
 
 			redirectTo: null,
@@ -38,6 +40,10 @@ class GroupPage extends Component {
 
 		this.createGroupChallenge = this.createGroupChallenge.bind(this);
 		this.removeGroupChallenge = this.removeGroupChallenge.bind(this);
+
+		this.postGroupComment = this.postGroupComment.bind(this);
+		this.deleteGroupComment = this.deleteGroupComment.bind(this);
+		this.updateGroupComment = this.updateGroupComment.bind(this);
 	}
 	componentDidMount() {
 		Util.api.post('/api/getGroup', {
@@ -49,6 +55,7 @@ class GroupPage extends Component {
 					group: result.group,
 					groupUsers: result.groupUsers,
 					groupStats: result.groupStats,
+					groupComments: result.groupComments,
 					groupChallenges: result.groupChallenges
 				});
 			}
@@ -191,6 +198,15 @@ class GroupPage extends Component {
 			}
 		});
 	}
+	postGroupComment() {
+
+	}
+	deleteGroupComment() {
+
+	}
+	updateGroupComment() {
+		
+	}
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />
 
@@ -211,6 +227,17 @@ class GroupPage extends Component {
 						? <p className="group-description" dangerouslySetInnerHTML={{ __html: Util.format.userStringToSafeHtml(this.state.group.description) }}></p> 
 						: null
 					}
+					<div className="group-comments">
+						{Util.array.any(this.state.groupComments)
+							? null
+							: <p className="empty-text">This group doesn't have any comments.</p>
+						}
+						<CommentThread comments={this.state.groupComments}
+							onPostComment={this.postGroupComment}
+							onUpdateComment={this.updateGroupComment}
+							onDeleteComment={this.deleteGroupComment}
+						/>
+					</div>
 				</div>
 			}, {
 				tabId: 'members',

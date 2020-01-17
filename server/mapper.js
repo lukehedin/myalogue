@@ -143,7 +143,8 @@ const mapper = {
 			//The user's current request to join, if any
 			pendingGroupRequest: pendingGroupRequest,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
-			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge)
+			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge),
+			groupComments: (dbGroup.GroupComments || []).map(mapper.fromDbGroupComment)
 		}
 	},
 
@@ -191,6 +192,16 @@ const mapper = {
 			user: dbGroupInvite.User ? mapper.fromDbUser(dbGroupInvite.User) : null,
 			invitedByUser: dbGroupInvite.InvitedByUser ? mapper.fromDbUser(dbGroupInvite.InvitedByUser) : null,
 			group: dbGroupInvite.Group ? mapper.fromDbGroup(dbGroupInvite.Group) : null
+		}
+	},
+
+	fromDbGroupComment: (dbGroupComment) => {
+		return {
+			groupCommentId: dbGroupComment.GroupCommentId,
+			value: dbGroupComment.Value,
+			createdAt: dbGroupComment.CreatedAt,
+			updatedAt: dbGroupComment.UpdatedAt,
+			user: dbGroupComment.User ? mapper.fromDbUser(dbGroupComment.User) : null
 		}
 	},
 

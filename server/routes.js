@@ -174,10 +174,11 @@ export default {
 			let userId = req.userId; // May be null
 			let groupId = req.body.groupId;
 
-			let [group, groupUsers, groupChallenges, groupStats] = await Promise.all([
+			let [group, groupUsers, groupChallenges, groupComments, groupStats] = await Promise.all([
 				await services.Group.GetById(groupId, userId),
 				await services.Group.GetGroupUsers(groupId),
 				await services.Group.GetGroupChallenges(groupId),
+				await services.Group.GetGroupComments(groupId),
 				await services.Group.GetStatsForGroup(groupId)
 			]);
 
@@ -185,6 +186,7 @@ export default {
 				group,
 				groupUsers,
 				groupChallenges,
+				groupComments,
 				groupStats
 			};
 		},
@@ -448,6 +450,44 @@ export default {
 			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
 
 			return await services.Group.RemoveUserFromGroup(userId, groupId);
+		},
+
+		postGroupComment: async(req, services) => {
+			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
+			
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			let value = req.body.value;
+
+			return await services.Group.PostGroupComment(userId, groupId, value);
+		},
+
+		updateGroupComment: async (req, services) => {
+			let userId = req.userId;
+
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			let groupCommentId = req.body.groupCommentId;
+			let value = req.body.value;
+
+			return await services.Group.UpdateGroupComment(userId, groupId, groupCommentId, value);
+		},
+
+		deleteGroupComment: async (req, services) => {
+			let userId = req.userId;
+
+			let groupId = req.body.groupId;
+
+			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
+
+			let groupCommentId = req.body.groupCommentId;
+
+			return await services.Comic.DeleteGroupComment(userId, groupId, groupCommentId);
 		},
 
 		removeUserFromGroup: async (req, services) => {

@@ -1463,6 +1463,10 @@ body {
         overflow-wrap: break-word;
         white-space: pre-line;
         font-size: 14px; }
+      body .app-container .app .page-group .group-info .group-details .group-comments {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #efefef; }
       body .app-container .app .page-group .group-info .members .group-pending-info-group {
         margin-bottom: 16px;
         padding-bottom: 16px;
