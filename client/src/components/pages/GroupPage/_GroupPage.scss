@@ -24,91 +24,98 @@
 			}
 		}
 
-		.group-details {
-			.group-description {
-				border-bottom: 1px solid $colour-grey-a;
-				overflow-wrap: break-word;
-				white-space: pre-line;
-				font-size: 14px;
-				padding-bottom: $spacing-sm;
+		.tabbed-panels {
+			margin-top: $spacing-sm;
+
+			.group-details {
+				.group-description {
+					border-bottom: 1px solid $colour-grey-a;
+					overflow-wrap: break-word;
+					white-space: pre-line;
+					font-size: 14px;
+					padding-bottom: $spacing-sm;
+				}
+	
+				.group-comments {
+					> .empty-text {
+						margin-top: $spacing-sm;
+					}
+	
+					.comment-thread {
+						
+						.comments {
+							max-height: 400px;	
+							border-bottom: 1px solid $colour-grey-a;
+						}
+					}
+				}
 			}
-
-			.group-comments {
-
-				.comment-thread {
-					
-					.comments {
-						max-height: 400px;	
-						border-bottom: 1px solid $colour-grey-a;
+	
+			.members {
+				.group-pending-info-group {
+					margin-bottom: $spacing-sm;
+					padding-bottom: $spacing-sm;
+					border-bottom: 1px solid $colour-grey-a;
+				}
+	
+				.members-heading {
+					margin-bottom: $spacing-sm;
+					text-align: left;
+				}
+	
+				.member-list {
+					display: flex;
+					flex-direction: column;
+			
+					.member-list-item {
+						display: flex;
+						flex-direction: row;
+						
+						&:not(:last-child) {
+							margin-bottom: $spacing-sm;
+						}
+			
+						.member-list-item-detail {
+							margin-left: $spacing-xs;
+							flex: 1;
+							
+							.username {
+								text-align: left;
+								margin-bottom: $spacing-xxs;
+							}
+	
+							.joined-at {
+								margin: 0;
+							}
+						}
 					}
 				}
 			}
 		}
-
-		.members {
-			.group-pending-info-group {
-				margin-bottom: $spacing-sm;
-				padding-bottom: $spacing-sm;
-				border-bottom: 1px solid $colour-grey-a;
-			}
-
-			.members-heading {
-				margin-bottom: $spacing-sm;
-				text-align: left;
-			}
-
-			.member-list {
-				display: flex;
-				flex-direction: column;
-		
-				.member-list-item {
+	
+		.challenges {
+			.group-challenges-list {
+				border-top: 1px solid $colour-grey-a;
+				padding-top: $spacing-md;
+				margin-top: $spacing-md;
+				
+				.group-challenge-item {
 					display: flex;
 					flex-direction: row;
-					
+					align-items: flex-start;
+	
 					&:not(:last-child) {
-						margin-bottom: $spacing-sm;
+						margin-bottom: $spacing-md;
 					}
-		
-					.member-list-item-detail {
-						margin-left: $spacing-xs;
+	
+					.challenge-detail {
 						flex: 1;
-						
-						.username {
-							text-align: left;
+	
+						p {
+							font-size: 14px;
+							font-style: italic;
 							margin-bottom: $spacing-xxs;
 						}
-
-						.joined-at {
-							margin: 0;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	.challenges {
-		.group-challenges-list {
-			border-top: 1px solid $colour-grey-a;
-			padding-top: $spacing-md;
-			margin-top: $spacing-md;
-			
-			.group-challenge-item {
-				display: flex;
-				flex-direction: row;
-				align-items: flex-start;
-
-				&:not(:last-child) {
-					margin-bottom: $spacing-md;
-				}
-
-				.challenge-detail {
-					flex: 1;
-
-					p {
-						font-size: 14px;
-						font-style: italic;
-						margin-bottom: $spacing-xxs;
 					}
 				}
 			}

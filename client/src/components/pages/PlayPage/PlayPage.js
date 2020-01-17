@@ -156,7 +156,7 @@ export default class PlayPage extends Component {
 			if(this.state.groupId) queryParams.groupId = this.state.groupId;
 			if(this.state.groupChallengeId) queryParams.groupChallengeId = this.state.groupChallengeId;
 			return <Redirect to={Util.route.withQueryParams(Util.route.comic(this.state.redirectToComicId), queryParams)} />;
-			//TODO, if i complete a comic, make the play button on the comic page continue with these options
+			//TODO, if i complete a comic, make the play button on the comic page continue with these options (make a playbutton comp that uses url params)
 		}
 		let content = null;
 
@@ -236,7 +236,7 @@ export default class PlayPage extends Component {
 				}
 				<div className="button-container direction-column play-actions">
 				<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
-					{/* TODO This sentence is perfect because you have the team and template id but not the challenge, so forget that. */}
+					{/* TODO is this sentence perfect? because you have the team and template id but not the challenge, so forget that. */}
 					{hasOptions
 						? <div className="play-options">
 							<p className="sm">Playing {this.state.groupChallengeId 

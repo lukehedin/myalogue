@@ -23,7 +23,7 @@
 				.play-tag {
 					font-weight: bold;
 					background: $colour-grey-b;
-					line-height: 18px;
+					margin: 1px 0;
 					padding: 0 2px;
 					@include borderRadius(2px);
 					display: inline-block;

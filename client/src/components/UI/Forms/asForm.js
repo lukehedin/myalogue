@@ -14,7 +14,7 @@ export default function asForm(WrappedForm, formConfig) {
 			
 			let formData = this.props.formData || {};
 			Object.keys(formConfig.fields).forEach(fieldName => {
-				//TODO get values from querystring if possible
+				//Eventually extend this to get values from querystring if possible
 				if(!formData[fieldName]) formData[fieldName] = formConfig.fields[fieldName].type === Util.enums.FieldType.Checkbox ? false : '';
 			});
 

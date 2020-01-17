@@ -1393,7 +1393,7 @@ body {
             body .app-container .app .page-play .play-area .play-area-top .instruction .play-tag {
               font-weight: bold;
               background: #c8c8c8;
-              line-height: 18px;
+              margin: 1px 0;
               padding: 0 2px;
               border-radius: 2px;
               -webkit-border-radius: 2px;
@@ -1466,51 +1466,55 @@ body {
         margin: 16px 0; }
         body .app-container .app .page-group .group-info .group-info-header .group-call-to-action .join-info {
           color: #ff0052; }
-      body .app-container .app .page-group .group-info .group-details .group-description {
-        border-bottom: 1px solid #efefef;
-        overflow-wrap: break-word;
-        white-space: pre-line;
-        font-size: 14px;
-        padding-bottom: 16px; }
-      body .app-container .app .page-group .group-info .group-details .group-comments .comment-thread .comments {
-        max-height: 400px;
-        border-bottom: 1px solid #efefef; }
-      body .app-container .app .page-group .group-info .members .group-pending-info-group {
-        margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #efefef; }
-      body .app-container .app .page-group .group-info .members .members-heading {
-        margin-bottom: 16px;
-        text-align: left; }
-      body .app-container .app .page-group .group-info .members .member-list {
-        display: flex;
-        flex-direction: column; }
-        body .app-container .app .page-group .group-info .members .member-list .member-list-item {
+      body .app-container .app .page-group .group-info .tabbed-panels {
+        margin-top: 16px; }
+        body .app-container .app .page-group .group-info .tabbed-panels .group-details .group-description {
+          border-bottom: 1px solid #efefef;
+          overflow-wrap: break-word;
+          white-space: pre-line;
+          font-size: 14px;
+          padding-bottom: 16px; }
+        body .app-container .app .page-group .group-info .tabbed-panels .group-details .group-comments > .empty-text {
+          margin-top: 16px; }
+        body .app-container .app .page-group .group-info .tabbed-panels .group-details .group-comments .comment-thread .comments {
+          max-height: 400px;
+          border-bottom: 1px solid #efefef; }
+        body .app-container .app .page-group .group-info .tabbed-panels .members .group-pending-info-group {
+          margin-bottom: 16px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid #efefef; }
+        body .app-container .app .page-group .group-info .tabbed-panels .members .members-heading {
+          margin-bottom: 16px;
+          text-align: left; }
+        body .app-container .app .page-group .group-info .tabbed-panels .members .member-list {
           display: flex;
-          flex-direction: row; }
-          body .app-container .app .page-group .group-info .members .member-list .member-list-item:not(:last-child) {
-            margin-bottom: 16px; }
-          body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail {
-            margin-left: 8px;
-            flex: 1; }
-            body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .username {
-              text-align: left;
-              margin-bottom: 4px; }
-            body .app-container .app .page-group .group-info .members .member-list .member-list-item .member-list-item-detail .joined-at {
-              margin: 0; }
-      body .app-container .app .page-group .challenges .group-challenges-list {
+          flex-direction: column; }
+          body .app-container .app .page-group .group-info .tabbed-panels .members .member-list .member-list-item {
+            display: flex;
+            flex-direction: row; }
+            body .app-container .app .page-group .group-info .tabbed-panels .members .member-list .member-list-item:not(:last-child) {
+              margin-bottom: 16px; }
+            body .app-container .app .page-group .group-info .tabbed-panels .members .member-list .member-list-item .member-list-item-detail {
+              margin-left: 8px;
+              flex: 1; }
+              body .app-container .app .page-group .group-info .tabbed-panels .members .member-list .member-list-item .member-list-item-detail .username {
+                text-align: left;
+                margin-bottom: 4px; }
+              body .app-container .app .page-group .group-info .tabbed-panels .members .member-list .member-list-item .member-list-item-detail .joined-at {
+                margin: 0; }
+      body .app-container .app .page-group .group-info .challenges .group-challenges-list {
         border-top: 1px solid #efefef;
         padding-top: 32px;
         margin-top: 32px; }
-        body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item {
+        body .app-container .app .page-group .group-info .challenges .group-challenges-list .group-challenge-item {
           display: flex;
           flex-direction: row;
           align-items: flex-start; }
-          body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item:not(:last-child) {
+          body .app-container .app .page-group .group-info .challenges .group-challenges-list .group-challenge-item:not(:last-child) {
             margin-bottom: 32px; }
-          body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item .challenge-detail {
+          body .app-container .app .page-group .group-info .challenges .group-challenges-list .group-challenge-item .challenge-detail {
             flex: 1; }
-            body .app-container .app .page-group .challenges .group-challenges-list .group-challenge-item .challenge-detail p {
+            body .app-container .app .page-group .group-info .challenges .group-challenges-list .group-challenge-item .challenge-detail p {
               font-size: 14px;
               font-style: italic;
               margin-bottom: 4px; }

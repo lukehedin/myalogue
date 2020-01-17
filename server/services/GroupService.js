@@ -266,8 +266,7 @@ export default class GroupService extends Service {
 				//This will check if they're already a member
 				let newGroupUser = await this.AddUserToGroup(userId, groupId);
 	
-				//TODO: Send user joined notification to group admins
-	
+				//TODO: Send user joined notification to group admins (only in this case)
 				return newGroupUser;
 			} else {
 				//Check if they are already a group member, if they are, send back the groupUser (basically the same as a public group join result on client side)
@@ -398,7 +397,7 @@ export default class GroupService extends Service {
 			dbPendingGroupInvite.save();
 
 			return await this.AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
-			//TODO notify admins of join
+			//TODO notify admins of join (only in this case)
 		} else {
 			dbPendingGroupInvite.IgnoredAt = new Date();
 			await dbPendingGroupInvite.save();
