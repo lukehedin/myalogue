@@ -123,12 +123,16 @@ export default class NotificationButton extends Component {
 		let content = <div className="notification-content">
 			{Util.array.any(notifications)
 				? notifications.map(notification => {
-					let link = notification.comicId 
-						? Util.route.comic(notification.comicId)
-						: null;
+					let link = null;
 
-					if(!link && notification.type === Util.enums.NotificationType.AchievementUnlocked) {
+					if(notification.comicId) {
+						link = Util.route.comic(notification.comicId);
+					} else if (notification.groupId && notification.type === Util.enums.NotificationType.GroupRequestApproved) {
+						link = Util.route.group(notification.groupId);
+					} if(notification.type === Util.enums.NotificationType.AchievementUnlocked) {
 						link = Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'achievements' })
+					} else if (notification.type === Util.enums.NotificationType.GroupInviteReceived) {
+						link = Util.route.withQueryParams(Util.route.groups(), { tabId: 'requests' });
 					}
 
 					let className = `notification ${notification.isActionable ? 'actionable' : ''} ${link ? 'linked' : ''}`;

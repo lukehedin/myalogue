@@ -235,7 +235,7 @@ const mapper = {
 				break;
 
 			case common.enums.NotificationType.ComicCompleted:
-				title = `Comic #${dbRelatedComicId} completed!`
+				title = `Comic #${dbRelatedComicId} completed`
 				message = `A comic you made a panel for has been completed. Click here to view the comic.`;
 				break;
 				
@@ -249,8 +249,20 @@ const mapper = {
 				break;
 
 			case common.enums.NotificationType.AchievementUnlocked:
-				title = `Achievement unlocked!`
+				title = `Achievement unlocked`
 				message = `You unlocked the achievement "${valueString}"! Click here to view your achievements.`;
+				isActionable = true;
+				break;
+			
+			case common.enums.NotificationType.GroupRequestApproved:
+				title = `Group request approved`
+				message = `Your request to join the group "${valueString}" was accepted! Click here to view the group page.`;
+				isActionable = true;
+				break;
+				
+			case common.enums.NotificationType.GroupInviteReceived:
+				title = `Group invite received`
+				message = `You received an invite to join the group "${valueString}". Click here to view the invite.`;
 				isActionable = true;
 				break;
 
@@ -272,6 +284,7 @@ const mapper = {
 			title: (title || dbUserNotification.Notification.Title || ''),
 			message: (message || dbUserNotification.Notification.Message || ''),
 			//For actionable links
+			groupId: dbUserNotification.Notification.GroupId,
 			comicId: dbUserNotification.Notification.ComicId
 		}
 	}

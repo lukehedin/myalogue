@@ -295,6 +295,7 @@ export default class Database {
 		createOneToMany('Group', 'GroupInvite');
 		createOneToMany('Group', 'GroupChallenge');
 		createOneToMany('Group', 'Comic');
+		createOneToMany('Group', 'Notification'); // Notification will link to groupId
 		
 		createOneToMany('GroupChallenge', 'Comic');
 

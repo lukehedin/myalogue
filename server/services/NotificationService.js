@@ -212,46 +212,13 @@ export default class NotificationService extends Service {
 			};
 		}));
 	}
-	async SendGroupRequestAcceptedNotification(userId, accpetedByGroupId) {
+	async SendGroupRequestApprovedNotification(userId, groupId, groupName) {
 		//Takes the user to the group page that accepted them
+		await this._CreateNotification([userId], common.enums.NotificationType.GroupRequestApproved, { groupId: groupId }, null, groupName);
 	}
-	async SendGroupUserJoinedNotification(userId, joinedGroupId) {
-		//Sends to the group admins, takes the user to the group page member tab
-	}
-	async SendGroupRequestNotification(userId, requestToJoinGroupId) {
-		//Sends to the group admins, takes the user to the group page member tab
-	}
-	async SendGroupInviteNotification(userId, groupName) {
-		//"You were invited to join "cooolcomics" and 1 other group. Click here to view your invites."
-		
-		//All group invite notifications take the user to the same place, so it uses a SINGLETON notification
-		//With varying UserNotifications
-
-
-		// Find or create an invite notification for this userId
-		// let [dbNotification, wasCreated] = await this.models.Notification.findOrCreate({
-		// 	where: {
-		// 		Type: common.enums.NotificationType.GroupInvite,
-		// 		UserId: userId,
-		// 		SeenAt: {
-		// 			[Sequelize.Op.eq]: null
-		// 		}
-		// 	},
-		// 	defaults: {
-		// 		ValueString: groupName
-		// 	}
-		// });
-	
-		// if(!wasCreated) {
-		// 	//If an existing invitate notification was found, increment the invite count
-		// 	await dbNotification.update({
-		// 		ValueInt: dbNotification.ValueInt ? dbNotification.ValueInt + 1 : 1
-		// 	}, {
-		// 		where: {
-		// 			NotificationId: dbNotification.NotificationId
-		// 		}
-		// 	});
-		// }
+	async SendGroupInviteReceivedNotification(userId, groupId, groupName) {
+		//Takes the user to their pending requests
+		await this._CreateNotification([userId], common.enums.NotificationType.GroupInviteReceived, { groupId: groupId }, null, groupName);
 	}
 	SeenUserNotificationsByIds(userId, userNotificationIds) {
 		this.models.UserNotification.update({
@@ -302,18 +269,17 @@ export default class NotificationService extends Service {
 			};
 		}));
 	}
-	async _CreateNotification(notifyUserIds, type, relatedFields, valueInteger = null, valueString = null) {
+	async _CreateNotification(notifyUserIds, type, relatedFields = {}, valueInteger = null, valueString = null) {
 		//The most basic notification operation. creates a notification, makes usernotifications
 		//Does not update further. No chance of overlapping or sending twice.
 	
 		notifyUserIds = this._CleanNotifyUserIds(notifyUserIds);
 		
-		if(!relatedFields) relatedFields = {};
-		
 		let dbNotification = await this.models.Notification.create({
 			Type: type,
 			//Related data, might all be null
 			ComicId: relatedFields.comicId,
+			GroupId: relatedFields.groupId,
 			UserId: relatedFields.userId
 		});
 

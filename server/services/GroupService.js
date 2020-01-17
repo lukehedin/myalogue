@@ -285,9 +285,9 @@ export default class GroupService extends Service {
 	
 				return newGroupUser;
 			} else {
-				//Check if they are already a group member
+				//Check if they are already a group member, if they are, send back the groupUser (basically the same as a public group join result on client side)
 				let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
-				if(dbExistingGroupUser) return common.getErrorResult(`User is already a member.`);
+				if(dbExistingGroupUser) return mapper.fromDbGroupUser(dbExistingGroupUser);
 			
 				//Check if they already have a pending request
 				let dbExistingGroupRequest = await this.models.GroupRequest.findOne({
@@ -316,7 +316,11 @@ export default class GroupService extends Service {
 				GroupId: groupId, //CRUCIAL - this is what we checked permissions on
 				GroupRequestId: groupRequestId
 				//We include requests that may have been denied (as long as theyre in the timeframe)
-			}
+			},
+			include: [{
+				model: this.models.Group,
+				as: 'Group'
+			}]
 		});
 		if(!dbPendingGroupRequest) throw 'Invalid pending group request';
 
@@ -325,8 +329,9 @@ export default class GroupService extends Service {
 			dbPendingGroupRequest.ApprovedAt = new Date();
 			await dbPendingGroupRequest.save();
 
+			await this.services.Notification.SendGroupRequestApprovedNotification(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId, dbPendingGroupRequest.Group.Name);
+
 			return await this.AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
-			//TODO notify user of accepted
 		} else {
 			dbPendingGroupRequest.DeniedAt = new Date();
 			await dbPendingGroupRequest.save();
@@ -334,7 +339,7 @@ export default class GroupService extends Service {
 	}
 	async InviteToGroupByUsername(fromUserId, username, groupId) {
 		let group = await this.GetById(groupId); //Also used for notification below
-		if(!group) throw('Invalid groupId');
+		if(!group || group.isPublic) throw('Invalid groupId');
 
 		//Check if user exists
 		let dbUser = await this.services.User.DbGetByUsername(username);
@@ -375,7 +380,7 @@ export default class GroupService extends Service {
 				InvitedByUserId: fromUserId
 			});
 
-			this.services.Notification.SendGroupInviteNotification(dbUser.UserId, group.name);
+			this.services.Notification.SendGroupInviteReceivedNotification(dbUser.UserId, group.groupId, group.name);
 
 			//Used on client
 			let dbGroupInviteWithUser = await this.models.GroupInvite.findOne({

@@ -308,7 +308,9 @@ const Util = {
 			ComicComment: 5,
 			PanelCensored: 6,
 			ComicCommentMention: 7,
-			AchievementUnlocked: 8
+			AchievementUnlocked: 8,
+			GroupRequestApproved: 9,
+			GroupInviteReceived: 10
 		},
 
 		ComicSortBy: {

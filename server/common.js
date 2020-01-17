@@ -70,10 +70,8 @@ export default {
 			ComicCommentMention: 7, //valueString = name of user who tagged you
 			AchievementUnlocked: 8, //valueString = achievement name, valueInteger = achievmentType
 
-			GroupRequest: 9, //For group admins
-			GroupRequestAccepted: 10,
-			GroupInvite: 11,
-			GroupUserJoined: 12 //For group admins, public join OR invite accept
+			GroupRequestApproved: 9,
+			GroupInviteReceived: 10
 		},
 
 		PanelGroupBehaviour: {
