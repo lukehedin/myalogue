@@ -957,7 +957,6 @@ body {
         body .app-container .app .avatar-selector .button-container {
           margin-top: 8px; }
       body .app-container .app .comment-thread .comments {
-        height: 50vh;
         max-height: 300px;
         overflow-y: auto;
         overflow-x: hidden;
@@ -1663,7 +1662,7 @@ body {
         body .app-container .app .page-settings .settings-row > h2 {
           margin-bottom: 16px;
           text-align: center; }
-      body .app-container .app .page-achievements .achievements {
+      body .app-container .app .page-achievements .global-achievements {
         box-shadow: 6px 6px 6px #00000016;
         -webkit-box-shadow: 6px 6px 6px #00000016;
         -moz-box-shadow: 6px 6px 6px #00000016;
@@ -1672,7 +1671,28 @@ body {
         -moz-border-radius: 4px;
         background-color: #fff;
         border: 1px solid #c8c8c8;
+        min-height: 40px;
+        position: relative;
         padding: 16px; }
+        body .app-container .app .page-achievements .global-achievements .global-achievements-inner {
+          max-width: 420px;
+          margin: 0 auto; }
+          body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement {
+            display: flex;
+            flex-direction: row; }
+            body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement:not(:last-child) {
+              margin-bottom: 16px; }
+            body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement .global-achievement-detail {
+              flex: 1;
+              margin-left: 8px;
+              display: flex;
+              flex-direction: column; }
+              body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement .global-achievement-detail .achievement-name {
+                font-weight: bold; }
+              body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement .global-achievement-detail .achievement-description {
+                margin: 4px 0; }
+              body .app-container .app .page-achievements .global-achievements .global-achievements-inner .global-achievement .global-achievement-detail .progress-bar .progress-bar-inner {
+                background-color: #ff0052; }
       body .app-container .app .news-message {
         background: #fff;
         color: #080808;

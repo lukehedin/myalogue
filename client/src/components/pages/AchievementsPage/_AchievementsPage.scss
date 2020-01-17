@@ -1,6 +1,42 @@
 .page-achievements {
-	.achievements {
+	.global-achievements {
 		@include raisedContainer;
+		@include loaderContainer;
 		padding: $spacing-sm;
+
+		.global-achievements-inner {
+			max-width: 420px;
+			margin: 0 auto;
+
+			.global-achievement {
+				display: flex;
+				flex-direction: row;
+
+				&:not(:last-child) {
+					margin-bottom: $spacing-sm;
+				}
+
+				.global-achievement-detail {
+					flex: 1;
+					margin-left: $spacing-xs;
+					display: flex;
+					flex-direction: column;
+
+					.achievement-name {
+						font-weight: bold;
+					}
+
+					.achievement-description {
+						margin: $spacing-xxs 0;
+					}
+
+					.progress-bar {
+						.progress-bar-inner {
+							background-color: $colour-pink;
+						}
+					}
+				}
+			}
+		}
 	}
 }

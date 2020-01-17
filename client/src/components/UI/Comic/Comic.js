@@ -176,17 +176,20 @@ class Comic extends Component {
 		}
 
 		return <div className="comic">
-			<div className="comic-upper comic-width">
-				<p>{createdByInfo}</p>
-				{this.state.comic.challenge
-					? <p><i>{this.state.comic.challenge}</i></p>
-					: null
-				}
-				<div className="comic-upper-details">
-					<p><b>Comic #{this.state.comic.comicId}</b></p>
-					<p>{moment(this.state.comic.completedAt).fromNow()}</p>
+			{this.props.isUpperInfoHidden
+				? null
+				: <div className="comic-upper comic-width">
+					<p>{createdByInfo}</p>
+					{this.state.comic.challenge
+						? <p><i>{this.state.comic.challenge}</i></p>
+						: null
+					}
+					<div className="comic-upper-details">
+						<p><b>Comic #{this.state.comic.comicId}</b></p>
+						<p>{moment(this.state.comic.completedAt).fromNow()}</p>
+					</div>
 				</div>
-			</div>
+			}
 			<div className="comic-content no-select"
 				ref={this.comicContentRef}
 				onClick={() => this.openShareComicModal()}

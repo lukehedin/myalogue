@@ -377,7 +377,7 @@ export default class AchievementService extends Service {
 		}, {
 			type: common.enums.AchievementType.FirstGroupComic,
 			name: `Let's stick together`,
-			description: 'Make a comic with a group'
+			description: 'Feature in a group comic'
 		}, {
 			type: common.enums.AchievementType.TopPublicGroup,
 			name: `Nothing's gonna stop us now`,

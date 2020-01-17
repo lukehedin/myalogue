@@ -89,9 +89,9 @@ export default class ComicPage extends Component {
 			</div>
 		} else if(this.state.isComicCompleted) {
 			content = <div>
-				<ComicInfoLabel comic={this.state.comic} />
+				<ComicInfoLabel className="sm" comic={this.state.comic} />
 				<div className="comic-wrapper">
-					<Comic isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
+					<Comic isUpperInfoHidden={true} isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
 				<div className="button-container">
 					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
