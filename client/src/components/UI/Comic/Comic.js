@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openModal } from '../../../redux/actions';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Util from '../../../Util';
 
@@ -86,11 +85,11 @@ class Comic extends Component {
 		this.setState({
 			comic: {
 				...this.state.comic,
-				comicComments: this.state.comic.comicComments.map(c => {
-					return c.comicCommentId !== comicComment.comicCommentId
-						? c
+				comicComments: this.state.comic.comicComments.map(cc => {
+					return cc.comicCommentId !== comicComment.comicCommentId
+						? cc
 						: {
-							...c,
+							...cc,
 							value: value,
 							updatedAt: new Date()
 						}
@@ -99,6 +98,7 @@ class Comic extends Component {
 		});
 	}
 	deleteComicComment(comicComment) {
+		//confirm code is on the comment component
 		//Server
 		Util.api.post('/api/deleteComicComment', {
 			comicCommentId: comicComment.comicCommentId

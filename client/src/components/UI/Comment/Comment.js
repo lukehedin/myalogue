@@ -29,7 +29,7 @@ class Comment extends Component {
 		this.props.openModal({
 			type: Util.enums.ModalType.Confirm,
 			title: 'Delete comment',
-			content: <p className="sm">Are you sure you want to delete this comment?</p>,
+			content: <p className="center">Are you sure you want to delete this comment?</p>,
 			yesLabel: 'Delete',
 			noLabel: 'Cancel',
 			yesFn: () => {

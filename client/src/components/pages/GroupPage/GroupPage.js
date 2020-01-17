@@ -23,10 +23,7 @@ class GroupPage extends Component {
 		this.state = {
 			isLoading: true,
 			group: null,
-			groupUsers: null,
 			groupStats: null,
-			groupComments: null,
-			groupChallenges: null,
 
 			redirectTo: null,
 
@@ -53,10 +50,7 @@ class GroupPage extends Component {
 			if(!result.error) {
 				this.setState({
 					group: result.group,
-					groupUsers: result.groupUsers,
-					groupStats: result.groupStats,
-					groupComments: result.groupComments,
-					groupChallenges: result.groupChallenges
+					groupStats: result.groupStats
 				});
 			}
 
@@ -77,10 +71,11 @@ class GroupPage extends Component {
 			if(!result.error) {
 				if(result.groupUserId) {
 					//If the result is a groupUser, we joind the public group
+					//Update CONTEXT
 					Util.context.set({
 						groupUsers: [...Util.context.getGroupUsers(), result]
 					});
-
+					//Update STATE
 					this.appendNewGroupUser({
 						...result,
 						user: Util.context.getUser() //Slap on user deets
@@ -103,10 +98,13 @@ class GroupPage extends Component {
 	}
 	appendNewGroupUser(newGroupUser) {
 		this.setState({
-			groupUsers: [
-				newGroupUser,
-				...this.state.groupUsers
-			]
+			group: {
+				...this.state.group,
+				groupUsers: [
+					newGroupUser,
+					...this.state.group.groupUsers
+				]
+			}
 		});
 	}
 	removeGroupUser(groupUser) {
@@ -127,7 +125,10 @@ class GroupPage extends Component {
 
 				//Client
 				this.setState({
-					groupUsers: this.state.groupUsers.filter(gu => gu.groupUserId !== groupUser.groupUserId)
+					group: {
+						...this.state.group,
+						groupUsers: this.state.group.groupUsers.filter(gu => gu.groupUserId !== groupUser.groupUserId)
+					}
 				});
 			}
 		});
@@ -138,7 +139,7 @@ class GroupPage extends Component {
 		if(groupChallengeId) params.groupChallengeId = groupChallengeId;
 		let redirectTo = Util.route.withQueryParams(Util.route.play(), params);
 
-		if(this.state.groupUsers.length < minUsers) {
+		if(this.state.group.groupUsers.length < minUsers) {
 			this.props.openModal({
 				type: Util.enums.ModalType.Confirm,
 				title: 'Group comics will not complete',
@@ -169,7 +170,10 @@ class GroupPage extends Component {
 		.then(result => {
 			if(!result.error) {
 				this.setState({
-					groupChallenges: [result, ...this.state.groupChallenges]
+					group: {
+						...this.state.group,
+						groupChallenges: [result, ...this.state.group.groupChallenges]
+					}
 				});
 			}
 		});
@@ -193,19 +197,73 @@ class GroupPage extends Component {
 
 				//Client
 				this.setState({
-					groupChallenges: this.state.groupChallenges.filter(gc => gc.groupChallengeId !== groupChallenge.groupChallengeId)
+					group: {
+						...this.state.group,
+						groupChallenges: this.state.group.groupChallenges.filter(gc => gc.groupChallengeId !== groupChallenge.groupChallengeId)
+					}
 				});
 			}
 		});
 	}
-	postGroupComment() {
+	postGroupComment(value, callback) {
+		Util.api.post('/api/postGroupComment', {
+			groupId: this.state.group.groupId,
+			value
+		})
+		.then(result => {
+			if(!result.error) {
+				result.user = Util.context.getUser(); //Slap on this user's deets
 
-	}
-	deleteGroupComment() {
+				this.setState({
+					group: {
+						...this.state.group,
+						groupComments: [...this.state.group.groupComments, result]
+					}
+				});
 
+				if(callback) callback();
+			}
+		});
 	}
-	updateGroupComment() {
-		
+	deleteGroupComment(groupComment) {
+		//confirm code is on the comment component
+		//Server
+		Util.api.post('/api/deleteGroupComment', {
+			groupId: this.state.group.groupId,
+			groupCommentId: groupComment.groupCommentId
+		});
+	
+		//Client
+		this.setState({
+			group: {
+				...this.state.group,
+				groupComments: this.state.group.groupComments.filter(c => c.groupCommentId !== groupComment.groupCommentId)
+			}
+		});
+	}
+	updateGroupComment(groupComment, value) {
+		//Server
+		Util.api.post('/api/updateGroupComment', {
+			groupId: this.state.group.groupId,
+			groupCommentId: groupComment.groupCommentId,
+			value: value
+		});
+
+		//Client
+		this.setState({
+			group: {
+				...this.state.group,
+				groupComments: this.state.group.groupComments.map(gc => {
+					return gc.groupCommentId !== groupComment.groupCommentId
+						? gc
+						: {
+							...gc,
+							value: value,
+							updatedAt: new Date()
+						}
+				})
+			}
+		});
 	}
 	render() {
 		if(this.state.redirectTo) return <Redirect to={this.state.redirectTo} />
@@ -224,18 +282,19 @@ class GroupPage extends Component {
 						comicCount={this.state.groupStats.comicCount}
 					/>
 					{this.state.group.description 
-						? <p className="group-description" dangerouslySetInnerHTML={{ __html: Util.format.userStringToSafeHtml(this.state.group.description) }}></p> 
+						? <div className="group-description" dangerouslySetInnerHTML={{ __html: Util.format.userStringToSafeHtml(this.state.group.description) }}></div> 
 						: null
 					}
 					<div className="group-comments">
-						{Util.array.any(this.state.groupComments)
+						{Util.array.any(this.state.group.groupComments)
 							? null
 							: <p className="empty-text">This group doesn't have any comments.</p>
 						}
-						<CommentThread comments={this.state.groupComments}
+						<CommentThread comments={this.state.group.groupComments}
 							onPostComment={this.postGroupComment}
 							onUpdateComment={this.updateGroupComment}
 							onDeleteComment={this.deleteGroupComment}
+							hideCommentInput={!isInGroup}
 						/>
 					</div>
 				</div>
@@ -249,8 +308,8 @@ class GroupPage extends Component {
 					}
 					<h3 className="members-heading">Members</h3>
 					<div className="member-list">
-						{Util.array.any(this.state.groupUsers)
-							? this.state.groupUsers.map(groupUser => {
+						{Util.array.any(this.state.group.groupUsers)
+							? this.state.group.groupUsers.map(groupUser => {
 								return <div key={groupUser.groupUserId} className="member-list-item">
 									<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
 									<div className="member-list-item-detail">
@@ -272,7 +331,7 @@ class GroupPage extends Component {
 				</div>
 			}];
 
-			if(Util.array.any(this.state.groupChallenges) || isAdmin) {
+			if(Util.array.any(this.state.group.groupChallenges) || isAdmin) {
 				tabs.push({
 					tabId: 'challenges',
 					title: 'challenges',
@@ -281,9 +340,9 @@ class GroupPage extends Component {
 						{isAdmin 
 							? <ButtonInput placeholder="Enter a new challenge" maxLength={64} buttonLabel="Add" onSubmit={this.createGroupChallenge} />
 							: null}
-						{Util.array.any(this.state.groupChallenges)
+						{Util.array.any(this.state.group.groupChallenges)
 							? <div className="group-challenges-list">
-								{this.state.groupChallenges.map(groupChallenge => {
+								{this.state.group.groupChallenges.map(groupChallenge => {
 									return <div key={groupChallenge.groupChallengeId} className="group-challenge-item">
 										<div className="challenge-detail">
 											<p>{groupChallenge.challenge}</p>
@@ -327,7 +386,7 @@ class GroupPage extends Component {
 												to={isAdmin ? Util.route.groupEditor(this.state.group.groupId) : null}
 											/>
 											<h2>{this.state.group.name}</h2>
-											<p className="created-date sm">{this.state.group.isPublic ? 'Public' : 'Private'} group • {this.state.groupUsers.length} {Util.format.pluralise(this.state.groupUsers, 'member')} • Created {moment(this.state.group.createdAt).fromNow()}</p>
+											<p className="created-date sm">{this.state.group.isPublic ? 'Public' : 'Private'} group • {this.state.group.groupUsers.length} {Util.format.pluralise(this.state.group.groupUsers, 'member')} • Created {moment(this.state.group.createdAt).fromNow()}</p>
 											{/* {isAdmin
 												? <p className="admin-message sm">You are an administrator of this group</p>
 												: null

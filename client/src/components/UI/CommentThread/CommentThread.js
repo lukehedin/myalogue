@@ -70,10 +70,12 @@ export default class CommentThread extends Component {
 				: null
 			}
 			{Util.context.isAuthenticated()
-				? <div className="comment-input-container">
-					<UserAvatar size={32} />
-					<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
-				</div>
+				? this.props.hideCommentInput
+					? null
+					: <div className="comment-input-container">
+						<UserAvatar size={32} />
+						<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
+					</div>
 				: <p className="empty-text">You need to <Link to={Util.route.register()}>create an account</Link> to make comments.</p>
 			}
 		</div>

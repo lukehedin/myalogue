@@ -144,7 +144,9 @@ const mapper = {
 			pendingGroupRequest: pendingGroupRequest,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge),
-			groupComments: (dbGroup.GroupComments || []).map(mapper.fromDbGroupComment)
+			groupComments: (dbGroup.GroupComments || [])
+				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
+				.map(mapper.fromDbGroupComment)
 		}
 	},
 
@@ -261,19 +263,19 @@ const mapper = {
 
 			case common.enums.NotificationType.AchievementUnlocked:
 				title = `Achievement unlocked`
-				message = `You unlocked the achievement "${valueString}"! Click here to view your achievements.`;
+				message = `You unlocked the achievement ${valueString}! Click here to view your achievements.`;
 				isActionable = true;
 				break;
 			
 			case common.enums.NotificationType.GroupRequestApproved:
 				title = `Group request approved`
-				message = `Your request to join the group "${valueString}" was accepted! Click here to view the group page.`;
+				message = `Your request to join the group ${valueString} was accepted! Click here to view the group page.`;
 				isActionable = true;
 				break;
 				
 			case common.enums.NotificationType.GroupInviteReceived:
 				title = `Group invite received`
-				message = `You received an invite to join the group "${valueString}". Click here to view the invite.`;
+				message = `You received an invite to join the group ${valueString}. Click here to view the invite.`;
 				isActionable = true;
 				break;
 

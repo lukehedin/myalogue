@@ -227,6 +227,11 @@ body {
                 margin: 0; }
           body .app-container .app .comic .comic-lower .comment-thread {
             margin-bottom: 16px; }
+            body .app-container .app .comic .comic-lower .comment-thread .comments {
+              max-height: 300px;
+              padding: 0 4px;
+              border-top: 1px solid #c8c8c8;
+              border-bottom: 1px solid #c8c8c8; }
           body .app-container .app .comic .comic-lower:empty {
             display: none; }
       body .app-container .app .comic-panel {
@@ -952,12 +957,8 @@ body {
         body .app-container .app .avatar-selector .button-container {
           margin-top: 8px; }
       body .app-container .app .comment-thread .comments {
-        max-height: 300px;
         overflow-y: auto;
-        overflow-x: hidden;
-        border-top: 1px solid #c8c8c8;
-        border-bottom: 1px solid #c8c8c8;
-        padding: 0 4px; }
+        overflow-x: hidden; }
         body .app-container .app .comment-thread .comments .comment {
           margin: 16px 0; }
           body .app-container .app .comment-thread .comments .comment:not(:first-child) {
@@ -1390,8 +1391,14 @@ body {
             font-size: 12px;
             max-width: 300px; }
             body .app-container .app .page-play .play-area .play-area-top .instruction .play-tag {
-              color: #ff0052;
-              font-weight: bold; }
+              font-weight: bold;
+              background: #c8c8c8;
+              line-height: 18px;
+              padding: 0 2px;
+              border-radius: 2px;
+              -webkit-border-radius: 2px;
+              -moz-border-radius: 2px;
+              display: inline-block; }
           body .app-container .app .page-play .play-area .play-area-top .progress-bar {
             margin: 8px 0;
             width: 240px; }
@@ -1460,13 +1467,14 @@ body {
         body .app-container .app .page-group .group-info .group-info-header .group-call-to-action .join-info {
           color: #ff0052; }
       body .app-container .app .page-group .group-info .group-details .group-description {
+        border-bottom: 1px solid #efefef;
         overflow-wrap: break-word;
         white-space: pre-line;
-        font-size: 14px; }
-      body .app-container .app .page-group .group-info .group-details .group-comments {
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid #efefef; }
+        font-size: 14px;
+        padding-bottom: 16px; }
+      body .app-container .app .page-group .group-info .group-details .group-comments .comment-thread .comments {
+        max-height: 400px;
+        border-bottom: 1px solid #efefef; }
       body .app-container .app .page-group .group-info .members .group-pending-info-group {
         margin-bottom: 16px;
         padding-bottom: 16px;

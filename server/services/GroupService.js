@@ -8,40 +8,25 @@ import Service from './Service';
 
 export default class GroupService extends Service {
 	async GetAll() {
-		let groupWhere = [{
-			model: this.models.GroupUser,
-			as: 'GroupUsers'
-		}];
-
-		let dbGroups = await this.models.Group.findAll({
-			include: groupWhere
-		});
-
+		let dbGroups = await this.models.Group.findAll();
 		return dbGroups.map(mapper.fromDbGroup);
 	}
-	async GetByIds(groupIds, forUserId) {
+	async GetByIds(groupIds, withInclude = false, forUserId = null) {
 		let dbGroups = await this.models.Group.findAll({
 			where: {
 				GroupId: {
 					[Sequelize.Op.in]: groupIds
 				}
 			},
-			//If forUserId supplied, include a pending request they might have to join
-			include: forUserId ? [{
-				model: this.models.GroupRequest,
-				as: 'GroupRequests',
-				required: false,
-				where: {
-					...this._GetPendingGroupRequestWhere(),
-					UserId: forUserId
-				}
-			}] : []
+			include: withInclude
+				? this._GetFullIncludeForGroup(forUserId)
+				: []
 		});
 
 		return dbGroups.map(mapper.fromDbGroup);
 	}
-	async GetById(groupId, forUserId) {
-		let groups = await this.GetByIds([groupId], forUserId);
+	async GetById(groupId, withInclude = false, forUserId = null) {
+		let groups = await this.GetByIds([groupId], withInclude, forUserId);
 
 		return groups.length === 1 ? groups[0] : null;
 	}
@@ -498,10 +483,43 @@ export default class GroupService extends Service {
 		let dbGroupComments = await this.models.GroupComment.findAll({
 			where: {
 				GroupId: groupId
-			}
+			},
+			include: [{
+				model: this.models.User,
+				as: 'User'
+			}]
 		});
 
 		return dbGroupComments.map(mapper.fromDbGroupComment);
+	}
+	async PostGroupComment(userId, groupId, value) {
+		let dbNewGroupComment = await this.models.GroupComment.create({
+			UserId: userId,
+			GroupId: groupId,
+			Value: value
+		});
+
+		return mapper.fromDbGroupComment(dbNewGroupComment);
+	}
+	async UpdateGroupComment(userId, groupId, groupCommentId, value) {
+		await this.models.GroupComment.update({
+			Value: value
+		}, {
+			where: {
+				UserId: userId, //Make sure it's the user's
+				GroupId: groupId, //Make sure it's the group's
+				GroupCommentId: groupCommentId
+			}
+		});
+	}
+	async DeleteGroupComment(userId, groupId, groupCommentId) {
+		await this.models.GroupComment.destroy({
+			where: {
+				UserId: userId, //Make sure it's the user's
+				GroupId: groupId, //Make sure it's the group's
+				GroupCommentId: groupCommentId
+			}
+		});
 	}
 	async GetGroupChallenges(groupId) {
 		let dbGroupChallenges = await this.models.GroupChallenge.findAll({
@@ -549,5 +567,40 @@ export default class GroupService extends Service {
 			}
 			//Don't remove IgnoredAt = null, we don't want to alert the group that they ignored 
 		}
+	}
+	_GetFullIncludeForGroup(forUserId) {
+		let include = [{
+			model: this.models.GroupUser,
+			as: 'GroupUsers',
+			include: [{
+				model: this.models.User,
+				as: 'User'
+			}]
+		}, {
+			model: this.models.GroupComment,
+			as: 'GroupComments',
+			include: [{
+				model: this.models.User,
+				as: 'User'
+			}]
+		}, {
+			model: this.models.GroupChallenge,
+			as: 'GroupChallenges'
+		}];
+
+		if(forUserId) {
+			//If forUserId supplied, include a pending request they might have to join
+			include.push({
+				model: this.models.GroupRequest,
+				as: 'GroupRequests',
+				required: false,
+				where: {
+					...this._GetPendingGroupRequestWhere(),
+					UserId: forUserId
+				}
+			})
+		}
+
+		return include;
 	}
 }

@@ -174,19 +174,13 @@ export default {
 			let userId = req.userId; // May be null
 			let groupId = req.body.groupId;
 
-			let [group, groupUsers, groupChallenges, groupComments, groupStats] = await Promise.all([
-				await services.Group.GetById(groupId, userId),
-				await services.Group.GetGroupUsers(groupId),
-				await services.Group.GetGroupChallenges(groupId),
-				await services.Group.GetGroupComments(groupId),
+			let [group, groupStats] = await Promise.all([
+				await services.Group.GetById(groupId, true, userId),
 				await services.Group.GetStatsForGroup(groupId)
 			]);
 
 			return {
 				group,
-				groupUsers,
-				groupChallenges,
-				groupComments,
 				groupStats
 			};
 		},
@@ -467,6 +461,7 @@ export default {
 
 		updateGroupComment: async (req, services) => {
 			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
 
 			let groupId = req.body.groupId;
 
@@ -480,6 +475,7 @@ export default {
 
 		deleteGroupComment: async (req, services) => {
 			let userId = req.userId;
+			let memberOfGroupIds = req.memberOfGroupIds;
 
 			let groupId = req.body.groupId;
 
@@ -487,7 +483,7 @@ export default {
 
 			let groupCommentId = req.body.groupCommentId;
 
-			return await services.Comic.DeleteGroupComment(userId, groupId, groupCommentId);
+			return await services.Group.DeleteGroupComment(userId, groupId, groupCommentId);
 		},
 
 		removeUserFromGroup: async (req, services) => {
@@ -510,6 +506,7 @@ export default {
 
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 
+			//No included data
 			return await services.Group.GetById(groupId);
 		},
 

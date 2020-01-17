@@ -59,6 +59,13 @@
 
 		.comment-thread {
 			margin-bottom: $spacing-sm;
+
+			.comments {
+				max-height: 300px;
+				padding: 0 $spacing-xxs;
+				border-top: 1px solid $colour-grey-b;
+				border-bottom: 1px solid $colour-grey-b;
+			}
 		}
 
 		&:empty {

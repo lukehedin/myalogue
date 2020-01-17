@@ -26,15 +26,22 @@
 
 		.group-details {
 			.group-description {
+				border-bottom: 1px solid $colour-grey-a;
 				overflow-wrap: break-word;
 				white-space: pre-line;
 				font-size: 14px;
+				padding-bottom: $spacing-sm;
 			}
 
 			.group-comments {
-				margin-top: 16px;
-				padding-top: 16px;
-				border-top: 1px solid $colour-grey-a;
+
+				.comment-thread {
+					
+					.comments {
+						max-height: 400px;	
+						border-bottom: 1px solid $colour-grey-a;
+					}
+				}
 			}
 		}
 
