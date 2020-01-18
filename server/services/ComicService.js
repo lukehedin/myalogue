@@ -91,7 +91,7 @@ export default class ComicService extends Service {
 			groups: dbLeaderboardGroups.map(mapper.fromDbGroup)
 		};
 	}
-	async GetComics(forUserId = null, templateId = null, authorUserId = null, groupId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {
+	async GetComics(forUserId = null, templateId = null, authorUserId = null, includeGroupIds = [], groupId = null, ignoreComicIds = [], completedAtBefore = new Date(), includeAnonymous = false, sortBy = 1, offset = 0, limit = 5) {
 		let comicWhere = {
 			CompletedAt: { //Code below (sortBy === 4) relies on this being present
 				[Sequelize.Op.ne]: null,
@@ -146,7 +146,16 @@ export default class ComicService extends Service {
 			};
 		}
 
-		if(groupId) comicWhere.GroupId = groupId;
+		if(groupId) {
+			comicWhere.GroupId = groupId;
+		} else {
+			comicWhere.GroupId ={
+				[Sequelize.Op.or] : {
+					[Sequelize.Op.in]: includeGroupIds,
+					[Sequelize.Op.eq]: null
+				}
+			}
+		}
 		
 		let dbComics = await this.models.Comic.findAll({
 			where: comicWhere,

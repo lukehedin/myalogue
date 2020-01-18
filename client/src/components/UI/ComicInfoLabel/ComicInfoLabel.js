@@ -27,11 +27,12 @@ export default class ComicInfoLabel extends Component {
 
 		return <div className="comic-info-label">
 			<p className={this.props.className || ''}>Completed {moment(this.props.comic.completedAt).fromNow()} using the <Link to={Util.route.template(template.templateId)}>{template.name}</Link> template.</p>
-			<p className={this.props.className || ''}>Panels by {this.props.comic.group ? <span><Link to={Util.route.group(this.props.comic.group.groupId)}>{this.props.comic.group.name}</Link> members: </span> : null}{authors.map((author, idx) => {
+			<p className={this.props.className || ''}>Panels by {this.props.comic.group ? <span>members of <Link to={Util.route.group(this.props.comic.group.groupId)}>{this.props.comic.group.name}</Link>: </span> : null}{authors.map((author, idx) => {
 					return author.anonCount
 						? <span key={idx}>{Util.format.pluralise(author.anonCount, 'an anonymous user', 'anonymous users')}</span>
 						: <span key={idx}><Link to={Util.route.profile(author.username)}>{author.username}</Link>{(idx === authors.length - 2 ? ' and ' : idx === authors.length - 1 ? '' : ', ')}</span>
 				})}.</p>
+			{this.props.comic.challenge ? <p className={this.props.className || ''}>Challenge: <b>{this.props.comic.challenge}</b>.</p> : null}
 		</div>
 	}
 }

@@ -6,23 +6,28 @@ import Button from '../Button/Button';
 export default class PlayButton extends Component {
 	constructor(props) {
 		super(props);
-
-		let templateId = this.props.templateId;
-		let groupId = this.props.groupId;
-		let groupChallengeId = this.props.groupChallengeId;
 		
-		if(this.props.useQueryParams) {
-			let urlParams = new URLSearchParams(window.location.search);
-			templateId = urlParams.get('pTemplateId');
-			groupId = urlParams.get('pGroupId');
-			groupChallengeId = urlParams.get('pGroupChallengeId');
-		}
+		if(Util.context.isAuthenticated()) {
+			let templateId = this.props.templateId;
+			let groupId = this.props.groupId;
+			let groupChallengeId = this.props.groupChallengeId;
 
-		this.state = {
-			templateId,
-			groupId,
-			groupChallengeId
-		};
+			if(this.props.useQueryParams) {
+				let urlParams = new URLSearchParams(window.location.search);
+				templateId = urlParams.get('pTemplateId');
+				groupId = urlParams.get('pGroupId');
+				groupChallengeId = urlParams.get('pGroupChallengeId');
+			}
+
+			this.state = {
+				templateId,
+				groupId,
+				groupChallengeId
+			};
+		} else {
+			//Empty state for non logged in users
+			this.state = {};
+		}
 
 		this.clearPlayOptions = this.clearPlayOptions.bind(this);
 	}
@@ -34,9 +39,7 @@ export default class PlayButton extends Component {
 		return !!playOptionsChanged;
 	}
 	componentDidUpdate(prevProps, prevState, isNewOptions) {
-		if(isNewOptions) {
-			console.log('updating options');
-
+		if(isNewOptions && Util.context.isAuthenticated()) {
 			this.setState({
 				templateId: this.props.templateId,
 				groupId: this.props.groupId,
@@ -73,7 +76,7 @@ export default class PlayButton extends Component {
 			<Button onClick={this.props.onClick} className="play-button-button" size="lg" colour="pink" to={to}>
 				<p className="play-button-title">{this.props.title || 'Play'}</p>
 				{template ? <p className="play-button-sub">using <b>{template.name}</b></p> : null}
-				{groupUser ? <p className="play-button-sub">with <b>{groupUser.groupName || 'a group'}</b></p> : null}
+				{groupUser ? <p className="play-button-sub">with <b>{groupUser.groupName || 'group'}</b></p> : null}
 				{this.state.groupChallengeId ? <p className="play-button-sub">(with a challenge)</p> : null}
 			</Button>
 			{this.props.allowClearOptions && (template || groupUser || this.state.groupChallengeId)

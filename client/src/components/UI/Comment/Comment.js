@@ -70,7 +70,7 @@ class Comment extends Component {
 							value={this.props.comment.value} 
 							onCancel={() => this.setIsEditing(false)} 
 							onSubmit={(value) => {
-								this.props.onUpdate(this.props.comment, value);
+								if(this.props.onUpdate) this.props.onUpdate(this.props.comment, value);
 								this.setIsEditing(false);
 							}}
 						/>
@@ -79,15 +79,15 @@ class Comment extends Component {
 						</div>
 					}
 					<div className="comment-actions">
-						{isMe && !this.state.isEditing
+						{isMe && this.props.onUpdate && !this.state.isEditing
 							? <a onClick={() => this.setIsEditing(true)}>Edit</a>
 							: null
 						}
-						{isMe && !this.state.isEditing
+						{isMe && this.props.onDelete && !this.state.isEditing
 							? <a onClick={this.deleteComment}>Delete</a>
 							: null
 						}
-						{user && !isMe && Util.context.isAuthenticated() && this.props.onReply
+						{user && this.props.onReply && !isMe && Util.context.isAuthenticated() && this.props.onReply
 							? <a onClick={() => this.props.onReply(user.username)}>Reply</a>
 							: null
 						}

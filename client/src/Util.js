@@ -116,6 +116,7 @@ const Util = {
 		getUserAvatar: () => Util.userAvatar.getForUser(Util.context._user),
 
 		getGroupUsers: () => Util.context._groupUsers || [],
+		getGroupIds: () => Util.context.getGroupUsers().map(gu => gu.groupId),
 		getGroupUserByGroupId: (groupId) => Util.context.getGroupUsers().find(gu => gu.groupId === groupId),
 		isInGroup: (groupId) => !!Util.context.getGroupUserByGroupId(groupId),
 		isGroupAdmin: (groupId) => {
@@ -392,6 +393,12 @@ const Util = {
 			if(!plural) plural = singular + 's';
 			let count = Array.isArray(arrayOrCount) ? arrayOrCount.length : arrayOrCount;
 			return count === 1 ? singular : plural;
+		},
+
+		ownership: (string = "") => {
+			return string.length > 0 && string[string.length - 1] === 's' || string[string.length - 1] === 'S'
+				? `${string}'`
+				: `${string}'s`;
 		},
 
 		userStringToSafeHtml: (str = "", allowMentions = false) => {

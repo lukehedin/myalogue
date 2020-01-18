@@ -85,6 +85,7 @@ export default class ProfilePage extends Component {
 													panelCount={this.state.userStats.panelCount}
 													comicCount={this.state.userStats.comicCount}
 												/>
+												<h5 className="groups-title">Groups</h5>
 												<GroupList limit={5} emptyText={`${this.state.user.username} isn't a member of any groups.`} forUserId={this.state.user.userId} />
 											</div>
 										}, {

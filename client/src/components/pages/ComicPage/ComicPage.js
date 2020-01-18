@@ -90,7 +90,7 @@ export default class ComicPage extends Component {
 			</div>
 		} else if(this.state.isComicCompleted) {
 			content = <div>
-				<ComicInfoLabel className="sm" comic={this.state.comic} />
+				<ComicInfoLabel comic={this.state.comic} />
 				<div className="comic-wrapper">
 					<Comic isUpperInfoHidden={true} isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
@@ -123,9 +123,11 @@ export default class ComicPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<h1 className="page-title">Comic #{this.props.comicId}</h1>
-						<div className="comic-area">
-							{content}
+						<div className="page-comic-inner comic-width">
+							<h1 className="page-title">Comic #{this.props.comicId}</h1>
+							<div className="comic-area">
+								{content}
+							</div> 
 						</div>
 					</div>
 				</div>

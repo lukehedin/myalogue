@@ -58,9 +58,9 @@ export default class CommentThread extends Component {
 				? <div className="comments" ref={this.commentsContainerRef}>
 					{this.state.comments.map((comment, idx) => <Comment key={idx} 
 						comment={comment} 
-						onReply={this.replyToComment}
-						onDelete={this.props.onDeleteComment} 
-						onUpdate={this.props.onUpdateComment}
+						onReply={this.props.hideCommentInput ? null : this.replyToComment}
+						onDelete={this.props.onDeleteComment} //Users can always delete their comments, regardless of permissions
+						onUpdate={this.props.hideCommentInput ? null : this.props.onUpdateComment}
 					/>)}
 					{this.state.isLoadingNewComment 
 						? <p className="posting-message empty-text center sm">Posting...</p>

@@ -67,9 +67,12 @@ export default class TemplatePage extends Component {
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
 						<h2 className="page-title template-name">{this.state.template.name}</h2>
-						<div className="play-template button-container">
-							<PlayButton templateId={this.state.templateId} />
-						</div>
+						{Util.context.isAuthenticated()
+							? <div className="play-template button-container">
+								<PlayButton templateId={this.state.templateId} />
+							</div>
+							: null
+						}
 						<div className="top-comic-container">
 							{this.state.isLoading
 								? <div className="loader"></div>

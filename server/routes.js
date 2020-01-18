@@ -120,6 +120,7 @@ export default {
 
 			let templateId = req.body.templateId;
 			let authorUserId = req.body.authorUserId;
+			let includeGroupIds = req.body.includeGroupIds;
 			let groupId = req.body.groupId;
 			let ignoreComicIds = req.body.ignoreComicIds;
 			let completedAtBefore = req.body.completedAtBefore;
@@ -128,7 +129,7 @@ export default {
 			let offset = req.body.offset;
 			let limit = req.body.limit;
 
-			return await services.Comic.GetComics(forUserId, templateId, authorUserId, groupId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
+			return await services.Comic.GetComics(forUserId, templateId, authorUserId, includeGroupIds, groupId, ignoreComicIds, completedAtBefore, includeAnonymous, sortBy, offset, limit);
 		},
 
 		getLeaderboards: async (req, services) => {
@@ -344,6 +345,16 @@ export default {
 			return await services.Group.GetPendingGroupInfoForUser(userId);
 		},
 
+		deleteGroupComment: async (req, services) => {
+			let userId = req.userId;
+
+			let groupCommentId = req.body.groupCommentId;
+
+			//No permissions needed, so long as I am the userId who made the comment I can delete it
+
+			return await services.Group.DeleteGroupComment(userId, groupCommentId);
+		},
+
 		saveUserAvatar: async (req, services) => {
 			let userId = req.userId;
 
@@ -472,19 +483,6 @@ export default {
 			let value = req.body.value;
 
 			return await services.Group.UpdateGroupComment(userId, groupId, groupCommentId, value);
-		},
-
-		deleteGroupComment: async (req, services) => {
-			let userId = req.userId;
-			let memberOfGroupIds = req.memberOfGroupIds;
-
-			let groupId = req.body.groupId;
-
-			if(!memberOfGroupIds.includes(groupId)) throw 'Not a group member';
-
-			let groupCommentId = req.body.groupCommentId;
-
-			return await services.Group.DeleteGroupComment(userId, groupId, groupCommentId);
 		},
 
 		removeUserFromGroup: async (req, services) => {

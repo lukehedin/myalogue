@@ -30,6 +30,15 @@
 					}
 				}
 			}
+			
+			.groups-title {
+				text-align: center;
+				color: $colour-grey-e;
+			}
+
+			.group-list {
+				margin-top: $spacing-xs;
+			}
 
 			.template-usage-table {
 				border-collapse:collapse;

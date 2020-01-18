@@ -6,7 +6,7 @@ export default class TabbedPanels extends Component {
 		let selectedIdx = 0;
 
 		let urlParams = new URLSearchParams(window.location.search);
-		let tabId = urlParams.get('tabId');
+		let tabId = urlParams.get('tabId') || this.props.selectedTabId; //Prioritise query param
 		if(tabId) {
 			let selectedTab = this.props.tabs.find(tab => tab.tabId === tabId);
 			selectedIdx = selectedTab

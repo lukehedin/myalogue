@@ -238,6 +238,10 @@ export default class PlayPage extends Component {
 					<PlayButton title="Play again" onClick={() => this.playNew()} useQueryParams={true} allowClearOptions={true} onClearOptions={this.clearOptions} />
 					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />
 				</div>
+				{Util.context.isAuthenticated()
+					? <p className="center sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
+					: null
+				}
 				<TipStrip />
 			</div>
 		}

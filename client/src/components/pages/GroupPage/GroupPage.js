@@ -89,7 +89,10 @@ class GroupPage extends Component {
 					//If the result is a groupUser, we joind the public group
 					//Update CONTEXT
 					Util.context.set({
-						groupUsers: [...Util.context.getGroupUsers(), result]
+						groupUsers: [...Util.context.getGroupUsers(), {
+							...result,
+							groupName: this.state.group.name //Slap on group name
+						}]
 					});
 					//Update STATE
 					this.appendNewGroupUser({
@@ -326,11 +329,13 @@ class GroupPage extends Component {
 					<div className="member-list">
 						{Util.array.any(this.state.group.groupUsers)
 							? this.state.group.groupUsers.map(groupUser => {
+								let isCreator = groupUser.userId === this.state.group.createdByUserId;
+
 								return <div key={groupUser.groupUserId} className="member-list-item">
 									<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
 									<div className="member-list-item-detail">
 										<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
-										<p className="joined-at sm">{groupUser.isGroupAdmin ? <b>(Admin) </b> : null}Joined {moment(groupUser.createdAt).fromNow()}</p>
+										<p className="joined-at sm">{isCreator ? <b>(Creator) </b> : groupUser.isGroupAdmin ? <b>(Admin) </b> : null}Joined {moment(groupUser.createdAt).fromNow()}</p>
 									</div>
 									{isAdmin
 										? <ContextMenu align="right" menuItems={[{

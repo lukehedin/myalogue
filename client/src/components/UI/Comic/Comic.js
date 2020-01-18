@@ -179,9 +179,9 @@ class Comic extends Component {
 			{this.props.isUpperInfoHidden
 				? null
 				: <div className="comic-upper comic-width">
-					<p><b>Comic #{this.state.comic.comicId} - Completed {moment(this.state.comic.completedAt).fromNow()}</b></p>
+					<p>Comic #{this.state.comic.comicId} - Completed {moment(this.state.comic.completedAt).fromNow()}</p>
 					<p>{createdByInfo}{this.state.comic.challenge
-						? <span> - {this.state.comic.challenge}</span>
+						? <span> - <b>{this.state.comic.challenge}</b></span>
 						: null
 					}</p>
 					

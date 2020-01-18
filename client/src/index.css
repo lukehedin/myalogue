@@ -648,7 +648,7 @@ body {
             margin-top: 16px;
             justify-content: center; }
         body .app-container .app .modal.modal-share-comic {
-          max-width: 300px; }
+          max-width: 360px; }
           body .app-container .app .modal.modal-share-comic .share-comic-container {
             display: flex;
             flex-direction: column;
@@ -1143,18 +1143,32 @@ body {
               display: none; }
             body .app-container .app .tip-strip .tip-strip-inner .tip-image.horizontal {
               display: block; } }
-      body .app-container .app .group-list .group-list-filters {
+      body .app-container .app .group-list .group-list-upper {
+        margin: 0 auto;
         margin-bottom: 16px;
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center; }
-        body .app-container .app .group-list .group-list-filters:first-child {
-          margin-top: 0; }
-        body .app-container .app .group-list .group-list-filters .search {
-          min-width: 100px; }
-        body .app-container .app .group-list .group-list-filters > *:not(:first-child) {
-          margin-left: 8px; }
+        flex-direction: column;
+        align-items: center; }
+        @media (min-width: 768px) {
+          body .app-container .app .group-list .group-list-upper {
+            flex-direction: row; } }
+        body .app-container .app .group-list .group-list-upper .group-list-title {
+          flex: 1;
+          margin-bottom: 8px; }
+          @media (min-width: 768px) {
+            body .app-container .app .group-list .group-list-upper .group-list-title {
+              margin-bottom: 0; } }
+        body .app-container .app .group-list .group-list-upper .group-list-filters {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center; }
+          body .app-container .app .group-list .group-list-upper .group-list-filters:first-child {
+            margin-top: 0; }
+          body .app-container .app .group-list .group-list-upper .group-list-filters .search {
+            min-width: 100px; }
+          body .app-container .app .group-list .group-list-upper .group-list-filters > *:not(:first-child) {
+            margin-left: 8px; }
       body .app-container .app .group-list .group-list-inner .group-list-item {
         display: flex;
         flex-direction: row;
@@ -1313,23 +1327,36 @@ body {
         body .app-container .app .play-button .play-button-clear {
           margin: 0;
           margin-top: 8px;
+          margin-bottom: 16px;
           text-align: center;
           font-size: 14px;
           display: inline-block; }
-      body .app-container .app .page-comic .comic-area {
-        min-height: 40px;
-        position: relative;
+      body .app-container .app .comic-info-label p {
+        font-size: 12px;
+        line-height: 18px;
+        margin: 0; }
+        body .app-container .app .comic-info-label p:not(:last-child) {
+          margin-bottom: 8px; }
+      body .app-container .app .page-comic .page-comic-inner {
+        margin: 0 auto;
         display: flex;
         flex-direction: column; }
-        body .app-container .app .page-comic .comic-area .comic-info-label {
-          margin-bottom: 16px; }
-        body .app-container .app .page-comic .comic-area .progress-bar {
-          margin: 0 auto;
-          width: 240px; }
-        body .app-container .app .page-comic .comic-area .comic-wrapper {
-          margin-bottom: 64px; }
-        body .app-container .app .page-comic .comic-area .comic-list {
-          margin-top: 64px; }
+        body .app-container .app .page-comic .page-comic-inner .comic-area {
+          min-height: 40px;
+          position: relative; }
+          body .app-container .app .page-comic .page-comic-inner .comic-area .comic-info-label {
+            margin-bottom: 16px;
+            text-align: center; }
+            @media (min-width: 576px) {
+              body .app-container .app .page-comic .page-comic-inner .comic-area .comic-info-label {
+                text-align: left; } }
+          body .app-container .app .page-comic .page-comic-inner .comic-area .progress-bar {
+            margin: 0 auto;
+            width: 240px; }
+          body .app-container .app .page-comic .page-comic-inner .comic-area .comic-wrapper {
+            margin-bottom: 64px; }
+          body .app-container .app .page-comic .page-comic-inner .comic-area .comic-list {
+            margin-top: 64px; }
       body .app-container .app .page-home .home-inner {
         display: flex;
         flex-direction: column; }
@@ -1440,9 +1467,7 @@ body {
           -webkit-box-shadow: 6px 6px 6px #00000016;
           -moz-box-shadow: 6px 6px 6px #00000016; }
         body .app-container .app .page-play .play-area .play-actions {
-          margin-top: 16px; }
-          body .app-container .app .page-play .play-area .play-actions .play-button {
-            margin-bottom: 16px; }
+          margin: 16px 0; }
         body .app-container .app .page-play .play-area .play-options {
           display: flex;
           flex-direction: column;
@@ -1535,14 +1560,16 @@ body {
                   margin: 0; }
         body .app-container .app .page-group .page-group-inner .group-info .challenges .group-challenges-list {
           border-top: 1px solid #efefef;
-          padding-top: 32px;
-          margin-top: 32px; }
+          padding-top: 16px;
+          margin-top: 16px; }
           body .app-container .app .page-group .page-group-inner .group-info .challenges .group-challenges-list .group-challenge-item {
             display: flex;
             flex-direction: row;
             align-items: flex-start; }
             body .app-container .app .page-group .page-group-inner .group-info .challenges .group-challenges-list .group-challenge-item:not(:last-child) {
-              margin-bottom: 32px; }
+              margin-bottom: 16px;
+              padding-bottom: 16px;
+              border-bottom: 1px solid #efefef; }
             body .app-container .app .page-group .page-group-inner .group-info .challenges .group-challenges-list .group-challenge-item .challenge-detail {
               flex: 1; }
               body .app-container .app .page-group .page-group-inner .group-info .challenges .group-challenges-list .group-challenge-item .challenge-detail .challenge {
@@ -1647,6 +1674,11 @@ body {
             body .app-container .app .page-profile .page-profile-inner .user-info .user-info-header .user-info-header-detail .joined-date {
               margin: 4px 0;
               color: #525252; }
+          body .app-container .app .page-profile .page-profile-inner .user-info .groups-title {
+            text-align: center;
+            color: #525252; }
+          body .app-container .app .page-profile .page-profile-inner .user-info .group-list {
+            margin-top: 8px; }
           body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table {
             border-collapse: collapse; }
             body .app-container .app .page-profile .page-profile-inner .user-info .template-usage-table th {

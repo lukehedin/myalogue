@@ -1,22 +1,41 @@
 .group-list {
-	.group-list-filters {
+	.group-list-upper {
+		margin: 0 auto;
 		margin-bottom: $spacing-sm;
 
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		&:first-child {
-			margin-top: 0;
+		@include overmd {
+			flex-direction: row;
 		}
 
-		.search {
-			min-width: 100px;
+		.group-list-title {
+			flex: 1;
+
+			margin-bottom: $spacing-xs;
+			@include overmd {
+				margin-bottom: 0;
+			}
 		}
 
-		> * {
-			&:not(:first-child) {
-				margin-left: $spacing-xs;
+		.group-list-filters {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			&:first-child {
+				margin-top: 0;
+			}
+	
+			.search {
+				min-width: 100px;
+			}
+	
+			> * {
+				&:not(:first-child) {
+					margin-left: $spacing-xs;
+				}
 			}
 		}
 	}

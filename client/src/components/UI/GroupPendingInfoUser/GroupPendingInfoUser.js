@@ -65,7 +65,10 @@ class GroupPendingInfoUser extends Component {
 		.then(result => {
 			if(!result.error && result.groupUserId) {
 				Util.context.set({
-					groupUsers: [...Util.context.getGroupUsers(), result]
+					groupUsers: [...Util.context.getGroupUsers(), {
+						...result,
+						groupName: groupInvite.group.name //Slap on group name
+					}]
 				});
 			}
 		});

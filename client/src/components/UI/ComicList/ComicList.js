@@ -68,6 +68,9 @@ export default class ComicList extends Component {
 			//Optional
 			templateId: templateId,
 			authorUserId: this.props.authorUserId,
+			//It is ok to rely on this client side because we can see the comics anyway
+			includeGroupIds: Util.context.getGroupIds(),
+			//If a groupId is specified, includeGroupIds is ignored
 			groupId: this.props.groupId,
 
 			completedAtBefore: this.state.completedAtBefore,

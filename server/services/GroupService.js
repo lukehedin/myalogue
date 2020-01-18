@@ -204,7 +204,7 @@ export default class GroupService extends Service {
 			default:
 				groupOrder.push(['MemberCount', 'DESC']); 
 		}
-		groupOrder.push(['CreatedAt']);//thenby
+		groupOrder.push(['CreatedAt', 'DESC']);//thenby
 
 		if(search) {
 			let lowerSearch = search.toLowerCase();
@@ -514,13 +514,12 @@ export default class GroupService extends Service {
 			}
 		});
 	}
-	async DeleteGroupComment(userId, groupId, groupCommentId) {
-		if(!userId || !groupId || !groupCommentId) throw 'Invalid group comment data supplied';
+	async DeleteGroupComment(userId, groupCommentId) {
+		if(!userId || !groupCommentId) throw 'Invalid group comment data supplied';
 
 		await this.models.GroupComment.destroy({
 			where: {
-				UserId: userId, //Make sure it's the user's
-				GroupId: groupId, //Make sure it's the group's
+				UserId: userId, //Make sure it's the user's, that's all
 				GroupCommentId: groupCommentId
 			}
 		});

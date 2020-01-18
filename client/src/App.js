@@ -144,7 +144,7 @@ class App extends Component {
 		};
 
 		let newsMessage = null;
-		//<p className="sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
+		//  <p className="sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
 
 		let getApp = () => {
 			return <div className="app">

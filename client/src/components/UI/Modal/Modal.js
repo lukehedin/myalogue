@@ -66,7 +66,7 @@ class Modal extends Component {
 				let comicLink = window.location.href;
 
 				modalContent = <div className="share-comic-container">
-					<ComicInfoLabel className="center sm" comic={modal.comic} />
+					<ComicInfoLabel className="center" comic={modal.comic} />
 					<input className="input-link" onClick={e => e.target.select()} readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
 					{!Util.route.isCurrently(Util.route.comic(modal.comic.comicId))

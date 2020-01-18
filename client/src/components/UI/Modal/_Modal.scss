@@ -57,14 +57,14 @@
 	}
 
 	&.modal-share-comic {
-		max-width: 300px;
+		max-width: 360px;
 
 		.share-comic-container {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 		
-			>*{
+			> * {
 				&:not(:first-child) {
 					margin-top: $spacing-xs;
 				}

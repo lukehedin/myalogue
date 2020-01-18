@@ -1,0 +1,12 @@
+.comic-info-label {
+	//Avoid putting in alignment here, each label has different align behaviour
+	
+	p {
+		font-size: 12px;
+		line-height: 18px;
+		margin: 0;
+		&:not(:last-child) {
+			margin-bottom: $spacing-xs;
+		}
+	}
+}

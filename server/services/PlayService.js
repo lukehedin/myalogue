@@ -12,7 +12,7 @@ export default class PlayService extends Service {
 		let userInGroupIds = [];
 
 		if(userId) {
-			//Find the user's groups they can play with
+			//Find the user's groups they can play with (can stumble upon them in standard play)
 			let dbGroupUsers = await this.models.GroupUser.findAll({
 				where: {
 					UserId: userId
@@ -27,7 +27,8 @@ export default class PlayService extends Service {
 				groupChallengeId = null;
 			}
 		} else {
-			//Don't allow groups/challenges if userId isn't provided
+			//Don't allow play options if userId isn't provided
+			templateId = null;
 			groupId = null;
 			groupChallengeId = null;
 		}
@@ -382,6 +383,16 @@ export default class PlayService extends Service {
 		});
 
 		if(!dbComic) throw 'Invalid comic submitted.';
+		
+		if(dbComic.GroupId) {
+			let dbGroupUsers = await this.models.GroupUser.findAll({
+				where: {
+					UserId: userId
+				}
+			});
+			let userInGroupIds = dbGroupUsers.map(dbGroupUser => dbGroupUser.GroupId);
+			if(!userInGroupIds.includes(dbComic.GroupId)) throw `Not a member of the comic group`;
+		}
 
 		let isDialogueValid = validator.isLength(dialogue, { min: 1, max: 255 });
 		let isComicValid = dbComic.CompletedAt === null && dbComic.ComicPanels.length < dbComic.PanelCount;

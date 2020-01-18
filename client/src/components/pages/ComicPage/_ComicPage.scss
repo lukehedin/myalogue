@@ -1,24 +1,32 @@
 .page-comic {
-	.comic-area {
-		@include loaderContainer;
+	.page-comic-inner {
+		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
 
-		.comic-info-label {
-			margin-bottom: $spacing-sm;
-		}
+		.comic-area {
+			@include loaderContainer;
 
-		.progress-bar {
-			margin: 0 auto;
-			width: 240px;
-		}
-
-		.comic-wrapper {
-			margin-bottom: $spacing-lg;
-		}
+			.comic-info-label {
+				margin-bottom: $spacing-sm;
+				text-align: center;
+				@include oversm {
+					text-align: left;
+				}
+			}
+	
+			.progress-bar {
+				margin: 0 auto;
+				width: 240px;
+			}
+	
+			.comic-wrapper {
+				margin-bottom: $spacing-lg;
+			}
 		
-		.comic-list {
-			margin-top: $spacing-lg;
+			.comic-list {
+				margin-top: $spacing-lg;
+			}
 		}
 	}
 }

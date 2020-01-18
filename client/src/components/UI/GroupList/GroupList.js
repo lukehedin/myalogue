@@ -143,16 +143,23 @@ class GroupList extends Component {
 		}];
 
 		return <div className="group-list">
-			<div className="group-list-filters">
-				<input className="search" placeholder="Search" onChange={this.searchChanged} value={this.state.search}></input>
+			<div className="group-list-upper">
+				{this.props.title 
+					? <h3 className="group-list-title">{this.props.title}</h3> 
+					: <div className="flex-spacer"></div>
+				}
+				<div className="group-list-filters">
+					<input className="search" placeholder="Search" onChange={this.searchChanged} value={this.state.search}></input>
+					<div className="flex-spacer"></div>
+					<Dropdown
+						value={this.state.sortBy}
+						onChange={value => this.setSortBy(value)}
+						displayProp='label' 
+						valueProp='type' 
+						options={sortOptions}
+					/>
+				</div>
 				<div className="flex-spacer"></div>
-				<Dropdown
-					value={this.state.sortBy}
-					onChange={value => this.setSortBy(value)}
-					displayProp='label' 
-					valueProp='type' 
-					options={sortOptions}
-				/>
 			</div>
 			<div className="group-list-inner">
 				{Util.array.any(this.state.groups)
@@ -200,7 +207,7 @@ class GroupList extends Component {
 			</div>
 			{this.state.isNoMore
 				? Util.array.none(this.state.groups)
-					? <p className="empty-text">{this.props.emptyText || `No groups found.`}</p>
+					? <p className="empty-text">{!this.state.search && this.props.emptyText ? this.props.emptyText : `No groups found.`}</p>
 					: null
 				: <div className="group-list-bottom">
 					{this.state.isLoading 
