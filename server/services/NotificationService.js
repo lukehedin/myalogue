@@ -6,6 +6,34 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class NotificationService extends Service {
+	SeenUserNotificationsByIds(userId, userNotificationIds) {
+		this.models.UserNotification.update({
+			SeenAt: new Date()
+		}, {
+			where: {
+				SeenAt: {
+					[Sequelize.Op.eq]: null
+				},
+				UserId: userId,
+				UserNotificationId: {
+					[Sequelize.Op.in]: userNotificationIds
+				}
+			}
+		});
+	}
+	ActionedUserNotificationById(userId, userNotificationId) {
+		this.models.UserNotification.update({
+			ActionedAt: new Date()
+		}, {
+			where: {
+				ActionedAt: {
+					[Sequelize.Op.eq]: null
+				},
+				UserId: userId,
+				UserNotificationId: userNotificationId
+			}
+		});
+	}
 	async GetNotificationsForUserId(userId, lastCheckedAt) {
 		let userNotificationWhere = {
 			UserId: userId
@@ -78,33 +106,35 @@ export default class NotificationService extends Service {
 		//Takes the user to their pending requests (do not want groupId)
 		await this._CreateNotification([userId], common.enums.NotificationType.GroupInviteReceived, {}, null, groupName);
 	}
-	SeenUserNotificationsByIds(userId, userNotificationIds) {
-		this.models.UserNotification.update({
-			SeenAt: new Date()
-		}, {
+	async SendUserJoinedGroupNotification(userId, groupId) {
+		let dbGroup = await this.models.Group.findOne({
 			where: {
-				SeenAt: {
-					[Sequelize.Op.eq]: null
-				},
-				UserId: userId,
-				UserNotificationId: {
-					[Sequelize.Op.in]: userNotificationIds
+				GroupId: groupId
+			},
+			include: [{
+				model: this.models.GroupUser,
+				as: 'GroupUsers',
+				required: false,
+				where: {
+					IsGroupAdmin: true
 				}
-			}
+			}]
 		});
-	}
-	ActionedUserNotificationById(userId, userNotificationId) {
-		this.models.UserNotification.update({
-			ActionedAt: new Date()
-		}, {
+
+		//Admins
+		let notifyUserIds = this._CleanNotifyUserIds(
+			dbGroup.GroupUsers.map(dbGroupUser => dbGroupUser.UserId)
+		);
+		if (notifyUserIds.length < 1) return; //No admins in group
+
+		let dbNewUser = await this.models.User.findOne({
 			where: {
-				ActionedAt: {
-					[Sequelize.Op.eq]: null
-				},
-				UserId: userId,
-				UserNotificationId: userNotificationId
+				UserId: userId
 			}
 		});
+		if(!dbNewUser) throw 'New group user not found.';
+
+		this._CreateOrUpdateStackingNotification();
 	}
 	async _SendCommentMentionedNotification(mentionedUserIds, dbNewCommenterUser, notificationType, notificationProperties = {}) {
 		if(!mentionedUserIds || mentionedUserIds.length < 1) return;
@@ -130,11 +160,9 @@ export default class NotificationService extends Service {
 			};
 		}));
 	}
-	async _CreateOrUpdateCommentNotification(dbNewComment, commentTableName, type, mentionType, notificationProperties = {}){
+	async _CreateOrUpdateCommentNotification(dbNewComment, commentTableName, notificationType, mentionType, notificationProperties = {}){
 		//This function will find any mentions within the comment (takes advantage of comment table mutual fiels)
 		//and determine who needs to be notified based on the commentTable. eg. ComicComment = use panel creators, GroupComment = group members
-		//After that, it will use the generic CreateOrUpdateStackingNotification
-
 		let dbNewCommenterUser = await this.models.User.findOne({
 			where: {
 				UserId: dbNewComment.UserId
@@ -155,10 +183,10 @@ export default class NotificationService extends Service {
 			case 'ComicComment':
 				//Extract comicId from dbNewComment, which SHOULD be a ComicComment
 				let [dbComicComments, dbComicPanels] = await Promise.all([
-					this.models.ComicComments.findAll({
+					this.models.ComicComment.findAll({
 						where: { ComicId: dbNewComment.ComicId }
 					}),
-					this.models.ComicPanels.findAll({
+					this.models.ComicPanel.findAll({
 						where: { ComicId: dbNewComment.ComicId }
 					})
 				]);
@@ -203,97 +231,115 @@ export default class NotificationService extends Service {
 				.filter(userId => userId !== dbNewComment.UserId) //DO NOT include THIS commenter
 		)
 		
+		let now = new Date();
+		
+		this._CreateStackingNotification(notifyUserIds, notificationType, notificationProperties, (notifyUserId, notificationId) => {
+			//Create
+
+			return {
+				UserId: notifyUserId,
+				NotificationId: notificationId,
+				ValueString: dbNewCommenterUser.Username,
+				ValueInteger: null
+			};
+		}, (notifyUserId, notificationId, dbLatestUserNotificationForUser = null) => {
+			//Update
+
+			//This may be filled with a date to limit how many "and 2 others" shows up
+			let otherCommentsCutoffDate = null;
+					
+			//Get all MY comments, if any
+			let dbCommentsForUser = dbExistingCommentsInThread
+				.filter(dbComment => dbComment.UserId === notifyUserId)
+				.sort((c1, c2) => new Date(c2.CreatedAt) - new Date(c1.CreatedAt));
+			//If I made any comments previously, make sure my notification only counts the ones AFTER my latest comment
+			if(dbCommentsForUser && dbCommentsForUser.length > 0) otherCommentsCutoffDate = dbCommentsForUser[0].CreatedAt;
+
+			//Get all comments but my own and the recent commenter. Might be 0.
+			let dbOtherComments = dbExistingCommentsInThread
+				.filter(dbComment => dbComment.UserId !== notifyUserId && dbComment.UserId !== dbNewCommenterUser.UserId)
+				.filter(dbComment => {
+					return otherCommentsCutoffDate 
+						? new Date(dbComment.CreatedAt) > new Date(otherCommentsCutoffDate) //if we have a cuttoff date, i only care about comments after it
+						: true; //otherwise i care about all!
+				});
+
+			if(dbLatestUserNotificationForUser) {
+				if(dbLatestUserNotificationForUser.SeenAt) {
+					//HAS seen the latest notification. Make a new one, with only commenters AFTER my latest notifications's SeenAt
+					return {
+						UserId: notifyUserId,
+						NotificationId: notificationId,
+						ValueString: dbNewCommenterUser.Username,
+						ValueInteger: [...new Set(dbOtherComments
+								.filter(dbComment => new Date(dbComment.CreatedAt) > new Date(dbLatestUserNotificationForUser.SeenAt))
+								.map(dbComment => dbComment.UserId)
+							)].length
+					};
+				} else {
+					//Hasn't seen the latest notification, update it's data
+					return {
+						//Including THIS makes it an update
+						UserNotificationId: dbLatestUserNotificationForUser.UserNotificationId,
+						
+						RenewedAt: now,
+						ValueString: dbNewCommenterUser.Username,
+						ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
+					};
+				}
+			} else {
+				//Notifying someone who hasn't got a usernotification for this thread yet
+				//Eg. the person who commented first, OR someone who joined a random comment thread
+				return {
+					UserId: notifyUserId,
+					NotificationId: notificationId,
+					ValueString: dbNewCommenterUser.Username,
+					ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
+				};
+			}
+		});
+	}
+	async _CreateStackingNotification(notifyUserIds, notificationType, notificationProperties, createUserNotificationMap, updateUserNotificationMap) {
+		// This is an updatable user notification as further events happen. 
+		// if the user HASN'T seen the notification, the valueinteger may increase (eg. "bob and 2 others" becomes "sarah and 3 others")
+		// if the user has seen the notification, a new one is made. (eg. "sarah commented")
+		// A SEEN NOTIFICATION WILL NEVER CHANGE
+
 		// Find or create a notification with the parsed in type
 		let [dbNotification, dbNotificationWasCreated] = await this.models.Notification.findOrCreate({
 			where: {
-				Type: type,
+				Type: notificationType,
 				...notificationProperties
 			}
 		});
 
 		if(dbNotificationWasCreated) {
-			//We just made the root comment notification, so make all the user ones now
+			//We just made the root stacking notification, so simply make the first round of user ones now
 			this.models.UserNotification.bulkCreate(notifyUserIds.map(notifyUserId => {
-				return {
-					UserId: notifyUserId,
-					NotificationId: dbNotification.NotificationId,
-					ValueString: dbNewCommenterUser.Username,
-					ValueInteger: null
-				};
+				return createUserNotificationMap(notifyUserId, dbNotification.NotificationId);
 			}));
 		} else {
-			let userNotificationsToCreate = []; //Some of these may be updates (using PK)
-			let now = new Date();
-
-			//Get the existing user notifciations for this notification
-			let dbUserNotifications = await this.models.UserNotification.findAll({
+			//Get the existing usernotifications for this notification
+			let dbExistingUserNotifications = await this.models.UserNotification.findAll({
 				where: {
 					NotificationId: dbNotification.NotificationId
 				}
 			});
 	
-			//For each user we're notifying
-			notifyUserIds.forEach(notifyUserId => {
-				//This may be filled with a date to limit how many "and 2 others" shows up
-				let otherCommentsCutoffDate = null;
-		
-				//Get all MY comments, if any
-				let dbCommentsForUser = dbExistingCommentsInThread
-					.filter(dbComment => dbComment.UserId === notifyUserId)
-					.sort((c1, c2) => new Date(c2.CreatedAt) - new Date(c1.CreatedAt));
-				//If I made any comments previously, make sure my notification only counts the ones AFTER my latest comment
-				if(dbCommentsForUser && dbCommentsForUser.length > 0) otherCommentsCutoffDate = dbCommentsForUser[0].CreatedAt;
-		
-				//Get all comments but my own and the recent commenter. Might be 0.
-				let dbOtherComments = dbExistingCommentsInThread
-					.filter(dbComment => dbComment.UserId !== notifyUserId && dbComment.UserId !== dbNewCommenterUser.UserId)
-					.filter(dbComment => {
-						return otherCommentsCutoffDate 
-							? new Date(dbComment.CreatedAt) > new Date(otherCommentsCutoffDate) //if we have a cuttoff date, i only care about comments after it
-							: true; //otherwise i care about all!
-					});
-					
-				//Get all user notifications i've already gotten for this comment thread
-				let dbUserNotificationsForUser = dbUserNotifications
+			//Some of these may be updates (using PK)
+			let userNotificationsToCreate = notifyUserIds.map(notifyUserId => {
+				//Get all usernotifications i've already gotten for this notification
+				let dbUserNotificationsForUser = dbExistingUserNotifications
 					.filter(dbUserNotification => dbUserNotification.UserId === notifyUserId)
 					.sort((n1, n2) => new Date(n2.CreatedAt) - new Date(n1.CreatedAt));
-		
-				if(dbUserNotificationsForUser && dbUserNotificationsForUser.length > 0) {
-					let latestDbUserNotificationForUser = dbUserNotificationsForUser[0];
-		
-					if(latestDbUserNotificationForUser.SeenAt) {
-						//HAS seen the latest notification. Make a new one, with only commenters AFTER my latest notifications's SeenAt
-						userNotificationsToCreate.push({
-							UserId: notifyUserId,
-							NotificationId: dbNotification.NotificationId,
-							ValueString: dbNewCommenterUser.Username,
-							ValueInteger: [...new Set(dbOtherComments
-									.filter(dbComment => new Date(dbComment.CreatedAt) > new Date(latestDbUserNotificationForUser.SeenAt))
-									.map(dbComment => dbComment.UserId)
-								)].length
-						});
-					} else {
-						//Hasn't seen the latest notification, update it's data
-						userNotificationsToCreate.push({
-							//Including THIS makes it an update
-							UserNotificationId: latestDbUserNotificationForUser.UserNotificationId,
-							
-							RenewedAt: now,
-							ValueString: dbNewCommenterUser.Username,
-							ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
-						});
-					}
-				} else {
-					//Notifying someone who hasn't got a usernotification for this thread yet
-					//Eg. the person who commented first, OR someone who joined a random comment thread
-		
-					userNotificationsToCreate.push({
-						UserId: notifyUserId,
-						NotificationId: dbNotification.NotificationId,
-						ValueString: dbNewCommenterUser.Username,
-						ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
-					});
-				}
+
+				//Get the latest, if it exists
+				let dbLatestUserNotificationForUser = dbUserNotificationsForUser.length > 0
+					? dbUserNotificationsForUser[0]
+					: null;
+
+				//Pass it into the update map with the userId
+				return updateUserNotificationMap(notifyUserId, dbNotification.NotificationId, dbLatestUserNotificationForUser);
 			});
 		
 			await this.models.UserNotification.bulkCreate(userNotificationsToCreate, {
@@ -301,15 +347,7 @@ export default class NotificationService extends Service {
 			});
 		}
 	}
-	async _CreateOrUpdateStackingNotification() {
-		// This is an updatable user notification as further comments happen. 
-		// if the user HASN'T seen the notification, the valueinteger may increase (eg. "bob and 2 others" becomes "sarah and 3 others")
-		// if the user has seen the notification, a new one is made. (eg. "sarah commented")
-		// A SEEN NOTIFICATION SHOULD NEVER CHANGE
-
-
-	}
-	async _CreateSingletonNotification(notifyUserIds, type, valueInteger = null, valueString = null) {
+	async _CreateSingletonNotification(notifyUserIds, notificationType, valueInteger = null, valueString = null) {
 		//Only ONE type of each of these in the db, with no foreign keys. Uses findorcreate.
 		//Use this for notifications that don't change content from user to user (apart from valueinteger/valuestring)
 	
@@ -317,7 +355,7 @@ export default class NotificationService extends Service {
 
 		let [dbNotification] = await this.models.Notification.findOrCreate({
 			where: {
-				Type: type
+				Type: notificationType
 			}
 		});
 
@@ -330,14 +368,14 @@ export default class NotificationService extends Service {
 			};
 		}));
 	}
-	async _CreateNotification(notifyUserIds, type, notificationProperties = {}, valueInteger = null, valueString = null) {
+	async _CreateNotification(notifyUserIds, notificationType, notificationProperties = {}, valueInteger = null, valueString = null) {
 		//The most basic notification operation. creates a notification, makes usernotifications
 		//Does not update further. No chance of overlapping or sending twice.
 	
 		notifyUserIds = this._CleanNotifyUserIds(notifyUserIds);
 		
 		let dbNotification = await this.models.Notification.create({
-			Type: type,
+			Type: notificationType,
 			...notificationProperties
 		});
 

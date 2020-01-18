@@ -267,7 +267,8 @@ export default class GroupService extends Service {
 				//This will check if they're already a member
 				let newGroupUser = await this._AddUserToGroup(userId, groupId);
 	
-				//TODO: Send user joined notification to group admins (only in this case)
+				// this.services.Notification.SendUserJoinedGroupNotification(userId, groupId);
+				
 				return newGroupUser;
 			} else {
 				//Check if they are already a group member, if they are, send back the groupUser (basically the same as a public group join result on client side)
