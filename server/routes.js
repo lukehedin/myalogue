@@ -423,6 +423,7 @@ export default {
 		},
 
 		actionGroupRequest: async (req, services) => {
+			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 			
 			let groupId = req.body.groupId;
@@ -432,7 +433,7 @@ export default {
 			let groupRequestId = req.body.groupRequestId;
 			let isApproving = req.body.isApproving;
 
-			return await services.Group.ActionGroupRequest(groupId, groupRequestId, isApproving);
+			return await services.Group.ActionGroupRequest(userId, groupId, groupRequestId, isApproving);
 		},
 
 		leaveGroup: async (req, services) => {
@@ -511,6 +512,7 @@ export default {
 		},
 
 		createGroupChallenge: async(req, services) => {
+			let userId = req.userId;
 			let adminOfGroupIds = req.adminOfGroupIds;
 			
 			let groupId = req.body.groupId;
@@ -519,7 +521,7 @@ export default {
 
 			let challenge = req.body.challenge;
 
-			return await services.Group.CreateGroupChallenge(groupId, challenge);
+			return await services.Group.CreateGroupChallenge(userId, groupId, challenge);
 		},
 
 		removeGroupChallenge: async(req, services) => {

@@ -227,7 +227,9 @@ const mapper = {
 		let valueInt = dbUserNotification.ValueInteger;
 		let valueString = dbUserNotification.ValueString;
 
+		// The mapper/ui doesn't need full Comic assocation currently, it can just use #{Notification.ComicId}
 		let dbRelatedComicId = dbUserNotification.Notification.ComicId;
+		let dbRelatedGroup = dbUserNotification.Notification.Group;
 
 		///Actionable if the notification links to a FK item, can also be set in switch below
 		let isActionable = dbUserNotification.Notification.ComicId;

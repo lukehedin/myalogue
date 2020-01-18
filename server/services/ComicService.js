@@ -346,33 +346,14 @@ export default class ComicService extends Service {
 	}
 	async PostComicComment (userId, comicId, value) {
 		if(!userId || !comicId || !value) throw 'Invalid comic comment data supplied';
-
-		let dbComic = await this.models.Comic.findOne({
-			where: {
-				ComicId: comicId,
-				CompletedAt: {
-					[Sequelize.Op.ne]: null
-				}
-			},
-			//This include is here for the notification audiences (panel creators and commenters)
-			include: [{
-				model: this.models.ComicPanel, 
-				as: 'ComicPanels'
-			}, {
-				model: this.models.ComicComment,
-				as: 'ComicComments'
-			}]
-		});
-
-		if(!dbComic) throw 'Invalid comic to comment on';
-
+		
 		let dbCreatedComicComment = await this.models.ComicComment.create({
 			UserId: userId,
 			ComicId: comicId,
 			Value: value
 		});
 		
-		this.services.Notification.SendComicCommentNotification(dbCreatedComicComment, dbComic);
+		this.services.Notification.SendComicCommentNotification(dbCreatedComicComment);
 
 		return mapper.fromDbComicComment(dbCreatedComicComment);
 	}

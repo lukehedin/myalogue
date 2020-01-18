@@ -247,6 +247,7 @@ export default class GroupService extends Service {
 	}
 	async JoinGroup(userId, groupId) {
 		let group = await this.GetById(groupId);
+		if(!userId || !group) throw 'Invalid group join data supplied';
 
 		//Check if they already have an invite from this group
 		let dbExistingGroupInvite = await this.models.GroupInvite.findOne({
@@ -264,7 +265,7 @@ export default class GroupService extends Service {
 		} else {
 			if(group.isPublic) {
 				//This will check if they're already a member
-				let newGroupUser = await this.AddUserToGroup(userId, groupId);
+				let newGroupUser = await this._AddUserToGroup(userId, groupId);
 	
 				//TODO: Send user joined notification to group admins (only in this case)
 				return newGroupUser;
@@ -293,7 +294,9 @@ export default class GroupService extends Service {
 			}
 		}
 	}
-	async ActionGroupRequest(groupId, groupRequestId, isApproving = false) {
+	async ActionGroupRequest(actionedByUserId, groupId, groupRequestId, isApproving = false) {
+		if(!actionedByUserId || !groupId || !groupRequestId) throw 'Invalid group request data supplied';
+
 		let dbPendingGroupRequest = await this.models.GroupRequest.findOne({
 			where: {
 				...this._GetPendingGroupRequestWhere(),
@@ -308,6 +311,8 @@ export default class GroupService extends Service {
 		});
 		if(!dbPendingGroupRequest) throw 'Invalid pending group request';
 
+		dbPendingGroupRequest.ActionedByUserId = actionedByUserId;
+
 		if(isApproving) {
 			//Approve the request first, in case the below fails
 			dbPendingGroupRequest.ApprovedAt = new Date();
@@ -315,7 +320,7 @@ export default class GroupService extends Service {
 
 			await this.services.Notification.SendGroupRequestApprovedNotification(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId, dbPendingGroupRequest.Group.Name);
 
-			return await this.AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
+			return await this._AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
 		} else {
 			dbPendingGroupRequest.DeniedAt = new Date();
 			await dbPendingGroupRequest.save();
@@ -323,7 +328,7 @@ export default class GroupService extends Service {
 	}
 	async InviteToGroupByUsername(fromUserId, username, groupId) {
 		let group = await this.GetById(groupId); //Also used for notification below
-		if(!group || group.isPublic) throw('Invalid groupId');
+		if(!fromUserId || !username || !group || group.isPublic) throw('Invalid group invite data supplied');
 
 		//Check if user exists
 		let dbUser = await this.services.User.DbGetByUsername(username);
@@ -355,7 +360,7 @@ export default class GroupService extends Service {
 
 		if(dbExistingGroupRequest) {
 			//If we're inviting someone who has already requested, just approve the request
-			return await this.ActionGroupRequest(groupId, dbExistingGroupRequest.GroupRequestId, true);
+			return await this.ActionGroupRequest(fromUserId, groupId, dbExistingGroupRequest.GroupRequestId, true);
 		} else {
 			//If all checks ok, send invite
 			let dbNewGroupInvite = await this.models.GroupInvite.create({
@@ -381,6 +386,8 @@ export default class GroupService extends Service {
 		}
 	}
 	async ActionGroupInvite(userId, groupInviteId, isAccepting = false) {
+		if(!userId || !groupInviteId) throw 'Invalid group invite data supplied';
+
 		let dbPendingGroupInvite = await this.models.GroupInvite.findOne({
 			where: {
 				...this._GetPendingGroupInviteWhere(),
@@ -396,7 +403,7 @@ export default class GroupService extends Service {
 			dbPendingGroupInvite.AcceptedAt = new Date();
 			dbPendingGroupInvite.save();
 
-			return await this.AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
+			return await this._AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
 			//TODO notify admins of join (only in this case)
 		} else {
 			dbPendingGroupInvite.IgnoredAt = new Date();
@@ -431,30 +438,10 @@ export default class GroupService extends Service {
 				IsPublic: group.isPublic //Setting is permanent
 			});
 
-			await this.AddUserToGroup(userId, dbNewGroup.GroupId, true);
+			await this._AddUserToGroup(userId, dbNewGroup.GroupId, true);
 			 
 			return this.GetById(dbNewGroup.GroupId);
 		}
-	}
-	async AddUserToGroup(userId, groupId, isGroupAdmin = false) {
-		//Check if user is already part of group
-		let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
-		if(dbExistingGroupUser) throw 'User is already in group';
-
-		let dbNewGroupUser = await this.models.GroupUser.create({
-			UserId: userId,
-			GroupId: groupId,
-			IsGroupAdmin: isGroupAdmin
-		});
-
-		await this.models.Group.increment('MemberCount', { 
-			where: { 
-				GroupId: groupId 
-			}
-		});
-
-		//Note: notifications should not happen here, as its used by various means of adding
-		return mapper.fromDbGroupUser(dbNewGroupUser);
 	}
 	async RemoveUserFromGroup(userId, groupId) {
 		//Make sure user is part of group
@@ -470,6 +457,8 @@ export default class GroupService extends Service {
 		});
 	}
 	async SaveGroupAvatarUrl(groupId, avatarUrl) {
+		if(!groupId || !avatarUrl) throw 'Invalid group avatar data supplied';
+
 		await this.models.Group.update({
 			AvatarUrl: avatarUrl
 		}, {
@@ -492,6 +481,8 @@ export default class GroupService extends Service {
 		return dbGroupComments.map(mapper.fromDbGroupComment);
 	}
 	async PostGroupComment(userId, groupId, value) {
+		if(!userId || !groupId || !value) throw 'Invalid group comment data supplied';
+
 		let dbNewGroupComment = await this.models.GroupComment.create({
 			UserId: userId,
 			GroupId: groupId,
@@ -501,6 +492,8 @@ export default class GroupService extends Service {
 		return mapper.fromDbGroupComment(dbNewGroupComment);
 	}
 	async UpdateGroupComment(userId, groupId, groupCommentId, value) {
+		if(!userId || !groupId || !groupCommentId || !value) throw 'Invalid group comment data supplied';
+
 		await this.models.GroupComment.update({
 			Value: value
 		}, {
@@ -512,6 +505,8 @@ export default class GroupService extends Service {
 		});
 	}
 	async DeleteGroupComment(userId, groupId, groupCommentId) {
+		if(!userId || !groupId || !groupCommentId) throw 'Invalid group comment data supplied';
+
 		await this.models.GroupComment.destroy({
 			where: {
 				UserId: userId, //Make sure it's the user's
@@ -529,8 +524,11 @@ export default class GroupService extends Service {
 
 		return dbGroupChallenges.map(mapper.fromDbGroupChallenge);
 	}
-	async CreateGroupChallenge(groupId, challenge) {
+	async CreateGroupChallenge(userId, groupId, challenge) {
+		if(!userId || !groupId || !validator.isLength(challenge, { min: 1, max: 64 })) throw 'Invalid group challenge data supplied';
+
 		let dbNewGroupChallenge = await this.models.GroupChallenge.create({
+			CreatedByUserId: userId,
 			GroupId: groupId,
 			Challenge: challenge
 		});
@@ -538,12 +536,37 @@ export default class GroupService extends Service {
 		return mapper.fromDbGroupChallenge(dbNewGroupChallenge);
 	}
 	async RemoveGroupChallenge(groupId, groupChallengeId) {
+		if(!groupId || !groupChallengeId) throw 'Invalid group challenge data supplied';
+
 		return await this.models.GroupChallenge.destroy({
 			where: {
 				GroupId: groupId,
 				GroupChallengeId: groupChallengeId
 			}
 		});
+	}
+	async _AddUserToGroup(userId, groupId, isGroupAdmin = false) {
+		//This is never called directly, as it is always JOIN,REQUEST,INVITE initiated
+		if(!userId || !groupId) throw 'Invalid group data supplied';
+
+		//Check if user is already part of group
+		let dbExistingGroupUser = await this.DbGetGroupUser(userId, groupId);
+		if(dbExistingGroupUser) throw 'User is already in group';
+
+		let dbNewGroupUser = await this.models.GroupUser.create({
+			UserId: userId,
+			GroupId: groupId,
+			IsGroupAdmin: isGroupAdmin
+		});
+
+		await this.models.Group.increment('MemberCount', { 
+			where: { 
+				GroupId: groupId 
+			}
+		});
+
+		//Note: notifications should not happen here, as its used by various means of adding
+		return mapper.fromDbGroupUser(dbNewGroupUser);
 	}
 	_GetPendingGroupRequestWhere() {
 		return {
