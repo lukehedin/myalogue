@@ -266,7 +266,7 @@ export default class AchievementService extends Service {
 
 			await this.models.UserAchievement.bulkCreate(achievementsToCreate);
 
-			await this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);
+			this.services.Notification.SendAchievementUnlockedNotification(newAchievementUserIds, achievementType);
 
 			console.log('Achievement unlocked:' + achievementType + ' for ' + newAchievementUserIds.length + ' users, on comic id ' + comicId);
 		}

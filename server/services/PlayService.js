@@ -424,7 +424,7 @@ export default class PlayService extends Service {
 
 			//Notify other panel creators, but not this one.
 			let notifyUserIds = dbComic.ComicPanels.map(cp => cp.UserId).filter(uId => uId !== userId);
-			await this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
+			this.services.Notification.SendComicCompletedNotification(notifyUserIds, dbComic.ComicId);
 		}
 		
 		return { isComicCompleted: isComicCompleted };

@@ -143,7 +143,7 @@ export default class Database {
 		}, true);
 
 		defineTable('GroupUser', {
-			IsGroupAdmin: getBoooleanNotNull(),
+			GroupAdminAt: Sequelize.DATE, //Becomes bool on client (isGroupAdmin)
 			IsFollowing: getBoooleanNotNull(true)
 		}, true);
 

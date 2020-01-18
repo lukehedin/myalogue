@@ -100,7 +100,7 @@ class GroupPage extends Component {
 					this.setState({
 						group: {
 							...this.state.group,
-							pendingGroupRequest: result
+							pendingGroupRequestAt: result.createdAt
 						}
 					});
 				}
@@ -414,11 +414,11 @@ class GroupPage extends Component {
 												? <div className="button-container group-call-to-action direction-column">
 													{isInGroup
 														? <Button colour="pink" label="Play with this group" onClick={() => this.setRedirectToPlayWithGroup()} />
-														: this.state.group.pendingGroupRequest
-															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequest.createdAt).fromNow()}.</p>
+														: this.state.group.pendingGroupRequestAt
+															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequestAt).fromNow()}.</p>
 															: this.state.isJoining
 																? <p className="join-info sm">{this.state.group.isPublic ? 'Joining...' : 'Requesting to join...'}</p>
-																: <Button colour="pink" label={this.state.group.isPublic ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
+																: <Button colour="pink" label={this.state.group.isPublic || this.state.group.pendingGroupInviteAt ? 'Join group' : 'Request to join group'} onClick={this.joinGroup} />
 													}
 													{isAdmin
 														? <Button size="sm" label="Edit group" to={Util.route.groupEditor(this.state.group.groupId)} />

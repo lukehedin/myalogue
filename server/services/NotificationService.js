@@ -106,35 +106,86 @@ export default class NotificationService extends Service {
 		//Takes the user to their pending requests (do not want groupId)
 		await this._CreateNotification([userId], common.enums.NotificationType.GroupInviteReceived, {}, null, groupName);
 	}
-	async SendUserJoinedGroupNotification(userId, groupId) {
+	async SendUserJoinedGroupNotification(newlyJoinedUserId, groupId) {
 		let dbGroup = await this.models.Group.findOne({
 			where: {
 				GroupId: groupId
 			},
 			include: [{
 				model: this.models.GroupUser,
-				as: 'GroupUsers',
-				required: false,
-				where: {
-					IsGroupAdmin: true
-				}
+				as: 'GroupUsers'
 			}]
 		});
 
 		//Admins
 		let notifyUserIds = this._CleanNotifyUserIds(
-			dbGroup.GroupUsers.map(dbGroupUser => dbGroupUser.UserId)
+			dbGroup.GroupUsers
+				.filter(dbGroupUser => !!dbGroupUser.GroupAdminAt)
+				.map(dbGroupUser => dbGroupUser.UserId)
 		);
 		if (notifyUserIds.length < 1) return; //No admins in group
 
 		let dbNewUser = await this.models.User.findOne({
 			where: {
-				UserId: userId
+				UserId: newlyJoinedUserId
 			}
 		});
-		if(!dbNewUser) throw 'New group user not found.';
+		if(!dbNewUser) return; //Should not occur
 
-		this._CreateOrUpdateStackingNotification();
+		//Important to remove the newly joined user!
+		let dbExistingGroupUsers = dbGroup.GroupUsers
+			.filter(dbGroupUser => dbGroupUser.UserId !== newlyJoinedUserId);
+
+		this._CreateStackingNotification(notifyUserIds, common.enums.NotificationType.GroupUserJoined, { GroupId: groupId}, (notifyUserId, notificationId) => {
+			//Create
+			return {
+				UserId: notifyUserId,
+				NotificationId: notificationId,
+				ValueString: dbNewUser.Username,
+				ValueInteger: null
+			};
+		}, (notifyUserId, notificationId, dbLatestUserNotificationForUser = null) => {
+			//Update
+			if(dbLatestUserNotificationForUser && dbLatestUserNotificationForUser.SeenAt) {
+				//HAS seen the latest notification. Make a new one, with only joins AFTER my latest notifications's SeenAt
+				return {
+					UserId: notifyUserId,
+					NotificationId: notificationId,
+					ValueString: dbNewUser.Username,
+					ValueInteger: dbExistingGroupUsers
+						.filter(dbGroupUser => new Date(dbLatestUserNotificationForUser.SeenAt) < new Date(dbGroupUser.CreatedAt))
+						.length
+				};
+			} else if(dbLatestUserNotificationForUser) {
+				//Hasn't seen the latest notification, update it's data with users who have joind SINCE the latest notification was created
+				//due to notifications being created shortly after groupUser, we allow add a little time to the window here
+				let notificationCreatedAt = moment(dbLatestUserNotificationForUser.CreatedAt).subtract(20, 'seconds').toDate();
+
+				return {
+					//Including THIS makes it an update
+					UserNotificationId: dbLatestUserNotificationForUser.UserNotificationId,
+					
+					RenewedAt: new Date(),
+					ValueString: dbNewUser.Username,
+					ValueInteger: dbExistingGroupUsers
+						.filter(dbGroupUser => notificationCreatedAt < new Date(dbGroupUser.CreatedAt))
+						.length
+				};
+			} else {
+				//Notifying someone who hasn't got a usernotification for this group yet Eg. a new admin
+				//I only care about joins that have happened SINCE I became admin of group
+				let notifyingDbGroupUser = dbGroup.GroupUsers.find(dbGroupUser => dbGroupUser.UserId === notifyUserId);
+
+				return {
+					UserId: notifyUserId,
+					NotificationId: notificationId,
+					ValueString: dbNewUser.Username,
+					ValueInteger: dbExistingGroupUsers
+						.filter(dbGroupUser => new Date(dbGroupUser.CreatedAt) > new Date(notifyingDbGroupUser.GroupAdminAt))
+						.length
+				};
+			}
+		})
 	}
 	async _SendCommentMentionedNotification(mentionedUserIds, dbNewCommenterUser, notificationType, notificationProperties = {}) {
 		if(!mentionedUserIds || mentionedUserIds.length < 1) return;
@@ -222,20 +273,18 @@ export default class NotificationService extends Service {
 				break;
 				
 			default:
-				throw 'Notification failed, comment table name invalid';
+				console.log('Missing comment table case');
+				return;
 		}
 
 		let notifyUserIds = this._CleanNotifyUserIds(
 			userIdsConcernedWithThread
 				.filter(userId => !userMentionUserIds.includes(userId)) //DO NOT include users MENTIONED in this comment, they already got a direct notification
 				.filter(userId => userId !== dbNewComment.UserId) //DO NOT include THIS commenter
-		)
-		
-		let now = new Date();
+		);
 		
 		this._CreateStackingNotification(notifyUserIds, notificationType, notificationProperties, (notifyUserId, notificationId) => {
 			//Create
-
 			return {
 				UserId: notifyUserId,
 				NotificationId: notificationId,
@@ -256,7 +305,7 @@ export default class NotificationService extends Service {
 			if(dbCommentsForUser && dbCommentsForUser.length > 0) otherCommentsCutoffDate = dbCommentsForUser[0].CreatedAt;
 
 			//Get all comments but my own and the recent commenter. Might be 0.
-			let dbOtherComments = dbExistingCommentsInThread
+			let dbOtherNewComments = dbExistingCommentsInThread
 				.filter(dbComment => dbComment.UserId !== notifyUserId && dbComment.UserId !== dbNewCommenterUser.UserId)
 				.filter(dbComment => {
 					return otherCommentsCutoffDate 
@@ -264,29 +313,29 @@ export default class NotificationService extends Service {
 						: true; //otherwise i care about all!
 				});
 
-			if(dbLatestUserNotificationForUser) {
-				if(dbLatestUserNotificationForUser.SeenAt) {
-					//HAS seen the latest notification. Make a new one, with only commenters AFTER my latest notifications's SeenAt
-					return {
-						UserId: notifyUserId,
-						NotificationId: notificationId,
-						ValueString: dbNewCommenterUser.Username,
-						ValueInteger: [...new Set(dbOtherComments
-								.filter(dbComment => new Date(dbComment.CreatedAt) > new Date(dbLatestUserNotificationForUser.SeenAt))
-								.map(dbComment => dbComment.UserId)
-							)].length
-					};
-				} else {
-					//Hasn't seen the latest notification, update it's data
-					return {
-						//Including THIS makes it an update
-						UserNotificationId: dbLatestUserNotificationForUser.UserNotificationId,
-						
-						RenewedAt: now,
-						ValueString: dbNewCommenterUser.Username,
-						ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
-					};
-				}
+			if(dbLatestUserNotificationForUser && dbLatestUserNotificationForUser.SeenAt) {
+				//HAS seen the latest notification. Make a new one, with only commenters AFTER my latest notifications's SeenAt
+				return {
+					UserId: notifyUserId,
+					NotificationId: notificationId,
+					ValueString: dbNewCommenterUser.Username,
+					ValueInteger: [...new Set(dbOtherNewComments
+							.filter(dbComment => new Date(new Date(dbLatestUserNotificationForUser.SeenAt) < dbComment.CreatedAt))
+							.map(dbComment => dbComment.UserId) //We only care about UNIQUE commenters
+						)].length
+				};
+			} else if(dbLatestUserNotificationForUser) {
+				//Hasn't seen the latest notification, update it's data
+				return {
+					//Including THIS makes it an update
+					UserNotificationId: dbLatestUserNotificationForUser.UserNotificationId,
+					
+					RenewedAt: new Date(),
+					ValueString: dbNewCommenterUser.Username,
+					ValueInteger: [...new Set(dbOtherNewComments
+						.map(dbComment => dbComment.UserId) //We only care about UNIQUE commenters
+					)].length
+				};
 			} else {
 				//Notifying someone who hasn't got a usernotification for this thread yet
 				//Eg. the person who commented first, OR someone who joined a random comment thread
@@ -294,7 +343,9 @@ export default class NotificationService extends Service {
 					UserId: notifyUserId,
 					NotificationId: notificationId,
 					ValueString: dbNewCommenterUser.Username,
-					ValueInteger: [...new Set(dbOtherComments.map(dbComment => dbComment.UserId))].length
+					ValueInteger: [...new Set(dbOtherNewComments
+						.map(dbComment => dbComment.UserId) //We only care about UNIQUE commenters
+					)].length
 				};
 			}
 		});

@@ -131,6 +131,10 @@ const mapper = {
 			? mapper.fromDbGroupRequest(dbGroup.GroupRequests[0])
 			: null;
 
+		let pendingGroupInvite = dbGroup.GroupInvites && dbGroup.GroupInvites.length > 0
+			? mapper.fromDbGroupInvite(dbGroup.GroupInvites[0])
+			: null;
+
 		return {
 			groupId: dbGroup.GroupId,
 			name: dbGroup.Name,
@@ -141,7 +145,8 @@ const mapper = {
 			isPublic: dbGroup.IsPublic,
 			leaderboardRating: dbGroup.LeaderboardRating,
 			//The user's current request to join, if any
-			pendingGroupRequest: pendingGroupRequest,
+			pendingGroupRequestAt: pendingGroupRequest ? pendingGroupRequest.createdAt : null,
+			pendingGroupInviteAt: pendingGroupInvite ? pendingGroupInvite.createdAt : null,
 			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge),
 			groupComments: (dbGroup.GroupComments || [])
@@ -164,7 +169,7 @@ const mapper = {
 			userId: dbGroupUser.UserId,
 			groupId: dbGroupUser.GroupId,
 			createdAt: dbGroupUser.CreatedAt,
-			isGroupAdmin: dbGroupUser.IsGroupAdmin,
+			isGroupAdmin: !!dbGroupUser.GroupAdminAt,
 			groupName: dbGroupUser.Group ? dbGroupUser.Group.Name : null,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}
@@ -285,6 +290,12 @@ const mapper = {
 			case common.enums.NotificationType.GroupInviteReceived:
 				title = `Group invite received`
 				message = `You received an invite to join the group ${valueString}. Click here to view the invite.`;
+				isActionable = true;
+				break;
+			
+			case common.enums.NotificationType.GroupUserJoined:
+				title = `New group member${valueInt ? 's' : ''}`
+				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} joined the group ${dbRelatedGroup.Name}.`;
 				isActionable = true;
 				break;
 

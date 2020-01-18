@@ -74,7 +74,8 @@ export default {
 			GroupInviteReceived: 10,
 			GroupComment: 11,// valueInteger = number of OTHER commenters, valueString = latest commenter
 			GroupCommentMention: 12, //valueString = name of user who tagged you
-			GroupRequestReceived: 13
+			GroupRequestReceived: 13,
+			GroupUserJoined: 14
 		},
 
 		PanelGroupBehaviour: {

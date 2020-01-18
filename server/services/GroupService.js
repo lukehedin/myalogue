@@ -267,7 +267,7 @@ export default class GroupService extends Service {
 				//This will check if they're already a member
 				let newGroupUser = await this._AddUserToGroup(userId, groupId);
 	
-				// this.services.Notification.SendUserJoinedGroupNotification(userId, groupId);
+				this.services.Notification.SendUserJoinedGroupNotification(userId, groupId);
 				
 				return newGroupUser;
 			} else {
@@ -319,7 +319,7 @@ export default class GroupService extends Service {
 			dbPendingGroupRequest.ApprovedAt = new Date();
 			await dbPendingGroupRequest.save();
 
-			await this.services.Notification.SendGroupRequestApprovedNotification(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId, dbPendingGroupRequest.Group.Name);
+			this.services.Notification.SendGroupRequestApprovedNotification(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId, dbPendingGroupRequest.Group.Name);
 
 			return await this._AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
 		} else {
@@ -404,8 +404,11 @@ export default class GroupService extends Service {
 			dbPendingGroupInvite.AcceptedAt = new Date();
 			dbPendingGroupInvite.save();
 
-			return await this._AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
-			//TODO notify admins of join (only in this case)
+			let newGroupUser = await this._AddUserToGroup(dbPendingGroupInvite.UserId, dbPendingGroupInvite.GroupId);
+			
+			this.services.Notification.SendUserJoinedGroupNotification(newGroupUser.userId, newGroupUser.groupId);
+
+			return newGroupUser;
 		} else {
 			dbPendingGroupInvite.IgnoredAt = new Date();
 			await dbPendingGroupInvite.save();
@@ -559,7 +562,7 @@ export default class GroupService extends Service {
 		let dbNewGroupUser = await this.models.GroupUser.create({
 			UserId: userId,
 			GroupId: groupId,
-			IsGroupAdmin: isGroupAdmin
+			GroupAdminAt: isGroupAdmin ? new Date() : null
 		});
 
 		await this.models.Group.increment('MemberCount', { 
@@ -614,13 +617,21 @@ export default class GroupService extends Service {
 		}];
 
 		if(forUserId) {
-			//If forUserId supplied, include a pending request they might have to join
+			//If forUserId supplied, include a pending request/invite they might have to join
 			include.push({
 				model: this.models.GroupRequest,
 				as: 'GroupRequests',
 				required: false,
 				where: {
 					...this._GetPendingGroupRequestWhere(),
+					UserId: forUserId
+				}
+			}, {
+				model: this.models.GroupInvite,
+				as: 'GroupInvites',
+				required: false,
+				where: {
+					...this._GetPendingGroupInviteWhere(),
 					UserId: forUserId
 				}
 			})
