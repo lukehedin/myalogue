@@ -298,7 +298,7 @@ const mapper = {
 				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} joined the group ${dbRelatedGroup.Name}.`;
 				break;
 
-			case common.enums.NotificationType.GroupRequestReceived:
+			case common.enums.NotificationType.GroupRequestsReceived:
 				title = `Requests to join group`
 				message = `${dbRelatedGroup.Name} has requests from users who want to join. Click here to view them.`;
 				isActionable = true;

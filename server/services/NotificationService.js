@@ -34,9 +34,6 @@ export default class NotificationService extends Service {
 			}
 		});
 	}
-	ExpireUserNotificationsByNotificationId(notificationId) {
-
-	}
 	async GetNotificationsForUserId(userId, lastCheckedAt) {
 		let userNotificationWhere = {
 			UserId: userId,
@@ -196,7 +193,11 @@ export default class NotificationService extends Service {
 			}
 		})
 	}
-	async SendGroupRequestNotification(groupId) {
+	async SendGroupRequestsReceivedNotification(groupId) {
+		//This will renew any existing group requests notifications, and make them unseen
+		//Basically: If a group gets a request, they will get a generic notification.
+		//That generic notfication will be renewed with every successive request.
+		//After a week since the latest request, the notification will expire.
 		let dbGroup = await this.models.Group.findOne({
 			where: {
 				GroupId: groupId
@@ -223,7 +224,7 @@ export default class NotificationService extends Service {
 		//The only purpose of this notification updating is to further extend the expiredAt
 		let expiredAt = moment().add(common.config.GroupRequestDays, 'days').toDate();
 		
-		this._CreateOrUpdateDynamicNotification(notifyUserIds, common.enums.NotificationType.GroupRequestReceived, { GroupId: groupId }, (notifyUserId, notificationId) => {
+		this._CreateOrUpdateDynamicNotification(notifyUserIds, common.enums.NotificationType.GroupRequestsReceived, { GroupId: groupId }, (notifyUserId, notificationId) => {
 			//Create
 			return {
 				UserId: notifyUserId,
@@ -251,6 +252,41 @@ export default class NotificationService extends Service {
 
 			return createOrUpdateConfig;
 		});
+	}
+	async ExpireGroupRequestsNotifications(groupId) {
+		//If no more pending requests, expire the group request notifications
+		let dbNotification = await this.models.Notification.findOne({
+			where: {
+				GroupId: groupId,
+				Type: common.enums.NotificationType.GroupRequestsReceived
+			}
+		});
+
+		let pendingGroupRequests = await this.services.Group.GetPendingGroupRequestsForGroup(groupId);
+		
+		if(pendingGroupRequests.length === 0) {
+			await this.models.UserNotification.update({
+				ExpiredAt: new Date() // Expire now
+			}, {
+				where: {
+					NotificationId: dbNotification.NotificationId
+				}
+			});
+		} else {
+			//If we do have pending requests, update the expiry of the usernotifications to the most recent request + expiry days
+			let latestGroupRequestCreatedAt = pendingGroupRequests
+				.sort((c1, c2) => new Date(c2.createdAt) - new Date(c1.createdAt))[0].createdAt;
+
+			let latestGroupRequestExpiredAt = moment(latestGroupRequestCreatedAt).add(common.config.GroupRequestDays, 'days').toDate();
+			
+			await this.models.UserNotification.update({
+				ExpiredAt: latestGroupRequestExpiredAt
+			}, {
+				where: {
+					NotificationId: dbNotification.NotificationId
+				}
+			});
+		}
 	}
 	async _SendCommentMentionedNotification(mentionedUserIds, dbNewCommenterUser, notificationType, notificationProperties = {}) {
 		if(!mentionedUserIds || mentionedUserIds.length < 1) return;

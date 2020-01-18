@@ -314,7 +314,7 @@ const Util = {
 			GroupInviteReceived: 10,
 			GroupComment: 11,
 			GroupCommentMention: 12,
-			GroupRequestReceived: 13,
+			GroupRequestsReceived: 13,
 			GroupUserJoined: 14
 		},
 

@@ -290,7 +290,7 @@ export default class GroupService extends Service {
 					UserId: userId
 				});
 		
-				this.services.Notification.SendGroupRequestNotification(groupId);
+				this.services.Notification.SendGroupRequestsReceivedNotification(groupId);
 				
 				return mapper.fromDbGroupRequest(dbNewGroupRequest);
 			}
@@ -321,11 +321,14 @@ export default class GroupService extends Service {
 			await dbPendingGroupRequest.save();
 
 			this.services.Notification.SendGroupRequestApprovedNotification(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId, dbPendingGroupRequest.Group.Name);
+			this.services.Notification.ExpireGroupRequestsNotifications(dbPendingGroupRequest.GroupId);
 
 			return await this._AddUserToGroup(dbPendingGroupRequest.UserId, dbPendingGroupRequest.GroupId);
 		} else {
 			dbPendingGroupRequest.DeniedAt = new Date();
 			await dbPendingGroupRequest.save();
+
+			this.services.Notification.ExpireGroupRequestsNotifications(dbPendingGroupRequest.GroupId);
 		}
 	}
 	async InviteToGroupByUsername(fromUserId, username, groupId) {

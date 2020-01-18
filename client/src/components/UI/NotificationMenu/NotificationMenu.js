@@ -129,7 +129,7 @@ export default class NotificationButton extends Component {
 						link = Util.route.comic(notification.comicId);
 					} else if (notification.groupId) {
 						//GroupId
-						if(notification.type === Util.enums.NotificationType.GroupRequestReceived || notification.type === Util.enums.NotificationType.GroupUserJoined) {
+						if(notification.type === Util.enums.NotificationType.GroupRequestsReceived || notification.type === Util.enums.NotificationType.GroupUserJoined) {
 							link = Util.route.withQueryParams(Util.route.group(notification.groupId), { tabId: 'members' });
 						} else {
 							link = Util.route.group(notification.groupId);
