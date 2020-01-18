@@ -30,6 +30,8 @@ class GroupPage extends Component {
 			isJoining: false
 		}
 
+		this.fetchData = this.fetchData.bind(this);
+
 		this.setRedirectToPlayWithGroup = this.setRedirectToPlayWithGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
 		this.removeGroupUser = this.removeGroupUser.bind(this);
@@ -42,7 +44,20 @@ class GroupPage extends Component {
 		this.deleteGroupComment = this.deleteGroupComment.bind(this);
 		this.updateGroupComment = this.updateGroupComment.bind(this);
 	}
+	getSnapshotBeforeUpdate(prevProps) {
+		return this.props.groupId !== prevProps.groupId;
+	}
+	componentDidUpdate(prevProps, prevState, isNewGroupId) {
+		if(isNewGroupId) this.fetchData();
+	}
 	componentDidMount() {
+		this.fetchData();
+	}
+	fetchData() {
+		this.setState({
+			isLoading: true
+		});
+
 		Util.api.post('/api/getGroup', {
 			groupId: this.props.groupId
 		})
@@ -57,7 +72,7 @@ class GroupPage extends Component {
 			this.setState({
 				isLoading: false
 			});
-		})
+		});
 	}
 	joinGroup() {
 		this.setState({
