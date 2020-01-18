@@ -125,7 +125,8 @@ export default class Database {
 			ActionedAt: Sequelize.DATE,
 			RenewedAt: Sequelize.DATE, //When unseen notifications get updated, this does too. If present, used to override CreatedAt and bump notifications back to top.
 			ValueInteger: Sequelize.INTEGER, //A value that can be used for incrementing purposes (eg. "and 34 others") - not to be used as a FK!
-			ValueString: Sequelize.TEXT //A value that can be used for description purposes (eg. your text was "i hate eggs")
+			ValueString: Sequelize.TEXT, //A value that can be used for description purposes (eg. your text was "i hate eggs")
+			ExpiredAt: Sequelize.DATE //Used to removes/dismisses the notification before it is seen
 		});
 
 		defineTable('UserAchievement', {

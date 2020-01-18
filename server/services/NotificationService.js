@@ -34,9 +34,18 @@ export default class NotificationService extends Service {
 			}
 		});
 	}
+	ExpireUserNotificationsByNotificationId(notificationId) {
+
+	}
 	async GetNotificationsForUserId(userId, lastCheckedAt) {
 		let userNotificationWhere = {
-			UserId: userId
+			UserId: userId,
+			ExpiredAt: {
+				[Sequelize.Op.or]: {
+					[Sequelize.Op.gte]: new Date(),
+					[Sequelize.Op.eq]: null
+				}
+			}
 		};
 
 		if(lastCheckedAt) {
@@ -120,7 +129,7 @@ export default class NotificationService extends Service {
 		//Admins
 		let notifyUserIds = this._CleanNotifyUserIds(
 			dbGroup.GroupUsers
-				.filter(dbGroupUser => !!dbGroupUser.GroupAdminAt)
+				.filter(dbGroupUser => !!dbGroupUser.GroupAdminAt && new Date(dbGroupUser.GroupAdminAt) <= new Date())
 				.map(dbGroupUser => dbGroupUser.UserId)
 		);
 		if (notifyUserIds.length < 1) return; //No admins in group
@@ -136,7 +145,7 @@ export default class NotificationService extends Service {
 		let dbExistingGroupUsers = dbGroup.GroupUsers
 			.filter(dbGroupUser => dbGroupUser.UserId !== newlyJoinedUserId);
 
-		this._CreateStackingNotification(notifyUserIds, common.enums.NotificationType.GroupUserJoined, { GroupId: groupId}, (notifyUserId, notificationId) => {
+		this._CreateOrUpdateDynamicNotification(notifyUserIds, common.enums.NotificationType.GroupUserJoined, { GroupId: groupId}, (notifyUserId, notificationId) => {
 			//Create
 			return {
 				UserId: notifyUserId,
@@ -186,6 +195,62 @@ export default class NotificationService extends Service {
 				};
 			}
 		})
+	}
+	async SendGroupRequestNotification(groupId) {
+		let dbGroup = await this.models.Group.findOne({
+			where: {
+				GroupId: groupId
+			},
+			include: [{
+				model: this.models.GroupUser,
+				as: 'GroupUsers',
+				required: false,
+				where: {
+					GroupAdminAt: {
+						[Sequelize.Op.ne]: null,
+						[Sequelize.Op.lte]: new Date()
+					}
+				}
+			}]
+		});
+
+		//Admins (filtered in db query)
+		let notifyUserIds = this._CleanNotifyUserIds(
+			dbGroup.GroupUsers.map(dbGroupUser => dbGroupUser.UserId)
+		);
+		if (notifyUserIds.length < 1) return; //No admins in group
+
+		//The only purpose of this notification updating is to further extend the expiredAt
+		let expiredAt = moment().add(common.config.GroupRequestDays, 'days').toDate();
+		
+		this._CreateOrUpdateDynamicNotification(notifyUserIds, common.enums.NotificationType.GroupRequestReceived, { GroupId: groupId }, (notifyUserId, notificationId) => {
+			//Create
+			return {
+				UserId: notifyUserId,
+				NotificationId: notificationId,
+				ExpiredAt: expiredAt
+			};
+		}, (notifyUserId, notificationId, dbLatestUserNotificationForUser = null) => {
+			//Update
+
+			//Extend the expiry
+			let createOrUpdateConfig = {
+				UserId: notifyUserId,
+				NotificationId: notificationId,
+				ExpiredAt: expiredAt
+			};
+
+			if(dbLatestUserNotificationForUser) {
+				//Makes it an update
+				createOrUpdateConfig.UserNotificationId = dbLatestUserNotificationForUser.UserNotificationId;
+				
+				createOrUpdateConfig.SeenAt = null; //Make it unseen once more
+				createOrUpdateConfig.ActionedAt = null; //Make it unactioned once more
+				createOrUpdateConfig.RenewedAt = new Date();
+			}
+
+			return createOrUpdateConfig;
+		});
 	}
 	async _SendCommentMentionedNotification(mentionedUserIds, dbNewCommenterUser, notificationType, notificationProperties = {}) {
 		if(!mentionedUserIds || mentionedUserIds.length < 1) return;
@@ -283,7 +348,7 @@ export default class NotificationService extends Service {
 				.filter(userId => userId !== dbNewComment.UserId) //DO NOT include THIS commenter
 		);
 		
-		this._CreateStackingNotification(notifyUserIds, notificationType, notificationProperties, (notifyUserId, notificationId) => {
+		this._CreateOrUpdateDynamicNotification(notifyUserIds, notificationType, notificationProperties, (notifyUserId, notificationId) => {
 			//Create
 			return {
 				UserId: notifyUserId,
@@ -350,7 +415,7 @@ export default class NotificationService extends Service {
 			}
 		});
 	}
-	async _CreateStackingNotification(notifyUserIds, notificationType, notificationProperties, createUserNotificationMap, updateUserNotificationMap) {
+	async _CreateOrUpdateDynamicNotification(notifyUserIds, notificationType, notificationProperties, createUserNotificationMap, updateUserNotificationMap) {
 		// This is an updatable user notification as further events happen. 
 		// if the user HASN'T seen the notification, the valueinteger may increase (eg. "bob and 2 others" becomes "sarah and 3 others")
 		// if the user has seen the notification, a new one is made. (eg. "sarah commented")
@@ -394,7 +459,7 @@ export default class NotificationService extends Service {
 			});
 		
 			await this.models.UserNotification.bulkCreate(userNotificationsToCreate, {
-				updateOnDuplicate: ['ValueString', 'ValueInteger', 'RenewedAt', 'UpdatedAt']
+				updateOnDuplicate: ['ValueString', 'ValueInteger', 'RenewedAt', 'UpdatedAt', 'ExpiredAt', 'SeenAt', 'ActionedAt']
 			});
 		}
 	}

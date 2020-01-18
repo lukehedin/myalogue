@@ -289,8 +289,9 @@ export default class GroupService extends Service {
 					GroupId: groupId,
 					UserId: userId
 				});
-	
-				//TODO: Send user request notifiation to group admins
+		
+				this.services.Notification.SendGroupRequestNotification(groupId);
+				
 				return mapper.fromDbGroupRequest(dbNewGroupRequest);
 			}
 		}

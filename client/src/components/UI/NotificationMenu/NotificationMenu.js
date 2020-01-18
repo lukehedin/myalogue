@@ -128,7 +128,12 @@ export default class NotificationButton extends Component {
 					if(notification.comicId) {
 						link = Util.route.comic(notification.comicId);
 					} else if (notification.groupId) {
-						link = Util.route.group(notification.groupId);
+						//GroupId
+						if(notification.type === Util.enums.NotificationType.GroupRequestReceived || notification.type === Util.enums.NotificationType.GroupUserJoined) {
+							link = Util.route.withQueryParams(Util.route.group(notification.groupId), { tabId: 'members' });
+						} else {
+							link = Util.route.group(notification.groupId);
+						}
 					} if(notification.type === Util.enums.NotificationType.AchievementUnlocked) {
 						link = Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'achievements' })
 					} else if (notification.type === Util.enums.NotificationType.GroupInviteReceived) {
