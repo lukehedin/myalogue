@@ -330,7 +330,7 @@ class GroupPage extends Component {
 									<UserAvatar size={32} to={Util.route.profile(groupUser.user.username)} user={groupUser.user} />
 									<div className="member-list-item-detail">
 										<h4 className="username"><Link to={Util.route.profile(groupUser.user.username)}>{groupUser.user.username}</Link></h4>
-										<p className="joined-at sm">Joined {moment(groupUser.createdAt).fromNow()}</p>
+										<p className="joined-at sm">{groupUser.isGroupAdmin ? <b>(Admin) </b> : null}Joined {moment(groupUser.createdAt).fromNow()}</p>
 									</div>
 									{isAdmin
 										? <ContextMenu align="right" menuItems={[{

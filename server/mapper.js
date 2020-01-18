@@ -147,7 +147,13 @@ const mapper = {
 			//The user's current request to join, if any
 			pendingGroupRequestAt: pendingGroupRequest ? pendingGroupRequest.createdAt : null,
 			pendingGroupInviteAt: pendingGroupInvite ? pendingGroupInvite.createdAt : null,
-			groupUsers: (dbGroup.GroupUsers || []).map(mapper.fromDbGroupUser),
+			groupUsers: (dbGroup.GroupUsers || [])
+				.sort((u1, u2) => {
+					return !!u2.GroupAdminAt !== !!u1.GroupAdminAt
+						? !!u2.GroupAdminAt - !!u1.GroupAdminAt
+						: new Date(u1.CreatedAt) - new Date(u2.CreatedAt)
+				})
+				.map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge),
 			groupComments: (dbGroup.GroupComments || [])
 				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
