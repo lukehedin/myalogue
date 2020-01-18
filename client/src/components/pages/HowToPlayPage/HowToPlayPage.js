@@ -5,7 +5,7 @@ import { Redirect, Link } from 'react-router-dom';
 import notification_example_img from './notifications_example.png';
 import ComicPanel from '../../UI/ComicPanel/ComicPanel';
 import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
-import Button from '../../UI/Button/Button';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 import Comic from '../../UI/Comic/Comic';
 
 export default class HowToPlayPage extends Component {
@@ -85,7 +85,7 @@ export default class HowToPlayPage extends Component {
 							: <p>There are many other benefits for players who have an account, but there's nothing stopping you from playing anonymously if you wish!</p>
 						}
 						<div className="button-container">
-							<Button to={Util.route.play()} colour="pink" size="lg" label="Play now" />
+							<PlayButton />
 						</div>
 					</div>
 				</div>

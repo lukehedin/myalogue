@@ -12,6 +12,7 @@ import logo_halloween from '../../../images/logo_halloween.png';
 import logo_holidays from '../../../images/logo_holidays.png';
 import logo_newyear from '../../../images/logo_newyear.png';
 import TemplatePanelCarousel from '../../UI/TemplatePanelCarousel/TemplatePanelCarousel';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 
 export default class HomePage extends Component {
 	render() {
@@ -54,7 +55,7 @@ export default class HomePage extends Component {
 								{homeHeader}
 								{templatePanelCarousel}
 								<div className="play-panel">
-									<Button label="Play" className="play-button" to={Util.route.play()} colour="pink" size="lg" />
+									<PlayButton />
 									{Util.context.isAuthenticated()
 										? null
 										: <Button label="How to play" to={Util.route.howToPlay()} colour="pink" isHollow={true} size="md" />

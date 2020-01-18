@@ -15,6 +15,7 @@ import GroupPendingInfoGroup from '../../UI/GroupPendingInfoGroup/GroupPendingIn
 import ContextMenu from '../../UI/ContextMenu/ContextMenu';
 import ButtonInput from '../../UI/ButtonInput/ButtonInput';
 import CommentThread from '../../UI/CommentThread/CommentThread';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 
 class GroupPage extends Component {
 	constructor(props){
@@ -150,8 +151,8 @@ class GroupPage extends Component {
 	}
 	setRedirectToPlayWithGroup(groupChallengeId) {
 		const minUsers = 3;
-		let params = { groupId: this.state.group.groupId };
-		if(groupChallengeId) params.groupChallengeId = groupChallengeId;
+		let params = { pGroupId: this.state.group.groupId };
+		if(groupChallengeId) params.pGroupChallengeId = groupChallengeId;
 		let redirectTo = Util.route.withQueryParams(Util.route.play(), params);
 
 		if(this.state.group.groupUsers.length < minUsers) {
@@ -332,7 +333,7 @@ class GroupPage extends Component {
 										<p className="joined-at sm">Joined {moment(groupUser.createdAt).fromNow()}</p>
 									</div>
 									{isAdmin
-										? <ContextMenu menuItems={[{
+										? <ContextMenu align="right" menuItems={[{
 											label: 'Remove',
 											onClick: () => this.removeGroupUser(groupUser)
 										}]} />
@@ -360,14 +361,14 @@ class GroupPage extends Component {
 								{this.state.group.groupChallenges.map(groupChallenge => {
 									return <div key={groupChallenge.groupChallengeId} className="group-challenge-item">
 										<div className="challenge-detail">
-											<p>{groupChallenge.challenge}</p>
+											<p className="challenge">{groupChallenge.challenge}</p>
 											{isInGroup
-												? <Button colour="pink" size="sm" label="Play with this challenge" onClick={() => this.setRedirectToPlayWithGroup(groupChallenge.groupChallengeId)} />
+												? <PlayButton groupId={groupChallenge.groupId} groupChallengeId={groupChallenge.groupChallengeId} />
 												: null
 											}
 										</div>
 										{isAdmin 
-											? <ContextMenu menuItems={[{
+											? <ContextMenu align="right" menuItems={[{
 												label: 'Remove',
 												onClick: () => this.removeGroupChallenge(groupChallenge)
 											}]} />
@@ -413,7 +414,7 @@ class GroupPage extends Component {
 											{Util.context.isAuthenticated()
 												? <div className="button-container group-call-to-action direction-column">
 													{isInGroup
-														? <Button colour="pink" label="Play with this group" onClick={() => this.setRedirectToPlayWithGroup()} />
+														? <PlayButton groupId={this.state.group.groupId} />
 														: this.state.group.pendingGroupRequestAt
 															? <p className="join-info sm">You requested to join this group {moment(this.state.group.pendingGroupRequestAt).fromNow()}.</p>
 															: this.state.isJoining

@@ -34,9 +34,9 @@ export default class Button extends Component {
 			: null;
 
 		return this.props.to
-			? <Link className={className} onClick={this.onClick} to={this.props.to}>{leftIcon}{label}{rightIcon}</Link>
+			? <Link className={className} onClick={this.onClick} to={this.props.to}>{leftIcon}{label}{this.props.children}{rightIcon}</Link>
 			: this.props.href
-				? <a target="_blank" rel="noopener noreferrer" className={className} onClick={this.onClick} href={this.props.href} download={this.props.download}>{leftIcon}{label}{rightIcon}</a>
-				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.onClick}>{leftIcon}{label}{rightIcon}</button>
+				? <a target="_blank" rel="noopener noreferrer" className={className} onClick={this.onClick} href={this.props.href} download={this.props.download}>{leftIcon}{label}{this.props.children}{rightIcon}</a>
+				: <button className={className} tabIndex={this.props.tabIndex} type={this.props.type || "button"} onClick={this.onClick}>{leftIcon}{label}{this.props.children}{rightIcon}</button>
 	}
 }

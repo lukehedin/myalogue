@@ -1,0 +1,40 @@
+.play-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.play-button-button {
+		display: flex;
+		flex-direction: column;
+		max-width: 160px;
+		padding: $spacing-xs $spacing-sm;
+		min-width: 80px;
+
+		.play-button-title {
+			&:not(:last-child){
+				margin-bottom: $spacing-xxs;
+			}
+			&:last-child {
+				padding: $spacing-xs $spacing-sm;
+			}
+		}
+
+		.play-button-sub {
+			font-size: 10px;
+			margin: 0;
+			text-align: center;
+			
+			&:not(:last-child) {
+				margin-bottom: 2px;
+			}
+		}
+	}
+
+	.play-button-clear {
+		margin: 0;
+		margin-top: $spacing-xs;
+		text-align: center;
+		font-size: 14px;
+		display: inline-block;
+	}
+}

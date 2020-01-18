@@ -7,6 +7,7 @@ import ComicList from '../../UI/ComicList/ComicList';
 import Button from '../../UI/Button/Button';
 import ComicInfoLabel from '../../UI/ComicInfoLabel/ComicInfoLabel';
 import ProgressBar from '../../UI/ProgressBar/ProgressBar';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 
 //this.props.comicId
 export default class ComicPage extends Component {
@@ -84,7 +85,7 @@ export default class ComicPage extends Component {
 				<p className="center">The bad news is that the requested comic no longer exists (or doesn't exist yet).</p>
 				<p className="center">The good news is that you can help make another one right now!</p>
 				<div className="button-container">
-					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+					<PlayButton />
 				</div>
 			</div>
 		} else if(this.state.isComicCompleted) {
@@ -94,7 +95,7 @@ export default class ComicPage extends Component {
 					<Comic isUpperInfoHidden={true} isCommentsVisible={true} key={this.state.comic.comicId} comic={this.state.comic} />
 				</div>
 				<div className="button-container">
-					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+					<PlayButton />
 				</div>
 				<ComicList
 					title="Other comics with this template"
@@ -113,7 +114,7 @@ export default class ComicPage extends Component {
 				/>
 				<p className="center">Why not make a panel for another comic while you wait?</p>	
 				<div className="button-container">
-					<Button size="lg" colour="pink" label="Play" to={Util.route.play()} />
+					<PlayButton />
 				</div>
 			</div>
 		}

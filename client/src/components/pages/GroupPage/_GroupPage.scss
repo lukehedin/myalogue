@@ -111,10 +111,11 @@
 					.challenge-detail {
 						flex: 1;
 	
-						p {
+						.challenge {
 							font-size: 14px;
-							font-style: italic;
-							margin-bottom: $spacing-xxs;
+							margin-bottom: $spacing-xs;
+							font-weight: bold;
+							text-align: center;
 						}
 					}
 				}

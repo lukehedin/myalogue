@@ -8,6 +8,7 @@ import ComicPanelPair from '../../UI/ComicPanelPair/ComicPanelPair';
 import Button from '../../UI/Button/Button';
 import ProgressBar from '../../UI/ProgressBar/ProgressBar';
 import TipStrip from '../../UI/TipStrip/TipStrip';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 
 const playTimerMins = 2;
 
@@ -17,9 +18,9 @@ export default class PlayPage extends Component {
 
 		let urlParams = new URLSearchParams(window.location.search);
 
-		let templateId = Util.context.isAuthenticated() ? urlParams.get('templateId') : null;
-		let groupId = Util.context.isAuthenticated() ? urlParams.get('groupId') : null;
-		let groupChallengeId = Util.context.isAuthenticated() ? urlParams.get('groupChallengeId') : null;
+		let templateId = Util.context.isAuthenticated() ? urlParams.get('pTemplateId') : null;
+		let groupId = Util.context.isAuthenticated() ? urlParams.get('pGroupId') : null;
+		let groupChallengeId = Util.context.isAuthenticated() ? urlParams.get('pGroupChallengeId') : null;
 
 		this.state = {
 			isLoading: true,
@@ -152,11 +153,10 @@ export default class PlayPage extends Component {
 		let hasOptions = this.state.templateId || this.state.groupId || this.state.groupChallengeId;
 		if(this.state.redirectToComicId) {
 			let queryParams = {};
-			if(this.state.templateId) queryParams.templateId = this.state.templateId;
-			if(this.state.groupId) queryParams.groupId = this.state.groupId;
-			if(this.state.groupChallengeId) queryParams.groupChallengeId = this.state.groupChallengeId;
+			if(this.state.templateId) queryParams.pTemplateId = this.state.templateId;
+			if(this.state.groupId) queryParams.pGroupId = this.state.groupId;
+			if(this.state.groupChallengeId) queryParams.pGroupChallengeId = this.state.groupChallengeId;
 			return <Redirect to={Util.route.withQueryParams(Util.route.comic(this.state.redirectToComicId), queryParams)} />;
-			//TODO, if i complete a comic, make the play button on the comic page continue with these options (make a playbutton comp that uses url params)
 		}
 		let content = null;
 
@@ -235,21 +235,7 @@ export default class PlayPage extends Component {
 					</div>
 				}
 				<div className="button-container direction-column play-actions">
-				<Button label={this.state.isSubmitted ? 'Play again' : 'Try again'} onClick={() => this.playNew()} colour="pink" size="lg" />
-					{/* TODO is this sentence perfect? because you have the team and template id but not the challenge, so forget that. */}
-					{hasOptions
-						? <div className="play-options">
-							<p className="sm">Playing {this.state.groupChallengeId 
-							? <span> (with a challenge)</span> 
-							: ''}{this.state.groupId 
-								? <span> with the group <Link to={Util.route.group(this.state.groupId)}>{Util.context.getGroupUserByGroupId(this.state.groupId).groupName}</Link></span>
-								: ''}{this.state.templateId 
-									? <span> using the template <Link to={Util.route.template(this.state.templateId)}>"{Util.context.getTemplateById(this.state.templateId).name}</Link>"</span> 
-									: ''}.</p>
-							<Button size="sm" colour="pink" isHollow={true} label="Switch to regular play" onClick={this.clearOptions} />
-						</div>
-						: null
-					}
+					<PlayButton title="Play again" onClick={() => this.playNew()} useQueryParams={true} allowClearOptions={true} onClearOptions={this.clearOptions} />
 					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />
 				</div>
 				<TipStrip />

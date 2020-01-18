@@ -299,7 +299,7 @@ const mapper = {
 				break;
 
 			case common.enums.NotificationType.GroupRequestsReceived:
-				title = `Requests to join group`
+				title = `New requests to join group`
 				message = `${dbRelatedGroup.Name} has requests from users who want to join. Click here to view them.`;
 				isActionable = true;
 				break;

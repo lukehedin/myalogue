@@ -48,6 +48,10 @@
 
 		.play-actions {
 			margin-top: $spacing-sm;
+
+			.play-button {
+				 margin-bottom: $spacing-sm;
+			}
 		}
 
 		.play-options {

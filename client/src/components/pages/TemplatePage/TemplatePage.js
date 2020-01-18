@@ -6,6 +6,7 @@ import TemplateNavigation from '../../UI/TemplateNavigation/TemplateNavigation';
 import ComicList from '../../UI/ComicList/ComicList';
 import Button from '../../UI/Button/Button';
 import Comic from '../../UI/Comic/Comic';
+import PlayButton from '../../UI/PlayButton/PlayButton';
 
 export default class TemplatePage extends Component {
 	constructor(props) {
@@ -65,9 +66,9 @@ export default class TemplatePage extends Component {
 				<div className="container">
 					<div className="row">
 						<TemplateNavigation toFn={Util.route.template} template={this.state.template} />
-						<h1 className="page-title template-name">{this.state.template.name}</h1>
+						<h2 className="page-title template-name">{this.state.template.name}</h2>
 						<div className="play-template button-container">
-							<Button label="Play using this template" colour="pink" to={Util.route.withQueryParams(Util.route.play(), { templateId: this.state.template.templateId })} />
+							<PlayButton templateId={this.state.templateId} />
 						</div>
 						<div className="top-comic-container">
 							{this.state.isLoading
