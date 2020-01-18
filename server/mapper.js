@@ -169,7 +169,7 @@ const mapper = {
 			userId: dbGroupUser.UserId,
 			groupId: dbGroupUser.GroupId,
 			createdAt: dbGroupUser.CreatedAt,
-			isGroupAdmin: !!dbGroupUser.GroupAdminAt,
+			isGroupAdmin: dbGroupUser.GroupAdminAt && new Date(dbGroupUser.GroupAdminAt) < new Date(),
 			groupName: dbGroupUser.Group ? dbGroupUser.Group.Name : null,
 			user: dbGroupUser.User ? mapper.fromDbUser(dbGroupUser.User) : null
 		}
