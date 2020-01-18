@@ -169,7 +169,6 @@ export default class PlayService extends Service {
 					model: this.models.ComicPanel,
 					as: 'ComicPanel'
 				}],
-				//Only take the latest 20 skips
 				order: [['UpdatedAt', 'DESC']],
 				limit: common.config.ComicPanelSkipWindowLimit
 			});
@@ -180,6 +179,8 @@ export default class PlayService extends Service {
 					.filter(dbRecentComicPanelSkip => dbRecentComicPanelSkip.ComicPanel && dbRecentComicPanelSkip.ComicPanel.ComicId)
 					.map(dbRecentComicPanelSkip => dbRecentComicPanelSkip.ComicPanel.ComicId)
 			)];
+			
+			console.log(recentlySkippedComicIds);
 
 			//An improvement here could be to check if any panels have been made since
 			//I last skipped the comic, and don't filter out those ones- but its a big job
@@ -477,7 +478,7 @@ export default class PlayService extends Service {
 		});
 
 		//There may be no panels (if the user skipped at the BEGIN COMIC stage)
-		if(dbComicPanels && dbComicPanels.length > 1) {
+		if(dbComicPanels && dbComicPanels.length > 0) {
 			let dbCurrentComicPanel = dbComicPanels[0];
 
 			//Record a panelskip. if this is created (not found) we need to increase skipcount
