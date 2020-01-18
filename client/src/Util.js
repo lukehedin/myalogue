@@ -310,7 +310,9 @@ const Util = {
 			ComicCommentMention: 7,
 			AchievementUnlocked: 8,
 			GroupRequestApproved: 9,
-			GroupInviteReceived: 10
+			GroupInviteReceived: 10,
+			GroupComment: 11,
+			GroupCommentMention: 12
 		},
 
 		ComicSortBy: {

@@ -127,7 +127,7 @@ export default class NotificationButton extends Component {
 
 					if(notification.comicId) {
 						link = Util.route.comic(notification.comicId);
-					} else if (notification.groupId && notification.type === Util.enums.NotificationType.GroupRequestApproved) {
+					} else if (notification.groupId) {
 						link = Util.route.group(notification.groupId);
 					} if(notification.type === Util.enums.NotificationType.AchievementUnlocked) {
 						link = Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'achievements' })

@@ -489,6 +489,8 @@ export default class GroupService extends Service {
 			Value: value
 		});
 
+		this.services.Notification.SendGroupCommentNotification(dbNewGroupComment);
+
 		return mapper.fromDbGroupComment(dbNewGroupComment);
 	}
 	async UpdateGroupComment(userId, groupId, groupCommentId, value) {

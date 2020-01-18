@@ -232,7 +232,7 @@ const mapper = {
 		let dbRelatedGroup = dbUserNotification.Notification.Group;
 
 		///Actionable if the notification links to a FK item, can also be set in switch below
-		let isActionable = dbUserNotification.Notification.ComicId;
+		let isActionable = dbRelatedComicId || dbRelatedGroup;
 
 		switch(dbUserNotification.Notification.Type) {
 			case common.enums.NotificationType.Welcome:
@@ -241,12 +241,19 @@ const mapper = {
 				break;
 
 			case common.enums.NotificationType.ComicComment:
-				//Might be for a panel creator, or for someone else who commented on a random comic
 				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} commented on comic #${dbRelatedComicId}.`;
+				break;
+
+			case common.enums.NotificationType.GroupComment:
+				message = `${valueString || 'A user'}${valueInt ? ` and ${valueInt} other${valueInt === 1 ? `` : `s`}` : ``} commented in the group ${dbRelatedGroup.Name}.`;
 				break;
 
 			case common.enums.NotificationType.ComicCommentMention:
 				message = `${valueString || 'A user'} mentioned you in a comment on comic #${dbRelatedComicId}.`;
+				break;
+		
+			case common.enums.NotificationType.GroupCommentMention:
+				message = `${valueString || 'A user'} mentioned you in a comment in the group ${dbRelatedGroup.Name}.`;
 				break;
 
 			case common.enums.NotificationType.ComicCompleted:

@@ -67,13 +67,16 @@ export default class NotificationService extends Service {
 	async SendComicCommentNotification(dbNewComicComment) {
 		this._CreateOrUpdateCommentNotification(dbNewComicComment, 'ComicComment', common.enums.NotificationType.ComicComment, common.enums.NotificationType.ComicCommentMention, { ComicId: dbNewComicComment.ComicId });
 	}
+	async SendGroupCommentNotification(dbNewGroupComment) {
+		this._CreateOrUpdateCommentNotification(dbNewGroupComment, 'GroupComment', common.enums.NotificationType.GroupComment, common.enums.NotificationType.GroupCommentMention, { GroupId: dbNewGroupComment.GroupId });
+	}
 	async SendGroupRequestApprovedNotification(userId, groupId, groupName) {
 		//Takes the user to the group page that accepted them
 		await this._CreateNotification([userId], common.enums.NotificationType.GroupRequestApproved, { GroupId: groupId }, null, groupName);
 	}
 	async SendGroupInviteReceivedNotification(userId, groupId, groupName) {
-		//Takes the user to their pending requests
-		await this._CreateNotification([userId], common.enums.NotificationType.GroupInviteReceived, { GroupId: groupId }, null, groupName);
+		//Takes the user to their pending requests (do not want groupId)
+		await this._CreateNotification([userId], common.enums.NotificationType.GroupInviteReceived, {}, null, groupName);
 	}
 	SeenUserNotificationsByIds(userId, userNotificationIds) {
 		this.models.UserNotification.update({
@@ -117,8 +120,6 @@ export default class NotificationService extends Service {
 			}
 		});
 
-		console.log(notificationProperties);
-
 		//Make all the user ones now
 		this.models.UserNotification.bulkCreate(notifyUserIds.map(notifyUserId => {
 			return {
@@ -147,38 +148,49 @@ export default class NotificationService extends Service {
 		this._SendCommentMentionedNotification(userMentionUserIds, dbNewCommenterUser, mentionType, notificationProperties);
 
 		//All of these are set using the swich below:
-		let userIdsInThread = []; //UserIds who CARE about this comment thread (including non-commenters)
+		let userIdsConcernedWithThread = []; //UserIds who CARE about this comment thread (including non-commenters)
 		let dbExistingCommentsInThread = null; //SHOULD NOT INCLUDE NEW COMMENT - Comments of the same dbTable type specified in params, that are in the same thread as the new comment
 
 		switch(commentTableName) {
 			case 'ComicComment':
-				let dbComic = await this.models.Comic.findOne({
-					where: {
-						ComicId: dbNewComment.ComicId //Extract comicId from dbNewComment, which SHOULD be a ComicComment
-					},
-					include: [{
-						model: this.models.ComicPanel,
-						as: 'ComicPanels'
-					}, {
-						model: this.models.ComicComment,
-						as: 'ComicComments'
-					}]
-				});
+				//Extract comicId from dbNewComment, which SHOULD be a ComicComment
+				let [dbComicComments, dbComicPanels] = await Promise.all([
+					this.models.ComicComments.findAll({
+						where: { ComicId: dbNewComment.ComicId }
+					}),
+					this.models.ComicPanels.findAll({
+						where: { ComicId: dbNewComment.ComicId }
+					})
+				]);
 				
 				//The userIds to send notifications to: all commenters and panel authors
-				userIdsInThread = [
-					...dbComic.ComicComments.map(dbComicComment => dbComicComment.UserId), 
-					...dbComic.ComicPanels.map(dbComicPanel => dbComicPanel.UserId)
+				userIdsConcernedWithThread = [
+					...dbComicComments.map(dbComicComment => dbComicComment.UserId), 
+					...dbComicPanels.map(dbComicPanel => dbComicPanel.UserId)
 				];
 
 				//Important to remove the dbNewComment!
-				dbExistingCommentsInThread = dbComic.ComicComments
+				dbExistingCommentsInThread = dbComicComments
 					.filter(dbComicComment => dbComicComment.ComicCommentId !== dbNewComment.ComicCommentId);
 
 				break;
 
 			case 'GroupComment':
-				//TODO
+				let [dbGroupComments, dbGroupUsers] = await Promise.all([
+					this.models.GroupComment.findAll({
+						where: { GroupId: dbNewComment.GroupId }
+					}),
+					this.models.GroupUser.findAll({
+						where: { GroupId: dbNewComment.GroupId }
+					})
+				]);
+
+				userIdsConcernedWithThread = dbGroupUsers.map(dbGroupUser => dbGroupUser.UserId);
+
+				//Important to remove the dbNewComment!
+				dbExistingCommentsInThread = dbGroupComments
+					.filter(dbGroupComment => dbGroupComment.GroupCommentId !== dbNewComment.GroupCommentId);
+			
 				break;
 				
 			default:
@@ -186,7 +198,7 @@ export default class NotificationService extends Service {
 		}
 
 		let notifyUserIds = this._CleanNotifyUserIds(
-			userIdsInThread
+			userIdsConcernedWithThread
 				.filter(userId => !userMentionUserIds.includes(userId)) //DO NOT include users MENTIONED in this comment, they already got a direct notification
 				.filter(userId => userId !== dbNewComment.UserId) //DO NOT include THIS commenter
 		)
