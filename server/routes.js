@@ -399,8 +399,10 @@ export default {
 		uploadGroupAvatar: async (req, services) => {
 			let adminOfGroupIds = req.adminOfGroupIds;
 
-			let groupId = req.body.groupId;
+			//Through the formData, groupId is a string
+			let groupId = parseInt(req.body.groupId);
 
+			if(isNaN(groupId)) throw 'Invalid group ID';
 			if(!groupId || !adminOfGroupIds.includes(groupId)) throw 'Not a group admin';
 			
 			let file = req.file;

@@ -44,25 +44,7 @@ export default class PlayService extends Service {
 			: await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
 	}
 	async CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId) {
-		let templateWhere = {
-			UnlockedAt: {
-				[Sequelize.Op.ne]: null,
-				[Sequelize.Op.lte]: new Date()
-			}
-		};
-		if(templateId) templateWhere.TemplateId = templateId;
-
-		let dbLatestTemplates = await this.models.Template.findAll({
-			//If a templateId is supplied, only 1 will be returned and the random below will select it
-			where: templateWhere,
-			order: [[ 'UnlockedAt', 'DESC' ]]
-		});
-
-		if(!dbLatestTemplates || dbLatestTemplates.length === 0) throw 'No templates to play with';
-		
-		//Anonymous users can't access the latest template right away (but if there is only 1, dont skip it!)
-		let startIdx = (userId || dbLatestTemplates.length === 1 ? 0 : 1);
-		let dbTemplate = dbLatestTemplates[common.getRandomInt(startIdx, dbLatestTemplates.length - 1)];
+		let dbTemplate = await this.services.Template.GetDbTemplateForPlay(userId, templateId);
 
 		//By this point we have already made sure the user is in the group, but we must validate the challenge if provided
 		if(groupId) {
@@ -92,8 +74,8 @@ export default class PlayService extends Service {
 		//Create a new comic with these properties, and have it locked right away
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
-			
 			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
+
 			IsAnonymous: !userId,
 
 			GroupId: groupId,
@@ -452,79 +434,86 @@ export default class PlayService extends Service {
 		} else {
 			skippedComicWhere.LockedByAnonId = anonId;
 		}
-	
-		//Remove the lock on the comic
-		let [dbComicsAffected] = await this.models.Comic.update({
-			LockedAt: null,
-			LockedByUserId: null,
-			LockedByAnonId: null,
-			NextTemplatePanelId: null
-		}, {
-			where: skippedComicWhere
+
+		let dbComic = await this.models.Comic.findOne({
+			where: skippedComicWhere,
+			include: [{
+				model: this.models.ComicPanel,
+				as: 'ComicPanels',
+				required: false,
+				order: [['Ordinal', 'DESC']] //This sort is used to update last authors below
+			}]
 		});
 
-		//Should never be > 1: comicId alone should assure that, but in the case of 0 affected rows....
-		if(dbComicsAffected !== 1) throw `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`;
-		
-		//Anons can't track their skips, so leave here
-		if(!userId) return;
-		
-		//Find the current comic panels (using server data, NOT from client)
-		let dbComicPanels = await this.models.ComicPanel.findAll({
-			where: {
-				ComicId: skippedComicId
-			},
-			order: [['Ordinal', 'DESC']] //This sort is used to update last authors below
-		});
+		//Should never occur, comicId alone should assure that, but in the case of no dbcomic...
+		if(!dbComic) throw `${userId || 'anon'} tried to illegally skip comic ${skippedComicId}`;
 
-		//There may be no panels (if the user skipped at the BEGIN COMIC stage)
-		if(dbComicPanels && dbComicPanels.length > 0) {
-			let dbCurrentComicPanel = dbComicPanels[0];
+		//Always remove nexttemplatepanelId
+		dbComic.NextTemplatePanelId = null;
 
-			//Record a panelskip. if this is created (not found) we need to increase skipcount
-			let [dbComicPanelSkip, wasCreated] = await this.models.ComicPanelSkip.findOrCreate({
-				where: {
-					UserId: userId,
-					ComicPanelId: dbCurrentComicPanel.ComicPanelId
-				}
-			});
+		//Anons can't track their skips, so skip this stuff and go straight to lock removal
+		if(userId) {
+			//There may be no panels (if the user skipped at the BEGIN COMIC stage)
+			if(!dbComic.ComicPanels || dbComic.ComicPanels.length < 1) {
+				//No panels, people must not dig the template, so randomise it
+				let dbTemplate = await this.services.Template.GetDbTemplateForPlay(userId);
 
-			if(wasCreated) {
-				//If this was my first skip of this comic panel, increase skipcount
-				let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
-
-				//If this comic panel has reached the maximum number of skips,
-				if(newSkipCount > common.config.ComicPanelSkipLimit) {
-					//No need to update skip count, the archived state indicates the total count is limit + 1;
-
-					//Remove the panel (await this before we do the next update)
-					await dbCurrentComicPanel.destroy();
-
-					//Should already be sorted by reverse ordinal from query above
-					let otherDbComicPanels = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
-
-					//Update the comic's lastauthoruserid/penultimateuserid to the previous panels, if they exist. Otherwise, just nullify them.					
-					this.models.Comic.update({
-						LastAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 0) ? otherDbComicPanels[0].UserId : null,
-						PenultimateAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 1) ? otherDbComicPanels[1].UserId : null
-					}, {
-						where: {
-							ComicId: skippedComicId
-						}
-					});
-
-					if(dbCurrentComicPanel.UserId) this.services.Notification.SendPanelRemovedNotification(dbCurrentComicPanel);
-				} else {
-					dbCurrentComicPanel.SkipCount = newSkipCount;
-					dbCurrentComicPanel.save();
-				}
+				dbComic.TemplateId = dbTemplate.TemplateId;
+				dbComic.PanelCount = this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount);
 			} else {
-				//If this wasn't the first skip of the panel, set updatedat so we don't see the panel again soon
-				dbComicPanelSkip.UpdatedAt = new Date();
-				dbComicPanelSkip.changed('UpdatedAt', true); //This is required to manually update UpdatedAt
-				dbComicPanelSkip.save();
+				//There IS panels in the comic so far
+				let dbCurrentComicPanel = dbComic.ComicPanels[0];
+
+				//Record a panelskip. if this is created (not found) we need to increase skipcount
+				let [dbComicPanelSkip, wasCreated] = await this.models.ComicPanelSkip.findOrCreate({
+					where: {
+						UserId: userId,
+						ComicPanelId: dbCurrentComicPanel.ComicPanelId
+					}
+				});
+
+				if(wasCreated) {
+					//If this was my first skip of this comic panel, increase skipcount
+					let newSkipCount = dbCurrentComicPanel.SkipCount + 1;
+
+					//If this comic panel has reached the maximum number of skips,
+					if(newSkipCount > common.config.ComicPanelSkipLimit) {
+						//No need to update skip count, the archived state indicates the total count is limit + 1;
+
+						//Remove the panel (await this before we do the next update)
+						await dbCurrentComicPanel.destroy();
+
+						//Should already be sorted by reverse ordinal from query above
+						let otherDbComicPanels = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
+
+						//Update the comic's lastauthoruserid/penultimateuserid to the previous panels, if they exist. Otherwise, just nullify them.					
+						await this.models.Comic.update({
+							LastAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 0) ? otherDbComicPanels[0].UserId : null,
+							PenultimateAuthorUserId: (otherDbComicPanels && otherDbComicPanels.length > 1) ? otherDbComicPanels[1].UserId : null
+						}, {
+							where: {
+								ComicId: skippedComicId
+							}
+						});
+
+						if(dbCurrentComicPanel.UserId) this.services.Notification.SendPanelRemovedNotification(dbCurrentComicPanel);
+					} else {
+						dbCurrentComicPanel.SkipCount = newSkipCount;
+						await dbCurrentComicPanel.save();
+					}
+				} else {
+					//If this wasn't the first skip of the panel, set updatedat so we don't see the panel again soon
+					dbComicPanelSkip.UpdatedAt = new Date();
+					dbComicPanelSkip.changed('UpdatedAt', true); //This is required to manually update UpdatedAt
+					await dbComicPanelSkip.save();
+				}
 			}
 		}
+
+		dbComic.LockedAt =null;
+		dbComic.LockedByUserId = null;
+		dbComic.LockedByAnonId = null;
+		await dbComic.save();
 	}
 	_GetRandomPanelCount(minPanelCount, maxPanelCount) {
 		if(minPanelCount % 2 === 1) minPanelCount = minPanelCount + 1; //No odd numbers allowed.

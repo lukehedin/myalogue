@@ -38,4 +38,25 @@ export default class TemplateService extends Service {
 			}
 		});
 	}
+	async GetDbTemplateForPlay(userId, templateId) {
+		let templateWhere = {
+			UnlockedAt: {
+				[Sequelize.Op.ne]: null,
+				[Sequelize.Op.lte]: new Date()
+			}
+		};
+		if(templateId) templateWhere.TemplateId = templateId;
+
+		let dbLatestTemplates = await this.models.Template.findAll({
+			//If a templateId is supplied, only 1 will be returned and the random below will select it
+			where: templateWhere,
+			order: [[ 'UnlockedAt', 'DESC' ]]
+		});
+
+		if(!dbLatestTemplates || dbLatestTemplates.length === 0) throw 'No templates to play with';
+		
+		//Anonymous users can't access the latest template right away (but if there is only 1, dont skip it!)
+		let startIdx = (userId || dbLatestTemplates.length === 1 ? 0 : 1);
+		return dbLatestTemplates[common.getRandomInt(startIdx, dbLatestTemplates.length - 1)];
+	}
 }
