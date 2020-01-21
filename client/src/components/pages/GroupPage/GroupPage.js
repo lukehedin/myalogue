@@ -33,7 +33,6 @@ class GroupPage extends Component {
 
 		this.fetchData = this.fetchData.bind(this);
 
-		this.setRedirectToPlayWithGroup = this.setRedirectToPlayWithGroup.bind(this);
 		this.joinGroup = this.joinGroup.bind(this);
 		this.removeGroupUser = this.removeGroupUser.bind(this);
 		this.appendNewGroupUser = this.appendNewGroupUser.bind(this);
@@ -151,34 +150,6 @@ class GroupPage extends Component {
 				});
 			}
 		});
-	}
-	setRedirectToPlayWithGroup(groupChallengeId) {
-		const minUsers = 3;
-		let params = { pGroupId: this.state.group.groupId };
-		if(groupChallengeId) params.pGroupChallengeId = groupChallengeId;
-		let redirectTo = Util.route.withQueryParams(Util.route.play(), params);
-
-		if(this.state.group.groupUsers.length < minUsers) {
-			this.props.openModal({
-				type: Util.enums.ModalType.Confirm,
-				title: 'Group comics will not complete',
-				content: <div>
-						<p className="center">Groups with less than {minUsers} members cannot complete comics. You can still begin making comics for the group, but they will remain incomplete until more members join.</p>
-						<p className="center">Would you still like to play with this group?</p>
-					</div>,
-				yesLabel: 'Yes, play anyway',
-				noLabel: 'Cancel',
-				yesFn: () => {
-					this.setState({
-						redirectTo
-					});
-				}
-			});
-		} else {
-			this.setState({
-				redirectTo
-			});
-		}
 	}
 	createGroupChallenge(challenge) {
 		//Server

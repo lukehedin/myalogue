@@ -161,8 +161,6 @@ export default class PlayService extends Service {
 					.filter(dbRecentComicPanelSkip => dbRecentComicPanelSkip.ComicPanel && dbRecentComicPanelSkip.ComicPanel.ComicId)
 					.map(dbRecentComicPanelSkip => dbRecentComicPanelSkip.ComicPanel.ComicId)
 			)];
-			
-			console.log(recentlySkippedComicIds);
 
 			//An improvement here could be to check if any panels have been made since
 			//I last skipped the comic, and don't filter out those ones- but its a big job
@@ -437,11 +435,12 @@ export default class PlayService extends Service {
 
 		let dbComic = await this.models.Comic.findOne({
 			where: skippedComicWhere,
+			//Important ORDER: this sort is used to update last authors below,
+			order: [[{ model: this.models.ComicPanel, as: 'ComicPanels' }, 'Ordinal', 'DESC']],
 			include: [{
 				model: this.models.ComicPanel,
 				as: 'ComicPanels',
-				required: false,
-				order: [['Ordinal', 'DESC']] //This sort is used to update last authors below
+				required: false
 			}]
 		});
 
