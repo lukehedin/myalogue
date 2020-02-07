@@ -63,14 +63,16 @@ class Modal extends Component {
 				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
 
-				let comicLink = window.location.href;
+				
+				let comicRoute = Util.route.comic(modal.comic.comicId);
+				let comicLink = window.location.origin + comicRoute;
 
 				modalContent = <div className="share-comic-container">
 					<ComicInfoLabel className="center" comic={modal.comic} />
 					<input className="input-link" onClick={e => e.target.select()} readOnly={true} defaultValue={comicLink}></input>
 					<CopyButton toCopy={comicLink} />
-					{!Util.route.isCurrently(Util.route.comic(modal.comic.comicId))
-						? <Button colour="black" label="View comic page" to={Util.route.comic(modal.comic.comicId)} />
+					{!Util.route.isCurrently(comicRoute)
+						? <Button colour="black" label="View comic page" to={comicRoute} />
 						: null
 					}
 					<ShareButtons title={`Speak4Yourself%20-%20Comic%20%23${modal.comic.comicId}`} />
