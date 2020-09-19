@@ -49,12 +49,13 @@ export default class TemplatePage extends Component {
 			Util.api.post('/api/getTopComic', { templateId: templateId})
 				.then(topComic => {
 					//If the template is still the same, continue on
-					if(topComic.templateId === this.state.template.templateId) {
+					if(topComic && topComic.templateId === this.state.template.templateId) {
 						if(topComic) this.setState({ topComic: topComic });
-						this.setState({
-							isLoading: false
-						});
 					}
+					
+					this.setState({
+						isLoading: false
+					});
 				})
 		}, 700);
 	}
