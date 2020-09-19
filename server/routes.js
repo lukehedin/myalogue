@@ -367,9 +367,9 @@ export default {
 			let userId = req.userId;
 			let file = req.file;
 
-			await services.User.SaveUserAvatarUrl(userId, file.url);
+			await services.User.SaveUserAvatarUrl(userId, file.secure_url);
 
-			return file.url;
+			return file.secure_url;
 		},
 
 		removeUserAvatar: async (req, services) => {
@@ -407,9 +407,9 @@ export default {
 			
 			let file = req.file;
 
-			await services.Group.SaveGroupAvatarUrl(groupId, file.url);
+			await services.Group.SaveGroupAvatarUrl(groupId, file.secure_url);
 			
-			return file.url;
+			return file.secure_url;
 		},
 
 		getPendingGroupInfoForGroup: async (req, services) => {
