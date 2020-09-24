@@ -175,7 +175,8 @@ export default class PlayService extends Service {
 			limit: 1,
 			where: comicWhere,
 			//Might be better if this also pushed groups to the front
-			order: [Sequelize.fn('RANDOM')]
+			// order: [Sequelize.fn('RANDOM')]
+			order: [['UpdatedAt', 'DESC']]
 		});
 
 		if(!randomDbComics || randomDbComics.length === 0) {
