@@ -174,9 +174,8 @@ export default class PlayService extends Service {
 		let randomDbComics = await this.models.Comic.findAll({
 			limit: 1,
 			where: comicWhere,
-			//Might be better if this also pushed groups to the front
-			// order: [Sequelize.fn('RANDOM')]
-			order: [['UpdatedAt', 'DESC']]
+			//TODO: Might be better if this also pushed groups to the front
+			order: Math.random() < 0.5 ? [['UpdatedAt', 'DESC']] : [Sequelize.fn('RANDOM')]
 		});
 
 		if(!randomDbComics || randomDbComics.length === 0) {
