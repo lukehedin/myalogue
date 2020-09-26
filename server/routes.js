@@ -246,6 +246,31 @@ export default {
 			let dialogue = req.body.dialogue;
 
 			return await services.Play.SubmitComicPanel(userId, anonId, comicId, dialogue);
+		},
+
+		search: async (req, services) => {
+			let search = req.body.search;
+
+			let [users, groups, templates] = await Promise.all([
+				await services.User.SearchUsers(search),
+				await services.Group.SearchGroups(search),
+				await services.Template.SearchTemplates(search)
+			]);
+
+			//Return 10 results max
+			let maxUserResults = 4;
+			let maxGroupResults = 3;
+			let maxTemplateResults = 3;
+			
+			if(users.length < maxUserResults) maxGroupResults += maxUserResults - users.length;
+			if(groups.length < maxGroupResults) maxTemplateResults += maxGroupResults - groups.length;
+			if(templates.length < maxTemplateResults) maxUserResults += maxTemplateResults - templates.length;
+
+			return {
+				users: users.slice(0, maxUserResults),
+				groups: groups.slice(0, maxGroupResults),
+				templates: templates.slice(0, maxTemplateResults)
+			};
 		}
 	},
 

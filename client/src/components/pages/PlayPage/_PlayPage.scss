@@ -80,27 +80,31 @@
 		}
 
 		.anon-message {
-			background-color: $colour-grey-e;
+			background-color: $colour-grey-f;
 			max-width: 400px;
 			margin-top: $spacing-sm;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 			@include borderRadius(4px);
 			@include allHeadings {
 				color: $colour-white;
 			}
 			color: $colour-white;
-			padding: $spacing-xs;
+			padding: $spacing-xs $spacing-sm;
 			@include oversm {
 				padding: $spacing-sm;
 			}
 
-			a {
-				color: $colour-white;
-				text-decoration: underline;
+			.button {
+				margin-top: $spacing-xs;
 			}
 
 			ul {
 				text-align: left;
 				font-size: 12px;
+				margin-top: 0;
+				padding-left: $spacing-xs;
 			}
 		}
 

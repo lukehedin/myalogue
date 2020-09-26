@@ -8,6 +8,22 @@ import auth from '../auth';
 import Service from './Service';
 
 export default class UserService extends Service {
+	async SearchUsers(search) {
+		let lowerSearch = search.toLowerCase();
+
+		let dbUsers = this.models.User.findAll({
+			where: [
+				Sequelize.where(Sequelize.fn('lower', Sequelize.col('Username')), {
+					[Sequelize.Op.like]: `%${lowerSearch}%`
+				}),
+				this._GetUserNotBannedWhere()
+			],
+			order:  [['UpdatedAt', 'DESC']],
+			limit: 10
+		});
+
+		return dbUsers.map(mapper.fromDbUser);
+	}
 	async DbGetById(userId, additionalWhere = {}) {
 		//This returns the whole dbUser and should not be used if returning to the client
 		//Sensitive data will go with it!
@@ -138,7 +154,7 @@ export default class UserService extends Service {
 		
 		if(dbExistingUser) {
 			return common.getErrorResult(dbExistingUser.Email === email
-					? 'Email is already in use. Please log in with your existing account or reset your password.'
+					? 'Email is already in use. Please login with your existing account or reset your password.'
 					: 'Username is already in use. Please choose another username.');
 		}
 

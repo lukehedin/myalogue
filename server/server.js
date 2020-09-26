@@ -119,7 +119,7 @@ if(common.config.IsDevelopmentScript) {
 		} catch(error) {
 			//Authentication error (401) Always sends the same error to the user
 			db.LogError(error);
-			res.status(401).send({ error: 'Authentication failed. Please log in.' });
+			res.status(401).send({ error: 'Authentication failed. Please login.' });
 		}
 	};
 	const getRouteUpload = (route) => async (req, res, next) => {

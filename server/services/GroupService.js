@@ -7,6 +7,19 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class GroupService extends Service {
+	async SearchGroups(search) {
+		let lowerSearch = search.toLowerCase();
+
+		let dbGroups = this.models.Group.findAll({
+			where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('Name')), {
+				[Sequelize.Op.like]: `%${lowerSearch}%`
+			}),
+			order:  [['UpdatedAt', 'DESC']],
+			limit: 10
+		});
+
+		return dbGroups.map(mapper.fromDbGroup);
+	}
 	async GetAll() {
 		let dbGroups = await this.models.Group.findAll();
 		return dbGroups.map(mapper.fromDbGroup);

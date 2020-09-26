@@ -5,10 +5,11 @@ import Util from '../../../Util';
 
 import logo from '../../../images/logo_header.png';
 
-import UserAvatar from '../UserAvatar/UserAvatar';
 import Button from '../Button/Button';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import NotificationMenu from '../NotificationMenu/NotificationMenu';
+import UserAvatar from '../UserAvatar/UserAvatar';
+import Search from '../Search/Search';
 
 export default class AppHeader extends Component {
 	constructor(props) {
@@ -46,6 +47,7 @@ export default class AppHeader extends Component {
 							<ReactSVG className="app-menu-icon" src={Util.icon.menu} />
 						</ContextMenu>
 						<Link to={Util.route.home()}><img src={logo} className="app-logo" alt="logo" /></Link>
+						<Search />
 						<div className="flex-spacer"></div>
 						{Util.context.isAuthenticated()
 							? <NotificationMenu />
@@ -70,10 +72,7 @@ export default class AppHeader extends Component {
 							>
 								<UserAvatar size={32} />
 							</ContextMenu>
-							: <div className="button-container">
-								<Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Log in" />
-								<Button size="sm" colour="pink" to={Util.route.register()} label="Register" />
-							</div>
+							: <Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Login" />
 						}
 					</div>
 				</div>

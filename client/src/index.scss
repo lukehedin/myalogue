@@ -301,6 +301,7 @@ body {
 			@include borderRadius(4px);
 			font-size: 16px; //Must be min 16 or ios will zoom in (and not zoom out)
 			font-family: $font-family-default;
+			min-width: 0;
 
 			border: 1px solid $colour-grey-b;
 			outline: none;

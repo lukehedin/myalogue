@@ -17,7 +17,7 @@ class LoginForm extends Component {
 				<Button type="submit" colour="pink" size="lg" label="Login" />
 			</div>
 			<p className="form-message">Forgot your password? <Link to={Util.route.forgotPassword()}>Forgot password</Link></p>
-			<p className="form-message">Don't have an account? <Link to={Util.route.register()}>Register</Link></p>
+			<p className="form-message">Don't have an account? <Link to={Util.route.register()}>Create an account</Link></p>
 		</form>
 	}
 }

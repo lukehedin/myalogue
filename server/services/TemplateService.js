@@ -7,6 +7,19 @@ import mapper from '../mapper';
 import Service from './Service';
 
 export default class TemplateService extends Service {
+	async SearchTemplates(search) {
+		let lowerSearch = search.toLowerCase();
+
+		let dbTemplates = this.models.Template.findAll({
+			where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('Name')), {
+				[Sequelize.Op.like]: `%${lowerSearch}%`
+			}),
+			order:  [['UpdatedAt', 'DESC']],
+			limit: 10
+		});
+
+		return dbTemplates.map(mapper.fromDbTemplate);
+	}
 	async GetAll(additionalWhere = {}, excludePanels = false) {
 		//Will only return unlocked templates, should never need locked ones
 		let dbTemplates = await this.models.Template.findAll({

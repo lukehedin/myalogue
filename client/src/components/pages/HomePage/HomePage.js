@@ -56,10 +56,7 @@ export default class HomePage extends Component {
 								{templatePanelCarousel}
 								<div className="play-panel">
 									<PlayButton />
-									{Util.context.isAuthenticated()
-										? null
-										: <Button label="How to play" to={Util.route.howToPlay()} colour="pink" isHollow={true} size="md" />
-									}
+									{!Util.context.isAuthenticated() && <Button label="How to play" to={Util.route.howToPlay()} colour="pink" isHollow={true} size="md" />}
 									<PlayInfo />
 								</div>
 							</div>

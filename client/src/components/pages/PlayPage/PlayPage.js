@@ -224,13 +224,14 @@ export default class PlayPage extends Component {
 					? null 
 					: <div className="anon-message">
 						<h4>Reminder: You're playing anonymously!</h4>
-						<p className="center sm">If you <Link to={Util.route.register()}>create an account</Link> you'll be able to:</p>
+						<Button size="md" colour="pink" to={Util.route.register()} label="Create an account" />
+						<p className="center sm">and you'll be able to:</p>
 						<ul>
-							<li>Get a notification when your comic is completed.</li>
-							<li>Have your username appear on your comic panels.</li>
-							<li>Play the latest template as soon as it's available.</li>
-							<li>Play using any template of your choosing.</li>
+							<li>Get notified when your comics are completed.</li>
 							<li>Rate and comment on comics.</li>
+							<li>Play using any template of your choosing.</li>
+							<li>Play the latest template as soon as it's up.</li>
+							<li>Have your username appear on your comics.</li>
 						</ul>
 					</div>
 				}

@@ -15,7 +15,7 @@ export default class ButtonInput extends Component {
 		this.submit = this.submit.bind(this);
 	}
 	onKeyDown(e) {
-		if(e.keyCode == 13) this.submit();
+		if(e.keyCode === 13) this.submit();
 	}
 	onChange(e) {
 		let newVal = e.target.value;
