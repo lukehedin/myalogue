@@ -16,7 +16,12 @@ export default class UserService extends Service {
 				Sequelize.where(Sequelize.fn('lower', Sequelize.col('Username')), {
 					[Sequelize.Op.like]: `%${lowerSearch}%`
 				}),
-				this._GetUserNotBannedWhere()
+				this._GetUserNotBannedWhere(),
+				{
+					VerificationToken: {
+						[Sequelize.Op.eq]: null //unverified users cant do anything
+					}
+				}
 			],
 			order:  [['UpdatedAt', 'DESC']],
 			limit: 10
