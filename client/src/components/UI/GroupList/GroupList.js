@@ -197,7 +197,7 @@ class GroupList extends Component {
 								}
 							</div>
 							{Util.array.any(contextMenuItems) 
-								? <ContextMenu align="right" menuItems={contextMenuItems} />
+								? <ContextMenu alignHorizontal="right" menuItems={contextMenuItems} />
 								: null
 							}
 						</div>

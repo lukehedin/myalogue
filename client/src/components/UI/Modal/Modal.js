@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import Util from '../../../Util';
 import { connect } from 'react-redux';
 import { closeModal, openModal } from '../../../redux/actions';
-import { Link } from 'react-router-dom';
+import html2canvas from 'html2canvas';
 
 import Button from '../Button/Button';
 import ReportComicPanelForm from '../Forms/ReportComicPanelForm/ReportComicPanelForm';
-import CopyButton from '../CopyButton/CopyButton';
 import ComicInfoLabel from '../ComicInfoLabel/ComicInfoLabel';
-import ShareButtons from '../../UI/ShareButtons/ShareButtons';
 
 import ReactSVG from 'react-svg';
 
@@ -17,6 +15,16 @@ class Modal extends Component {
 		super(props);
 
 		this.close = this.close.bind(this);
+	}
+	componentDidMount() {
+		let { modal } = this.props;
+
+		if(modal.type === Util.enums.ModalType.ComicDetailsModal && Util.context.isAuthenticated() && Util.context.getUsername() === 'imdoodlir') {
+			html2canvas(document.querySelector(`.comic-${modal.comic.comicId} .comic-content`), { allowTaint: true }).then(canvas => {
+				const canvasHolder = document.querySelector(".comic-canvas-holder");
+				if(canvasHolder) canvasHolder.append(canvas);
+			});
+		}
 	}
 	close() {
 		this.props.closeModal(this.props.modal.modalId);
@@ -59,31 +67,27 @@ class Modal extends Component {
 				</div>
 				break;
 
-			case Util.enums.ModalType.ShareComicModal:
+			case Util.enums.ModalType.ComicDetailsModal:
 				modalTitle = `Comic #${modal.comic.comicId}`;
 				modalClass = 'modal-share-comic';
 
-				
 				let comicRoute = Util.route.comic(modal.comic.comicId);
-				let comicLink = window.location.origin + comicRoute;
 
 				modalContent = <div className="share-comic-container">
 					<ComicInfoLabel className="center" comic={modal.comic} />
-					<input className="input-link" onClick={e => e.target.select()} readOnly={true} defaultValue={comicLink}></input>
-					<CopyButton toCopy={comicLink} />
+					<div className="comic-canvas-holder"></div>
 					{!Util.route.isCurrently(comicRoute)
 						? <Button colour="black" label="View comic page" to={comicRoute} />
 						: null
 					}
-					<ShareButtons title={`Speak4Yourself%20-%20Comic%20%23${modal.comic.comicId}`} />
 					{Util.context.isAuthenticated()
-						? <p className="center sm">If there's a problem with dialogue in this comic, you can <a onClick={() => {
+						? <p className="center sm">See something inappropriate? <a onClick={() => {
 							this.close();
 							this.props.openModal({
 								type: Util.enums.ModalType.ReportComicPanelModal,
 								comic: modal.comic
 							});
-						}}>report a panel</a>.</p>
+						}}>Report a panel</a>.</p>
 						: null
 					}
 				</div>

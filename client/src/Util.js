@@ -297,7 +297,7 @@ const Util = {
 		ModalType: {
 			Alert: 1,
 			Confirm: 2,
-			ShareComicModal: 3,
+			ComicDetailsModal: 3,
 			ReportComicPanelModal: 4
 		},
 

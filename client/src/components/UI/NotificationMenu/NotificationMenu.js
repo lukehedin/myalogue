@@ -152,7 +152,7 @@ export default class NotificationButton extends Component {
 				: <p className="empty-text align-center">You have no notifications.</p>}
 		</div>;
 
-		return <ContextMenu align="right" className="notification-menu" content={content} onShow={this.seenNotifications}>
+		return <ContextMenu alignHorizontal="right" className="notification-menu" content={content} onShow={this.seenNotifications}>
 			<Button className="notification-button" 
 			size="sm"
 			label={Util.array.any(unseenNotifications) ? unseenNotifications.length.toString() : null} 

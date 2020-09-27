@@ -6,7 +6,7 @@
     "axios": "^0.19.0",
     "detect-browser": "^4.7.0",
     "escape-html": "^1.0.3",
-    "html-to-image": "^0.1.1",
+    "html2canvas": "^1.0.0-rc.7",
     "is-touch-device": "^1.0.1",
     "linkifyjs": "^2.1.8",
     "moment": "^2.24.0",

@@ -92,7 +92,7 @@ class GroupPendingInfoUser extends Component {
 								<p className="item-name"><Link to={Util.route.group(groupInvite.group.groupId)}>{groupInvite.group.name}</Link></p>
 								<p className="item-subtitle sm"><Link to={Util.route.profile(groupInvite.invitedByUser.username)}>{groupInvite.invitedByUser.username}</Link> invited you to join {moment(groupInvite.createdAt).fromNow()}.</p>
 							</div>
-							<ContextMenu align="right" menuItems={[{
+							<ContextMenu alignHorizontal="right" menuItems={[{
 								label: 'Accept',
 								onClick: () => this.acceptGroupInvite(groupInvite)
 							}, {

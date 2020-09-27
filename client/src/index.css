@@ -305,7 +305,7 @@ body {
           body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author {
             bottom: 0;
             right: 0;
-            padding: 0.04em; }
+            padding: 0.04em 0.08em; }
             body .app-container .app .comic-panel .comic-panel-subtle.comic-panel-author.me {
               background-color: #ff0052;
               color: #fff;
@@ -657,6 +657,18 @@ body {
               margin-top: 8px; }
             body .app-container .app .modal.modal-share-comic .share-comic-container .input-link {
               max-width: 240px; }
+            body .app-container .app .modal.modal-share-comic .share-comic-container .comic-canvas-holder {
+              display: flex;
+              justify-content: center;
+              height: 25vh;
+              width: 100%; }
+              body .app-container .app .modal.modal-share-comic .share-comic-container .comic-canvas-holder:empty {
+                height: 0; }
+              body .app-container .app .modal.modal-share-comic .share-comic-container .comic-canvas-holder canvas {
+                width: auto !important;
+                height: auto !important;
+                max-height: 100%;
+                max-width: 100%; }
         body .app-container .app .modal.modal-report-comic-panel {
           max-width: 440px;
           font-size: 14px; }
@@ -861,7 +873,6 @@ body {
           cursor: default;
           position: absolute;
           z-index: 10;
-          top: calc(100% + 4px);
           background-color: #fff;
           border: 1px solid #c8c8c8;
           border-radius: 4px;
@@ -879,6 +890,10 @@ body {
             left: 0; }
           body .app-container .app .context-menu .context-menu-content.right {
             right: 0; }
+          body .app-container .app .context-menu .context-menu-content.top {
+            bottom: calc(100% + 4px); }
+          body .app-container .app .context-menu .context-menu-content.bottom {
+            top: calc(100% + 4px); }
           body .app-container .app .context-menu .context-menu-content .menu-items {
             display: flex;
             flex-direction: column; }
@@ -888,11 +903,19 @@ body {
               text-align: left;
               font-size: 14px;
               cursor: pointer; }
+              body .app-container .app .context-menu .context-menu-content .menu-items .menu-item .menu-item-inner {
+                display: flex;
+                flex-direction: row; }
+                body .app-container .app .context-menu .context-menu-content .menu-items .menu-item .menu-item-inner svg {
+                  height: 1em;
+                  margin-right: 8px; }
               body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:not(:first-child) {
                 border-top: 1px solid #c8c8c8; }
               body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover {
                 color: #ff0052;
                 text-decoration: none; }
+                body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover svg path {
+                  fill: #ff0052; }
       body .app-container .app .timer {
         text-align: center; }
         body .app-container .app .timer.urgent {
@@ -1259,7 +1282,7 @@ body {
         display: flex; }
         body .app-container .app .search input:not([type=checkbox]):not([type=radio]):not([type=file]) {
           border-radius: 6px;
-          background-color: #1c1c1c;
+          background-color: #232323;
           border: none;
           color: #fff;
           margin: 0 8px;
@@ -1267,7 +1290,7 @@ body {
           max-width: 100%; }
         body .app-container .app .search textarea, body .app-container .app .search select {
           border-radius: 6px;
-          background-color: #1c1c1c;
+          background-color: #232323;
           border: none;
           color: #fff;
           margin: 0 8px;
@@ -1551,7 +1574,7 @@ body {
           body .app-container .app .page-play .play-area .end-buttons > * {
             margin-top: 16px; }
         body .app-container .app .page-play .play-area .anon-message {
-          background-color: #1c1c1c;
+          background-color: #232323;
           max-width: 400px;
           margin-top: 16px;
           display: flex;

@@ -309,7 +309,7 @@ class GroupPage extends Component {
 										<p className="joined-at sm">{isCreator ? <b>(Creator) </b> : groupUser.isGroupAdmin ? <b>(Admin) </b> : null}Joined {moment(groupUser.createdAt).fromNow()}</p>
 									</div>
 									{isAdmin
-										? <ContextMenu align="right" menuItems={[{
+										? <ContextMenu alignHorizontal="right" menuItems={[{
 											label: 'Remove',
 											onClick: () => this.removeGroupUser(groupUser)
 										}]} />
@@ -344,7 +344,7 @@ class GroupPage extends Component {
 											}
 										</div>
 										{isAdmin 
-											? <ContextMenu align="right" menuItems={[{
+											? <ContextMenu alignHorizontal="right" menuItems={[{
 												label: 'Remove',
 												onClick: () => this.removeGroupChallenge(groupChallenge)
 											}]} />

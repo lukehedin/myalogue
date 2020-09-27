@@ -7,7 +7,6 @@
 		cursor: default;
 		position: absolute;
 		z-index: 10;
-		top: calc(100% + #{$spacing-xxs});
 		background-color: $colour-white;
 		border: 1px solid $colour-grey-b;
 		@include borderRadius(4px);
@@ -26,6 +25,13 @@
 			right: 0;
 		}
 
+		&.top {
+			bottom: calc(100% + #{$spacing-xxs});
+		}
+		&.bottom {
+			top: calc(100% + #{$spacing-xxs});
+		}
+
 		.menu-items {
 			display: flex;
 			flex-direction: column;
@@ -37,6 +43,15 @@
 				font-size: 14px;
 				cursor: pointer;
 	
+				.menu-item-inner {
+					display: flex;
+					flex-direction: row;
+					svg {
+						height: 1em;
+						margin-right: $spacing-xs;
+					}
+				}
+
 				&:not(:first-child) {
 					border-top: 1px solid $colour-grey-b;
 				}
@@ -44,6 +59,12 @@
 				&:hover {
 					color: $colour-pink;
 					text-decoration: none;
+
+					svg {
+						path {
+							fill: $colour-pink;
+						}
+					}
 				}
 			}
 		}

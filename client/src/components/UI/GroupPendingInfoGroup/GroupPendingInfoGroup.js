@@ -137,7 +137,7 @@ class GroupPendingInfoGroup extends Component {
 											<p className="item-name"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link></p>
 											<p className="item-subtitle sm"><Link to={Util.route.profile(groupRequest.user.username)}>{groupRequest.user.username}</Link> requested to join {moment(groupRequest.createdAt).fromNow()}.</p>
 										</div>
-										<ContextMenu align="right" menuItems={[{
+										<ContextMenu alignHorizontal="right" menuItems={[{
 											label: 'Approve',
 											onClick: () => this.approveGroupRequest(groupRequest)
 										}, {
