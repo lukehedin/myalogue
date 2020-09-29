@@ -146,7 +146,7 @@ export default {
 
 			if(!requestedUser) throw 'User not found.';
 
-			let [userStats, userAchievements, groups] = await Promise.all([
+			let [userStats, userAchievements] = await Promise.all([
 				services.User.GetStatsForUser(requestedUser.userId),
 				services.User.GetUserAchievements(requestedUser.userId)
 			]);

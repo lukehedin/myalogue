@@ -356,7 +356,17 @@ export default class UserService extends Service {
 	async GetStatsForUser(userId) {
 		//Does an vast find of all the user's comicpanels and subsequent comics, then creates their stats
 		//Is used for profile, but also for worker jobs to calculate leaderboards and achievements
-		let dbComicPanels = await this.services.Comic.GetComicPanelsForUserNotCensored(userId);
+		let [dbComicPanels, dbComicVotes] = await Promise.all([
+			this.services.Comic.GetComicPanelsForUserNotCensored(userId),
+			this.models.ComicVote.findAll({
+				where: {
+					UserId: userId,
+					Value: {
+						[Sequelize.Op.ne]: 0
+					}
+				}
+			})
+		]);
 
 		let comicIds = dbComicPanels.map(dbComicPanel => dbComicPanel.ComicId);
 
@@ -367,15 +377,6 @@ export default class UserService extends Service {
 				},
 				CompletedAt: {
 					[Sequelize.Op.ne]: null
-				}
-			}
-		});
-
-		let dbComicVotes = await this.models.ComicVote.findAll({
-			where: {
-				UserId: userId,
-				Value: {
-					[Sequelize.Op.ne]: 0
 				}
 			}
 		});
