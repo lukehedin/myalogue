@@ -200,7 +200,9 @@ export default class Database {
 			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
 			IsNeverRepeat: getBoooleanNotNull(),
 			PanelGroup: Sequelize.SMALLINT, //Used to create preferential/avoidance etc behaviour with other panels
-			PanelGroupBehaviour: Sequelize.SMALLINT //1.(null)prefer, 2.avoid 
+			PanelGroupBehaviour: Sequelize.SMALLINT, //1.(null)prefer, 2.avoid 
+			AtOrAfterQuartile: Sequelize.INTEGER, // 1, 2, 3, 4 (1 is kinda useless)
+			AtOrBeforeQuartile: Sequelize.INTEGER // 1, 2, 3, 4 (4 is kinda useless)
 		}, true);
 
 		defineTable('Comic', {

@@ -239,7 +239,8 @@ export default class PlayService extends Service {
 			? completedComicPanels.sort((cp1, cp2) => cp1.Ordinal - cp2.Ordinal)[completedComicPanels.length - 1]
 			: null;
 		let nextPanelIsFirst = !currentComicPanel;
-		let nextPanelIsLast = completedComicPanels.length + 1 === dbComic.PanelCount;
+		let nextPanelPosition = completedComicPanels.length + 1;
+		let nextPanelIsLast = nextPanelPosition === dbComic.PanelCount;
 		let usedTemplatePanelIds = [...new Set(completedComicPanels.map(completedComicPanel => completedComicPanel.TemplatePanelId))];
 
 		let templatePanelWhere = {
@@ -284,10 +285,19 @@ export default class PlayService extends Service {
 		//Find the possible next template panels, and the current one (may be null)
 		let [dbPossibleNextTemplatePanels, dbCurrentTemplatePanel] = await Promise.all(templatePanelPromises);
 
+		
+		let comicQuartileSize = dbComic.PanelCount * 0.25;
+		dbPossibleNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => {
+			return (!dbTemplatePanel.AtOrAfterQuartile || ((dbTemplatePanel.AtOrAfterQuartile * comicQuartileSize) >= nextPanelPosition))
+				&& (!dbTemplatePanel.AtOrBeforeQuartile || ((dbTemplatePanel.AtOrBeforeQuartile * comicQuartileSize) <= nextPanelPosition));
+		});
+
 		//If there are no possible next template panels, something has gone wrong or a template has a bad combo of rules
 		if(!dbPossibleNextTemplatePanels || dbPossibleNextTemplatePanels.length < 1) throw 'No viable next template panels';
 
-		//Get an array of PREFERRED template panels, but this is most often completely empty
+		//Get an array of PREFERRED template panels (but this is most often completely empty)
+		//It's not required to be filled, it will be used if panels are present but we will always fallback onto any possible panel (avoids empty/null errors)
+		//The reasoning for this is that sometimes you want a group that will effectively 'run out' of panel options, and use a fallback panel
 		let dbPreferredNextTemplatePanels = [];
 		if(dbCurrentTemplatePanel && dbCurrentTemplatePanel.PanelGroup) {
 			switch(dbCurrentTemplatePanel.PanelGroupBehaviour) {
