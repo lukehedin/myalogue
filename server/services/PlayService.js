@@ -288,8 +288,8 @@ export default class PlayService extends Service {
 		
 		let comicQuartileSize = dbComic.PanelCount * 0.25;
 		dbPossibleNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => {
-			return (!dbTemplatePanel.AtOrAfterQuartile || ((dbTemplatePanel.AtOrAfterQuartile * comicQuartileSize) >= nextPanelPosition))
-				&& (!dbTemplatePanel.AtOrBeforeQuartile || ((dbTemplatePanel.AtOrBeforeQuartile * comicQuartileSize) <= nextPanelPosition));
+			return (!dbTemplatePanel.AtOrAfterQuartile || (nextPanelPosition >= (dbTemplatePanel.AtOrAfterQuartile * comicQuartileSize)))
+				&& (!dbTemplatePanel.AtOrBeforeQuartile || (nextPanelPosition <= (dbTemplatePanel.AtOrBeforeQuartile * comicQuartileSize)));
 		});
 
 		//If there are no possible next template panels, something has gone wrong or a template has a bad combo of rules
