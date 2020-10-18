@@ -3,9 +3,11 @@
 	.comments {
 		overflow-y: auto;
 		overflow-x: hidden;
+		padding-top: $spacing-xs;
+		padding-bottom: $spacing-xs;
 
 		.comment {
-			margin: $spacing-sm 0;
+			margin: $spacing-xs 0;
 			&:not(:first-child) {
 				padding-top: $spacing-xs;
 			}

@@ -229,7 +229,6 @@ body {
             margin-bottom: 16px; }
             body .app-container .app .comic .comic-lower .comment-thread .comments {
               max-height: 300px;
-              padding: 0 4px;
               border-top: 1px solid #c8c8c8;
               border-bottom: 1px solid #c8c8c8; }
           body .app-container .app .comic .comic-lower:empty {
@@ -981,9 +980,11 @@ body {
           margin-top: 8px; }
       body .app-container .app .comment-thread .comments {
         overflow-y: auto;
-        overflow-x: hidden; }
+        overflow-x: hidden;
+        padding-top: 8px;
+        padding-bottom: 8px; }
         body .app-container .app .comment-thread .comments .comment {
-          margin: 16px 0; }
+          margin: 8px 0; }
           body .app-container .app .comment-thread .comments .comment:not(:first-child) {
             padding-top: 8px; }
         body .app-container .app .comment-thread .comments .posting-message {

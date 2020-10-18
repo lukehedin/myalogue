@@ -167,9 +167,9 @@ export default class ComicList extends Component {
 							<div className="button-container direction-column">
 								{this.state.isNoMore
 									? null
-									: <Button label="Load more" colour="pink" onClick={() => this.fetchData()} />
+									: <Button label="Load more" size="lg" colour="pink" onClick={() => this.fetchData()} />
 								}
-								<Button isHollow={true} label="Back to top" size="sm" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
+								<Button label="Back to top" size="md" onClick={() => Util.selector.getRootScrollElement().scrollTo(0, 0)} colour="black" />
 							</div>
 						</div>
 					}

@@ -21,7 +21,7 @@ class Comic extends Component {
 
 		this.state = {
 			isLoading: false,
-			isCommentsVisible: this.props.isCommentsVisible,
+			isCommentsVisible: this.props.isCommentsVisible || Util.array.any(this.props.comic.comicComments) || Util.array.any(this.props.comic.userAchievements),
 
 			//In state so we can slip comments in/out
 			comic: this.props.comic

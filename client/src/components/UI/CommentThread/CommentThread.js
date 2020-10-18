@@ -76,7 +76,7 @@ export default class CommentThread extends Component {
 						<UserAvatar size={32} />
 						<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
 					</div>
-				: <p className="empty-text">You need to <Link to={Util.route.register()}>create an account</Link> to make comments.</p>
+				: <p className="empty-text"><Link to={Util.route.register()}>Create an account</Link> to make comments, rate comics and more.</p>
 			}
 		</div>
 	}
