@@ -175,7 +175,11 @@ export default class PlayService extends Service {
 			limit: 1,
 			where: comicWhere,
 			//TODO: Might be better if this also pushed groups to the front
-			order: Math.random() < 0.5 ? [['UpdatedAt', 'DESC']] : [Sequelize.fn('RANDOM')]
+			order: Math.random() < 0.6
+				? [Sequelize.fn('RANDOM')]  //60% chance for random 
+				: Math.random() < 0.75 
+					? [['UpdatedAt', 'DESC']] //30% chance for the most recently updated comic 
+					: [['UpdatedAt', 'ASC']] //10% chance for the oldest comic ever
 		});
 
 		if(!randomDbComics || randomDbComics.length === 0) {

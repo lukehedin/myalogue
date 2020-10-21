@@ -208,6 +208,66 @@ export default class ComicService extends Service {
 			anonComicsInProgressCount: dbComics.filter(dbComic => dbComic.IsAnonymous).length
 		};
 	}
+	async SetComicFavourite(userId, comicId, isFavourite) {
+		let dbComic = await this.models.Comic.findOne({
+			where: {
+				ComicId: comicId
+			},
+			include: [{
+				//Include the user's current favourite on the comic
+				model: this.models.ComicFavourite,
+				as: 'ComicFavourites',
+				required: false,
+				paranoid: false, //include archived
+				where: {
+					UserId: userId
+				}
+			}]
+		});
+
+		if(!dbComic) throw 'Invalid comic ID supplied.';
+
+		let comicFavouriteCountAdjustment = 0;
+
+		let dbExistingComicFavourite = dbComic.ComicFavourites && dbComic.ComicFavourites[0]
+			? dbComic.ComicFavourites[0]
+			: null;
+
+		let favouritePromises = [];
+
+		if(dbExistingComicFavourite) {
+			//The favourite is already in the correct state, no update required
+			if(!isFavourite && dbExistingComicFavourite.ArchivedAt) return;
+			if(isFavourite && !dbExistingComicFavourite.ArchivedAt) return;
+
+			if(isFavourite) {
+				comicFavouriteCountAdjustment = 1;
+
+				favouritePromises.push(dbExistingComicFavourite.restore());
+			} else {
+				comicFavouriteCountAdjustment = -1;
+
+				favouritePromises.push(dbExistingComicFavourite.destroy());
+			}
+		} else {
+			comicFavouriteCountAdjustment = 1;
+			
+			//Create the favourite
+			favouritePromises.push(
+				this.models.ComicFavourite.create({
+					UserId: userId,
+					ComicId: comicId
+				})
+			);
+		}
+
+		if(comicFavouriteCountAdjustment !== 0) {
+			dbComic.FavouriteCount = (dbComic.FavouriteCount || 0) + comicFavouriteCountAdjustment;
+			favouritePromises.push(dbComic.save());
+		}
+
+		await Promise.all(favouritePromises);
+	}
 	async VoteComic(userId, comicId, value) {
 		let dbComic = await this.models.Comic.findOne({
 			where: {
@@ -424,6 +484,15 @@ export default class ComicService extends Service {
 					UserId: forUserId
 				}
 			});
+			//And their current favourite
+			include.push({
+				model: this.models.ComicFavourite,
+				as: 'ComicFavourites',
+				required: false,
+				where: {
+					UserId: forUserId
+				}
+			})
 		}
 	
 		return include;

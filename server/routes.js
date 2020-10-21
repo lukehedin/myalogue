@@ -289,6 +289,16 @@ export default {
 			return;
 		},
 
+		setComicFavourite: async (req, services) => {
+			let userId = req.userId;
+			let comicId = req.body.comicId;
+			let isFavourite = req.body.isFavourite;
+
+			await services.Comic.SetComicFavourite(userId, comicId, isFavourite);
+
+			return;
+		},
+
 		reportComicPanel: async (req, services) => {
 			let userId = req.userId;
 			let isAdmin = req.isAdmin;

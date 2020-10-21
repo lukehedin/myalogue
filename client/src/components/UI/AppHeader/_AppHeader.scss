@@ -7,7 +7,6 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		padding: $spacing-xxs 0;
 
 		.app-menu {
 			.app-menu-icon {
@@ -40,6 +39,7 @@
 		.app-logo {
 			margin-left: $spacing-xs;
 			height: 24px;
+			padding: $spacing-xs 0;
 		}
 	
 		.app-title {
@@ -49,6 +49,7 @@
 
 		.notification-button {
 			margin-right: $spacing-xs;
+			padding: $spacing-xs;
 		}
 
 		.user-avatar {

@@ -239,10 +239,10 @@ export default class PlayPage extends Component {
 					<PlayButton title="Play again" onClick={() => this.playNew()} useQueryParams={true} allowClearOptions={true} onClearOptions={this.clearOptions} />
 					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />
 				</div>
-				{Util.context.isAuthenticated()
-					? <p className="center sm">Join the S4Y Discord! <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">https://discord.gg/TcQPjvf</a></p>
-					: null
-				}
+				<hr />
+				<p className="center sm">Enjoying S4Y? Get the app from Google Play.</p>
+				<a style={{ width: '200px' }} href='https://play.google.com/store/apps/details?id=xyz.appmaker.qunped&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img style={{ width: '100%' }} alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+				<p className="center sm">Or, join the S4Y community on <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/TcQPjvf">Discord</a>!</p>
 				<TipStrip />
 			</div>
 		}

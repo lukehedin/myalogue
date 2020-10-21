@@ -209,6 +209,7 @@ export default class Database {
 			CompletedAt: Sequelize.DATE,
 			PanelCount: Sequelize.INTEGER,
 			Rating: getIntegerNotNull(),
+			FavouriteCount: getIntegerNotNull(),
 			HotRank: {
 				type: Sequelize.DECIMAL,
 				defaultValue: 0,
@@ -244,6 +245,10 @@ export default class Database {
 			Value: Sequelize.INTEGER
 		});
 
+		defineTable('ComicFavourite', {
+			//No additional fields
+		}, true);
+
 		defineTable('ComicComment', {
 			Value: Sequelize.TEXT
 		}, true);
@@ -263,6 +268,7 @@ export default class Database {
 		
 		createOneToMany('Comic', 'ComicPanel');
 		createOneToMany('Comic', 'ComicVote');
+		createOneToMany('Comic', 'ComicFavourite')
 		createOneToMany('Comic', 'ComicComment');
 		createOneToMany('Comic', 'UserAchievement'); // Achievement will link to comicId
 		createOneToMany('Comic', 'Notification'); // Notification will link to comicid
@@ -282,6 +288,7 @@ export default class Database {
 		createOneToMany('User', 'Comic', 'LastAuthorUser', 'LastAuthoredComics');
 		createOneToMany('User', 'Comic', 'LockedByUser', 'LockedComics');
 		createOneToMany('User', 'ComicVote');
+		createOneToMany('User', 'ComicFavourite');
 		createOneToMany('User', 'ComicComment');
 		createOneToMany('User', 'UserNotification');
 		createOneToMany('User', 'ComicPanel');

@@ -27,6 +27,7 @@ class Comic extends Component {
 			comic: this.props.comic
 		}
 
+		this.toggleIsFavourite = this.toggleIsFavourite.bind(this);
 		this.toggleIsCommentsVisible = this.toggleIsCommentsVisible.bind(this);
 		this.postComicComment = this.postComicComment.bind(this);
 		this.updateComicComment = this.updateComicComment.bind(this);
@@ -35,6 +36,22 @@ class Comic extends Component {
 		this.shareComic = this.shareComic.bind(this);
 		this.openComicDetailsModal = this.openComicDetailsModal.bind(this);
 		this.openReportComicPanelModal = this.openReportComicPanelModal.bind(this);
+	}
+	toggleIsFavourite() {
+		let newIsFavourite = !this.state.comic.isFavourite;
+
+		Util.api.post('/api/setComicFavourite', {
+			comicId: this.state.comic.comicId,
+			isFavourite: newIsFavourite
+		});
+
+		this.setState({
+			comic: {
+				...this.state.comic,
+				isFavourite: newIsFavourite,
+				favouriteCount: this.state.comic.favouriteCount + (newIsFavourite ? 1 : -1)
+			}
+		});
 	}
 	toggleIsCommentsVisible() {
 		this.setState({
@@ -212,7 +229,7 @@ class Comic extends Component {
 				? <div className="comic-lower comic-width">
 					<div className="comic-lower-inner">
 						{navigator.share
-							? <Button label="Share" isHollow={true} size="sm" leftIcon={Util.icon.share} onClick={this.shareComic} colour="pink" />
+							? <Button className="comic-share-button" label="Share" isHollow={true} size="sm" leftIcon={Util.icon.share} onClick={this.shareComic} colour="pink" />
 							: <ContextMenu alignHorizontal="left" alignVertical="top" menuItems={[{
 								label: 'Copy URL',
 								icon: Util.icon.copy,
@@ -230,11 +247,24 @@ class Comic extends Component {
 								icon: Util.icon.facebook,
 								link: `http://www.facebook.com/share.php?u=${window.location.origin + Util.route.comic(comic.comicId)}`
 							}]}>
-								<Button label="Share" isHollow={true} size="sm" leftIcon={Util.icon.share} colour="pink" />
+								<Button className="comic-share-button" label="Share" isHollow={true} size="sm" leftIcon={Util.icon.share} colour="pink" />
 							</ContextMenu>
 						}
 						<div className="flex-spacer"></div>
 						<Button isHollow={!isCommentsVisible} size="sm" leftIcon={Util.icon.comment} onClick={this.toggleIsCommentsVisible} label={Util.array.any(comic.comicComments) ? comic.comicComments.length : null} colour="grey" />
+						<Button 
+							isHollow={!comic.isFavourite} 
+							size="sm" leftIcon={Util.icon.star} 
+							label={comic.favouriteCount || null}
+							colour="grey"
+							onClick={Util.context.isAuthenticated() 
+								? this.toggleIsFavourite 
+								: null}
+							to={Util.context.isAuthenticated()
+								? null
+								: Util.route.register()
+							}
+						/>
 						<ComicVote comicId={comic.comicId} defaultRating={comic.rating} defaultValue={comic.voteValue} />
 					</div>
 					{isCommentsVisible

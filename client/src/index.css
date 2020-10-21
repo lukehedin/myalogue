@@ -82,8 +82,7 @@ body {
         body .app-container .app .app-header .app-header-inner {
           display: flex;
           flex-direction: row;
-          align-items: center;
-          padding: 4px 0; }
+          align-items: center; }
           body .app-container .app .app-header .app-header-inner .app-menu .app-menu-icon {
             padding: 8px 0;
             height: 20px;
@@ -103,12 +102,14 @@ body {
             overflow: hidden; }
           body .app-container .app .app-header .app-header-inner .app-logo {
             margin-left: 8px;
-            height: 24px; }
+            height: 24px;
+            padding: 8px 0; }
           body .app-container .app .app-header .app-header-inner .app-title {
             font-size: 1.5em;
             margin: 0; }
           body .app-container .app .app-header .app-header-inner .notification-button {
-            margin-right: 8px; }
+            margin-right: 8px;
+            padding: 8px; }
           body .app-container .app .app-header .app-header-inner .user-avatar {
             transition: transform 0.1s; }
             body .app-container .app .app-header .app-header-inner .user-avatar:hover {
@@ -214,6 +215,11 @@ body {
           justify-content: stretch; }
           body .app-container .app .comic .comic-lower > * {
             flex: 1; }
+          body .app-container .app .comic .comic-lower .comic-share-button .button-label {
+            display: none; }
+            @media (min-width: 768px) {
+              body .app-container .app .comic .comic-lower .comic-share-button .button-label {
+                display: flex; } }
           body .app-container .app .comic .comic-lower .comic-lower-inner {
             display: flex;
             flex-direction: row;
@@ -912,7 +918,8 @@ body {
                 border-top: 1px solid #c8c8c8; }
               body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover {
                 color: #ff0052;
-                text-decoration: none; }
+                text-decoration: none;
+                background-color: #ffedf3; }
                 body .app-container .app .context-menu .context-menu-content .menu-items .menu-item:hover svg path {
                   fill: #ff0052; }
       body .app-container .app .timer {

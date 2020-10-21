@@ -36,6 +36,15 @@
 			flex: 1;
 		}
 
+		.comic-share-button {
+			.button-label {
+				display: none;
+				@include overmd {
+					display: flex;
+				}
+			}
+		}
+
 		.comic-lower-inner {
 			display: flex;
 			flex-direction: row;

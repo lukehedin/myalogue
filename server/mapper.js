@@ -45,6 +45,8 @@ const mapper = {
 			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length > 0
 				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
 				: null,
+			isFavourite: dbComic.ComicFavourites && dbComic.ComicFavourites.length > 0, //The current favourite the user has given the comic
+			favouriteCount: dbComic.FavouriteCount,
 			userAchievements: (dbComic.UserAchievements)
 				.map(mapper.fromDbUserAchievement)
 		}
