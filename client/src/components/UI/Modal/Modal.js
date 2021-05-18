@@ -16,16 +16,6 @@ class Modal extends Component {
 
 		this.close = this.close.bind(this);
 	}
-	componentDidMount() {
-		let { modal } = this.props;
-
-		if(modal.type === Util.enums.ModalType.ComicDetailsModal && Util.context.isAuthenticated() && Util.context.getUsername() === 'imdoodlir') {
-			html2canvas(document.querySelector(`.comic-${modal.comic.comicId} .comic-content`), { allowTaint: true }).then(canvas => {
-				const canvasHolder = document.querySelector(".comic-canvas-holder");
-				if(canvasHolder) canvasHolder.append(canvas);
-			});
-		}
-	}
 	close() {
 		this.props.closeModal(this.props.modal.modalId);
 	}
@@ -75,7 +65,7 @@ class Modal extends Component {
 
 				modalContent = <div className="share-comic-container">
 					<ComicInfoLabel className="center" comic={modal.comic} />
-					<div className="comic-canvas-holder"></div>
+					<Button colour="pink" size="lg" label="Copy to Clipboard" onClick={Util.fn.copyToClipboard(Util.route.comic(modal.comic.comicId))} />
 					{!Util.route.isCurrently(comicRoute)
 						? <Button colour="black" label="View comic page" to={comicRoute} />
 						: null
