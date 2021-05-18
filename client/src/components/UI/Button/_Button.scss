@@ -19,12 +19,18 @@
 	}
 
 	.button-label {
+		pointer-events: none;
+
 		&:not(:first-child) {
 			margin-left: $spacing-xs;
 		}
 		&:not(:last-child) {
 			margin-right: $spacing-xs;
 		}
+	}
+
+	.button-icon {
+		pointer-events: none;
 	}
 
 	@mixin colourizeButton($colour) {

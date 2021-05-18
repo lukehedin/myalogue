@@ -438,10 +438,14 @@ body {
           outline: 0; }
         body .app-container .app .button:hover {
           text-decoration: none; }
-        body .app-container .app .button .button-label:not(:first-child) {
-          margin-left: 8px; }
-        body .app-container .app .button .button-label:not(:last-child) {
-          margin-right: 8px; }
+        body .app-container .app .button .button-label {
+          pointer-events: none; }
+          body .app-container .app .button .button-label:not(:first-child) {
+            margin-left: 8px; }
+          body .app-container .app .button .button-label:not(:last-child) {
+            margin-right: 8px; }
+        body .app-container .app .button .button-icon {
+          pointer-events: none; }
         body .app-container .app .button.button-grey.button-hollow {
           color: #777777;
           border-color: #777777;

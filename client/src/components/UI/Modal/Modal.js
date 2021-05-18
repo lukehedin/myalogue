@@ -65,7 +65,12 @@ class Modal extends Component {
 
 				modalContent = <div className="share-comic-container">
 					<ComicInfoLabel className="center" comic={modal.comic} />
-					<Button colour="pink" size="lg" label="Copy to Clipboard" onClick={Util.fn.copyToClipboard(Util.route.comic(modal.comic.comicId))} />
+					<Button leftIcon={Util.icon.copy} colour="pink" size="lg" label="Copy link" onClick={(e) => {
+						Util.fn.copyToClipboard(window.location.origin + Util.route.comic(modal.comic.comicId));
+						const span = e.target.getElementsByTagName('span')[0];
+						span.innerText = 'Link copied!';
+						setTimeout(() => span.innerText = 'Copy link', 3000);
+					}} />
 					{!Util.route.isCurrently(comicRoute)
 						? <Button colour="black" label="View comic page" to={comicRoute} />
 						: null
