@@ -19,6 +19,8 @@ export default {
 	
 			let [authResult, groupUsers, templates, achievements] = await Promise.all(authPromises);
 
+			console.log('returning from authenticate')
+
 			return {
 				...authResult,
 				templates,

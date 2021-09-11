@@ -32,6 +32,7 @@ export default class UserService extends Service {
 	async DbGetById(userId, additionalWhere = {}) {
 		//This returns the whole dbUser and should not be used if returning to the client
 		//Sensitive data will go with it!
+		console.log('attempting to find user')
 		return await this.models.User.findOne({
 			where: {
 				...additionalWhere,
@@ -98,12 +99,17 @@ export default class UserService extends Service {
 	}
 	async Authenticate(userId, anonId) {
 		if(userId) {
+			
+			console.log('Attempting get user');
+
 			let dbUser = await this.DbGetByIdNotBanned(userId);
 			if(!dbUser) throw(`Invalid userId ${dbUser} in token`);
 
 			//Record the lastloginat - no need to await
 			dbUser.LastLoginAt = new Date();
 			dbUser.save();
+
+			console.log('found user')
 
 			//Refresh the token after a successful authenticate
 			return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
