@@ -13,9 +13,9 @@ export default class Database {
 		console.log('port: ' + process.env.PORT);
 		console.log('db url:' + common.config.DatabaseUrl);
 
-		this.connection = new Sequelize(`${common.config.DatabaseUrl}?sslmode=require`, {
-			logging: false,
-			url: common.config.DatabaseUrl,
+		this.connection = new Sequelize(common.config.DatabaseUrl, {
+			logging: true,
+			ssl: true,
 			dialect: 'postgres',
 			protocol: 'postgres',
 			dialectOptions: {
