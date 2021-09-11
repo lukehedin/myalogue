@@ -8,6 +8,10 @@ pg.defaults.ssl = true;
 export default class Database {
 	constructor() {
 		// I think some of these configs might be excessive, but trying to be safe
+		console.log('Database: Trying to connect');
+
+		console.log('port: ' + process.env.PORT);
+
 		this.connection = new Sequelize(common.config.DatabaseUrl, {
 			logging: false,
 			ssl: true,

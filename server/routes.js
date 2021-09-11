@@ -3,6 +3,8 @@ import common from './common';
 export default {
 	public: {
 		authenticate: async (req, services) => {
+			console.log('Attempting authenticate');
+			
 			if(common.config.IsUnderMaintenance) return { isUnderMaintenance: true };
 
 			let userId = req.userId;
