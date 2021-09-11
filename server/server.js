@@ -50,7 +50,7 @@ if(process.env.NODE_ENV === 'production') {
 console.log('Server going to DB');
 let db = new Database();
 db.LoadModels();
-console.log('DB is:' db);
+console.log('DB is:' + db);
 
 const services = {
 	Achievement: new AchievementService(db.models, () => services),
