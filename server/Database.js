@@ -8,13 +8,8 @@ pg.defaults.ssl = true;
 export default class Database {
 	constructor() {
 		// I think some of these configs might be excessive, but trying to be safe
-		console.log('Database: Trying to connect');
-
-		console.log('port: ' + process.env.PORT);
-		console.log('db url:' + common.config.DatabaseUrl);
-
 		this.connection = new Sequelize(common.config.DatabaseUrl, {
-			logging: true,
+			logging: common.config.IsDev,
 			ssl: true,
 			dialect: 'postgres',
 			protocol: 'postgres',
@@ -32,8 +27,6 @@ export default class Database {
 		});
 
 		this.loadedModels = {};
-
-		console.log('Database: Database connected');
 	}
 	get models() {
 		return this.loadedModels;

@@ -2,9 +2,7 @@ import common from './common';
 
 export default {
 	public: {
-		authenticate: async (req, services) => {
-			console.log('Attempting authenticate');
-			
+		authenticate: async (req, services) => {			
 			if(common.config.IsUnderMaintenance) return { isUnderMaintenance: true };
 
 			let userId = req.userId;
@@ -18,8 +16,6 @@ export default {
 			];
 	
 			let [authResult, groupUsers, templates, achievements] = await Promise.all(authPromises);
-
-			console.log('returning from authenticate')
 
 			return {
 				...authResult,
