@@ -14,7 +14,6 @@ export default class Database {
 
 		this.connection = new Sequelize(common.config.DatabaseUrl, {
 			logging: false,
-			ssl: true,
 			dialect: 'postgres',
 			protocol: 'postgres',
 			dialectOptions: {
