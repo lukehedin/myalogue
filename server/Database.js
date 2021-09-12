@@ -72,7 +72,7 @@ export default class Database {
 			});
 		};
 		
-		const getBoooleanNotNull = (defaultValue = false) => {
+		const getBooleanNotNull = (defaultValue = false) => {
 			return {
 				type: Sequelize.BOOLEAN,
 				allowNull: false,
@@ -101,7 +101,7 @@ export default class Database {
 			PasswordResetToken: Sequelize.STRING,
 			PasswordResetAt: Sequelize.DATE,
 			LastLoginAt: Sequelize.DATE,
-			IsAdmin: getBoooleanNotNull(),
+			IsAdmin: getBooleanNotNull(),
 			AvatarCharacter: Sequelize.INTEGER,
 			AvatarExpression: Sequelize.INTEGER,
 			AvatarColour: Sequelize.INTEGER,
@@ -139,14 +139,14 @@ export default class Database {
 			Description: Sequelize.TEXT,
 			LeaderboardTopAt: Sequelize.DATE,
 			LeaderboardRating: getIntegerNotNull(),
-			IsPublic: getBoooleanNotNull(),
+			IsPublic: getBooleanNotNull(),
 			AvatarUrl: Sequelize.STRING,
 			MemberCount: getIntegerNotNull(0)
 		}, true);
 
 		defineTable('GroupUser', {
 			GroupAdminAt: Sequelize.DATE, //Becomes bool on client (isGroupAdmin)
-			IsFollowing: getBoooleanNotNull(true)
+			IsFollowing: getBooleanNotNull(true)
 		}, true);
 
 		defineTable('GroupRequest', {
@@ -165,7 +165,7 @@ export default class Database {
 
 		defineTable('GroupChallenge', {
 			Challenge: Sequelize.STRING,
-			IsDisabled: getBoooleanNotNull()
+			IsDisabled: getBooleanNotNull()
 		}, true);
 
 		defineTable('GroupComment', {
@@ -177,8 +177,7 @@ export default class Database {
 			Name: Sequelize.STRING,
 			Ordinal: Sequelize.INTEGER,
 			MaxPanelCount: getIntegerNotNull(8),
-			MinPanelCount: getIntegerNotNull(4),
-			// DescriptionHtml: Sequelize.TEXT
+			MinPanelCount: getIntegerNotNull(4)
 		}, true);
 
 		defineTable('TemplatePanel', {
@@ -195,11 +194,11 @@ export default class Database {
 			Description: Sequelize.TEXT,
 
 			//Occurance controls (not needed by mapper, just play logic)
-			IsNeverLast: getBoooleanNotNull(),
-			IsNeverFirst: getBoooleanNotNull(),
-			IsOnlyLast: getBoooleanNotNull(), //Implies IsNeverFirst
-			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
-			IsNeverRepeat: getBoooleanNotNull(),
+			IsNeverLast: getBooleanNotNull(),
+			IsNeverFirst: getBooleanNotNull(),
+			IsOnlyLast: getBooleanNotNull(), //Implies IsNeverFirst
+			IsOnlyFirst: getBooleanNotNull(), //Implies IsNeverLast
+			IsNeverRepeat: getBooleanNotNull(),
 			PanelGroup: Sequelize.SMALLINT, //Used to create preferential/avoidance etc behaviour with other panels
 			PanelGroupBehaviour: Sequelize.SMALLINT, //1.(null)prefer, 2.avoid 
 			AtOrAfterQuartile: Sequelize.INTEGER, // 1, 2, 3, 4 (1 is kinda useless)
@@ -221,7 +220,7 @@ export default class Database {
 			LeaderboardRating: getIntegerNotNull(),
 
 			//Anonymous fields
-			IsAnonymous: getBoooleanNotNull(),
+			IsAnonymous: getBooleanNotNull(),
 			LockedByAnonId: Sequelize.STRING,
 			LastAuthorAnonId: Sequelize.STRING,
 			

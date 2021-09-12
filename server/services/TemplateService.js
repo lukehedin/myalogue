@@ -1,8 +1,8 @@
 import Sequelize from 'sequelize';
-import moment from 'moment';
 
 import common from '../common';
 import mapper from '../mapper';
+import ITemplate from '../types/ITemplate';
 
 import Service from './Service';
 

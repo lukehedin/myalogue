@@ -1,5 +1,11 @@
 import common from './common';
 
+import IDbTemplate from './types/db/IDbTemplate';
+import IDbTemplatePanel from './types/db/IDbTemplatePanel';
+
+import ITemplate from './types/ITemplate';
+import ITemplatePanel from './types/ITemplatePanel';
+
 const mapper = {
 	fromDbUser: (dbUser) => {
 		let user = {
@@ -40,7 +46,7 @@ const mapper = {
 			challenge: dbComic.GroupChallenge ? dbComic.GroupChallenge.Challenge : null,
 			comicPanels: dbComicPanels.map(mapper.fromDbComicPanel),
 			comicComments: (dbComic.ComicComments || [])
-				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
+				.sort((c1, c2) => new Date(c1.CreatedAt).getTime() - new Date(c2.CreatedAt).getTime())
 				.map(mapper.fromDbComicComment),
 			voteValue: dbComic.ComicVotes && dbComic.ComicVotes.length > 0
 				? dbComic.ComicVotes[0].Value //The current vote the user has given the comic
@@ -98,11 +104,10 @@ const mapper = {
 		}
 	},
 
-	fromDbTemplate: (dbTemplate) => {
+	fromDbTemplate(dbTemplate: IDbTemplate): ITemplate {
 		return {
 			templateId: dbTemplate.TemplateId,
 			name: dbTemplate.Name,
-			descriptionHtml: dbTemplate.DescriptionHtml,
 			unlockedAt: dbTemplate.UnlockedAt,
 			templatePanels: (dbTemplate.TemplatePanels || [])
 				.sort((td1, td2) => td1.Ordinal - td2.Ordinal)
@@ -110,16 +115,14 @@ const mapper = {
 		}
 	},
 
-	fromDbTemplatePanel: (dbTemplatePanel) => {
+	fromDbTemplatePanel(dbTemplatePanel: IDbTemplatePanel): ITemplatePanel {
 		return {
 			templatePanelId: dbTemplatePanel.TemplatePanelId,
-			placeholder: dbTemplatePanel.Placeholder,
 			ordinal: dbTemplatePanel.Ordinal,
 			positionX: dbTemplatePanel.PositionX,
 			positionY: dbTemplatePanel.PositionY,
 			sizeX: dbTemplatePanel.SizeX,
 			sizeY: dbTemplatePanel.SizeY,
-			max: dbTemplatePanel.Max,
 			image: dbTemplatePanel.Image,
 			imageColour: dbTemplatePanel.ImageColour || dbTemplatePanel.Image,
 			textAlignVertical: dbTemplatePanel.TextAlignVertical,
@@ -150,15 +153,15 @@ const mapper = {
 			pendingGroupRequestAt: pendingGroupRequest ? pendingGroupRequest.createdAt : null,
 			pendingGroupInviteAt: pendingGroupInvite ? pendingGroupInvite.createdAt : null,
 			groupUsers: (dbGroup.GroupUsers || [])
-				.sort((u1, u2) => {
-					return !!u2.GroupAdminAt !== !!u1.GroupAdminAt
-						? !!u2.GroupAdminAt - !!u1.GroupAdminAt
-						: new Date(u1.CreatedAt) - new Date(u2.CreatedAt)
+				.sort((u1: any, u2: any) => {
+					return (!!u2.GroupAdminAt !== !!u1.GroupAdminAt)
+						? u2.GroupAdminAt - u1.GroupAdminAt
+						: new Date(u1.CreatedAt).getTime() - new Date(u2.CreatedAt).getTime()
 				})
 				.map(mapper.fromDbGroupUser),
 			groupChallenges: (dbGroup.GroupChallenges || []).map(mapper.fromDbGroupChallenge),
 			groupComments: (dbGroup.GroupComments || [])
-				.sort((c1, c2) => new Date(c1.CreatedAt) - new Date(c2.CreatedAt))
+				.sort((c1, c2) => new Date(c1.CreatedAt).getTime() - new Date(c2.CreatedAt).getTime())
 				.map(mapper.fromDbGroupComment)
 		}
 	},
