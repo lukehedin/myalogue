@@ -80,8 +80,7 @@ export default {
 
 		PanelGroupBehaviour: {
 			Prefer: 1,
-			Avoid: 2,
-			//TODO Indifferent: 3 (for going to others in group but not continuing group)
+			Avoid: 2
 		}
 	},
 

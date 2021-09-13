@@ -290,20 +290,35 @@ export default class PlayService extends Service {
 		let [dbPossibleNextTemplatePanels, dbCurrentTemplatePanel] = await Promise.all(templatePanelPromises);
 
 		
-		let comicQuartileSize = dbComic.PanelCount * 0.25;
+		let comicQuartileSize = dbComic.PanelCount * 0.25; 
+		//This gets a little confusing for 6 panels, basically when making separate panel groups with the same quartile used for AtOrAFTER for one and AtOrBEFORE for another (AtOrAfter = 2, AtOrBefore = 2):
+		// - whole number quartiles (ie. quartile 2 = 3, quartile 4 = 6, or for a 8 panel comic: quartile 2 = 4) will always have 1 panel overlap (equal to the quartile - eg. panel 2)
+		// - decimal quartiles (ie. quartile 1 = 1.5 or quartile 3 = 4.5) will NOT have any overlap. This means they have a hard switch to the other group.
+		
 		dbPossibleNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => {
-			return (!dbTemplatePanel.AtOrAfterQuartile || (nextPanelPosition >= (dbTemplatePanel.AtOrAfterQuartile * comicQuartileSize)))
+			//FILTER 1: By quartile rules
+			const isInQuartileRules = (!dbTemplatePanel.AtOrAfterQuartile || (nextPanelPosition >= (dbTemplatePanel.AtOrAfterQuartile * comicQuartileSize)))
 				&& (!dbTemplatePanel.AtOrBeforeQuartile || (nextPanelPosition <= (dbTemplatePanel.AtOrBeforeQuartile * comicQuartileSize)));
+
+			if(!isInQuartileRules) return false;
+
+			//FILTER 2: out any group panels with group entry point settings (only entry, never entry)
+			const isSameGroupAsCurrent = !!dbCurrentTemplatePanel && !!dbCurrentTemplatePanel.PanelGroup && dbCurrentTemplatePanel.PanelGroup === dbTemplatePanel.PanelGroup;
+
+			//If this is the same group as the current panel, we cant use a group panel that is only a group entry point (it had its chance already)
+			if(isSameGroupAsCurrent && dbTemplatePanel.IsOnlyPanelGroupEntry) return false;
+			//If this is NOT the same group as the current panel, we can't use a group panel that is NEVER a group entry point (it has to wait for another one in its group to appear first)
+			if(!isSameGroupAsCurrent && dbTemplatePanel.IsNeverPanelGroupEntry) return false;
+
+			return true;
 		});
 
-		//If there are no possible next template panels, something has gone wrong or a template has a bad combo of rules
-		if(!dbPossibleNextTemplatePanels || dbPossibleNextTemplatePanels.length < 1) throw 'No viable next template panels';
-
-		//Get an array of PREFERRED template panels (but this is most often completely empty)
+		//This will hold an array of PREFERRED template panels (but this is most often completely empty)
 		//It's not required to be filled, it will be used if panels are present but we will always fallback onto any possible panel (avoids empty/null errors)
 		//The reasoning for this is that sometimes you want a group that will effectively 'run out' of panel options, and use a fallback panel
 		let dbPreferredNextTemplatePanels = [];
 		if(dbCurrentTemplatePanel && dbCurrentTemplatePanel.PanelGroup) {
+			//Populate preferred template panels by using a group (Remember, a group can exhaust it's panels completely, so its just a preference)
 			switch(dbCurrentTemplatePanel.PanelGroupBehaviour) {
 				case common.enums.PanelGroupBehaviour.Avoid:
 					dbPreferredNextTemplatePanels = dbPossibleNextTemplatePanels.filter(dbTemplatePanel => dbTemplatePanel.PanelGroup !== dbCurrentTemplatePanel.PanelGroup);
@@ -314,6 +329,9 @@ export default class PlayService extends Service {
 					break;
 			}
 		}
+
+		//If there are no possible next template panels, something has gone wrong or a template has a bad combo of rules
+		if(!dbPossibleNextTemplatePanels || dbPossibleNextTemplatePanels.length < 1) throw 'No viable next template panels';
 
 		//If we have any PREFERRED template panels, use the first of them (the random from the query above should still be applied)
 		//Otherwise, use the first POSSIBLE template panel
@@ -497,7 +515,7 @@ export default class PlayService extends Service {
 						await dbCurrentComicPanel.destroy();
 
 						//Should already be sorted by reverse ordinal from query above
-						let otherDbComicPanels = dbComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
+						let otherDbComicPanels = dbComic.ComicPanels.filter(dbComicPanel => dbComicPanel.ComicPanelId !== dbCurrentComicPanel.ComicPanelId);
 
 						//Update the comic's lastauthoruserid/penultimateuserid to the previous panels, if they exist. Otherwise, just nullify them.					
 						await this.models.Comic.update({
