@@ -9,7 +9,7 @@ export default class Database {
 	constructor() {
 		// I think some of these configs might be excessive, but trying to be safe
 		this.connection = new Sequelize(common.config.DatabaseUrl, {
-			logging: common.config.IsDev,
+			logging: false, // common.config.IsDev,
 			ssl: true,
 			dialect: 'postgres',
 			protocol: 'postgres',
@@ -200,8 +200,12 @@ export default class Database {
 			IsOnlyLast: getBoooleanNotNull(), //Implies IsNeverFirst
 			IsOnlyFirst: getBoooleanNotNull(), //Implies IsNeverLast
 			IsNeverRepeat: getBoooleanNotNull(),
+
 			PanelGroup: Sequelize.SMALLINT, //Used to create preferential/avoidance etc behaviour with other panels
 			PanelGroupBehaviour: Sequelize.SMALLINT, //1.(null)prefer, 2.avoid 
+			IsOnlyPanelGroupEntry: getBoooleanNotNull(), //Used to make an entry point into a group (good for transitions)
+			IsNeverPanelGroupEntry: getBoooleanNotNull(), //Used to only be usable after an entry point to a group (post-transitions)
+
 			AtOrAfterQuartile: Sequelize.INTEGER, // 1, 2, 3, 4 (1 is kinda useless)
 			AtOrBeforeQuartile: Sequelize.INTEGER // 1, 2, 3, 4 (4 is kinda useless)
 		}, true);
