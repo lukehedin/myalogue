@@ -1,4 +1,9 @@
 .app-header {
+	z-index: 10;
+	width: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
 	background: $colour-black;
 	color: $colour-white;
 	@include boxShadow(0px, 4px, 4px, #00000022);

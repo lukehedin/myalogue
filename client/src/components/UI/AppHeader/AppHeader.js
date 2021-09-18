@@ -72,7 +72,7 @@ export default class AppHeader extends Component {
 							>
 								<UserAvatar size={32} />
 							</ContextMenu>
-							: <Button size="sm" colour="white" isHollow={true} to={Util.route.login()} label="Login" />
+							: <Button size="sm" colour="pink" to={Util.route.login()} label="Login" />
 						}
 					</div>
 				</div>

@@ -11,6 +11,7 @@ body {
 	text-align: left;
 
 	.app-container {
+		padding-top: $header-height;
 		position: relative;
 		overflow-y: scroll;
 		overflow-x: hidden;
