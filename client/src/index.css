@@ -317,6 +317,12 @@ body {
               font-weight: bold; }
         body .app-container .app .comic-panel.editing {
           cursor: pointer; }
+      body .app-container .app .gif-comic-panel-wrapper {
+        position: relative; }
+        body .app-container .app .gif-comic-panel-wrapper > * {
+          position: absolute;
+          top: 0;
+          left: 0; }
       body .app-container .app .comic-panel-pair {
         display: flex;
         flex-direction: column;

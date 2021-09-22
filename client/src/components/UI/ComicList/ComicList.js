@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Util from '../../../Util';
 
-import Comic from '../../UI/Comic/Comic';
+import GifComic from '../../UI/GifComic/GifComic';
 import Dropdown from '../../UI/Dropdown/Dropdown'
 import Button from '../../UI/Button/Button';
 import Checkbox from '../Checkbox/Checkbox';
@@ -149,7 +149,7 @@ export default class ComicList extends Component {
 			</div>
 			<div className="comic-list-inner">
 				{this.state.comics.map(comic => {
-					return <Comic key={comic.comicId} comic={comic} />
+					return <GifComic key={comic.comicId} comic={comic} />
 				})}
 				<div className="comic-list-bottom">
 					{this.state.isLoading 
