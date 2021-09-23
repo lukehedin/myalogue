@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import CountUp from 'react-countup';
 import moment from 'moment';
 import Util from '../../../Util';
+import ProgressBar from '../ProgressBar/ProgressBar';
 
 export default class PlayInfo extends Component {
 	constructor(props){
@@ -37,14 +38,21 @@ export default class PlayInfo extends Component {
 			});
 	}
 	render() {
-		let now = new Date();
+		const { comicsInProgressCount, myComicsInProgressCount } = this.state.comicsInProgress;
+		let percent = myComicsInProgressCount ? (myComicsInProgressCount/comicsInProgressCount) * 100 : 0;
 
 		return <div className="play-info">
-			<p className="sm"><b><CountUp start={this.state.previousComicsInProgress.comicsInProgressCount || 0} end={this.state.comicsInProgress.comicsInProgressCount || 0} /></b> {Util.format.pluralise(this.state.comicsInProgress.comicsInProgressCount, 'comic')} in progress</p>
-			{Util.context.isAuthenticated()
-				? <p className="sm">(you've made panels for <b>{this.state.comicsInProgress.myComicsInProgressCount ? <CountUp start={this.state.previousComicsInProgress.myComicsInProgressCount || 0} end={this.state.comicsInProgress.myComicsInProgressCount} /> : 'none'}</b> of them)</p>
-				: <p className="sm">(<CountUp start={this.state.previousComicsInProgress.anonComicsInProgressCount || 0} end={this.state.comicsInProgress.anonComicsInProgressCount || 0} /> anonymous)</p>
+			{Util.context.isAuthenticated() ? 
+			<>
+				<ProgressBar amount={myComicsInProgressCount || 0} total={comicsInProgressCount || 1} label={`you've made panels for ${percent ? percent + '%' : 'none'}`} />
+				<p className="sm">of the <b><CountUp start={this.state.previousComicsInProgress.comicsInProgressCount || 0} end={comicsInProgressCount || 0} /></b> {Util.format.pluralise(this.state.comicsInProgress.comicsInProgressCount, 'comic')} in progress</p>
+			</> :
+			<>
+				<p className="sm"><b><CountUp start={this.state.previousComicsInProgress.comicsInProgressCount || 0} end={comicsInProgressCount || 0} /></b> {Util.format.pluralise(this.state.comicsInProgress.comicsInProgressCount, 'comic')} in progress</p>
+				<p className="sm">(<CountUp start={this.state.previousComicsInProgress.anonComicsInProgressCount || 0} end={this.state.comicsInProgress.anonComicsInProgressCount || 0} /> anonymous)</p>
+			</>
 			}
+			
 		</div>
 	}
 }

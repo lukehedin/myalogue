@@ -71,20 +71,27 @@ export default class PlayService extends Service {
 			}
 		}
 
-		//Create a new comic with these properties, and have it locked right away
-		let dbNewComic = await this.models.Comic.create({
-			TemplateId: dbTemplate.TemplateId,
-			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
+		//Create a new comic with these properties, and have it locked right away (or find an untouched comic)
+		let [dbNewComic] = await this.models.Comic.findOrCreate({
+			where: {
+				TemplateId: dbTemplate.TemplateId,
+				PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
 
-			IsAnonymous: !userId,
+				IsAnonymous: !userId,
 
-			GroupId: groupId,
-			GroupChallengeId: groupChallengeId,
+				GroupId: groupId,
+				GroupChallengeId: groupChallengeId,
 
-			//Important- without this, a user may pick up the comic before it's prepared for play
-			LockedAt: new Date(),
-			LockedByUserId: userId,
-			LockedByAnonId: anonId
+				//Important- without this, a user may pick up the comic before it's prepared for play
+				LockedAt: new Date(),
+				LockedByUserId: userId || null,
+				LockedByAnonId: anonId || null,
+
+				//The only reason this is a "findOrCreate" is because these properties are here.
+				//If we can FIND a comic that is untouched, it is as good as new.
+				LastAuthorAnonId: null,
+				PenultimateAuthorUserId: null
+			}
 		});
 
 		return await this.PrepareDbComicForPlay(dbNewComic.ComicId);
@@ -117,10 +124,8 @@ export default class PlayService extends Service {
 
 			comicWhere.IsAnonymous = false;
 			comicWhere.LastAuthorUserId = {
-				[Sequelize.Op.or]: {
-					[Sequelize.Op.ne]: userId,
-					[Sequelize.Op.eq]: null
-				}
+				[Sequelize.Op.ne]: userId,
+				[Sequelize.Op.ne]: null
 			};
 			comicWhere.PenultimateAuthorUserId = {
 				[Sequelize.Op.or]: {

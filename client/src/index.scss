@@ -9,6 +9,8 @@ body {
 	background-color: $colour-white;
 	color: $colour-black;
 	text-align: left;
+	font-family: $font-family-default;
+	font-weight: 400;
 
 	.app-container {
 		padding-top: $header-height;

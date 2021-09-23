@@ -43,7 +43,7 @@
 			margin: 0;
 			padding: 0;
 			border: none;
-			font-family: $font-family-default;
+			font-family: $font-family-comic;
 			overflow: hidden;
 			background-color: transparent;
 			overflow-wrap: break-word;
@@ -83,6 +83,7 @@
 	}
 
 	.comic-panel-subtle {
+		font-family: $font-family-comic;
 		position: absolute;
 		color: $colour-grey-b;
 		background-color: $colour-white;
