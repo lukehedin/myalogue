@@ -124,9 +124,11 @@ export default class PlayService extends Service {
 
 			comicWhere.IsAnonymous = false;
 			comicWhere.LastAuthorUserId = {
-				[Sequelize.Op.ne]: userId,
-				[Sequelize.Op.ne]: null
-			};
+				[Sequelize.Op.or]: {
+					[Sequelize.Op.ne]: userId,
+					[Sequelize.Op.eq]: null
+				}
+			}
 			comicWhere.PenultimateAuthorUserId = {
 				[Sequelize.Op.or]: {
 					[Sequelize.Op.ne]: userId,
