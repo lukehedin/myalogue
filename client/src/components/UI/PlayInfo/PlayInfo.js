@@ -39,7 +39,7 @@ export default class PlayInfo extends Component {
 	}
 	render() {
 		const { comicsInProgressCount, myComicsInProgressCount } = this.state.comicsInProgress;
-		let percent = myComicsInProgressCount ? (myComicsInProgressCount/comicsInProgressCount) * 100 : 0;
+		let percent = myComicsInProgressCount ? ((myComicsInProgressCount/comicsInProgressCount) * 100).toFixed(1) : 0;
 
 		return <div className="play-info">
 			{Util.context.isAuthenticated() ? 
