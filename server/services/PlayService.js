@@ -44,8 +44,6 @@ export default class PlayService extends Service {
 			: await this.FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId);
 	}
 	async CreateNewComic(userId, anonId, templateId, groupId, groupChallengeId) {
-		const isSpecificTemplate = !!templateId;
-
 		let dbTemplate = await this.services.Template.GetDbTemplateForPlay(userId, templateId);
 
 		//By this point we have already made sure the user is in the group, but we must validate the challenge if provided
@@ -73,29 +71,11 @@ export default class PlayService extends Service {
 			}
 		}
 
-		console.log('finding or creatin')
-
-		const newComicWhere = {
-			IsAnonymous: !userId,
-
-			GroupId: groupId,
-			GroupChallengeId: groupChallengeId,
-
-			LockedByUserId: null,
-			LockedByAnonId: null,
-
-			//The only reason this is a "findOrCreate" is because these properties are here.
-			//If we can FIND a comic that is untouched, it is as good as new.
-			LastAuthorAnonId: null,
-			PenultimateAuthorUserId: null
-		};
-
-		if(isSpecificTemplate) newComicWhere.TemplateId = dbTemplate.TemplateId;
-
 		//Create a new comic with these properties, and have it locked right away
 		let dbNewComic = await this.models.Comic.create({
 			TemplateId: dbTemplate.TemplateId,
 			PanelCount: this._GetRandomPanelCount(dbTemplate.MinPanelCount, dbTemplate.MaxPanelCount),
+
 			IsAnonymous: !userId,
 
 			GroupId: groupId,
@@ -106,7 +86,7 @@ export default class PlayService extends Service {
 			LockedByUserId: userId,
 			LockedByAnonId: anonId
 		});
-		
+
 		return await this.PrepareDbComicForPlay(dbNewComic.ComicId);
 	}
 	async FindRandomInProgressComic(userId, anonId, userInGroupIds, templateId, groupId, groupChallengeId) {
@@ -141,7 +121,7 @@ export default class PlayService extends Service {
 					[Sequelize.Op.ne]: userId,
 					[Sequelize.Op.eq]: null
 				}
-			}
+			};
 			comicWhere.PenultimateAuthorUserId = {
 				[Sequelize.Op.or]: {
 					[Sequelize.Op.ne]: userId,
