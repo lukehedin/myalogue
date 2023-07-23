@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 //No imports/requires above should require the settings (process.env), as they are not set until the conditional below.
 
 if(process.env.NODE_ENV === 'production') {
-	console.log('PRODUCTION');
+	console.log('PRODUCTION'); 
 
 	// Use trustProtoHeader because we are behind Heroku (a load balancer)
 	app.use(enforce.HTTPS({ trustProtoHeader: true }));
