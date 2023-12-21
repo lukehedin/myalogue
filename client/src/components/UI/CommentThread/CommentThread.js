@@ -69,7 +69,8 @@ export default class CommentThread extends Component {
 				</div>
 				: null
 			}
-			{Util.context.isAuthenticated()
+			{/* NOAUTH: Hide account prompt */}
+			{/* {Util.context.isAuthenticated()
 				? this.props.hideCommentInput
 					? null
 					: <div className="comment-input-container">
@@ -77,7 +78,7 @@ export default class CommentThread extends Component {
 						<CommentInput ref={this.commentInputRef} isDisabled={this.state.isLoadingNewComment} onSubmit={this.postComment} buttonLabel='Post' placeholder='Add a comment' />
 					</div>
 				: <p className="empty-text"><Link to={Util.route.register()}>Create an account</Link> to make comments, rate comics and more.</p>
-			}
+			} */}
 		</div>
 	}
 }

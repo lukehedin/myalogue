@@ -96,181 +96,190 @@ export default class UserService extends Service {
 		let dbUser = await this.DbGetByUsername(username);
 		return dbUser ? mapper.fromDbUser(dbUser) : null;
 	}
+
+	//NOAUTH: disable all auth
 	async Authenticate(userId, anonId) {
-		if(userId) {
+		//NOAUTH: Disable set pw page: USER LOGIN NEVER ENABLED FROM NOW ON
+		//Refresh existing anonId if one supplied, otherwise generate new
+		if(!anonId) anonId = auth.getHexToken();
+		return await auth.getAnonJwtResult(anonId);
 
-			let dbUser = await this.DbGetByIdNotBanned(userId);
-			if(!dbUser) throw(`Invalid userId ${dbUser} in token`);
 
-			//Record the lastloginat - no need to await
-			dbUser.LastLoginAt = new Date();
-			dbUser.save();
+		// if(userId) { 
+		// 	let dbUser = await this.DbGetByIdNotBanned(userId);
+		// 	if(!dbUser) throw(`Invalid userId ${dbUser} in token`);
 
-			//Refresh the token after a successful authenticate
-			return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
-		} else {
-			//Refresh existing anonId if one supplied, otherwise generate new
-			if(!anonId) anonId = auth.getHexToken();
+		// 	//Record the lastloginat - no need to await
+		// 	dbUser.LastLoginAt = new Date();
+		// 	dbUser.save();
+
+		// 	//Refresh the token after a successful authenticate
+		// 	return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
+		// } else {
+		// 	//Refresh existing anonId if one supplied, otherwise generate new
+		// 	if(!anonId) anonId = auth.getHexToken();
 			
-			return await auth.getAnonJwtResult(anonId);
-		}
+		// 	return await auth.getAnonJwtResult(anonId);
+		// }
 	}
-	async Login (emailUsername, password) {
-		//We want to include banned users, so we can do a proper error message below
-		let dbUser = await this.DbGetByUsernameEmailMatch(emailUsername, emailUsername);
+	
+	// async Login (emailUsername, password) {
+	// 	//We want to include banned users, so we can do a proper error message below
+	// 	let dbUser = await this.DbGetByUsernameEmailMatch(emailUsername, emailUsername);
 
-		if(!dbUser) return common.getErrorResult('Invalid email/username or password.');
+	// 	if(!dbUser) return common.getErrorResult('Invalid email/username or password.');
 
-		const banMistakeMessage = `If you believe this ban was a mistake, contact admin@s4ycomic.com and provide your username.`;
+	// 	const banMistakeMessage = `If you believe this ban was a mistake, contact admin@s4ycomic.com and provide your username.`;
 
-		if(dbUser.VerificationToken) {
-			//If the user still has an uncleard verification token
-			if(dbUser.VerificationTokenSetAt < moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate()) {
-				//If the user is trying to access an account they setup but never verified, and it has been past the reset hours buffer, send the verification email again
-				await this.PrepareForVerifyAccount(dbUser);
-				return common.getErrorResult('Please verify your email address. A new verification email has been sent.');
-			} else {
-				return common.getErrorResult('Please verify your email address.');
-			}
-		} else if (dbUser.PermanentlyBannedAt) {
-			return common.getErrorResult(`Your account has been permanently banned. ${banMistakeMessage}`);
-		} else if (dbUser.TemporarilyBannedAt && dbUser.TemporarilyBannedAt > moment().subtract(common.config.UserTemporarilyBannedDays, 'days').toDate()) {
-			return common.getErrorResult(`Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(common.config.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
-		} else {
-			let isPasswordMatch = await auth.comparePassword(password, dbUser.Password);
-			if(!common.config.IsDev && !isPasswordMatch) return common.getErrorResult('Invalid email/username or password.');
+	// 	if(dbUser.VerificationToken) {
+	// 		//If the user still has an uncleard verification token
+	// 		if(dbUser.VerificationTokenSetAt < moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate()) {
+	// 			//If the user is trying to access an account they setup but never verified, and it has been past the reset hours buffer, send the verification email again
+	// 			await this.PrepareForVerifyAccount(dbUser);
+	// 			return common.getErrorResult('Please verify your email address. A new verification email has been sent.');
+	// 		} else {
+	// 			return common.getErrorResult('Please verify your email address.');
+	// 		}
+	// 	} else if (dbUser.PermanentlyBannedAt) {
+	// 		return common.getErrorResult(`Your account has been permanently banned. ${banMistakeMessage}`);
+	// 	} else if (dbUser.TemporarilyBannedAt && dbUser.TemporarilyBannedAt > moment().subtract(common.config.UserTemporarilyBannedDays, 'days').toDate()) {
+	// 		return common.getErrorResult(`Your account has been temporarily banned (${moment(dbUser.TemporarilyBannedAt).add(common.config.UserTemporarilyBannedDays, 'days').fromNow(true) + ' remaining'}). ${banMistakeMessage}`);
+	// 	} else {
+	// 		let isPasswordMatch = await auth.comparePassword(password, dbUser.Password);
+	// 		if(!common.config.IsDev && !isPasswordMatch) return common.getErrorResult('Invalid email/username or password.');
 
-			return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
-		}
-	}
-	async Register (email, username, password) {
-		email = email.trim().toLowerCase();
-		username = username.trim().toLowerCase();
+	// 		return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
+	// 	}
+	// }
+	// async Register (email, username, password) {
+	// 	email = email.trim().toLowerCase();
+	// 	username = username.trim().toLowerCase();
 
-		let isValidEmail = validator.isEmail(email);
-		let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) 
-			&& validator.isAlphanumeric(username) 
-			&& !common.config.ForbiddenUserNames.includes(username)
-			&& isNaN(username); //Can't have a username with just numbers, confuses profile page
+	// 	let isValidEmail = validator.isEmail(email);
+	// 	let isValidUsername = validator.isLength(username, {min: 3, max: 20 }) 
+	// 		&& validator.isAlphanumeric(username) 
+	// 		&& !common.config.ForbiddenUserNames.includes(username)
+	// 		&& isNaN(username); //Can't have a username with just numbers, confuses profile page
 
-		if(!isValidEmail || !isValidUsername) throw 'Invalid email or username supplied.';
+	// 	if(!isValidEmail || !isValidUsername) throw 'Invalid email or username supplied.';
 
-		//Check for existing username or email match
-		let dbExistingUser = await this.DbGetByUsernameEmailMatch(email, username);
+	// 	//Check for existing username or email match
+	// 	let dbExistingUser = await this.DbGetByUsernameEmailMatch(email, username);
 		
-		if(dbExistingUser) {
-			return common.getErrorResult(dbExistingUser.Email === email
-					? 'Email is already in use. Please login with your existing account or reset your password.'
-					: 'Username is already in use. Please choose another username.');
-		}
+	// 	if(dbExistingUser) {
+	// 		return common.getErrorResult(dbExistingUser.Email === email
+	// 				? 'Email is already in use. Please login with your existing account or reset your password.'
+	// 				: 'Username is already in use. Please choose another username.');
+	// 	}
 
-		//Check for disposable email
-		let isAcceptable  = await this.services.Email.IsEmailAddressAcceptable(email);
-		if(!isAcceptable) return common.getErrorResult('Disposable emails are not allowed. Please enter another email address.');
+	// 	//Check for disposable email
+	// 	let isAcceptable  = await this.services.Email.IsEmailAddressAcceptable(email);
+	// 	if(!isAcceptable) return common.getErrorResult('Disposable emails are not allowed. Please enter another email address.');
 
-		//Checks if password valid too
-		let hashedPassword = await auth.hashPassword(password);
+	// 	//Checks if password valid too
+	// 	let hashedPassword = await auth.hashPassword(password);
 
-		let dbUser = await this.models.User.create({
-			Email: email,
-			Username: username,
-			Password: hashedPassword
-		});
+	// 	let dbUser = await this.models.User.create({
+	// 		Email: email,
+	// 		Username: username,
+	// 		Password: hashedPassword
+	// 	});
 		
-		await this.PrepareForVerifyAccount(dbUser);
-	}
-	async VerifyAccount (token) {
-		let dbUser = await this.models.User.findOne({
-			where: {
-				VerificationToken: token
-			}
-		});
+	// 	await this.PrepareForVerifyAccount(dbUser);
+	// }
+	// async VerifyAccount (token) {
+	// 	let dbUser = await this.models.User.findOne({
+	// 		where: {
+	// 			VerificationToken: token
+	// 		}
+	// 	});
 		
-		if(!dbUser) return common.getErrorResult('Account verification failed.');
+	// 	if(!dbUser) return common.getErrorResult('Account verification failed.');
 
-		dbUser.VerificationToken = null;
+	// 	dbUser.VerificationToken = null;
 		
-		await dbUser.save();
+	// 	await dbUser.save();
 
-		this.services.Notification.SendWelcomeNotification(dbUser.UserId);
+	// 	this.services.Notification.SendWelcomeNotification(dbUser.UserId);
 
-		return await auth.getUserJwtResult(mapper.fromDbUser(dbUser))
-	}
-	async ForgotPassword (emailUsername) {
-		let now = new Date();
+	// 	return await auth.getUserJwtResult(mapper.fromDbUser(dbUser))
+	// }
+	// async ForgotPassword (emailUsername) {
+	// 	let now = new Date();
 
-		let dbUser = await this.DbGetByUsernameEmailMatch(emailUsername, emailUsername, {
-			...this._GetUserNotBannedWhere(),
-			 //Don't let someone request a password if they unverified, or a request is already in progress
-			VerificationToken: {
-				[Sequelize.Op.eq]: null
-			},
-			PasswordResetAt: {
-				[Sequelize.Op.or]: {
-					[Sequelize.Op.lte]: moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate(),
-					[Sequelize.Op.eq]: null
-				}
-			}
-		});
+	// 	let dbUser = await this.DbGetByUsernameEmailMatch(emailUsername, emailUsername, {
+	// 		...this._GetUserNotBannedWhere(),
+	// 		 //Don't let someone request a password if they unverified, or a request is already in progress
+	// 		VerificationToken: {
+	// 			[Sequelize.Op.eq]: null
+	// 		},
+	// 		PasswordResetAt: {
+	// 			[Sequelize.Op.or]: {
+	// 				[Sequelize.Op.lte]: moment().subtract(common.config.AccountEmailResetHours, 'hours').toDate(),
+	// 				[Sequelize.Op.eq]: null
+	// 			}
+	// 		}
+	// 	});
 
-		//Don't error on invalid email or username
-		//Always say the same thing, even if it didn't work
-		if(dbUser) {
-			let passwordResetToken = auth.getHexToken();
-			dbUser.PasswordResetToken = passwordResetToken;
-			dbUser.PasswordResetAt = now;
-			dbUser.save();
+	// 	//Don't error on invalid email or username
+	// 	//Always say the same thing, even if it didn't work
+	// 	if(dbUser) {
+	// 		let passwordResetToken = auth.getHexToken();
+	// 		dbUser.PasswordResetToken = passwordResetToken;
+	// 		dbUser.PasswordResetAt = now;
+	// 		dbUser.save();
 
-			this.services.Email.SendForgotPasswordEmail(dbUser.Email, dbUser.Username, passwordResetToken);
-		} else {
-			// this.services.Email.SendForgotPasswordNoAccountEmail(dbUser.Email);
-		}
+	// 		this.services.Email.SendForgotPasswordEmail(dbUser.Email, dbUser.Username, passwordResetToken);
+	// 	} else {
+	// 		// this.services.Email.SendForgotPasswordNoAccountEmail(dbUser.Email);
+	// 	}
 
-		return;
-	}
-	async SetPassword (token, password) {
-		if(!token) return common.getErrorResult('This password reset request is invalid or has expired.');
+	// 	return;
+	// }
+	// async SetPassword (token, password) {
+	// 	if(!token) return common.getErrorResult('This password reset request is invalid or has expired.');
 
-		let dbUser = await this.models.User.findOne({
-			where: {
-				...this._GetUserNotBannedWhere(),
-				PasswordResetAt: {
-					[Sequelize.Op.lte]: moment().add(common.config.AccountEmailResetHours, 'hours').toDate()
-				},
-				PasswordResetToken: token
-			}
-		});
+	// 	let dbUser = await this.models.User.findOne({
+	// 		where: {
+	// 			...this._GetUserNotBannedWhere(),
+	// 			PasswordResetAt: {
+	// 				[Sequelize.Op.lte]: moment().add(common.config.AccountEmailResetHours, 'hours').toDate()
+	// 			},
+	// 			PasswordResetToken: token
+	// 		}
+	// 	});
 		
-		if(!dbUser) return common.getErrorResult('This password reset request is invalid or has expired.');
+	// 	if(!dbUser) return common.getErrorResult('This password reset request is invalid or has expired.');
 
-		let hashedPassword = await auth.hashPassword(password);
-		dbUser.Password = hashedPassword;
-		dbUser.PasswordResetAt = null;
-		dbUser.PasswordResetToken = null;
+	// 	let hashedPassword = await auth.hashPassword(password);
+	// 	dbUser.Password = hashedPassword;
+	// 	dbUser.PasswordResetAt = null;
+	// 	dbUser.PasswordResetToken = null;
 
-		//Wait for this save in case it fails
-		await dbUser.save();
+	// 	//Wait for this save in case it fails
+	// 	await dbUser.save();
 
-		return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
-	}
-	async ChangePassword (userId, currentPassword, newPasword) {
-		//Should only be done by an already logged in user
-		let dbUser = await this.DbGetByIdNotBanned(userId);
+	// 	return await auth.getUserJwtResult(mapper.fromDbUser(dbUser));
+	// }
+	// async ChangePassword (userId, currentPassword, newPasword) {
+	// 	//Should only be done by an already logged in user
+	// 	let dbUser = await this.DbGetByIdNotBanned(userId);
 
-		if(!dbUser) throw 'User not found.';
+	// 	if(!dbUser) throw 'User not found.';
 
-		let isPasswordMatch = await auth.comparePassword(currentPassword, dbUser.Password);
-		if(!isPasswordMatch) return common.getErrorResult('Your current password was incorrect.');
+	// 	let isPasswordMatch = await auth.comparePassword(currentPassword, dbUser.Password);
+	// 	if(!isPasswordMatch) return common.getErrorResult('Your current password was incorrect.');
 
-		//Update new password
-		let hashedPassword = await auth.hashPassword(newPasword);
-		dbUser.Password = hashedPassword;
+	// 	//Update new password
+	// 	let hashedPassword = await auth.hashPassword(newPasword);
+	// 	dbUser.Password = hashedPassword;
 		
-		//Wait for this save in case it fails
-		await dbUser.save();
+	// 	//Wait for this save in case it fails
+	// 	await dbUser.save();
 
-		return;
-	}
+	// 	return;
+	// }
+
 	async Ban(userId) {
 		let dbUser = await this.DbGetByIdNotBanned(userId);
 
@@ -331,20 +340,20 @@ export default class UserService extends Service {
 			}
 		});
 	}
-	async PrepareForVerifyAccount(dbUser) {
-		let verificationToken = auth.getHexToken();
+	// async PrepareForVerifyAccount(dbUser) {
+	// 	let verificationToken = auth.getHexToken();
 
-		this.models.User.update({
-			VerificationToken: verificationToken,
-			VerificationTokenSetAt: new Date()
-		}, {
-			where: {
-				UserId: dbUser.UserId
-			}
-		});
+	// 	this.models.User.update({
+	// 		VerificationToken: verificationToken,
+	// 		VerificationTokenSetAt: new Date()
+	// 	}, {
+	// 		where: {
+	// 			UserId: dbUser.UserId
+	// 		}
+	// 	});
 
-		this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
-	}
+	// 	this.services.Email.SendVerificationEmail(dbUser.Email, dbUser.Username, verificationToken);
+	// }
 	async GetUserAchievements(userId) {
 		let dbUserAchievements = await this.models.UserAchievement.findAll({
 			where: {

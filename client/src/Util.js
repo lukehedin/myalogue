@@ -40,6 +40,8 @@ import iconTwitter from './icons/twitter.svg';
 import iconUser from './icons/user.svg';
 
 const Util = {
+	authNotSupportedMessage: `Speak4Yourself is no longer being actively maintained. To protect user data, login and registration are no longer supported. You can still play anonymously.`,
+
 	//One of the bare few env variables that can be used client side.
 	isDev: process.env.NODE_ENV === 'development',
 

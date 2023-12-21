@@ -18,11 +18,18 @@ export default class ForgotPasswordPage extends Component {
 		});
 	}
 	render() {
+		
+
 		return <div className="page-forgot-password">
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						{this.state.isSubmitted
+						{/* NOAUTH: Disable forgot pw page */}
+						<div>
+							<p>{Util.authNotSupportedMessage}</p>
+							<p className="form-message"><Link to={Util.route.home()}>Take me home</Link></p>
+						</div>;
+						{/* {this.state.isSubmitted
 							? <div>
 								<p className="page-subtitle">An email has been sent to you with instructions on how to reset your password.</p>
 								<div className="button-container">
@@ -41,7 +48,7 @@ export default class ForgotPasswordPage extends Component {
 									});
 								}} />
 							</div>
-						}
+						} */}
 					</div>
 				</div>
 			</div>

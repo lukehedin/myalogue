@@ -24,40 +24,42 @@ export default {
 				groupUsers
 			};
 		},
+
+		//NOAUTH: USER LOGIN NEVER ENABLED FROM NOW ON
 	
-		login: async (req, services) => {
-			let emailUsername = req.body.emailUsername.trim().toLowerCase();
-			let password = req.body.password;
+		// login: async (req, services) => {
+		// 	let emailUsername = req.body.emailUsername.trim().toLowerCase();
+		// 	let password = req.body.password;
 	
-			return await services.User.Login(emailUsername, password);
-		},
+		// 	return await services.User.Login(emailUsername, password);
+		// },
 	
-		register: async (req, services) => {
-			let email = req.body.email;
-			let username = req.body.username;
-			let password = req.body.password;
+		// register: async (req, services) => {
+		// 	let email = req.body.email;
+		// 	let username = req.body.username;
+		// 	let password = req.body.password;
 
-			return await services.User.Register(email, username, password);
-		},
+		// 	return await services.User.Register(email, username, password);
+		// },
 
-		verifyAccount: async (req, services) => {
-			let token = req.body.token;
+		// verifyAccount: async (req, services) => {
+		// 	let token = req.body.token;
 
-			return await services.User.VerifyAccount(token);
-		},
+		// 	return await services.User.VerifyAccount(token);
+		// },
 	
-		forgotPassword: async (req, services) => {
-			let emailUsername = req.body.emailUsername.trim().toLowerCase();
+		// forgotPassword: async (req, services) => {
+		// 	let emailUsername = req.body.emailUsername.trim().toLowerCase();
 
-			return await services.User.ForgotPassword(emailUsername);
-		},
+		// 	return await services.User.ForgotPassword(emailUsername);
+		// },
 
-		setPassword: async (req, services) => {
-			let token = req.body.token;
-			let password = req.body.password;
+		// setPassword: async (req, services) => {
+		// 	let token = req.body.token;
+		// 	let password = req.body.password;
 
-			return await services.User.SetPassword(token, password);
-		},
+		// 	return await services.User.SetPassword(token, password);
+		// },
 
 		ping: async (req, services) => {
 			//Checks if any reference data has updated

@@ -207,7 +207,7 @@ export default class PlayPage extends Component {
 			//Not in progress, must have submitted or ran out of time
 			content = <div className="play-area">
 				{this.state.isSubmitted 
-					 ? <div>
+					? <div>
 						<h1 className="page-title">Panel created!</h1>
 						{Util.context.isAuthenticated()
 							? <p className="center">Your created a panel for <Link to={Util.route.comic(this.state.comicId)}>comic #{this.state.comicId}</Link>. You'll get a notification when your comic is completed.</p>
@@ -220,7 +220,8 @@ export default class PlayPage extends Component {
 						<p className="center">Why not try again?</p>
 					</div>
 				}
-				{Util.context.isAuthenticated()
+				{/* NOAUTH: Disable prompt to create an account */}
+				{/* {Util.context.isAuthenticated()
 					? null 
 					: <div className="anon-message">
 						<h4>Reminder: You're playing anonymously!</h4>
@@ -234,7 +235,7 @@ export default class PlayPage extends Component {
 							<li>Have your username appear on your comics.</li>
 						</ul>
 					</div>
-				}
+				} */}
 				<div className="button-container direction-column play-actions">
 					<PlayButton title="Play again" onClick={() => this.playNew()} useQueryParams={true} allowClearOptions={true} onClearOptions={this.clearOptions} />
 					<Button colour="black" label="I'm done playing" size="md" to={Util.route.home()} />

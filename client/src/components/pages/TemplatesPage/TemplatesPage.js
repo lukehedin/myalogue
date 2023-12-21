@@ -11,7 +11,10 @@ export default class TemplatesPage extends Component {
 				<div className="container">
 					<div className="row">
 						<h1 className="page-title">Templates</h1>
-						<p className="page-subtitle"><span>Each template has it's own unique set of comic panels. </span>{Util.context.isAuthenticated() ? <span><Link to={Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'templates' })}>View your profile</Link> to see how often you've used each template.</span> : <span><Link to={Util.route.register()}>Create an account</Link> to see how often you've used each template.</span>}</p>
+						<p className="page-subtitle"><span>Each template has it's own unique set of comic panels. </span>
+						{/* NOAUTH: remove prompt for signup */}
+						{/* {Util.context.isAuthenticated() ? <span><Link to={Util.route.withQueryParams(Util.route.profile(Util.context.getUsername()), { tabId: 'templates' })}>View your profile</Link> to see how often you've used each template.</span> : <span><Link to={Util.route.register()}>Create an account</Link> to see how often you've used each template.</span>} */}
+						</p>
 						<div className="templates">
 							<ul>
 								{[...Util.context.getTemplates()]

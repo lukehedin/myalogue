@@ -31,7 +31,12 @@ export default class VerifyPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 						<div className="row">
-							{this.state.isLoading 
+							{/* NOAUTH: Disable verify page */}
+							<div>
+								<p>{Util.authNotSupportedMessage}</p>
+								<p className="form-message"><Link to={Util.route.home()}>Take me home</Link></p>
+							</div>;
+							{/* {this.state.isLoading 
 								? <div className="loader"></div> 
 								: <div className="verify-message">
 										<h1 className="page-title">Sorry, something went wrong.</h1>
@@ -40,7 +45,7 @@ export default class VerifyPage extends Component {
 											<Button to={Util.route.home()} colour="black" size="md" label="Back to home" />
 										</div>
 									</div>
-							}
+							} */}
 					</div>
 				</div>
 			</div>

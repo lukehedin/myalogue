@@ -53,7 +53,8 @@ export default class AppHeader extends Component {
 							? <NotificationMenu />
 							: null
 						}
-						{Util.context.isAuthenticated()
+						{/* NOAUTH: Remove header auth links */}
+						{/* {Util.context.isAuthenticated()
 							? <ContextMenu alignHorizontal="right" className="profile-menu" 
 								content={<p className="username sm center">{Util.context.getUsername()}</p>}
 								menuItems={[{
@@ -73,7 +74,7 @@ export default class AppHeader extends Component {
 								<UserAvatar size={32} />
 							</ContextMenu>
 							: <Button size="sm" colour="pink" to={Util.route.login()} label="Login" />
-						}
+						} */}
 					</div>
 				</div>
 			</div>

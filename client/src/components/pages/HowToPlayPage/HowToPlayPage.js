@@ -73,7 +73,8 @@ export default class HowToPlayPage extends Component {
 				<div className="container">
 					<div className="row">
 						<p><b>Every comic is different</b>. There are many different templates featuring unique situations for your dialogue, and most of the panels are ordered at random.</p>
-						<p>You can make dialogue for as many comics as you want.
+						{/* NOAUTH: Prevent prompt to make account */}
+						{/* <p>You can make dialogue for as many comics as you want.
 							{Util.context.isAuthenticated()
 								? <span> When you check back later you'll have notifications for any completed comics you contributed to.</span>
 								: <span> If you <Link to={Util.route.register()}>create an account</Link>, you'll get notifications for any completed comics that you contributed to.</span>
@@ -83,7 +84,7 @@ export default class HowToPlayPage extends Component {
 						{Util.context.isAuthenticated()
 							? <p>What are you waiting for?</p>
 							: <p>There are many other benefits for players who have an account, but there's nothing stopping you from playing anonymously if you wish!</p>
-						}
+						} */}
 						<div className="button-container">
 							<PlayButton />
 						</div>

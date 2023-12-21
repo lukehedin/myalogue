@@ -9,7 +9,12 @@ export default class SetPasswordPage extends Component {
 			<div className="panel-standard">
 				<div className="container">
 					<div className="row">
-						<SetPasswordForm onSubmit={(form, formData) => {
+						{/* NOAUTH: Disable set pw page */}
+						<div>
+							<p>{Util.authNotSupportedMessage}</p>
+							<p className="form-message"><Link to={Util.route.home()}>Take me home</Link></p>
+						</div>;
+						{/* <SetPasswordForm onSubmit={(form, formData) => {
 							form.setLoading(true);
 
 							Util.api.post('/api/setPassword', {
@@ -25,7 +30,7 @@ export default class SetPasswordPage extends Component {
 									form.setLoading(false);
 								}
 							});
-						}} />
+						}} /> */}
 					</div>
 				</div>
 			</div>

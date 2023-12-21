@@ -9,19 +9,25 @@ import Button from '../../Button/Button';
 
 class RegisterForm extends Component {
 	render() {
-		return <form onSubmit={this.props.submitForm}>
-			<h2>Create an account</h2>
-			{this.props.getField('username')}
-			{this.props.getField('email')}
-			<p className="form-message">Your email is only used to verify your account.</p>
-			{this.props.getField('password')} 
-			{this.props.getField('confirmPassword')}
-			<p className="form-message">By creating an account you confirm you are 16 years old or older and agree to the <Link to={Util.route.termsOfService()}>Terms of Service</Link> and <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link>.</p>
-			<div className="button-container">
-				<Button type="submit" colour="pink" size="lg" label="Create account" />
-			</div>
-			<p className="form-message">Already have an account? <Link to={Util.route.login()}>Login</Link></p>
-		</form>
+		// NOAUTH: Disable rego form
+		return <div>
+			<p>{Util.authNotSupportedMessage}</p>
+			<p className="form-message"><Link to={Util.route.home()}>Take me home</Link></p>
+		</div>;
+		
+		// return <form onSubmit={this.props.submitForm}>
+		// 	<h2>Create an account</h2>
+		// 	{this.props.getField('username')}
+		// 	{this.props.getField('email')}
+		// 	<p className="form-message">Your email is only used to verify your account.</p>
+		// 	{this.props.getField('password')} 
+		// 	{this.props.getField('confirmPassword')}
+		// 	<p className="form-message">By creating an account you confirm you are 16 years old or older and agree to the <Link to={Util.route.termsOfService()}>Terms of Service</Link> and <Link to={Util.route.privacyPolicy()}>Privacy Policy</Link>.</p>
+		// 	<div className="button-container">
+		// 		<Button type="submit" colour="pink" size="lg" label="Create account" />
+		// 	</div>
+		// 	<p className="form-message">Already have an account? <Link to={Util.route.login()}>Login</Link></p>
+		// </form>
 	}
 }
 
